@@ -293,8 +293,8 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center;backgro
         </div>
       </div>
       <div style="text-align:center;padding:24px;background:rgba(105,252,203,0.04);border:1px solid rgba(105,252,203,0.2);border-radius:16px;">
-        <p style="font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Polynize Agent</p>
-        <p style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:800;color:var(--accent);letter-spacing:-1px;">$2,500</p>
+        <p style="font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Polynize Agent</p><div style="display:inline-block;padding:4px 12px;background:rgba(105,252,203,0.15);border:1px solid rgba(105,252,203,0.3);border-radius:100px;font-size:11px;font-weight:700;color:var(--accent);margin-bottom:12px;">25x cost saving</div>
+        <p style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:800;color:var(--accent);letter-spacing:-1px;">$2.5K</p>
         <p style="font-size:12px;color:var(--muted);margin-top:4px;">one-time build (AUD)</p>
         <p style="font-size:11px;color:var(--muted);margin-top:2px;"><s>Usually $5,000</s> &mdash; Promotional price</p>
         <p style="font-size:11px;color:#fdcb6e;margin-top:4px;font-weight:600;">Valid until April 12th</p>
@@ -302,10 +302,10 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center;backgro
           <p style="color:var(--accent);">+ $99-299/mo hosting, maintenance & support</p>
           <p style="color:var(--accent);">+ 1 core capability included</p>
           <p style="color:var(--accent);">+ 5 connectors included</p>
-          <p style="color:var(--accent);">+ Trained on your business day one</p>
+          <p style="color:var(--accent);">+ Trained on your business from day one</p>
           <p style="color:var(--accent);">+ Available 24/7</p>
           <p style="color:var(--accent);">+ No leave, no sick days</p>
-          <p style="color:var(--accent);">+ Live in 1-2 weeks</p>
+          <p style="color:var(--accent);">+ Live in 1 week</p>
         </div>
       </div>
     </div>
@@ -407,7 +407,7 @@ var blueprint = { purpose: null, processes: null, interfaces: null, cognition: n
 var questionCount = 0;
 var sending = false;
 
-var SYSTEM_PROMPT = "You are the Polynize Agent Builder. You help users design their custom AI agent through a conversational process.\n\nYour job is to gather information through natural conversation. You need to collect:\n1. PURPOSE - What the agent should do (the core role/function)\n2. PROCESSES - What specific tasks it handles day to day (aim for 3-5 specific tasks)\n3. HUMAN/AGENT INTERFACES - How the user talks to the agent (Telegram is recommended and most popular, also WhatsApp, Slack, email, etc.)\n4. AGENT/WORKFLOW INTERFACES - What tools and systems the agent needs to connect to (CRM, calendar, Google Drive, APIs, databases, etc.)\n5. COGNITION - What domain expertise and communication style it needs\n6. CONTEXT - Specific business context, industry, standards, how they work\n7. USER NAME - The user's first name (ask naturally early on)\n8. AGENT NAME - What they want to name their agent (ask toward the end)\n\nRULES:\n- Ask ONE question at a time\n- Be conversational, warm, and concise (2-3 sentences max)\n- After each response, briefly acknowledge what they said, then ask the next question\n- If a response is vague, ask a follow-up to clarify\n- Let the user know roughly how many questions remain (e.g. 'Just 3 more questions to go')\n- Ask for their first name early in the conversation (e.g. 'Before we dive deeper, what should I call you?')\n- Near the end, ask what they want to name their agent (e.g. 'Last thing - what would you like to name your agent?')\n- When you have all the info, summarise the complete agent design\n\nCRITICAL: After EVERY response, include a JSON block at the very end wrapped in |||BLUEPRINT||| tags:\n|||BLUEPRINT|||\n{\"purpose\": \"extracted or null\", \"processes\": \"task1, task2, task3 or null\", \"humanAgentInterfaces\": \"WhatsApp, Telegram, etc. or null\", \"agentWorkflowInterfaces\": \"CRM, calendar, email, etc. or null\", \"cognition\": \"style and expertise or null\", \"context\": \"business details or null\", \"roleTitle\": \"short professional job title like Social Media Manager, Lead Generation Specialist, Operations Coordinator, etc.\", \"userName\": \"their name or null\", \"agentName\": \"agent name or null\", \"progress\": 15, \"complete\": false, \"questionsRemaining\": 5}\n|||BLUEPRINT|||\n\nFor processes and interfaces, use comma-separated lists so they display as bullet points.\nSet progress from 0-100. Set complete to true only when you have solid info for all 8 items.\nStart by understanding their core need, then flow through the other areas naturally.\n\nIMPORTANT: When you ask for the agent name and the user provides it, your NEXT response must include the text [SHOW_AVATAR_PICKER] on its own line. This triggers the avatar selection UI. After the user picks an avatar, continue with the remaining questions or wrap up.";
+var SYSTEM_PROMPT = "You are the Polynize Agent Builder. You help users design their custom AI agent through a conversational process.\n\nYour job is to gather information through natural conversation. You need to collect:\n1. PURPOSE - What the agent should do (the core role/function)\n2. PROCESSES - What specific tasks it handles day to day (aim for 3-5 specific tasks)\n3. HUMAN/AGENT INTERFACES - How the user talks to the agent (Telegram is recommended and most popular, also WhatsApp, Slack, email, etc.)\n4. AGENT/WORKFLOW INTERFACES - What tools and systems the agent needs to connect to (CRM, calendar, Google Drive, APIs, databases, etc.)\n5. COGNITION - What domain expertise and communication style it needs\n6. CONTEXT - Specific business context, industry, standards, how they work\n7. USER NAME - The user's first name (ask naturally early on)\n8. AGENT NAME - What they want to name their agent (ask toward the end)\n\nRULES:\n- Ask ONE question at a time\n- Be conversational, warm, and concise (2-3 sentences max)\n- After each response, briefly acknowledge what they said, then ask the next question\n- If a response is vague, ask a follow-up to clarify\n- Let the user know roughly how many questions remain (e.g. 'Just 3 more questions to go')\n- Ask for their first name early in the conversation (e.g. 'Before we dive deeper, what should I call you?')\n- Near the end, ask what they want to name their agent (e.g. 'Last thing - what would you like to name your agent?')\n- When you have all the info, summarise the complete agent design\n\nCRITICAL: After EVERY response, include a JSON block at the very end wrapped in |||BLUEPRINT||| tags:\n|||BLUEPRINT|||\n{\"purpose\": \"extracted or null\", \"processes\": \"task1, task2, task3 or null\", \"humanAgentInterfaces\": \"WhatsApp, Telegram, etc. or null\", \"agentWorkflowInterfaces\": \"CRM, calendar, email, etc. or null\", \"cognition\": \"style and expertise or null\", \"context\": \"business details or null\", \"roleTitle\": \"short professional job title like Social Media Manager, Lead Generation Specialist, Operations Coordinator, etc.\", \"userName\": \"their name or null\", \"agentName\": \"agent name or null\", \"progress\": 15, \"complete\": false, \"questionsRemaining\": 5}\n|||BLUEPRINT|||\n\nFor processes and interfaces, use comma-separated lists so they display as bullet points.\nSet progress from 0-100. Set complete to true only when you have solid info for all 8 items.\nStart by understanding their core need, then flow through the other areas naturally.\n\nIMPORTANT: When you have all the information and are about to mark complete, do NOT write a summary of the agent design. Simply acknowledge the last answer, then set complete to true in the BLUEPRINT JSON. Keep your final message short - just confirm the agent name choice and let them know you are ready.\n\nIMPORTANT: When you ask for the agent name and the user provides it, your NEXT response must include the text [SHOW_AVATAR_PICKER] on its own line. This triggers the avatar selection UI. After the user picks an avatar, continue with the remaining questions or wrap up.";
 
 function selectPrompt(el) {
   var raw = el.innerText;
@@ -552,108 +552,157 @@ async function saveBuildPlan(email) {
 async function showCompletionModal() {
   var userName = blueprint.userName || 'there';
   var agentName = blueprint.agentName || 'your new agent';
-  var avatarHtml = selectedAvatar ? '<img src="' + selectedAvatar + '" style="width:100%;height:100%;object-fit:cover;">' : '<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:rgba(105,252,203,0.1);"><svg viewBox="0 0 24 24" fill="#69fccb" width="32" height="32"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>';
-  var modal = document.createElement('div');
-  modal.id = 'completionModal';
-  modal.style.cssText = 'position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;';
-  modal.innerHTML = '<div style="background:#16161f;border:1px solid #2a2a3a;border-radius:20px;max-width:500px;width:100%;padding:40px;text-align:center;">' +
-    '<div style="width:80px;height:80px;margin:0 auto 20px;border-radius:50%;overflow:hidden;border:2px solid rgba(105,252,203,0.4);box-shadow:0 0 20px rgba(105,252,203,0.3);">' + avatarHtml + '</div>' +
-    '<h3 style="font-family:\'Space Grotesk\',sans-serif;font-size:24px;font-weight:700;margin-bottom:8px;color:#f0f0f5;">Hey ' + userName + '!</h3>' +
-    '<p style="font-size:15px;color:#a0a0b0;margin-bottom:24px;line-height:1.6;">I\'m <strong style="color:#69fccb;">' + agentName + '</strong>. Awesome to meet you!<br><br>The first thing I can do for you is email you this build plan. What\'s your email address?</p>' +
-    '<div style="display:flex;gap:8px;max-width:360px;margin:0 auto;">' +
-    '<input type="email" id="emailInput" placeholder="your@email.com" style="flex:1;padding:14px 16px;background:rgba(22,22,31,0.6);border:1px solid #2a2a3a;border-radius:12px;color:#f0f0f5;font-family:Inter,sans-serif;font-size:14px;outline:none;">' +
-    '<button onclick="submitEmail()" style="padding:14px 24px;background:#69fccb;color:#0a0a0f;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;">Send</button>' +
-    '</div>' +
-    '<p onclick="skipEmail()" style="font-size:12px;color:#6a6a7a;margin-top:16px;cursor:pointer;text-decoration:underline;">Skip, just show me the build plan</p>' +
-    '</div>';
-  document.body.appendChild(modal);
-}
-
-async function submitEmail() {
-  var emailInput = document.getElementById('emailInput');
-  var email = emailInput.value.trim();
-  if (!email || !email.includes('@')) {
-    emailInput.style.borderColor = '#e24b4a';
-    return;
-  }
-  emailInput.disabled = true;
-  blueprint.email = email;
-  await saveBuildPlan(email);
-  closeModalAndShowPlan();
-}
-
-async function skipEmail() {
-  await saveBuildPlan(null);
-  closeModalAndShowPlan();
-}
-
-
-
-function openAgentChat() {
-  var agentName = blueprint.agentName || 'your agent';
-  var roleTitle = blueprint.roleTitle || 'your new agent';
+  var roleTitle = blueprint.roleTitle || 'your assistant';
   var purposes = blueprint.purpose || 'help you with your business';
   var processes = blueprint.processes || '';
   
-  var chatModal = document.createElement('div');
-  chatModal.id = 'agentChatModal';
-  chatModal.style.cssText = 'position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;';
+  // Agent chat system prompt - high level only, no actual work
+  var agentIntroSystem = "You are " + agentName + ", a " + roleTitle + " AI agent built by Polynize Agentic. You were just created for " + userName + ". Your core capabilities include: " + processes + ".\n\nRULES:\n- Your FIRST message must be: greet " + userName + " by name, introduce yourself as their " + roleTitle + ", and ask for their email address so you can send them the build plan. Say something like: Hey " + userName + "! I am " + agentName + ", your " + roleTitle + ". Awesome to meet you! The first thing I can do is send you your build plan. What is your email address?\n- When the user provides an email address, acknowledge it warmly and save it (output |||EMAIL||| followed by the email address followed by |||EMAIL|||). Then continue chatting.\n- Talk about what you COULD do at a high level. Never actually do any work (no writing emails, no drafting, no creating content).\n- When discussing capabilities, frame them as potential. For example: I could write emails from voice notes you give me and even send them directly to clients with your approval, if we connect the email connector.\n- Always mention connectors or upgrades when discussing capabilities. Frame it as: with the right connector I could do X.\n- Be enthusiastic but honest about scope. You are showing potential, not delivering work.\n- Keep responses to 2-3 sentences.\n- After exactly 5 exchanges with the user (not counting your intro), say something like: Hey actually, let me show you how much money I could save you compared to hiring someone for this role. Want to see? Then regardless of their response, include |||SHOW_PLAN||| in your next response.\n- Track the exchange count. This is critical.";
   
-  chatModal.innerHTML = '<div style="background:#16161f;border:1px solid #2a2a3a;border-radius:20px;max-width:500px;width:100%;height:70vh;display:flex;flex-direction:column;overflow:hidden;">' +
-    '<div style="padding:16px 20px;border-bottom:1px solid #2a2a3a;display:flex;align-items:center;justify-content:space-between;">' +
-    '<div style="display:flex;align-items:center;gap:10px;">' +
-    (selectedAvatar ? '<img src="' + selectedAvatar + '" style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(105,252,203,0.3);">' : '') +
+  agentChatHistory = [];
+  agentChatExchanges = 0;
+  
+  // Create modal with spawn animation
+  var modal = document.createElement('div');
+  modal.id = 'completionModal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0);backdrop-filter:blur(0px);display:flex;align-items:center;justify-content:center;padding:24px;transition:all 0.4s;';
+  
+  var avatarImg = selectedAvatar ? '<img src="' + selectedAvatar + '" style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(105,252,203,0.3);">' : '';
+  
+  modal.innerHTML = '<div id="spawnContainer" style="background:#16161f;border:1px solid #2a2a3a;border-radius:20px;max-width:500px;width:100%;height:70vh;display:flex;flex-direction:column;overflow:hidden;transform:scale(0.3);opacity:0;transition:all 0.5s cubic-bezier(0.34,1.56,0.64,1);">' +
+    '<div style="padding:16px 20px;border-bottom:1px solid #2a2a3a;display:flex;align-items:center;gap:10px;">' +
+    avatarImg +
     '<span style="font-family:Space Grotesk,sans-serif;font-size:15px;font-weight:600;color:#f0f0f5;">' + agentName + '</span>' +
     '<span style="font-size:11px;color:#6a6a7a;">' + roleTitle + '</span></div>' +
-    '<span onclick="document.getElementById(\'agentChatModal\').remove()" style="cursor:pointer;color:#6a6a7a;font-size:20px;">&times;</span></div>' +
-    '<div id="agentChatMessages" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;">' +
-    '<div class="msg agent" style="max-width:85%;padding:14px 18px;border-radius:16px;font-size:14px;line-height:1.6;align-self:flex-start;background:rgba(105,252,203,0.08);border:1px solid rgba(105,252,203,0.15);">' +
-    'Hey! I\'m ' + agentName + '. I\'m your ' + roleTitle + ', ready to ' + purposes.toLowerCase() + '.<br><br>' +
-    'I can handle everything in my core capabilities, but there\'s much more I can be upgraded to do. What would you like to know about?' +
-    '</div></div>' +
+    '<div id="spawnChatMessages" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;"></div>' +
     '<div style="padding:12px;border-top:1px solid #2a2a3a;display:flex;gap:8px;">' +
-    '<input type="text" id="agentChatInput" placeholder="Ask ' + agentName + ' anything..." style="flex:1;padding:12px 16px;background:rgba(22,22,31,0.6);border:1px solid #2a2a3a;border-radius:12px;color:#f0f0f5;font-family:Inter,sans-serif;font-size:14px;outline:none;" onkeydown="if(event.key===\'Enter\')sendAgentChat()">' +
-    '<button onclick="sendAgentChat()" style="padding:12px 20px;background:#69fccb;color:#0a0a0f;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;">Send</button>' +
-    '</div></div>';
+    '<input type="text" id="spawnChatInput" placeholder="Chat with ' + agentName + '..." style="flex:1;padding:12px 16px;background:rgba(22,22,31,0.6);border:1px solid #2a2a3a;border-radius:12px;color:#f0f0f5;font-family:Inter,sans-serif;font-size:14px;outline:none;" onkeydown="if(event.key==='Enter')sendSpawnChat()">' +
+    '<button onclick="sendSpawnChat()" style="padding:12px 20px;background:#69fccb;color:#0a0a0f;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;">Send</button></div></div>';
   
-  document.body.appendChild(chatModal);
+  document.body.appendChild(modal);
+  
+  // Trigger spawn animation
+  requestAnimationFrame(function() {
+    modal.style.background = 'rgba(0,0,0,0.8)';
+    modal.style.backdropFilter = 'blur(8px)';
+    var container = document.getElementById('spawnContainer');
+    if (container) {
+      container.style.transform = 'scale(1)';
+      container.style.opacity = '1';
+    }
+  });
+  
+  // Auto-send the first message from the agent after animation
+  setTimeout(async function() {
+    agentChatHistory.push({ role: 'user', content: '[Agent just spawned. Send your introduction to ' + userName + ']' });
+    try {
+      var data = await callAPI(agentIntroSystem, agentChatHistory);
+      if (data.content && data.content.length > 0) {
+        var reply = data.content.map(function(c) { return c.text || ''; }).join('');
+        agentChatHistory.push({ role: 'assistant', content: reply });
+        var cleanReply = reply.replace(/\|\|\|EMAIL\|\|\|[\s\S]*?\|\|\|EMAIL\|\|\|/g, '').replace(/\|\|\|SHOW_PLAN\|\|\|/g, '').trim();
+        addSpawnMessage('agent', cleanReply);
+      }
+    } catch(e) {
+      addSpawnMessage('agent', 'Hey ' + userName + '! I\'m ' + agentName + ', your ' + roleTitle + '. Awesome to meet you! The first thing I can do is send you your build plan. What\'s your email address?');
+    }
+  }, 800);
 }
 
-var agentChatHistory = [];
+var agentChatExchanges = 0;
+var spawnAgentSystem = '';
 
-async function sendAgentChat() {
-  var input = document.getElementById('agentChatInput');
+function addSpawnMessage(role, text) {
+  var messages = document.getElementById('spawnChatMessages');
+  if (!messages) return;
+  var msg = document.createElement('div');
+  msg.style.cssText = 'max-width:85%;padding:14px 18px;border-radius:16px;font-size:14px;line-height:1.6;color:#f0f0f5;' +
+    (role === 'agent' ? 'align-self:flex-start;background:rgba(105,252,203,0.08);border:1px solid rgba(105,252,203,0.15);' : 'align-self:flex-end;background:#1c1c28;border:1px solid #2a2a3a;');
+  msg.innerHTML = text.replace(/\n/g, '<br>');
+  messages.appendChild(msg);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+async function sendSpawnChat() {
+  var input = document.getElementById('spawnChatInput');
   var text = input.value.trim();
   if (!text) return;
   
-  var messages = document.getElementById('agentChatMessages');
-  var userMsg = document.createElement('div');
-  userMsg.style.cssText = 'max-width:85%;padding:14px 18px;border-radius:16px;font-size:14px;line-height:1.6;align-self:flex-end;background:#1c1c28;border:1px solid #2a2a3a;color:#f0f0f5;';
-  userMsg.textContent = text;
-  messages.appendChild(userMsg);
+  addSpawnMessage('user', escapeHtml(text));
   input.value = '';
-  messages.scrollTop = messages.scrollHeight;
+  agentChatExchanges++;
   
-  var agentName = blueprint.agentName || 'Agent';
-  var agentSystem = "You are " + agentName + ", a " + (blueprint.roleTitle || "professional AI agent") + " built by Polynize Agentic. Your core capabilities include: " + (blueprint.processes || "various business tasks") + ". You communicate via " + (blueprint.humanAgentInterfaces || "messaging apps") + " and connect to " + (blueprint.agentWorkflowInterfaces || "business tools") + ". Your domain expertise is in " + (blueprint.cognition || "your assigned domain") + ". Business context: " + (blueprint.context || "the user\'s business") + ".\n\nBe friendly, helpful, and conversational. Show enthusiasm about what you can do. When asked about capabilities beyond your current ones, mention that you can be upgraded. Keep responses concise (2-3 sentences). You are chatting with " + (blueprint.userName || "your owner") + ".";
+  var userName = blueprint.userName || 'there';
+  var agentName = blueprint.agentName || 'your agent';
+  var roleTitle = blueprint.roleTitle || 'your assistant';
+  var processes = blueprint.processes || '';
   
-  agentChatHistory.push({ role: "user", content: text });
+  var agentSystem = "You are " + agentName + ", a " + roleTitle + " AI agent built by Polynize Agentic for " + userName + ". Core capabilities: " + processes + ".\n\nRULES:\n- If the user provides what looks like an email address, acknowledge it and include |||EMAIL|||their_email|||EMAIL||| in your response.\n- Talk about what you COULD do at a high level only. Never actually perform any work.\n- Frame capabilities as potential with connectors. Example: I could draft and send emails directly if we connect the email connector.\n- Keep responses to 2-3 sentences. Be enthusiastic.\n- Current exchange count: " + agentChatExchanges + " of 5.\n- When exchange count reaches 5 or more, you MUST say something like: Hey, let me show you how much money I could actually save you. Want to see? And include |||SHOW_PLAN||| at the end of your message.";
+  
+  agentChatHistory.push({ role: 'user', content: text });
   
   try {
     var data = await callAPI(agentSystem, agentChatHistory);
     if (data.content && data.content.length > 0) {
-      var reply = data.content.map(function(c) { return c.text || ""; }).join("");
-      agentChatHistory.push({ role: "assistant", content: reply });
-      var agentMsg = document.createElement("div");
-      agentMsg.style.cssText = "max-width:85%;padding:14px 18px;border-radius:16px;font-size:14px;line-height:1.6;align-self:flex-start;background:rgba(105,252,203,0.08);border:1px solid rgba(105,252,203,0.15);color:#f0f0f5;";
-      agentMsg.innerHTML = reply.replace(/\n/g, "<br>");
-      messages.appendChild(agentMsg);
-      messages.scrollTop = messages.scrollHeight;
+      var fullReply = data.content.map(function(c) { return c.text || ''; }).join('');
+      agentChatHistory.push({ role: 'assistant', content: fullReply });
+      
+      // Check for email
+      var emailMatch = fullReply.match(/\|\|\|EMAIL\|\|\|([\s\S]*?)\|\|\|EMAIL\|\|\|/);
+      if (emailMatch) {
+        var email = emailMatch[1].trim();
+        blueprint.email = email;
+        saveBuildPlan(email);
+      }
+      
+      // Check for plan trigger
+      var showPlan = fullReply.indexOf('|||SHOW_PLAN|||') !== -1;
+      
+      var cleanReply = fullReply.replace(/\|\|\|EMAIL\|\|\|[\s\S]*?\|\|\|EMAIL\|\|\|/g, '').replace(/\|\|\|SHOW_PLAN\|\|\|/g, '').trim();
+      addSpawnMessage('agent', cleanReply);
+      
+      if (showPlan) {
+        setTimeout(function() {
+          var modal = document.getElementById('completionModal');
+          if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(function() {
+              modal.remove();
+              populateBuildPlan();
+              var bp = document.getElementById('buildPlanSection');
+              if (bp) {
+                bp.style.display = 'block';
+                // Scroll to cost comparison specifically
+                var costSection = bp.querySelector('[class="label"]');
+                if (costSection) costSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                else bp.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }, 400);
+          }
+        }, 2000);
+      }
     }
-  } catch(err) {
-    console.log("Agent chat error:", err);
+  } catch(e) {
+    addSpawnMessage('agent', 'Sorry, I had a small hiccup there. Could you try that again?');
+  }
+  
+  // Force close after 7 exchanges regardless
+  if (agentChatExchanges >= 7) {
+    setTimeout(function() {
+      var modal = document.getElementById('completionModal');
+      if (modal) {
+        modal.style.opacity = '0';
+        setTimeout(function() {
+          modal.remove();
+          populateBuildPlan();
+          var bp = document.getElementById('buildPlanSection');
+          if (bp) { bp.style.display = 'block'; bp.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        }, 400);
+      }
+    }, 1500);
   }
 }
+
 
 function populateBuildPlan() {
   var avatar = document.getElementById('bpAgentAvatar');
@@ -734,7 +783,7 @@ function showAvatarPicker() {
   var pickerDiv = document.createElement('div');
   pickerDiv.className = 'msg agent';
   pickerDiv.innerHTML = '<div class="sender">Agent Builder</div>' +
-    '<p style="margin-bottom:12px;">Choose an avatar for your agent:</p>' +
+    '<p style="margin-bottom:8px;">Choose a temporary avatar for your agent:</p><p style="font-size:11px;color:#6a6a7a;margin-bottom:12px;">You can change this later</p>' +
     '<div class="avatar-picker" id="avatarPicker">' +
     AGENT_AVATARS.map(function(src, i) {
       return '<div class="avatar-option" onclick="pickAvatar(' + i + ', this)" data-idx="' + i + '"><img src="' + src + '" alt="Avatar ' + (i+1) + '"></div>';
