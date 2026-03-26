@@ -335,7 +335,7 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center;backgro
 <a href="https://www.youtube.com/@polynize">YouTube</a>
 <a href="/cdn-cgi/l/email-protection#e189848d8d8ea1918e8d988f889b84cf888e">Email Us</a>
 </div><div class="footer-copy">&copy; 2026 Polynize Pty Ltd. All rights reserved.</div></footer>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // Supabase setup
 var SUPABASE_URL = "https://oapyxytefrdqnwozomew.supabase.co";
@@ -962,44 +962,5 @@ document.getElementById('chatInput').addEventListener('keydown', function(e) {
   }
 });
 
-</script><script>
-function selectPrompt(el) {
-  var text = el.innerText.replace('...', '');
-  var input = document.getElementById('chatInput');
-  input.value = text;
-  input.focus();
-  var starters = document.querySelector('.prompt-starters');
-  var direction = document.querySelector('.prompt-direction');
-  if (starters) starters.style.display = 'none';
-  if (direction) direction.style.display = 'none';
-}
-
-function sendMessage() {
-  var input = document.getElementById('chatInput');
-  var text = input.value.trim();
-  if (!text) return;
-  var messages = document.getElementById('chatMessages');
-  var userMsg = document.createElement('div');
-  userMsg.className = 'msg user';
-  userMsg.innerHTML = '<div class="sender">You</div>' + escapeHtml(text);
-  messages.appendChild(userMsg);
-  input.value = '';
-  messages.scrollTop = messages.scrollHeight;
-  var starters = document.querySelector('.prompt-starters');
-  var direction = document.querySelector('.prompt-direction');
-  if (starters) starters.style.display = 'none';
-  if (direction) direction.style.display = 'none';
-  setTimeout(function() {
-    var agentMsg = document.createElement('div');
-    agentMsg.className = 'msg agent';
-    agentMsg.innerHTML = '<div class="sender">Agent Builder</div>Great, I am processing your input. AI-powered responses will be connected shortly. In the meantime, book a call to discuss your agent build.';
-    messages.appendChild(agentMsg);
-    messages.scrollTop = messages.scrollHeight;
-  }, 1000);
-}
-
-function toggleMic() {
-  alert('Voice input will be available soon. Please type your response for now.');
-}
-
-function escapeHtml(tex
+</script>
+</body></html>
