@@ -334,12 +334,10 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center;backgro
 <a href="/cdn-cgi/l/email-protection#e189848d8d8ea1918e8d988f889b84cf888e">Email Us</a>
 </div><div class="footer-copy">&copy; 2026 Polynize Pty Ltd. All rights reserved.</div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
+<script data-cfasync="false">
 // Supabase setup
 var SUPABASE_URL = "https://oapyxytefrdqnwozomew.supabase.co";
 var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hcHl4eXRlZnJkcW53b3pvbWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMjY0MjYsImV4cCI6MjA4OTgwMjQyNn0.Ab06XzppXK-4WlHcT1b3Bk5-PPlo4_tBLaVwlLp1zhY";
-var supabase = null;
-
 // Smart API wrapper - works in Claude artifact preview AND on live site
 async function callAPI(systemPrompt, messages) {
   var trimmedMessages = messages.length > 20 ? messages.slice(-20) : messages;
@@ -380,12 +378,18 @@ async function callAPI(systemPrompt, messages) {
   return Promise.race([fetchPromise, timeoutPromise]);
 }
 
+var sbClient = null;
 function initSupabase() {
-  if (window.supabase && window.supabase.createClient) {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    console.log("Supabase connected");
-  } else {
-    setTimeout(initSupabase, 200);
+  try {
+    if (window.supabase && window.supabase.createClient) {
+      sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      console.log("Supabase connected");
+    } else {
+      setTimeout(initSupabase, 500);
+    }
+  } catch(e) {
+    console.log("Supabase init retry...");
+    setTimeout(initSupabase, 500);
   }
 }
 initSupabase();
