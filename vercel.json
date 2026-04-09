@@ -2,6 +2,16 @@
   "rewrites": [
     { "source": "/agents", "destination": "/agents.html" },
     { "source": "/pricing", "destination": "/pricing.html" },
-    { "source": "/links", "destination": "/links.html" }
+    { "source": "/links", "destination": "/links.html" },
+    { "source": "/console", "destination": "/console.html" },
+    { "source": "/brand", "destination": "/brand.html" }
+  ],
+  "headers": [
+    {
+      "source": "/brand(.html)?",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    }
   ]
 }
