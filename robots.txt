@@ -1,5 +1,7 @@
 User-agent: *
 Disallow: /brand
 Disallow: /brand.html
+Disallow: /proposals/
+Disallow: /proposals
 
 Sitemap: https://polynize.ai/sitemap.xml
