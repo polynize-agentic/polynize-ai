@@ -1337,6 +1337,351 @@
   }
   .commitment-note strong { color: var(--light-text); font-weight: 500; }
 
+  /* ── TELEGRAM CHAT WINDOW ── */
+  .tg-window {
+    background: #1a1e24;
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-top: 4px;
+    max-width: 100%;
+  }
+  .tg-scenario-header {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .tg-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .tg-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  .tg-row.agent-row { justify-content: flex-start; }
+  .tg-row.human-row { justify-content: flex-end; }
+  .tg-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(198,164,90,0.15);
+    border: 1px solid rgba(198,164,90,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Courier New', monospace;
+    font-size: 11px; font-weight: 700;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+  .tg-avatar.human-avatar {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.12);
+    color: var(--light-text);
+  }
+  .tg-bubble {
+    max-width: 72%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.77rem;
+    line-height: 1.65;
+    position: relative;
+  }
+  .tg-bubble.agent-bubble {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--light-text);
+    border-bottom-left-radius: 4px;
+  }
+  .tg-bubble.human-bubble {
+    background: rgba(198,164,90,0.1);
+    border: 1px solid rgba(198,164,90,0.22);
+    color: var(--light-text);
+    border-bottom-right-radius: 4px;
+  }
+  .tg-sender {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 5px;
+  }
+  .tg-sender.human-sender { color: var(--body-text); }
+  .tg-time {
+    font-size: 8px;
+    color: var(--mid-grey);
+    text-align: right;
+    margin-top: 5px;
+    letter-spacing: 0.06em;
+  }
+  .tg-scenario-note {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--mid-grey);
+    line-height: 1.6;
+    padding-left: 38px;
+    margin-top: 6px;
+  }
+
+
+  .chat-scenario-block {
+    margin-bottom: 28px;
+    max-width: 100%;
+  }
+  .chat-scenario-meta {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--card-border);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .chat-scenario-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .chat-thread-col { display: flex; flex-direction: column; gap: 10px; }
+  .chat-bubble {
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    line-height: 1.65;
+  }
+  .chat-bubble.agent {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--light-text);
+    align-self: flex-start;
+  }
+  .chat-bubble.client {
+    background: rgba(198,164,90,0.05);
+    border: 1px solid rgba(198,164,90,0.18);
+    color: var(--light-text);
+    align-self: flex-end;
+    margin-left: auto;
+  }
+  .chat-label {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mid-grey);
+    margin-bottom: 6px;
+  }
+  .chat-label.gold { color: var(--gold); }
+  .chat-note-col {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--mid-grey);
+    line-height: 1.65;
+    padding-left: 20px;
+    border-left: 2px solid rgba(198,164,90,0.35);
+    align-self: center;
+  }
+
+  /* ── DIMENSION SCORING (Page 5) ── */
+  .dim-score-block {
+    max-width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+  .dim-score-scale {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .dim-scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid-grey);
+    padding-bottom: 8px;
+    border-bottom: 1px dashed rgba(198,164,90,0.15);
+  }
+  .dim-score-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--card-border);
+    align-items: start;
+  }
+  .dim-score-row:last-of-type { border-bottom: none; }
+  .dim-score-name {
+    font-family: Georgia, serif;
+    font-size: 0.95rem;
+    color: var(--white);
+    padding-top: 2px;
+  }
+  .dim-score-right { display: flex; flex-direction: column; gap: 6px; }
+  .dim-score-bar {
+    height: 12px;
+    background: rgba(198,164,90,0.06);
+    border: 1px solid rgba(198,164,90,0.12);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .dim-score-fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(198,164,90,0.3), var(--gold));
+    border-radius: 2px;
+  }
+  .dim-score-why {
+    font-family: 'Courier New', monospace;
+    font-size: 0.73rem;
+    color: var(--mid-grey);
+    line-height: 1.6;
+  }
+  .dim-throughput {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--card-border);
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    color: var(--light-text);
+    line-height: 1.5;
+  }
+  .dim-throughput strong { color: var(--gold); }
+
+  /* ── THREE-OPTION PRICING ── */
+  .pricing-options-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 20px;
+    margin-bottom: 24px;
+  }
+  .pricing-option {
+    background: var(--deep-charcoal);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pricing-option.featured {
+    border-color: var(--gold);
+    background: rgba(198,164,90,0.04);
+  }
+  .pricing-option.featured::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent 70%);
+  }
+  .po-num {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .po-name {
+    font-family: Georgia, serif;
+    font-size: 1.2rem;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .pricing-option.featured .po-name { color: var(--gold); }
+  .po-timeline {
+    font-family: 'Courier New', monospace;
+    font-size: 0.72rem;
+    color: var(--mid-grey);
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .po-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .po-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .po-stage {
+    font-family: 'Courier New', monospace;
+    font-size: 0.72rem;
+    color: var(--mid-grey);
+    letter-spacing: 0.06em;
+  }
+  .po-fee {
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    color: var(--white);
+  }
+  .pricing-option.featured .po-fee { color: var(--gold); }
+  .po-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-top: 1px solid var(--card-border);
+    padding-top: 10px;
+    margin-bottom: 14px;
+  }
+  .po-total-label {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .po-total-amount {
+    font-family: Georgia, serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+  }
+  .po-note {
+    font-family: 'Courier New', monospace;
+    font-size: 0.72rem;
+    color: var(--mid-grey);
+    line-height: 1.65;
+  }
+  .pricing-options-footer {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: var(--mid-grey);
+    line-height: 1.7;
+    padding: 16px 20px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: rgba(198,164,90,0.02);
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 760px) {
+    .chat-scenario-body { grid-template-columns: 1fr; }
+    .dim-score-row, .dim-score-scale { grid-template-columns: 1fr; }
+    .pricing-options-grid { grid-template-columns: 1fr; }
+  }
+
 </style>
 <body>
 <div class="page">
@@ -1377,17 +1722,12 @@
       <div class="act-card">
         <div class="act-num">02</div>
         <div class="act-title">Meet the team</div>
-        <p class="act-desc">The four agents in the Market Validation Team, their roles, and how they connect.</p>
+        <p class="act-desc">The four agents in the Market Validation Team, their roles, capabilities, and how they work as a cognitive unit.</p>
       </div>
       <div class="act-card">
         <div class="act-num">03</div>
-        <div class="act-title">A day with the team</div>
-        <p class="act-desc">Real scenarios from a typical week once the EverStock build is live and running.</p>
-      </div>
-      <div class="act-card">
-        <div class="act-num">04</div>
-        <div class="act-title">What it's worth</div>
-        <p class="act-desc">The value case, cost comparison, and commercial structure: Map, Transform, Operate.</p>
+        <div class="act-title">Scope &amp; Pricing</div>
+        <p class="act-desc">Value comparison, five-dimension scoring, and three engagement options to choose from.</p>
       </div>
     </div>
 
@@ -1444,18 +1784,18 @@
       <div class="arch-sublabel">Full build overview: EverStock Agent System</div>
       <div class="arch-teams">
         <div class="arch-team active">
-          <div class="arch-team-icon">📡</div>
+          <div class="arch-team-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 6a6 6 0 0 1 6 6"/><path d="M12 10a2 2 0 0 1 2 2"/><line x1="12" y1="12" x2="4.5" y2="4.5"/></svg></div>
           <div class="arch-team-name">Market Validation Team</div>
           <p class="arch-team-desc">Market validation, content strategy, social presence, lead generation, landing pages, analytics, and audience qualification.</p>
           <div class="arch-badge">Phase 1 · This quote</div>
         </div>
         <div class="arch-team">
-          <div class="arch-team-icon">🤝</div>
+          <div class="arch-team-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--mid-grey)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 3 19 3 19 6"/><line x1="14.5" y1="5.5" x2="19" y2="1"/></svg></div>
           <div class="arch-team-name">Sales Team</div>
           <p class="arch-team-desc">Lead qualification, CRM routing, waitlist-to-sale conversion, pre-launch engagement, and product-tier sales flows.</p>
         </div>
         <div class="arch-team">
-          <div class="arch-team-icon">⚙️</div>
+          <div class="arch-team-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--mid-grey)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
           <div class="arch-team-name">Operations Team</div>
           <p class="arch-team-desc">Order management, customer service, storage network coordination, and post-sale experience.</p>
         </div>
@@ -1469,22 +1809,22 @@
     <p>Four primary channels. One main branded EverStock account per channel, with two to three sub-Persona accounts running simultaneously to test different narrative angles with different audience segments.</p>
     <div class="channel-grid">
       <div class="channel-card">
-        <div class="channel-icon">📸</div>
+        <div class="channel-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="#C6A45A" stroke-width="1.5"/><circle cx="12" cy="12" r="4.5" stroke="#C6A45A" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="#C6A45A"/></svg></div>
         <div class="channel-name">Instagram</div>
         <div class="channel-detail">Visual storytelling, Reels, lifestyle sub-Persona content</div>
       </div>
       <div class="channel-card">
-        <div class="channel-icon">👥</div>
+        <div class="channel-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke="#C6A45A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="channel-name">Facebook</div>
         <div class="channel-detail">Family audience, targeted ads, community discussion: primary conversion channel</div>
       </div>
       <div class="channel-card">
-        <div class="channel-icon">🎵</div>
+        <div class="channel-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" stroke="#C6A45A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="channel-name">TikTok</div>
         <div class="channel-detail">Short-form hooks, convenience angle, 'normal people prepare' framing</div>
       </div>
       <div class="channel-card">
-        <div class="channel-icon">▶️</div>
+        <div class="channel-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="5" width="20" height="14" rx="3" stroke="#C6A45A" stroke-width="1.5"/><polygon points="10,9 16,12 10,15" stroke="#C6A45A" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
         <div class="channel-name">YouTube</div>
         <div class="channel-detail">Long-form authority, product education, storage explainers</div>
       </div>
@@ -1545,8 +1885,8 @@
 
   <div class="section">
     <div class="eyebrow">Agent Blueprint · Personalised for EverStock</div>
-    <h1>Meet <em>the team</em></h1>
-    <p class="subtitle">One accountable human lead at Optio. Four agents underneath, handling the volume work. This is the cognitive unit: expert thinking installed into the team, not layered on top. Deployed on Polynize Agentic Management infrastructure: AWS Lightsail via OpenClaw, managed through the Agent Console.</p>
+    <h1>Meet <em>your marketing team</em></h1>
+    <p class="subtitle">The four agents that make up Phase 1. Scout, Lure, Ember, and Pulse are your Market Validation Team. Sales and Operations are separate builds for later phases, once the market validates. Each agent has a defined role, a domain knowledge base, and a COGNITION.md reasoning protocol installed. Deployed on Polynize Agentic Management infrastructure: AWS Lightsail via OpenClaw, managed through the Agent Console.</p>
   </div>
 
   <div class="agent-grid">
@@ -1628,50 +1968,77 @@
   <div class="section">
     <div class="eyebrow">Agent Blueprint · Personalised for EverStock</div>
     <h1>A day with <em>the team</em></h1>
-    <p class="subtitle">The EverStock Market Validation Agent Team in action. Here is what a typical week looks like once the build is live.</p>
+    <p class="subtitle">Three moments from a real week in the field. Four agents, one shared mission.</p>
   </div>
 
-  <p class="day-intro">Three scenarios from a real week in the field. Four agents, one shared mission: find out whether Australia is ready to buy preparedness. Calmly, practically, at scale.</p>
+  <div class="tg-window">
 
-  <div class="scenario">
-    <div class="scenario-time">
-      Monday 7:00am · Week launch
-      <span class="agent-tag">SCOUT + PULSE</span>
+    <div class="tg-scenario-header">Monday 7:00am · Week launch <span class="agent-tag">SCOUT + PULSE</span></div>
+    <div class="tg-thread">
+      <div class="tg-row agent-row">
+        <div class="tg-avatar">S</div>
+        <div class="tg-bubble agent-bubble">
+          <div class="tg-sender">Scout</div>
+          Week two is live. I have published 36 pieces across Instagram, Facebook, TikTok, and YouTube, split across the main EverStock account and your four Persona sub-accounts. Pulse flagged the 'family insurance' angle as the strongest under-tested frame from last week. I have queued that as the lead hook on Facebook this week and set up ManyChat triggers on the TikTok post. Anyone who comments gets routed to the Household Readiness Quiz automatically.
+          <div class="tg-time">07:02</div>
+        </div>
+      </div>
     </div>
-    <div class="chat-label gold">Scout → The Optio team</div>
-    <div class="chat-bubble agent">
-      "Morning. Week two is live. I've published 36 pieces across Instagram, Facebook, TikTok, and YouTube, split across the main EverStock account and your four Persona sub-accounts. Pulse flagged the 'family insurance' angle as the strongest under-tested frame from last week: 'Most families insure their home, but not their essentials.' I've queued that as the lead hook on Facebook this week, and set up ManyChat triggers on the TikTok 'are you prepared?' post. Anyone who comments gets routed to the Household Readiness Quiz automatically."
+    <div class="tg-scenario-note">No briefing document. No Monday meeting. The loop runs itself.</div>
+
+    <div class="tg-scenario-header" style="margin-top:24px;">Wednesday 2:30am · Inbound <span class="agent-tag">EMBER + LURE</span></div>
+    <div class="tg-thread">
+      <div class="tg-row human-row">
+        <div class="tg-bubble human-bubble">
+          <div class="tg-sender human-sender">Visitor</div>
+          Hi, we're a family of four in Brisbane. We've been thinking about this for a while. What's the storage situation? We don't have room at home for a year's worth of supplies.
+          <div class="tg-time">02:31</div>
+        </div>
+        <div class="tg-avatar human-avatar">V</div>
+      </div>
+      <div class="tg-row agent-row">
+        <div class="tg-avatar">E</div>
+        <div class="tg-bubble agent-bubble">
+          <div class="tg-sender">Ember</div>
+          That's exactly what EverStock is built for. For families thinking long-term, we store your supplies for you: climate-controlled, secure, and accessible near Brisbane. You don't keep anything at home. I'd recommend the Home System for a family of four. Want me to add you to the early-access waitlist and send through the details?
+          <div class="tg-time">02:31</div>
+        </div>
+      </div>
     </div>
-    <div class="scenario-note">Scout manages all channels simultaneously, running the EverStock brand account alongside sub-Persona accounts targeting family preparedness, urban convenience, bushfire-country households, and high-conviction planners. Pulse feeds Scout the winning angles from engagement data. No manual rebriefing required.</div>
+    <div class="tg-scenario-note">Lead qualified. Tagged as Home System prospect. Routed to Brisbane funnel. No human touch required. At 2:30am.</div>
+
+    <div class="tg-scenario-header" style="margin-top:24px;">Friday 5:00pm · Week wrap <span class="agent-tag">PULSE</span></div>
+    <div class="tg-thread">
+      <div class="tg-row agent-row">
+        <div class="tg-avatar">P</div>
+        <div class="tg-bubble agent-bubble">
+          <div class="tg-sender">Pulse</div>
+          Week 2 summary. Reached: 1,840 people. Quiz completions: 103. Qualified leads: 72. Waitlist additions: 41. Strongest angle: 'Preparedness without storing anything at home' on Facebook, 4.1x higher CTR than supply-chain framing. Recommendation: cut doom-angle content, double Facebook family and storage convenience in Week 3. Signal is real and pointing at the Home System as primary conversion offer.
+          <div class="tg-time">17:02</div>
+        </div>
+      </div>
+      <div class="tg-row human-row">
+        <div class="tg-bubble human-bubble">
+          <div class="tg-sender human-sender">Optio team</div>
+          Approved. Can we also look at a Brisbane-specific landing page?
+          <div class="tg-time">17:08</div>
+        </div>
+        <div class="tg-avatar human-avatar">O</div>
+      </div>
+      <div class="tg-row agent-row">
+        <div class="tg-avatar">P</div>
+        <div class="tg-bubble agent-bubble">
+          <div class="tg-sender">Pulse</div>
+          On it. Brief in your inbox Sunday evening, ready for Monday review.
+          <div class="tg-time">17:08</div>
+        </div>
+      </div>
+    </div>
+    <div class="tg-scenario-note">Data. Interpretation. Concrete next step. Every Friday.</div>
+
   </div>
 
-  <div class="scenario">
-    <div class="scenario-time">
-      Wednesday 2:30pm · Inbound enquiry
-      <span class="agent-tag">EMBER + LURE</span>
-    </div>
-    <div class="chat-label">Visitor → Ember (via everstock.com.au)</div>
-    <div class="chat-bubble client">"Hi, we're a family of four in Brisbane. We've been thinking about this for a while. What's the storage situation? We don't have room at home for a year's worth of supplies."</div>
-    <div class="chat-label gold">Ember → Visitor</div>
-    <div class="chat-bubble agent">
-      "That's one of the main reasons EverStock exists. For families thinking long-term, we store your supplies for you: climate-controlled, secure, and accessible near Brisbane when you need them. You don't keep anything at home. We recommend the Home System for a family of four: three months of supply, stored locally, with the option to extend. Want me to send through the details and add you to the early-access waitlist? I can have something in your inbox in two minutes."
-    </div>
-    <div class="scenario-note">Ember handled this entire query. It captured intent (family of 4, Brisbane, storage-sensitive, mid-tier product fit), qualified the lead, and handed structured data to Lure, who tagged them as a priority Home System prospect and routed them to the Brisbane landing page funnel. No human touch required until outreach.</div>
-  </div>
-
-  <div class="scenario">
-    <div class="scenario-time">
-      Friday 5:00pm · Week wrap
-      <span class="agent-tag">PULSE</span>
-    </div>
-    <div class="chat-label gold">Pulse → The Optio team</div>
-    <div class="chat-bubble agent">
-      "Week 2 summary. Reached: 1,840 people across channels. Quiz completions: 103. Of those, 72 qualified into your ICP. Waitlist additions: 41. Strongest-performing angle: 'Preparedness without storing anything at home' on Facebook, family audience, 4.1x higher click-through than the supply-chain angle. Weakest: TikTok doom framing, low completion rate. Recommendation: cut doom-angle, double Facebook family and storage convenience content in Week 3. The signal is real and pointing at the Home System as the primary conversion offer. Suggest we discuss paid budget reallocation before Monday."
-    </div>
-    <div class="scenario-note">Pulse delivers this every Friday. Data, interpretation, recommendation. Not just a dashboard to stare at. By week two you already know which Persona is winning, which angle is converting, and where to put next week's spend.</div>
-  </div>
-
-    <div class="footer">
+  <div class="footer">
     <div class="footer-brand"><span>Polynize</span> Agentic · polynize.ai</div>
     <div class="footer-page">Page 4 of 5 · A day with the team</div>
   </div>
@@ -1692,151 +2059,174 @@
   <div class="section">
     <div class="eyebrow">Agent Blueprint · Personalised for EverStock</div>
     <h1>What the team <em>is worth</em></h1>
-    <p class="subtitle">A rough-cut value estimate based on your brief, and what it would cost to do this any other way. Followed by the commercial structure: Map, Transform, Operate.</p>
+    <p class="subtitle">What a market validation team really costs, scored across the five dimensions that matter, and three ways to engage.</p>
   </div>
 
-  <div class="roi-grid">
-    <div class="roi-stat">
-      <div class="roi-number">30</div>
-      <div class="roi-label">Days to real market validation signal</div>
-    </div>
-    <div class="roi-stat">
-      <div class="roi-number">4×</div>
-      <div class="roi-label">Audience Personas tested simultaneously</div>
-    </div>
-    <div class="roi-stat">
-      <div class="roi-number">24/7</div>
-      <div class="roi-label">Continuous content, leads and monitoring</div>
-    </div>
-    <div class="roi-stat">
-      <div class="roi-number">~60h</div>
-      <div class="roi-label">Saved per week across the team (approx. 15h per agent)</div>
-    </div>
-  </div>
+  <div class="section-label" style="margin-top:0;">What the equivalent team costs conventionally</div>
+  <p style="font-family:'Courier New',monospace;font-size:0.8rem;color:var(--mid-grey);line-height:1.7;margin-bottom:20px;max-width:820px;">To run the market validation function described in this proposal using a conventional approach, Optio Capital would need to assemble the following team. These are the roles, their realistic fully loaded costs in the Australian market, and what each one still cannot do on its own.</p>
 
-  <div class="roi-calc">
-    <div class="roi-calc-title">How we think about the value</div>
-    <ul class="roi-list">
-      <li>Running this campaign manually across 4 channels, with multiple Persona variants, content, ManyChat flows, paid analytics, and live lead qualification would require a part-time marketing hire or a $5k–$10k/month agency retainer. Neither learns from the data and neither answers inbound queries at 2:30am on a Wednesday.</li>
-      <li>The EverStock agent team compresses 3 months of typical campaign iteration into 30 days. Pulse reads the data every week and tells you what to change before you've burned budget on the wrong angle.</li>
-      <li>Ember on the website pre-qualifies every visitor before you ever see them. Brisbane family of four interested in long-term storage? Tagged, routed, and on the waitlist. Their product tier and intent level are already scored.</li>
-      <li>The Household Readiness Quiz is both a lead magnet and market research. Every completion is a data point: which Persona is engaging, what tier they're considering, what's driving their decision. This shapes your product launch strategy, not just your ad spend.</li>
-      <li>At day 30 you have a go/no-go dataset: waitlist size, Persona breakdown, conversion rates, top-performing angles, and Pulse's recommendation for Phase 2. Before you've spent a dollar on inventory.</li>
-    </ul>
-  </div>
+  <div class="compare-grid" style="grid-template-columns:1fr 1fr;">
 
-  <div class="section-label" style="margin-top:40px;">Compare to alternatives</div>
-  <div class="compare-grid">
     <div class="compare-card">
-      <div class="compare-label">Marketing manager hire</div>
-      <div class="compare-figure">$80–100k/yr</div>
-      <div class="compare-desc">Plus super, ramp time, and no guarantee of the technical stack needed to run what's described here.</div>
+      <div class="compare-label">Content & Social Manager</div>
+      <div class="compare-figure">$75–95k / yr</div>
+      <div class="compare-desc">Manages one or two channels. Cannot operate sub-Persona accounts simultaneously. Publishes weekly, not daily. Cannot self-optimise based on signal data.</div>
     </div>
+
     <div class="compare-card">
-      <div class="compare-label">Agency retainer</div>
-      <div class="compare-figure">$5–10k/mo</div>
-      <div class="compare-desc">For the campaign scope described. No agent intelligence layer, no live lead qualification, no learning across weeks.</div>
+      <div class="compare-label">Growth & Lead Gen Specialist</div>
+      <div class="compare-figure">$70–90k / yr</div>
+      <div class="compare-desc">Builds and monitors funnels. Cannot run ManyChat flows, quiz delivery, and lead scoring simultaneously without dedicated tooling and significant setup time.</div>
     </div>
+
     <div class="compare-card">
-      <div class="compare-label">Platforms and tools only</div>
-      <div class="compare-figure">$3–6k/mo</div>
-      <div class="compare-desc">Meta Ads, analytics, email, ManyChat, without the cognitive layer that reads results and recommends action each week.</div>
+      <div class="compare-label">Website & Inbound Manager</div>
+      <div class="compare-figure">$60–80k / yr</div>
+      <div class="compare-desc">Handles enquiries during business hours. A 2:30am Brisbane family enquiry goes unanswered until morning. No intent scoring. No automatic lead handoff.</div>
     </div>
-    <div class="compare-card highlight">
-      <div class="compare-label">EverStock Agent Team</div>
-      <div class="compare-figure">One-time build</div>
-      <div class="compare-desc">Reusable asset. Runs continuously, gets sharper each week, and can be redeployed on the next EverStock or Optio Capital project.</div>
+
+    <div class="compare-card">
+      <div class="compare-label">Analytics & Insights Manager</div>
+      <div class="compare-figure">$80–100k / yr</div>
+      <div class="compare-desc">Produces weekly reports but cannot autonomously generate SEO content, cross-reference channel signals, and issue a concrete recommendation in the same workflow.</div>
     </div>
+
+    <div class="compare-card">
+      <div class="compare-label">Platforms, tools & paid media</div>
+      <div class="compare-figure">$3–6k / mo</div>
+      <div class="compare-desc">ManyChat, Meta Ads, analytics stack, email platform, CRM, scheduling tools. Required on top of headcount. No cognitive layer included.</div>
+    </div>
+
+    <div class="compare-card">
+      <div class="compare-label">Recruitment & ramp cost</div>
+      <div class="compare-figure">$30–50k one-off</div>
+      <div class="compare-desc">Agency recruitment fees, 3–6 month ramp time per role, onboarding, and knowledge transfer. Paid before a single piece of content is published.</div>
+    </div>
+
   </div>
 
-  <p class="roi-disclaimer">Estimates based on market benchmarks and your brief inputs. Actual results vary by audience quality, paid budget, and execution cadence.</p>
+  <div class="callout" style="margin-top:20px;">
+    <p><strong>Conventional total: A$315–415k in year one.</strong> Four roles fully loaded with super, tools, and recruitment. That figure assumes all four hires perform to brief, ramp without delay, and coordinate effectively across functions from day one. It also assumes the function exists when you need it, not three to six months later.</p>
+  </div>
 
-  <!-- MTO INVESTMENT -->
+  <div class="section-label" style="margin-top:40px;">Scored on the five dimensions that matter</div>
+  <div class="dim-score-block">
+    <div class="dim-score-scale">
+      <span></span>
+      <div class="dim-scale-labels"><span>Low</span><span>Medium</span><span>High</span><span>Very High</span></div>
+    </div>
+    <div class="dim-score-row">
+      <span class="dim-score-name">Economic</span>
+      <div class="dim-score-right">
+        <div class="dim-score-bar"><div class="dim-score-fill" style="width:75%"></div></div>
+        <div class="dim-score-why">Avoids building a conventional marketing team at A$120–180k per year before a single data point exists.</div>
+      </div>
+    </div>
+    <div class="dim-score-row">
+      <span class="dim-score-name">Capability</span>
+      <div class="dim-score-right">
+        <div class="dim-score-bar"><div class="dim-score-fill" style="width:100%"></div></div>
+        <div class="dim-score-why">Optio has no marketing function at all. This builds the entire capability from zero, in 30 days, without a single hire.</div>
+      </div>
+    </div>
+    <div class="dim-score-row">
+      <span class="dim-score-name">Velocity</span>
+      <div class="dim-score-right">
+        <div class="dim-score-bar"><div class="dim-score-fill" style="width:100%"></div></div>
+        <div class="dim-score-why">Market signal in 30 days instead of 3 months. Creative refreshed weekly rather than quarterly.</div>
+      </div>
+    </div>
+    <div class="dim-score-row">
+      <span class="dim-score-name">Risk & Control</span>
+      <div class="dim-score-right">
+        <div class="dim-score-bar"><div class="dim-score-fill" style="width:100%"></div></div>
+        <div class="dim-score-why">De-risks the inventory commit. Data arrives before capital is deployed. Concrete go/no-go at day 30.</div>
+      </div>
+    </div>
+    <div class="dim-score-row">
+      <span class="dim-score-name">Strategic</span>
+      <div class="dim-score-right">
+        <div class="dim-score-bar"><div class="dim-score-fill" style="width:75%"></div></div>
+        <div class="dim-score-why">The team outlasts the project. Every future Optio Capital idea inherits a trained, redeployable unit.</div>
+      </div>
+    </div>
+    <div class="dim-throughput">A well-configured agent team delivers <strong>5 to 10 times</strong> the throughput of the equivalent hire, at a fraction of the annual cost.</div>
+  </div>
+
+  <p class="roi-disclaimer">Estimates based on market benchmarks and brief inputs. Actual results vary by audience quality, paid budget, and execution cadence.</p>
+
+  <!-- THREE-OPTION PRICING -->
   <div class="section" style="margin-top:52px;">
     <div class="section-label">Commercial structure</div>
     <h2>Map. <em>Transform.</em> Operate.</h2>
-    <p>Three stages. Staged commitment. Map earns Transform. Transform earns Operate.</p>
+    <p>Three ways to engage. Same full build every time. The difference is timeline and how we share in the outcome.</p>
 
-    <div class="mto-stage-grid">
+    <p style="font-family:'Courier New',monospace;font-size:0.8rem;color:var(--mid-grey);line-height:1.75;margin-bottom:24px;max-width:820px;">AJ and Michael, you are investors in Polynize and you are friends. We want to build this for you, and we want to build it well. The three options below are an honest reflection of where we are as a business: we believe in EverStock, we want to be part of it, and the only reason any of these options exist is that we have to keep generating revenue while we grow. The discount is real. The build is identical every time. The only variable is how much of our time we can give you without it costing us the ability to take other work alongside it.</p>
 
-      <div class="mto-stage-card">
-        <div class="mto-stage-label">Stage 01 · Map</div>
-        <div class="mto-stage-name">Diagnose the unit. Design the target.</div>
-        <div class="mto-stage-fee">$6,000</div>
-        <div class="mto-stage-sub">AUD · one-time · Map complete before Transform begins</div>
-        <ul class="mto-stage-includes">
-          <li>Scope confirmed, COGNITION.md specs written</li>
-          <li>PAM infrastructure provisioned</li>
-          <li>Agent Console project board configured</li>
-          <li>Unit design signed off by both parties</li>
-        </ul>
+    <div class="pricing-options-grid">
+
+      <div class="pricing-option">
+        <div class="po-num">Option 01</div>
+        <div class="po-name">Full commitment</div>
+        <div class="po-timeline">Live in 2 weeks · Full rate</div>
+        <div class="po-rows">
+          <div class="po-row"><span class="po-stage">Map</span><span class="po-fee">$6,000</span></div>
+          <div class="po-row"><span class="po-stage">Transform</span><span class="po-fee">$22,000</span></div>
+          <div class="po-row"><span class="po-stage">Operate</span><span class="po-fee">$1,999 / mo</span></div>
+        </div>
+        <div class="po-total">
+          <span class="po-total-label">Build total</span>
+          <span class="po-total-amount">$28,000</span>
+        </div>
+        <div class="po-note">We drop everything else and get the team live in two weeks. This is the rate that lets us pay our people properly for that level of focus. Every component included, maximum speed.</div>
       </div>
 
-      <div class="mto-stage-card highlight">
-        <div class="mto-stage-label">Stage 02 · Transform</div>
-        <div class="mto-stage-name">Full team built, trained, and live.</div>
-        <div class="mto-stage-fee">$22,000</div>
-        <div class="mto-stage-sub">AUD · one-time · decided together after Map</div>
-        <ul class="mto-stage-includes">
-          <li>Scout, Lure, Ember, and Pulse deployed</li>
-          <li>Website, landing pages, and lead capture live</li>
-          <li>Email drip, content strategy, and SEO layer</li>
-          <li>30-day validation sprint begins</li>
-        </ul>
+      <div class="pricing-option featured">
+        <div class="po-num">Option 02</div>
+        <div class="po-name">Founder rate</div>
+        <div class="po-timeline">Live within 1 month · 50% off</div>
+        <div class="po-rows">
+          <div class="po-row"><span class="po-stage">Map</span><span class="po-fee">$3,000</span></div>
+          <div class="po-row"><span class="po-stage">Transform</span><span class="po-fee">$11,000</span></div>
+          <div class="po-row"><span class="po-stage">Operate</span><span class="po-fee">$1,999 / mo</span></div>
+        </div>
+        <div class="po-total">
+          <span class="po-total-label">Build total</span>
+          <span class="po-total-amount">$14,000</span>
+        </div>
+        <div class="po-note">Half price. Same full build, same four agents, same everything. It takes a month instead of two weeks because we have to continue taking revenue alongside it. We are not deprioritising you. We are keeping the lights on while we build for you.</div>
       </div>
 
-      <div class="mto-stage-card">
-        <div class="mto-stage-label">Stage 03 · Operate</div>
-        <div class="mto-stage-name">Ongoing governance, refinement, expansion.</div>
-        <div class="mto-stage-fee">$1,999 / mo</div>
-        <div class="mto-stage-sub">AUD · monthly service fee · begins from Map completion</div>
-        <ul class="mto-stage-includes">
-          <li>Agent monitoring, tuning, and recalibration</li>
-          <li>Weekly Pulse report review</li>
-          <li>Infrastructure uptime and Agent Console access</li>
-          <li>Priority support across the validation sprint</li>
-        </ul>
+      <div class="pricing-option">
+        <div class="po-num">Option 03</div>
+        <div class="po-name">Skin in the game</div>
+        <div class="po-timeline">Live within 1 month · 75% off + revenue share</div>
+        <div class="po-rows">
+          <div class="po-row"><span class="po-stage">Map</span><span class="po-fee">$2,000</span></div>
+          <div class="po-row"><span class="po-stage">Transform</span><span class="po-fee">$8,000</span></div>
+          <div class="po-row"><span class="po-stage">Operate</span><span class="po-fee">$999 / mo</span></div>
+        </div>
+        <div class="po-total">
+          <span class="po-total-label">Build total</span>
+          <span class="po-total-amount">$10,000</span>
+        </div>
+        <div class="po-note">We believe in EverStock enough to back it ourselves. Polynize takes a revenue share for the first 12 months, the exact terms to be agreed at the Map session. We are genuinely invested in the outcome, not just the build. Same timeline as Option 02, same full delivery.</div>
       </div>
 
     </div>
 
-    <div class="mto-commit-block">
-      <div class="mto-commit-title">How the commitment unfolds</div>
-      <div class="mto-commit-steps">
-        <div class="mto-commit-step">
-          <div class="mcs-num">01</div>
-          <div>
-            <div class="mcs-heading">To start</div>
-            <div class="mcs-sub">$6,000 AUD. Map begins. Scope, COGNITION.md specs, and infrastructure provisioned. Operate service fee begins at Map completion.</div>
-          </div>
-        </div>
-        <div class="mto-commit-step">
-          <div class="mcs-num">02</div>
-          <div>
-            <div class="mcs-heading">After Map</div>
-            <div class="mcs-sub">Unit design is signed off together. $22,000 Transform builds the full team. Scout, Lure, Ember, and Pulse live within two weeks.</div>
-          </div>
-        </div>
-        <div class="mto-commit-step">
-          <div class="mcs-num">03</div>
-          <div>
-            <div class="mcs-heading">From there</div>
-            <div class="mcs-sub">$1,999/mo keeps the team running. Pulse reports every Friday. Go/no-go dataset at day 30. Team is redeployable on any future Optio Capital project.</div>
-          </div>
-        </div>
-      </div>
-      <div class="mto-commit-context">
-        <strong>$28,000 total build cost</strong> + $1,999/mo to operate. Against a conventional marketing team at A$180k/year, the unit produces materially more output at a fraction of the annual cost.
-      </div>
+    <div class="pricing-options-footer">
+      All three options include the full build: Scout, Lure, Ember, and Pulse deployed; website and three landing pages; email drip sequence; content strategy and SEO layer; Agent Console; and PAM infrastructure. Map earns Transform. Transform earns Operate. The commitment ramps as confidence builds.
     </div>
 
-    <div class="pricing-notes" style="margin-top:24px;">
+    <div class="pricing-notes">
       <div class="pricing-notes-title">Notes on the engagement</div>
       <ul class="pricing-note-list">
         <li>Paid media budget (Facebook, Instagram, Google, YouTube ads) is separate and managed directly by EverStock. We recommend A$3,000–$5,000 for the 30-day validation sprint.</li>
         <li>Branding assets (logo, photography, visual identity) are supplied by EverStock. The brand palette and positioning from your existing documents are embedded into all agent specs and copy from day one.</li>
-        <li>Timeline: approximately two weeks to build, one week to test. The team is live within three weeks of Map completion.</li>
+        <li>Timeline: approximately two weeks to build, one week to test (Option 01) or within a month (Options 02 and 03).</li>
         <li>The team, infrastructure, and protocols persist beyond Phase 1. Redeployable on the next EverStock product or any future Optio Capital project at minimal additional cost.</li>
+        <li>Option 03 revenue share: terms including percentage and measurement to be agreed at the Map session before Transform begins.</li>
       </ul>
     </div>
 
