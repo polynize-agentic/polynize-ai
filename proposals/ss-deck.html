@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Studio · Pitch · Polynize Agentic</title>
+<style>
+  :root {
+    /* Social Studio palette: beauty-forward, warm charcoal with blush + champagne accents */
+    --bg: #18130f;
+    --surface: #22180f;
+    --surface-2: #2a1f15;
+    --text-primary: #f4ece4;
+    --text-secondary: #c7b9ac;
+    --text-muted: #8a7d72;
+    --border: #3b2e22;
+
+    /* Accent palette (mapped from brand roles to Social Studio palette) */
+    --mint: #e8b5b0;               /* primary accent, blush rose */
+    --mint-soft: #d99e99;
+    --blue: #a5c1ec;
+    --gold: #d4b07a;               /* champagne gold */
+
+    /* Opacity tints */
+    --mint-glow: rgba(232, 181, 176, 0.08);
+    --mint-border: rgba(232, 181, 176, 0.22);
+    --blue-soft: rgba(165, 193, 236, 0.1);
+    --gold-soft: rgba(212, 176, 122, 0.1);
+
+    --display: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --body: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --hand: 'Caveat', cursive;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--body);
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    background-image:
+      linear-gradient(rgba(232, 181, 176, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232, 181, 176, 0.022) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* Navigation dots */
+  .nav-dots {
+    position: fixed;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100;
+  }
+  .nav-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    opacity: 0.4;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    padding: 0;
+  }
+  .nav-dot:hover { opacity: 0.8; }
+  .nav-dot.active {
+    background: var(--mint);
+    opacity: 1;
+    transform: scale(1.4);
+    box-shadow: 0 0 12px var(--mint-border);
+  }
+
+  /* Screen base */
+  .screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 96px 64px 80px;
+    position: relative;
+  }
+  .screen + .screen {
+    border-top: 1px solid rgba(42, 46, 58, 0.5);
+  }
+
+  .screen-header {
+    position: absolute;
+    top: 28px;
+    left: 64px;
+    right: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .brand-mark-left {
+    font-family: var(--display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mint);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .brand-mark-left .trefoil {
+    width: 18px;
+    height: 18px;
+  }
+  .screen-label {
+    font-family: var(--body);
+    font-size: 10.5px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .content {
+    max-width: 1120px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* Eyebrow, per brand type scale */
+  .eyebrow {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 28px;
+  }
+
+  /* Display headline, per brand type scale: Space Grotesk 800, 56px, -2px tracking */
+  .headline-display {
+    font-family: var(--display);
+    font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    margin-bottom: 32px;
+    color: var(--text-primary);
+  }
+  .headline-display .mint-accent {
+    color: var(--mint);
+  }
+  .headline-section {
+    font-family: var(--display);
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    margin-bottom: 28px;
+    color: var(--text-primary);
+  }
+  .headline-section .mint-accent { color: var(--mint); }
+
+  .lede {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    max-width: 720px;
+    margin-bottom: 32px;
+  }
+
+  /* ============= SCREEN 1: COVER ============= */
+  .cover-mark {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--mint);
+    text-transform: uppercase;
+    margin-bottom: 88px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cover-mark .trefoil-lg {
+    width: 22px;
+    height: 22px;
+  }
+  .cover-meta {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 72px;
+    margin-top: 88px;
+    padding-top: 44px;
+    border-top: 1px solid var(--border);
+    max-width: 900px;
+  }
+  .cover-meta .item .k {
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .cover-meta .item .v {
+    font-family: var(--body);
+    font-size: 15px;
+    color: var(--text-primary);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--body);
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: translate(-50%, 0); }
+    50% { opacity: 1; transform: translate(-50%, 6px); }
+  }
+
+  /* Handwritten annotation, for rare "real agent chat ↓" style notes */
+  .annotation {
+    font-family: var(--hand);
+    font-size: 22px;
+    color: var(--mint);
+    font-weight: 500;
+    display: inline-block;
+  }
+
+  /* ============= SCREEN 2: PROBLEM ============= */
+  .three-facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 48px;
+    max-width: 1000px;
+  }
+  .fact {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px 26px;
+  }
+  .fact .fnum {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--mint);
+    letter-spacing: 0.22em;
+    margin-bottom: 16px;
+  }
+  .fact .ftitle {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 12px;
+    letter-spacing: -0.015em;
+  }
+  .fact .fdesc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ============= SCREEN 3: CONVENTIONAL ============= */
+  .cost-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 48px;
+    max-width: 1060px;
+  }
+  .cost-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 26px;
+  }
+  .cost-card .role {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--mint);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .cost-card .amount {
+    font-family: var(--display);
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1.05;
+    margin-bottom: 8px;
+    letter-spacing: -0.03em;
+  }
+  .cost-card .period {
+    font-family: var(--body);
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+  }
+  .cost-card .note {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .total-band {
+    margin-top: 34px;
+    padding: 28px 32px;
+    background: linear-gradient(135deg, var(--gold-soft), transparent);
+    border: 1px solid rgba(240, 225, 182, 0.25);
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1060px;
+    gap: 24px;
+  }
+  .total-band .label {
+    font-family: var(--body);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .total-band .big {
+    font-family: var(--display);
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: -0.03em;
+  }
+  .framing-quote {
+    margin-top: 44px;
+    font-family: var(--body);
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.45;
+    color: var(--text-secondary);
+    max-width: 840px;
+    padding-left: 24px;
+    border-left: 2px solid var(--mint);
+  }
+
+  /* ============= SCREEN 4: REFRAME ============= */
+  .two-col-reframe {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 56px;
+    max-width: 1000px;
+  }
+  .col-panel .col-title {
+    font-family: var(--body);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  .col-panel.transformed .col-title { color: var(--mint); }
+  .col-panel ul { list-style: none; }
+  .col-panel li {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text-primary);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: -0.01em;
+  }
+  .col-panel.conventional li {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    text-decoration-color: rgba(106, 106, 122, 0.6);
+    font-weight: 500;
+  }
+  .closing-statement {
+    margin-top: 56px;
+    font-family: var(--display);
+    font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-primary);
+    max-width: 1000px;
+    letter-spacing: -0.02em;
+  }
+  .closing-statement .mint-accent { color: var(--mint); }
+
+  /* ============= SCREEN 5: SYSTEM ============= */
+  .system-diagram {
+    margin-top: 40px;
+    max-width: 1120px;
+  }
+  .layer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 14px;
+  }
+  .layer-label {
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .layer-nodes { display: grid; gap: 10px; }
+  .layer-nodes.platforms { grid-template-columns: repeat(4, 1fr); }
+  .layer-nodes.agents { grid-template-columns: repeat(5, 1fr); }
+  .layer-nodes.infra { grid-template-columns: repeat(3, 1fr); }
+  .node {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 14px;
+    text-align: center;
+  }
+  .node .node-name {
+    font-family: var(--display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    letter-spacing: -0.005em;
+  }
+  .node .node-sub {
+    font-family: var(--body);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+  .node.agent-node {
+    border-color: var(--mint-border);
+    background: var(--mint-glow);
+  }
+  .node.agent-node .node-name { color: var(--mint); }
+
+  .node.infra-node {
+    border-color: rgba(165, 193, 236, 0.25);
+    background: var(--blue-soft);
+  }
+  .node.infra-node .node-name { color: var(--blue); }
+
+  .flow-arrow {
+    text-align: center;
+    color: var(--text-muted);
+    font-family: var(--body);
+    font-size: 14px;
+    padding: 2px 0;
+  }
+
+  /* ============= SCREENS 6, 7, 8: SCENARIOS ============= */
+  .scenario-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 72px;
+    align-items: center;
+    max-width: 1200px;
+  }
+  .scenario-chat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+  }
+  .chat-time {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .chat-stack { display: flex; flex-direction: column; gap: 10px; }
+  .chat-bubble {
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    max-width: 84%;
+  }
+  .chat-bubble .sender {
+    font-family: var(--body);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .chat-bubble.agent {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    align-self: flex-start;
+  }
+  .chat-bubble.agent .sender { color: var(--mint); }
+  .chat-bubble.human {
+    background: var(--mint-glow);
+    border: 1px solid var(--mint-border);
+    color: var(--text-primary);
+    align-self: flex-end;
+  }
+  .chat-bubble.human .sender { color: var(--gold); }
+  .scenario-note-big {
+    font-family: var(--body);
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    padding-left: 24px;
+    border-left: 2px solid var(--mint);
+    margin-top: 0;
+  }
+
+  /* ============= SCREEN 9: ASSET ============= */
+  .asset-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 48px;
+    max-width: 1060px;
+  }
+  .asset-col {
+    padding: 32px;
+    border-radius: 16px;
+  }
+  .asset-col.conv {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    opacity: 0.72;
+  }
+  .asset-col.trans {
+    background: linear-gradient(160deg, var(--mint-glow), var(--surface));
+    border: 1px solid var(--mint-border);
+  }
+  .asset-col .a-label {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .asset-col.trans .a-label { color: var(--mint); }
+  .asset-col ul { list-style: none; }
+  .asset-col li {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    padding: 10px 0 10px 20px;
+    position: relative;
+  }
+  .asset-col li::before {
+    content: '·';
+    position: absolute;
+    left: 2px;
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 18px;
+    top: 6px;
+  }
+  .asset-col.trans li::before { color: var(--mint); }
+  .asset-closing {
+    margin-top: 56px;
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text-primary);
+    max-width: 1000px;
+    letter-spacing: -0.02em;
+  }
+  .asset-closing .mint-accent { color: var(--mint); }
+
+  /* ============= SCREEN 10: VALUE ============= */
+  .dim-rows {
+    margin-top: 44px;
+    max-width: 1060px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .dim-row {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr 2.5fr;
+    padding: 24px 30px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    align-items: center;
+    gap: 20px;
+  }
+  .dim-row:last-child { border-bottom: none; }
+  .dim-row.head {
+    background: var(--surface-2);
+    padding: 16px 30px;
+  }
+  .dim-row .n {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+  .dim-row.head .n,
+  .dim-row.head > div {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .badge-intensity {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .badge-intensity.vh { background: var(--mint-glow); color: var(--mint); border: 1px solid var(--mint-border); }
+  .badge-intensity.h { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(165, 193, 236, 0.25); }
+  .dim-row .rat {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .throughput-sentence {
+    margin-top: 32px;
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text-primary);
+    max-width: 1000px;
+    letter-spacing: -0.015em;
+  }
+  .throughput-sentence .gold-accent {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* ============= SCREEN 11: REVENUE MODEL ============= */
+  .revenue-intro {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 820px;
+    margin-bottom: 36px;
+  }
+  .revenue-intro strong { color: var(--text-primary); font-weight: 600; }
+
+  .revenue-scenarios {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 32px 0 28px;
+    max-width: 1120px;
+  }
+  .rev-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px 30px;
+  }
+  .rev-card.high {
+    border-color: var(--mint-border);
+    background: linear-gradient(160deg, var(--mint-glow), var(--surface));
+  }
+  .rev-card .rev-tag {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .rev-card.high .rev-tag { color: var(--mint); }
+  .rev-card .rev-title {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.015em;
+    margin-bottom: 6px;
+  }
+  .rev-card .rev-sub {
+    font-family: var(--body);
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 22px;
+    letter-spacing: 0.02em;
+  }
+
+  .rev-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  .rev-table th {
+    font-family: var(--body);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 0 0 10px;
+    border-bottom: 1px solid rgba(232, 181, 176, 0.15);
+  }
+  .rev-table th.num-col { text-align: right; }
+  .rev-table td {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(232, 181, 176, 0.08);
+    font-size: 13.5px;
+  }
+  .rev-table td.tier {
+    font-family: var(--display);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .rev-table td.tier-price {
+    color: var(--text-secondary);
+    font-family: var(--body);
+    font-size: 12px;
+  }
+  .rev-table td.rev-num {
+    font-family: var(--display);
+    font-weight: 600;
+    color: var(--gold);
+    text-align: right;
+    letter-spacing: -0.01em;
+  }
+  .rev-table tr:last-child td { border-bottom: none; }
+
+  .rev-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 16px;
+    border-top: 2px solid rgba(232, 181, 176, 0.25);
+    margin-top: 4px;
+  }
+  .rev-total .rt-label {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .rev-total .rt-amount {
+    font-family: var(--display);
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: -0.025em;
+  }
+
+  .rev-annual {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(232, 181, 176, 0.1);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--body);
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+  }
+  .rev-annual .annual-amount {
+    font-family: var(--display);
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 14px;
+  }
+
+  .rev-footnote {
+    font-family: var(--body);
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 920px;
+    margin-top: 20px;
+    font-style: italic;
+  }
+
+
+  .mto-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 48px;
+    max-width: 1120px;
+  }
+  .mto-pitch {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 34px 30px;
+  }
+  .mto-pitch.highlight {
+    border-color: var(--mint-border);
+    background: linear-gradient(160deg, var(--mint-glow), var(--surface));
+  }
+  .mto-pitch .stage-label {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 12px;
+  }
+  .mto-pitch .stage-name {
+    font-family: var(--display);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    letter-spacing: -0.015em;
+  }
+  .mto-pitch .stage-fee {
+    font-family: var(--display);
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+    line-height: 1.1;
+  }
+  .mto-pitch .stage-sub {
+    font-family: var(--body);
+    font-size: 11.5px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+  /* ============= SCREEN 12: commitment breakdown ============= */
+  .commit-breakdown {
+    margin-top: 44px;
+    padding: 36px 40px;
+    background: linear-gradient(135deg, var(--mint-glow), transparent);
+    border: 1px solid var(--mint-border);
+    border-radius: 18px;
+    max-width: 1120px;
+  }
+  .commit-breakdown .breakdown-title {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .commit-breakdown .breakdown-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 28px;
+  }
+  .commit-breakdown .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(232, 181, 176, 0.12);
+    gap: 24px;
+  }
+  .commit-breakdown .breakdown-row:last-child {
+    border-bottom: none;
+  }
+  .commit-breakdown .br-label {
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.005em;
+  }
+  .commit-breakdown .br-hint {
+    font-family: var(--body);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+    margin-left: 4px;
+  }
+  .commit-breakdown .br-amount {
+    font-family: var(--display);
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+  .commit-breakdown .br-unit {
+    font-family: var(--body);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-left: 4px;
+  }
+  .commit-breakdown .breakdown-context {
+    padding-top: 22px;
+    border-top: 1px solid rgba(232, 181, 176, 0.15);
+    font-family: var(--body);
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    text-align: center;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  .commit-breakdown .breakdown-context strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ============= SCREEN 13: CLOSE ============= */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 48px;
+    max-width: 1060px;
+  }
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 30px;
+  }
+  .step .snum {
+    font-family: var(--display);
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--mint);
+    line-height: 1;
+    margin-bottom: 18px;
+    letter-spacing: -0.04em;
+  }
+  .step .stitle {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: -0.015em;
+  }
+  .step .sdesc {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .pitch-cta {
+    margin-top: 56px;
+    text-align: center;
+  }
+  .pitch-cta-btn {
+    display: inline-block;
+    padding: 18px 42px;
+    background: var(--mint);
+    color: var(--bg);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .pitch-cta-btn:hover {
+    background: var(--mint-soft);
+    transform: translateY(-2px);
+  }
+  .pitch-cta-sub {
+    margin-top: 22px;
+    font-family: var(--body);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .screen { padding: 80px 28px; }
+    .screen-header { left: 28px; right: 28px; }
+    .three-facts, .cost-cards, .two-col-reframe, .asset-columns, .steps, .mto-row, .revenue-scenarios {
+      grid-template-columns: 1fr;
+    }
+    .scenario-layout { grid-template-columns: 1fr; gap: 36px; }
+    .layer-nodes.platforms, .layer-nodes.agents, .layer-nodes.infra {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .cover-meta { grid-template-columns: 1fr; gap: 24px; }
+    .commit-breakdown { padding: 28px 24px; }
+    .commit-breakdown .breakdown-row { flex-direction: column; align-items: flex-start; gap: 4px; padding: 16px 0; }
+    .commit-breakdown .br-amount { font-size: 28px; }
+    .dim-row { grid-template-columns: 1fr; gap: 10px; }
+    .dim-row.head { display: none; }
+    .nav-dots { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SVG trefoil -->
+<svg width="0" height="0" style="position: absolute;">
+  <defs>
+    <symbol id="trefoil" viewBox="0 0 40 40">
+      <g fill="none" stroke="#e8b5b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="20" cy="13" r="7"/>
+        <circle cx="13" cy="25" r="7"/>
+        <circle cx="27" cy="25" r="7"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<nav class="nav-dots" aria-label="Screen navigation">
+  <button class="nav-dot" data-screen="1" title="Cover"></button>
+  <button class="nav-dot" data-screen="2" title="Problem"></button>
+  <button class="nav-dot" data-screen="3" title="Conventional"></button>
+  <button class="nav-dot" data-screen="4" title="Reframe"></button>
+  <button class="nav-dot" data-screen="5" title="System"></button>
+  <button class="nav-dot" data-screen="6" title="Monday"></button>
+  <button class="nav-dot" data-screen="7" title="Wednesday"></button>
+  <button class="nav-dot" data-screen="8" title="Friday"></button>
+  <button class="nav-dot" data-screen="9" title="Asset"></button>
+  <button class="nav-dot" data-screen="10" title="Value"></button>
+  <button class="nav-dot" data-screen="11" title="Revenue"></button>
+  <button class="nav-dot" data-screen="12" title="Commercial"></button>
+  <button class="nav-dot" data-screen="13" title="Close"></button>
+</nav>
+
+<!-- SCREEN 1: COVER -->
+<section class="screen" id="screen-1">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">01 / 13 · Cover</div>
+  </div>
+
+  <div class="content">
+    <div class="cover-mark">
+      <svg class="trefoil-lg"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC × SOCIAL STUDIO
+    </div>
+    <h1 class="headline-display">Validate the market. <span class="mint-accent">Then</span> build the product.</h1>
+    <p class="lede">This is the capability being acquired. Social Studio is the first project it runs on.</p>
+
+    <div class="cover-meta">
+      <div class="item">
+        <div class="k">First project</div>
+        <div class="v">Social Studio app<br>market validation</div>
+      </div>
+      <div class="item">
+        <div class="k">Prepared by</div>
+        <div class="v">Polynize Agentic<br>Marrs Coiro</div>
+      </div>
+      <div class="item">
+        <div class="k">Engagement</div>
+        <div class="v">Staged agent team build<br>Map · Transform · Operate</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll ↓</div>
+</section>
+
+<!-- SCREEN 2: PROBLEM -->
+<section class="screen" id="screen-2">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">02 / 13 · The problem</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">Where Social Studio sits today</div>
+    <h1 class="headline-display">You've built the product. You're missing the <span class="mint-accent">signal</span>.</h1>
+
+    <div class="three-facts">
+      <div class="fact">
+        <div class="fnum">01</div>
+        <div class="ftitle">No marketing team</div>
+        <div class="fdesc">The Social Studio founders are doing it all. Strategy, creative, ads, replies, nurture. The work that brings in signal is the work getting squeezed.</div>
+      </div>
+      <div class="fact">
+        <div class="fnum">02</div>
+        <div class="ftitle">No validated market</div>
+        <div class="fdesc">The dashboard has been live for a year at $29 a month. It converts unevenly. You are building more product before you know what the market will pay for.</div>
+      </div>
+      <div class="fact">
+        <div class="fnum">03</div>
+        <div class="ftitle">No decision basis</div>
+        <div class="fdesc">When a lead asks "does this include a photoshoot?" there's no agent to qualify them, no email sequence to educate them, no data to tell you which segment to double down on.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 3: CONVENTIONAL -->
+<section class="screen" id="screen-3">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">03 / 13 · The conventional</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">The conventional alternative</div>
+    <h1 class="headline-display">Here's what a <span class="mint-accent">real</span> marketing team costs.</h1>
+
+    <div class="cost-cards">
+      <div class="cost-card">
+        <div class="role">Marketing Strategist</div>
+        <div class="amount">$80K – $100K</div>
+        <div class="period">per year, base salary</div>
+        <div class="note">Fully loaded with super, recruitment, tools, and management overhead, closer to one hundred and fifty thousand.</div>
+      </div>
+      <div class="cost-card">
+        <div class="role">Designer + Social Media</div>
+        <div class="amount">$50K – $80K</div>
+        <div class="period">per role, per year</div>
+        <div class="note">Two in-house hires, or an agency retainer of eight to fifteen thousand a month. Same money, different label.</div>
+      </div>
+      <div class="cost-card">
+        <div class="role">Tools & Platforms</div>
+        <div class="amount">$10K – $20K</div>
+        <div class="period">per year, realistic</div>
+        <div class="note">Klaviyo, creative tools, scheduling, analytics, ad platforms. Adds up fast when you hire around them.</div>
+      </div>
+    </div>
+
+    <div class="total-band">
+      <div>
+        <div class="label">Conventional baseline, all-in</div>
+      </div>
+      <div class="big">$150K – $250K / year</div>
+    </div>
+
+    <div class="framing-quote">
+      This is not just what it costs. This is what staying still costs you while the beauty market is still deciding whether Social Studio is worth paying for.
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 4: REFRAME -->
+<section class="screen" id="screen-4">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">04 / 13 · The reframe</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">What you are actually buying</div>
+    <h1 class="headline-display">Most people buy a <span class="mint-accent">campaign</span>. You're acquiring a <span class="mint-accent">team</span>.</h1>
+
+    <div class="two-col-reframe">
+      <div class="col-panel conventional">
+        <div class="col-title">What most businesses buy</div>
+        <ul>
+          <li>A marketing campaign</li>
+          <li>A three-month agency contract</li>
+          <li>A dashboard they log into</li>
+          <li>Work that ends when the contract does</li>
+          <li>IP that lives with the agency</li>
+        </ul>
+      </div>
+      <div class="col-panel transformed">
+        <div class="col-title">What Social Studio acquires</div>
+        <ul>
+          <li>A five-agent marketing team</li>
+          <li>Expert thinking installed, trained on Social Studio</li>
+          <li>Chat threads running 24/7 in Telegram</li>
+          <li>Work that persists past any single project</li>
+          <li>IP and process that belong to you</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="closing-statement">
+      Social Studio is the <span class="mint-accent">project</span> the team starts on.<br>
+      The Social Studio founders are <span class="mint-accent">who</span> the team belongs to.
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 5: SYSTEM -->
+<section class="screen" id="screen-5">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">05 / 13 · The system</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">The architecture</div>
+    <h1 class="headline-section">How the team <span class="mint-accent">actually</span> works.</h1>
+
+    <div class="system-diagram">
+      <div class="layer">
+        <div class="layer-label">External · Audience & Platforms</div>
+        <div class="layer-nodes platforms">
+          <div class="node"><div class="node-name">Meta Ads</div><div class="node-sub">paid acquisition</div></div>
+          <div class="node"><div class="node-name">Instagram + TikTok</div><div class="node-sub">organic social</div></div>
+          <div class="node"><div class="node-name">Klaviyo</div><div class="node-sub">email nurture</div></div>
+          <div class="node"><div class="node-name">Landing Pages</div><div class="node-sub">conversion</div></div>
+        </div>
+      </div>
+
+      <div class="flow-arrow">↑ ↓</div>
+
+      <div class="layer">
+        <div class="layer-label">Cognitive Agent Layer · Social Studio Marketing Team</div>
+        <div class="layer-nodes agents">
+          <div class="node agent-node"><div class="node-name">Jelida</div><div class="node-sub">strategist</div></div>
+          <div class="node agent-node"><div class="node-name">Odette</div><div class="node-sub">customer service</div></div>
+          <div class="node agent-node"><div class="node-name">Vera</div><div class="node-sub">designer</div></div>
+          <div class="node agent-node"><div class="node-name">Maren</div><div class="node-sub">social media</div></div>
+          <div class="node agent-node"><div class="node-name">Cleo</div><div class="node-sub">email marketing</div></div>
+        </div>
+      </div>
+
+      <div class="flow-arrow">↑ ↓</div>
+
+      <div class="layer">
+        <div class="layer-label">Core Infrastructure</div>
+        <div class="layer-nodes infra" style="grid-template-columns: 1fr;">
+          <div class="node infra-node"><div class="node-name">Polynize Agentic Stack</div><div class="node-sub">runtime, cognition, dashboard</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 6: MONDAY -->
+<section class="screen" id="screen-6">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">06 / 13 · A week in the field</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">Monday · 7:12 AM</div>
+    <h1 class="headline-section">Jelida and Maren, <span class="mint-accent">before</span> your first coffee.</h1>
+
+    <div class="scenario-layout">
+      <div class="scenario-chat">
+        <div class="chat-time">Monday · 7:12 AM · Telegram</div>
+        <div class="chat-stack">
+          <div class="chat-bubble agent">
+            <div class="sender">Jelida</div>
+            Morning Jess. Weekend data came in. The LED-treatment landing page is converting at 4.1%, almost 3x the pilates page. Doubling ad spend behind LED this week and spinning up a dedicated Instagram channel. Maren is drafting content for your approval.
+          </div>
+          <div class="chat-bubble agent">
+            <div class="sender">Maren</div>
+            Five post drafts for the new LED channel, Tuesday to Saturday. Captions, hashtags, and Reels hooks in brand voice. Reply "approve" or tell me which ones to rework.
+          </div>
+          <div class="chat-bubble human">
+            <div class="sender">Jess</div>
+            Approve all five. Let's push LED.
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="scenario-note-big">Without the team: three emails to a freelancer, a copywriting request, and a two-day wait. With the team: done before your first coffee.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 7: WEDNESDAY -->
+<section class="screen" id="screen-7">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">07 / 13 · A week in the field</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">Wednesday · 2:30 AM</div>
+    <h1 class="headline-section">Odette, working while <span class="mint-accent">you sleep</span>.</h1>
+
+    <div class="scenario-layout">
+      <div class="scenario-chat">
+        <div class="chat-time">Wednesday · 2:30 AM · Inbound DM</div>
+        <div class="chat-stack">
+          <div class="chat-bubble human">
+            <div class="sender">Inbound · Lauren</div>
+            Hi, I saw your ad saying $29/mo. Does that include a photoshoot and someone to post for me?
+          </div>
+          <div class="chat-bubble agent">
+            <div class="sender">Odette</div>
+            Hi Lauren, thanks for reaching out. Quick note, I'm Odette, an AI agent on the Social Studio team. The $29 plan gives you access to the design library, not a done-for-you service. If you want posting and photoshoots, I can walk you through the premium tier. Want more info?
+          </div>
+          <div class="chat-bubble human">
+            <div class="sender">Inbound · Lauren</div>
+            Yes please, what's the price?
+          </div>
+          <div class="chat-bubble agent">
+            <div class="sender">Odette</div>
+            Great, I'll email that information to you. What's your email address?
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="scenario-note-big">Every enquiry that would have been a block is now a qualifying moment. The ones who self-select into a higher plan convert. The ones who don't get nurtured into the right tier over time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 8: FRIDAY -->
+<section class="screen" id="screen-8">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">08 / 13 · A week in the field</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">Friday · 5:00 PM</div>
+    <h1 class="headline-section">Jelida, delivering a <span class="mint-accent">decision</span>, not a dashboard.</h1>
+
+    <div class="scenario-layout">
+      <div class="scenario-chat">
+        <div class="chat-time">Friday · 5:00 PM · Weekly Signal Report</div>
+        <div class="chat-stack">
+          <div class="chat-bubble agent">
+            <div class="sender">Jelida</div>
+            Week 6 signal report is in your inbox. Top-line: the LED pivot worked. Pipeline up 32% week-on-week. Two recommendations: (1) kill the pilates-facing ad set, it is not converting. (2) Cleo and Maren are drafting a dry-skin-specific LED landing page, our second-highest segment. Approval needed by Monday.
+          </div>
+          <div class="chat-bubble human">
+            <div class="sender">Jess</div>
+            Approved both. Can we also think about the brand-ambassador agent idea?
+          </div>
+          <div class="chat-bubble agent">
+            <div class="sender">Jelida</div>
+            Noted. Brief for next build sprint in your inbox Sunday evening, ready for Monday review.
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="scenario-note-big">Every Friday: data, interpretation, and a concrete next step. No spreadsheets to read, no dashboard to check. This is how validation actually happens.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 9: ASSET -->
+<section class="screen" id="screen-9">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">09 / 13 · The asset</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">What you're really acquiring</div>
+    <h1 class="headline-display">The team <span class="mint-accent">persists</span>. The project doesn't.</h1>
+
+    <div class="asset-columns">
+      <div class="asset-col conv">
+        <div class="a-label">What a campaign gives you</div>
+        <ul>
+          <li>Three months of activity</li>
+          <li>A report when the contract ends</li>
+          <li>Leads that stop the day you stop paying</li>
+          <li>IP and process that leave with the agency</li>
+          <li>Start again from zero on the next product</li>
+        </ul>
+      </div>
+      <div class="asset-col trans">
+        <div class="a-label">What this engagement gives you</div>
+        <ul>
+          <li>A five-agent marketing team</li>
+          <li>Expert thinking installed, retrainable on demand</li>
+          <li>Infrastructure owned and portable</li>
+          <li>Every project inherits what the team has learned</li>
+          <li>Pivot to B2B LED or e-commerce in a week, not a quarter</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="asset-closing">
+      If Social Studio validates, the team <span class="mint-accent">scales</span> it.<br>
+      If it doesn't, the team takes the <span class="mint-accent">next brief</span>.<br>
+      Either way, Social Studio has the capability.
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 10: VALUE -->
+<section class="screen" id="screen-10">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">10 / 13 · Value</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">Where the value comes from</div>
+    <h1 class="headline-section">Scored on the <span class="mint-accent">five dimensions</span> that matter.</h1>
+
+    <div class="dim-rows">
+      <div class="dim-row head">
+        <div class="n">Dimension</div>
+        <div>Intensity</div>
+        <div>Why, for Social Studio</div>
+      </div>
+      <div class="dim-row">
+        <div class="n">Economic</div>
+        <div><span class="badge-intensity h">High</span></div>
+        <div class="rat">Avoids hiring a fully loaded marketing team at approximately $150K per year.</div>
+      </div>
+      <div class="dim-row">
+        <div class="n">Capability</div>
+        <div><span class="badge-intensity vh">Very High</span></div>
+        <div class="rat">You have no marketing team right now. This installs one in week one.</div>
+      </div>
+      <div class="dim-row">
+        <div class="n">Velocity</div>
+        <div><span class="badge-intensity vh">Very High</span></div>
+        <div class="rat">Market signal in 30 days instead of 3 months. Creative refreshed every few days instead of every few weeks.</div>
+      </div>
+      <div class="dim-row">
+        <div class="n">Risk & Control</div>
+        <div><span class="badge-intensity vh">Very High</span></div>
+        <div class="rat">De-risks further product investment. Data arrives before the next development cheque.</div>
+      </div>
+      <div class="dim-row">
+        <div class="n">Strategic</div>
+        <div><span class="badge-intensity vh">Very High</span></div>
+        <div class="rat">Team outlasts the app. Every future pivot inherits a trained marketing unit.</div>
+      </div>
+    </div>
+
+    <div class="throughput-sentence">A well-configured agent team delivers <span class="gold-accent">5 to 10 times</span> the throughput of the equivalent hire, at a fraction of the annual cost.</div>
+  </div>
+</section>
+
+<!-- SCREEN 11: REVENUE MODEL -->
+<section class="screen" id="screen-11">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">11 / 13 · Revenue potential</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">What this unlocks on the revenue side</div>
+    <h1 class="headline-section">The numbers, <span class="mint-accent">modelled honestly</span>.</h1>
+    <p class="revenue-intro">At full deployment, this system brings in <strong>25 to 50 qualified leads per week</strong>, scaling in proportion to ad spend. Here's what that looks like spread across the Social Studio product ladder, assuming a <strong>10% blended conversion rate</strong> and a realistic mix across the four price tiers.</p>
+
+    <div class="revenue-scenarios">
+      <div class="rev-card">
+        <div class="rev-tag">Low scenario</div>
+        <div class="rev-title">25 leads per week</div>
+        <div class="rev-sub">~108 qualified leads per month · ~11 new customers / month</div>
+
+        <table class="rev-table">
+          <thead>
+            <tr>
+              <th>Product tier</th>
+              <th>New customers</th>
+              <th class="num-col">New revenue / mo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tier">$29 / mo<br><span class="tier-price">subscription</span></td>
+              <td>6</td>
+              <td class="rev-num">$174</td>
+            </tr>
+            <tr>
+              <td class="tier">$79 / mo<br><span class="tier-price">subscription</span></td>
+              <td>3</td>
+              <td class="rev-num">$237</td>
+            </tr>
+            <tr>
+              <td class="tier">$179 / mo<br><span class="tier-price">subscription</span></td>
+              <td>1</td>
+              <td class="rev-num">$179</td>
+            </tr>
+            <tr>
+              <td class="tier">$2,500<br><span class="tier-price">premium, one-time</span></td>
+              <td>~1 per quarter</td>
+              <td class="rev-num">$833</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="rev-total">
+          <div class="rt-label">New revenue per month</div>
+          <div class="rt-amount">~$1,423</div>
+        </div>
+        <div class="rev-annual">
+          <span>Year one, compounding MRR + premium</span>
+          <span class="annual-amount">~$42,000</span>
+        </div>
+      </div>
+
+      <div class="rev-card high">
+        <div class="rev-tag">High scenario</div>
+        <div class="rev-title">50 leads per week</div>
+        <div class="rev-sub">~217 qualified leads per month · ~22 new customers / month</div>
+
+        <table class="rev-table">
+          <thead>
+            <tr>
+              <th>Product tier</th>
+              <th>New customers</th>
+              <th class="num-col">New revenue / mo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tier">$29 / mo<br><span class="tier-price">subscription</span></td>
+              <td>13</td>
+              <td class="rev-num">$377</td>
+            </tr>
+            <tr>
+              <td class="tier">$79 / mo<br><span class="tier-price">subscription</span></td>
+              <td>6</td>
+              <td class="rev-num">$474</td>
+            </tr>
+            <tr>
+              <td class="tier">$179 / mo<br><span class="tier-price">subscription</span></td>
+              <td>3</td>
+              <td class="rev-num">$537</td>
+            </tr>
+            <tr>
+              <td class="tier">$2,500<br><span class="tier-price">premium, one-time</span></td>
+              <td>~2 per quarter</td>
+              <td class="rev-num">$1,667</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="rev-total">
+          <div class="rt-label">New revenue per month</div>
+          <div class="rt-amount">~$3,055</div>
+        </div>
+        <div class="rev-annual">
+          <span>Year one, compounding MRR + premium</span>
+          <span class="annual-amount">~$95,000</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="rev-footnote">Assumptions: 10% qualified-lead-to-customer conversion, distributed 60 / 25 / 12 / 3 across the four tiers, 85% subscription retention, linear ramp across year one. Revenue scales with ad spend and with tier mix. These are conservative estimates built to frame the upside, not to guarantee it.</p>
+  </div>
+</section>
+
+<!-- SCREEN 12: COMMERCIAL -->
+<section class="screen" id="screen-12">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">12 / 13 · Commercial</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">Map · Transform · Operate</div>
+    <h1 class="headline-section">Staged commitment, <span class="mint-accent">sized to your stage</span>.</h1>
+
+    <div class="mto-row">
+      <div class="mto-pitch">
+        <div class="stage-label">Stage 01 · Map</div>
+        <div class="stage-name">Setup + first agent live</div>
+        <div class="stage-fee">$5,000</div>
+        <div class="stage-sub">AUD · one-time · Jelida deployed by end of week 2</div>
+      </div>
+      <div class="mto-pitch highlight">
+        <div class="stage-label">Stage 02 · Transform</div>
+        <div class="stage-name">Agents 2 to 5 deployed</div>
+        <div class="stage-fee">$10,000</div>
+        <div class="stage-sub">AUD · one-time · full team live by end of month 3</div>
+      </div>
+      <div class="mto-pitch">
+        <div class="stage-label">Stage 03 · Operate</div>
+        <div class="stage-name">Monthly service fee</div>
+        <div class="stage-fee">$1,999 / mo</div>
+        <div class="stage-sub">AUD · ongoing · 6-month minimum</div>
+      </div>
+    </div>
+
+    <div class="commit-breakdown">
+      <div class="breakdown-title">Total engagement cost · full 5-agent team</div>
+
+      <div class="breakdown-rows">
+        <div class="breakdown-row">
+          <div class="br-label">Team Build Cost <span class="br-hint">(Stages 01 + 02)</span></div>
+          <div class="br-amount">$15,000 <span class="br-unit">AUD</span></div>
+        </div>
+        <div class="breakdown-row">
+          <div class="br-label">Monthly service fee <span class="br-hint">(Stage 03, 6-month minimum)</span></div>
+          <div class="br-amount">$1,999 <span class="br-unit">AUD / mo</span></div>
+        </div>
+      </div>
+
+      <div class="breakdown-context">
+        Year one, all-in (Team Build Cost plus 12 months of service fee) comes to <strong>approximately $39,000</strong>, or <strong>16 to 26 percent</strong> of the annualised conventional baseline of $150,000 to $250,000. A condensed 3-agent option is available at a reduced Team Build Cost if the smaller footprint fits your stage better.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 13: CLOSE -->
+<section class="screen" id="screen-13">
+  <div class="screen-header">
+    <div class="brand-mark-left">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="screen-label">13 / 13 · Next</div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">How we move forward</div>
+    <h1 class="headline-display">Three steps from <span class="mint-accent">here</span> to a live team.</h1>
+
+    <div class="steps">
+      <div class="step">
+        <div class="snum">01</div>
+        <div class="stitle">Book the Map session</div>
+        <div class="sdesc">Thirty-minute call to confirm the engagement and lock Map into the calendar. Option A or Option B is chosen at this step.</div>
+      </div>
+      <div class="step">
+        <div class="snum">02</div>
+        <div class="stitle">Transform begins</div>
+        <div class="sdesc">Two cognition sessions with the Social Studio founders. Jelida is built, trained, and deployed live by end of week two.</div>
+      </div>
+      <div class="step">
+        <div class="snum">03</div>
+        <div class="stitle">Validation sprint</div>
+        <div class="sdesc">Month one signal arrives. You and the team review. Additional agents deploy across months two and three.</div>
+      </div>
+    </div>
+
+    <div class="pitch-cta">
+      <a href="https://calendly.com/marrscoiro/meeting30" class="pitch-cta-btn">Book a call →</a>
+      <div class="pitch-cta-sub">calendly.com/marrscoiro/meeting30</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const screens = document.querySelectorAll('.screen');
+    const dots = document.querySelectorAll('.nav-dot');
+    function onScroll() {
+      const viewportMid = window.scrollY + (window.innerHeight / 2);
+      let activeIndex = 0;
+      screens.forEach((s, i) => {
+        if (s.offsetTop <= viewportMid) activeIndex = i;
+      });
+      dots.forEach((d, i) => {
+        d.classList.toggle('active', i === activeIndex);
+      });
+    }
+    dots.forEach((d, i) => {
+      d.addEventListener('click', () => {
+        const target = document.querySelector('#screen-' + (i + 1));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+
+</body>
+</html>
