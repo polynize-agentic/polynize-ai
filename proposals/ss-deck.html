@@ -605,60 +605,72 @@
   .asset-closing .mint-accent { color: var(--mint); }
 
   /* ============= SCREEN 10: VALUE ============= */
-  .dim-rows {
+  .dim-chart {
     margin-top: 44px;
     max-width: 1060px;
+    padding: 36px 40px;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
-    overflow: hidden;
   }
-  .dim-row {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr 2.5fr;
-    padding: 24px 30px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    align-items: center;
-    gap: 20px;
+  .dim-scale {
+    position: relative;
+    height: 16px;
+    margin-bottom: 24px;
+    margin-left: 180px;
+    padding-right: 0;
+    border-bottom: 1px dashed rgba(232, 181, 176, 0.18);
   }
-  .dim-row:last-child { border-bottom: none; }
-  .dim-row.head {
-    background: var(--surface-2);
-    padding: 16px 30px;
-  }
-  .dim-row .n {
-    font-family: var(--display);
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--text-primary);
-    letter-spacing: -0.01em;
-  }
-  .dim-row.head .n,
-  .dim-row.head > div {
+  .dim-scale .scale-mark {
+    position: absolute;
+    top: 0;
     font-family: var(--body);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--text-muted);
   }
-  .badge-intensity {
-    display: inline-block;
-    padding: 5px 12px;
-    border-radius: 999px;
-    font-family: var(--body);
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+  .dim-row-v2 {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 20px;
+    align-items: start;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
   }
-  .badge-intensity.vh { background: var(--mint-glow); color: var(--mint); border: 1px solid var(--mint-border); }
-  .badge-intensity.h { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(165, 193, 236, 0.25); }
-  .dim-row .rat {
+  .dim-row-v2:last-child { border-bottom: none; }
+  .dim-name {
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    padding-top: 4px;
+  }
+  .dim-bar {
+    position: relative;
+    width: 100%;
+    height: 18px;
+    background: rgba(232, 181, 176, 0.06);
+    border: 1px solid rgba(232, 181, 176, 0.12);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .dim-fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(232, 181, 176, 0.45), var(--mint));
+    border-radius: 3px;
+    transition: width 0.6s ease-out;
+  }
+  .dim-why {
+    font-family: var(--body);
     font-size: 14px;
     color: var(--text-secondary);
     line-height: 1.55;
   }
+
   .throughput-sentence {
     margin-top: 32px;
     font-family: var(--display);
@@ -674,153 +686,7 @@
     font-weight: 700;
   }
 
-  /* ============= SCREEN 11: REVENUE MODEL ============= */
-  .revenue-intro {
-    font-size: 17px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    max-width: 820px;
-    margin-bottom: 36px;
-  }
-  .revenue-intro strong { color: var(--text-primary); font-weight: 600; }
-
-  .revenue-scenarios {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-    margin: 32px 0 28px;
-    max-width: 1120px;
-  }
-  .rev-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 32px 30px;
-  }
-  .rev-card.high {
-    border-color: var(--mint-border);
-    background: linear-gradient(160deg, var(--mint-glow), var(--surface));
-  }
-  .rev-card .rev-tag {
-    font-family: var(--body);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-  }
-  .rev-card.high .rev-tag { color: var(--mint); }
-  .rev-card .rev-title {
-    font-family: var(--display);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: -0.015em;
-    margin-bottom: 6px;
-  }
-  .rev-card .rev-sub {
-    font-family: var(--body);
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 22px;
-    letter-spacing: 0.02em;
-  }
-
-  .rev-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-  .rev-table th {
-    font-family: var(--body);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    text-align: left;
-    padding: 0 0 10px;
-    border-bottom: 1px solid rgba(232, 181, 176, 0.15);
-  }
-  .rev-table th.num-col { text-align: right; }
-  .rev-table td {
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(232, 181, 176, 0.08);
-    font-size: 13.5px;
-  }
-  .rev-table td.tier {
-    font-family: var(--display);
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-  .rev-table td.tier-price {
-    color: var(--text-secondary);
-    font-family: var(--body);
-    font-size: 12px;
-  }
-  .rev-table td.rev-num {
-    font-family: var(--display);
-    font-weight: 600;
-    color: var(--gold);
-    text-align: right;
-    letter-spacing: -0.01em;
-  }
-  .rev-table tr:last-child td { border-bottom: none; }
-
-  .rev-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding-top: 16px;
-    border-top: 2px solid rgba(232, 181, 176, 0.25);
-    margin-top: 4px;
-  }
-  .rev-total .rt-label {
-    font-family: var(--body);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-  .rev-total .rt-amount {
-    font-family: var(--display);
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--gold);
-    letter-spacing: -0.025em;
-  }
-
-  .rev-annual {
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid rgba(232, 181, 176, 0.1);
-    display: flex;
-    justify-content: space-between;
-    font-family: var(--body);
-    font-size: 12.5px;
-    color: var(--text-secondary);
-    letter-spacing: 0.02em;
-  }
-  .rev-annual .annual-amount {
-    font-family: var(--display);
-    font-weight: 700;
-    color: var(--text-primary);
-    font-size: 14px;
-  }
-
-  .rev-footnote {
-    font-family: var(--body);
-    font-size: 12.5px;
-    color: var(--text-muted);
-    line-height: 1.6;
-    max-width: 920px;
-    margin-top: 20px;
-    font-style: italic;
-  }
-
-
+  /* ============= SCREEN 11: COMMERCIAL ============= */
   .mto-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -864,13 +730,66 @@
     margin-bottom: 8px;
     line-height: 1.1;
   }
+  .mto-pitch .stage-fee .stage-fee-plus {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-left: 4px;
+  }
   .mto-pitch .stage-sub {
     font-family: var(--body);
     font-size: 11.5px;
     color: var(--text-muted);
     letter-spacing: 0.04em;
+    line-height: 1.55;
   }
-  /* ============= SCREEN 12: commitment breakdown ============= */
+
+  /* Commitment timeline */
+  .commit-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 24px;
+  }
+  .commit-step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    align-items: flex-start;
+    gap: 22px;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(232, 181, 176, 0.12);
+  }
+  .commit-step:last-child { border-bottom: none; }
+  .commit-step .step-num {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--mint);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    padding-top: 2px;
+  }
+  .commit-step .step-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .commit-step .step-heading {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+  .commit-step .step-sub {
+    font-family: var(--body);
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* ============= SCREEN 11: commitment breakdown ============= */
   .commit-breakdown {
     margin-top: 44px;
     padding: 36px 40px;
@@ -889,55 +808,6 @@
     margin-bottom: 24px;
     text-align: center;
   }
-  .commit-breakdown .breakdown-rows {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    margin-bottom: 28px;
-  }
-  .commit-breakdown .breakdown-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 20px 0;
-    border-bottom: 1px solid rgba(232, 181, 176, 0.12);
-    gap: 24px;
-  }
-  .commit-breakdown .breakdown-row:last-child {
-    border-bottom: none;
-  }
-  .commit-breakdown .br-label {
-    font-family: var(--display);
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--text-primary);
-    letter-spacing: -0.005em;
-  }
-  .commit-breakdown .br-hint {
-    font-family: var(--body);
-    font-size: 12px;
-    font-weight: 400;
-    color: var(--text-muted);
-    letter-spacing: 0.02em;
-    margin-left: 4px;
-  }
-  .commit-breakdown .br-amount {
-    font-family: var(--display);
-    font-size: 34px;
-    font-weight: 800;
-    color: var(--gold);
-    letter-spacing: -0.03em;
-    white-space: nowrap;
-  }
-  .commit-breakdown .br-unit {
-    font-family: var(--body);
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-left: 4px;
-  }
   .commit-breakdown .breakdown-context {
     padding-top: 22px;
     border-top: 1px solid rgba(232, 181, 176, 0.15);
@@ -954,7 +824,7 @@
     font-weight: 600;
   }
 
-  /* ============= SCREEN 13: CLOSE ============= */
+  /* ============= SCREEN 12: CLOSE ============= */
   .steps {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1033,10 +903,9 @@
     }
     .cover-meta { grid-template-columns: 1fr; gap: 24px; }
     .commit-breakdown { padding: 28px 24px; }
-    .commit-breakdown .breakdown-row { flex-direction: column; align-items: flex-start; gap: 4px; padding: 16px 0; }
-    .commit-breakdown .br-amount { font-size: 28px; }
-    .dim-row { grid-template-columns: 1fr; gap: 10px; }
-    .dim-row.head { display: none; }
+    .dim-row-v2 { grid-template-columns: 1fr; gap: 6px; }
+    .dim-scale { margin-left: 0; }
+    .dim-chart { padding: 24px 20px; }
     .nav-dots { display: none; }
   }
 </style>
@@ -1067,9 +936,8 @@
   <button class="nav-dot" data-screen="8" title="Friday"></button>
   <button class="nav-dot" data-screen="9" title="Asset"></button>
   <button class="nav-dot" data-screen="10" title="Value"></button>
-  <button class="nav-dot" data-screen="11" title="Revenue"></button>
-  <button class="nav-dot" data-screen="12" title="Commercial"></button>
-  <button class="nav-dot" data-screen="13" title="Close"></button>
+  <button class="nav-dot" data-screen="11" title="Commercial"></button>
+  <button class="nav-dot" data-screen="12" title="Close"></button>
 </nav>
 
 <!-- SCREEN 1: COVER -->
@@ -1079,7 +947,7 @@
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">01 / 13 · Cover</div>
+    <div class="screen-label">01 / 12 · Cover</div>
   </div>
 
   <div class="content">
@@ -1115,7 +983,7 @@
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">02 / 13 · The problem</div>
+    <div class="screen-label">02 / 12 · The problem</div>
   </div>
 
   <div class="content">
@@ -1149,7 +1017,7 @@
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">03 / 13 · The conventional</div>
+    <div class="screen-label">03 / 12 · The conventional</div>
   </div>
 
   <div class="content">
@@ -1197,7 +1065,7 @@
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">04 / 13 · The reframe</div>
+    <div class="screen-label">04 / 12 · The reframe</div>
   </div>
 
   <div class="content">
@@ -1241,7 +1109,7 @@
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">05 / 13 · The system</div>
+    <div class="screen-label">05 / 12 · The system</div>
   </div>
 
   <div class="content">
@@ -1291,7 +1159,7 @@
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">06 / 13 · A week in the field</div>
+    <div class="screen-label">06 / 12 · A week in the field</div>
   </div>
 
   <div class="content">
@@ -1330,7 +1198,7 @@
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">07 / 13 · A week in the field</div>
+    <div class="screen-label">07 / 12 · A week in the field</div>
   </div>
 
   <div class="content">
@@ -1373,7 +1241,7 @@
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">08 / 13 · A week in the field</div>
+    <div class="screen-label">08 / 12 · A week in the field</div>
   </div>
 
   <div class="content">
@@ -1412,7 +1280,7 @@
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">09 / 13 · The asset</div>
+    <div class="screen-label">09 / 12 · The asset</div>
   </div>
 
   <div class="content">
@@ -1457,43 +1325,49 @@
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">10 / 13 · Value</div>
+    <div class="screen-label">10 / 12 · Value</div>
   </div>
 
   <div class="content">
     <div class="eyebrow">Where the value comes from</div>
     <h1 class="headline-section">Scored on the <span class="mint-accent">five dimensions</span> that matter.</h1>
 
-    <div class="dim-rows">
-      <div class="dim-row head">
-        <div class="n">Dimension</div>
-        <div>Intensity</div>
-        <div>Why, for Social Studio</div>
+    <div class="dim-chart">
+      <div class="dim-scale">
+        <span class="scale-mark" style="left: 0%">Low</span>
+        <span class="scale-mark" style="left: 33%">Medium</span>
+        <span class="scale-mark" style="left: 66%">High</span>
+        <span class="scale-mark" style="left: 100%; transform: translateX(-100%);">Very High</span>
       </div>
-      <div class="dim-row">
-        <div class="n">Economic</div>
-        <div><span class="badge-intensity h">High</span></div>
-        <div class="rat">Avoids hiring a fully loaded marketing team at approximately $150K per year.</div>
+
+      <div class="dim-row-v2">
+        <div class="dim-name">Economic</div>
+        <div class="dim-bar"><div class="dim-fill" style="width: 75%"></div></div>
+        <div class="dim-why">Avoids hiring a fully loaded marketing team at approximately $150K per year.</div>
       </div>
-      <div class="dim-row">
-        <div class="n">Capability</div>
-        <div><span class="badge-intensity vh">Very High</span></div>
-        <div class="rat">You have no marketing team right now. This installs one in week one.</div>
+
+      <div class="dim-row-v2">
+        <div class="dim-name">Capability</div>
+        <div class="dim-bar"><div class="dim-fill" style="width: 75%"></div></div>
+        <div class="dim-why">The founders are marketers, but they're wearing every hat at once. This extends capacity across strategy, creative, customer service, social, and email without adding headcount.</div>
       </div>
-      <div class="dim-row">
-        <div class="n">Velocity</div>
-        <div><span class="badge-intensity vh">Very High</span></div>
-        <div class="rat">Market signal in 30 days instead of 3 months. Creative refreshed every few days instead of every few weeks.</div>
+
+      <div class="dim-row-v2">
+        <div class="dim-name">Velocity</div>
+        <div class="dim-bar"><div class="dim-fill" style="width: 100%"></div></div>
+        <div class="dim-why">Market signal in 30 days instead of 3 months. Creative refreshed every few days instead of every few weeks.</div>
       </div>
-      <div class="dim-row">
-        <div class="n">Risk & Control</div>
-        <div><span class="badge-intensity vh">Very High</span></div>
-        <div class="rat">De-risks further product investment. Data arrives before the next development cheque.</div>
+
+      <div class="dim-row-v2">
+        <div class="dim-name">Risk & Control</div>
+        <div class="dim-bar"><div class="dim-fill" style="width: 100%"></div></div>
+        <div class="dim-why">De-risks further product investment. Data arrives before the next development cheque.</div>
       </div>
-      <div class="dim-row">
-        <div class="n">Strategic</div>
-        <div><span class="badge-intensity vh">Very High</span></div>
-        <div class="rat">Team outlasts the app. Every future pivot inherits a trained marketing unit.</div>
+
+      <div class="dim-row-v2">
+        <div class="dim-name">Strategic</div>
+        <div class="dim-bar"><div class="dim-fill" style="width: 100%"></div></div>
+        <div class="dim-why">Team outlasts the app. Every future pivot inherits a trained marketing unit.</div>
       </div>
     </div>
 
@@ -1501,129 +1375,14 @@
   </div>
 </section>
 
-<!-- SCREEN 11: REVENUE MODEL -->
+<!-- SCREEN 11: COMMERCIAL -->
 <section class="screen" id="screen-11">
   <div class="screen-header">
     <div class="brand-mark-left">
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">11 / 13 · Revenue potential</div>
-  </div>
-
-  <div class="content">
-    <div class="eyebrow">What this unlocks on the revenue side</div>
-    <h1 class="headline-section">The numbers, <span class="mint-accent">modelled honestly</span>.</h1>
-    <p class="revenue-intro">At full deployment, this system brings in <strong>25 to 50 qualified leads per week</strong>, scaling in proportion to ad spend. Here's what that looks like spread across the Social Studio product ladder, assuming a <strong>10% blended conversion rate</strong> and a realistic mix across the four price tiers.</p>
-
-    <div class="revenue-scenarios">
-      <div class="rev-card">
-        <div class="rev-tag">Low scenario</div>
-        <div class="rev-title">25 leads per week</div>
-        <div class="rev-sub">~108 qualified leads per month · ~11 new customers / month</div>
-
-        <table class="rev-table">
-          <thead>
-            <tr>
-              <th>Product tier</th>
-              <th>New customers</th>
-              <th class="num-col">New revenue / mo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="tier">$29 / mo<br><span class="tier-price">subscription</span></td>
-              <td>6</td>
-              <td class="rev-num">$174</td>
-            </tr>
-            <tr>
-              <td class="tier">$79 / mo<br><span class="tier-price">subscription</span></td>
-              <td>3</td>
-              <td class="rev-num">$237</td>
-            </tr>
-            <tr>
-              <td class="tier">$179 / mo<br><span class="tier-price">subscription</span></td>
-              <td>1</td>
-              <td class="rev-num">$179</td>
-            </tr>
-            <tr>
-              <td class="tier">$2,500<br><span class="tier-price">premium, one-time</span></td>
-              <td>~1 per quarter</td>
-              <td class="rev-num">$833</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="rev-total">
-          <div class="rt-label">New revenue per month</div>
-          <div class="rt-amount">~$1,423</div>
-        </div>
-        <div class="rev-annual">
-          <span>Year one, compounding MRR + premium</span>
-          <span class="annual-amount">~$42,000</span>
-        </div>
-      </div>
-
-      <div class="rev-card high">
-        <div class="rev-tag">High scenario</div>
-        <div class="rev-title">50 leads per week</div>
-        <div class="rev-sub">~217 qualified leads per month · ~22 new customers / month</div>
-
-        <table class="rev-table">
-          <thead>
-            <tr>
-              <th>Product tier</th>
-              <th>New customers</th>
-              <th class="num-col">New revenue / mo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="tier">$29 / mo<br><span class="tier-price">subscription</span></td>
-              <td>13</td>
-              <td class="rev-num">$377</td>
-            </tr>
-            <tr>
-              <td class="tier">$79 / mo<br><span class="tier-price">subscription</span></td>
-              <td>6</td>
-              <td class="rev-num">$474</td>
-            </tr>
-            <tr>
-              <td class="tier">$179 / mo<br><span class="tier-price">subscription</span></td>
-              <td>3</td>
-              <td class="rev-num">$537</td>
-            </tr>
-            <tr>
-              <td class="tier">$2,500<br><span class="tier-price">premium, one-time</span></td>
-              <td>~2 per quarter</td>
-              <td class="rev-num">$1,667</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="rev-total">
-          <div class="rt-label">New revenue per month</div>
-          <div class="rt-amount">~$3,055</div>
-        </div>
-        <div class="rev-annual">
-          <span>Year one, compounding MRR + premium</span>
-          <span class="annual-amount">~$95,000</span>
-        </div>
-      </div>
-    </div>
-
-    <p class="rev-footnote">Assumptions: 10% qualified-lead-to-customer conversion, distributed 60 / 25 / 12 / 3 across the four tiers, 85% subscription retention, linear ramp across year one. Revenue scales with ad spend and with tier mix. These are conservative estimates built to frame the upside, not to guarantee it.</p>
-  </div>
-</section>
-
-<!-- SCREEN 12: COMMERCIAL -->
-<section class="screen" id="screen-12">
-  <div class="screen-header">
-    <div class="brand-mark-left">
-      <svg class="trefoil"><use href="#trefoil"/></svg>
-      POLYNIZE AGENTIC
-    </div>
-    <div class="screen-label">12 / 13 · Commercial</div>
+    <div class="screen-label">11 / 12 · Commercial</div>
   </div>
 
   <div class="content">
@@ -1634,52 +1393,65 @@
       <div class="mto-pitch">
         <div class="stage-label">Stage 01 · Map</div>
         <div class="stage-name">Setup + first agent live</div>
-        <div class="stage-fee">$5,000</div>
-        <div class="stage-sub">AUD · one-time · Jelida deployed by end of week 2</div>
+        <div class="stage-fee">$2,500 <span class="stage-fee-plus">+ $2,500</span></div>
+        <div class="stage-sub">AUD · $2,500 upfront, $2,500 on Map completion<br>$699 / mo service fee begins from that point</div>
       </div>
       <div class="mto-pitch highlight">
         <div class="stage-label">Stage 02 · Transform</div>
         <div class="stage-name">Agents 2 to 5 deployed</div>
         <div class="stage-fee">$10,000</div>
-        <div class="stage-sub">AUD · one-time · full team live by end of month 3</div>
+        <div class="stage-sub">AUD · one-time · decided together after Map</div>
       </div>
       <div class="mto-pitch">
         <div class="stage-label">Stage 03 · Operate</div>
         <div class="stage-name">Monthly service fee</div>
-        <div class="stage-fee">$1,999 / mo</div>
-        <div class="stage-sub">AUD · ongoing · 6-month minimum</div>
+        <div class="stage-fee">From $699 / mo</div>
+        <div class="stage-sub">AUD · scales with team size · 6-month minimum from Map completion</div>
       </div>
     </div>
 
     <div class="commit-breakdown">
-      <div class="breakdown-title">Total engagement cost · full 5-agent team</div>
+      <div class="breakdown-title">How the commitment ramps up</div>
 
-      <div class="breakdown-rows">
-        <div class="breakdown-row">
-          <div class="br-label">Team Build Cost <span class="br-hint">(Stages 01 + 02)</span></div>
-          <div class="br-amount">$15,000 <span class="br-unit">AUD</span></div>
+      <div class="commit-timeline">
+        <div class="commit-step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-heading">To start</div>
+            <div class="step-sub">$2,500 AUD upfront. Map begins.</div>
+          </div>
         </div>
-        <div class="breakdown-row">
-          <div class="br-label">Monthly service fee <span class="br-hint">(Stage 03, 6-month minimum)</span></div>
-          <div class="br-amount">$1,999 <span class="br-unit">AUD / mo</span></div>
+        <div class="commit-step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-heading">On Map completion</div>
+            <div class="step-sub">$2,500 AUD + $699 / mo service fee begins. Jelida is live.</div>
+          </div>
+        </div>
+        <div class="commit-step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <div class="step-heading">Then, together</div>
+            <div class="step-sub">Decide Stage 02 rollout, timing, and pace. Service fee scales as agents come online.</div>
+          </div>
         </div>
       </div>
 
       <div class="breakdown-context">
-        Year one, all-in (Team Build Cost plus 12 months of service fee) comes to <strong>approximately $39,000</strong>, or <strong>16 to 26 percent</strong> of the annualised conventional baseline of $150,000 to $250,000. A condensed 3-agent option is available at a reduced Team Build Cost if the smaller footprint fits your stage better.
+        Low-friction start. You commit <strong>$2,500 to begin</strong>, see Map delivered, meet Jelida, and decide the pace of the full build from there.
       </div>
     </div>
   </div>
 </section>
 
-<!-- SCREEN 13: CLOSE -->
-<section class="screen" id="screen-13">
+<!-- SCREEN 12: CLOSE -->
+<section class="screen" id="screen-12">
   <div class="screen-header">
     <div class="brand-mark-left">
       <svg class="trefoil"><use href="#trefoil"/></svg>
       POLYNIZE AGENTIC
     </div>
-    <div class="screen-label">13 / 13 · Next</div>
+    <div class="screen-label">12 / 12 · Next</div>
   </div>
 
   <div class="content">
@@ -1690,7 +1462,7 @@
       <div class="step">
         <div class="snum">01</div>
         <div class="stitle">Book the Map session</div>
-        <div class="sdesc">Thirty-minute call to confirm the engagement and lock Map into the calendar. Option A or Option B is chosen at this step.</div>
+        <div class="sdesc">Thirty-minute call to confirm the engagement and lock Map into the calendar.</div>
       </div>
       <div class="step">
         <div class="snum">02</div>
