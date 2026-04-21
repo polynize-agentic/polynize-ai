@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Studio · Agent Team Blueprint · Polynize Agentic</title>
+<style>
+  :root {
+    /* Social Studio palette: beauty-forward, warm charcoal with blush + champagne accents */
+    --bg: #1c1816;
+    --surface: #26201d;
+    --surface-2: #2e2622;
+    --text-primary: #f4ece4;
+    --text-secondary: #c7b9ac;
+    --text-muted: #8a7d72;
+    --border: #3a302b;
+
+    /* Accent palette (mapped from brand roles to Social Studio palette) */
+    --mint: #e8b5b0;               /* primary accent, blush rose */
+    --mint-soft: #d99e99;
+    --blue: #a5c1ec;               /* supporting accent, unchanged */
+    --gold: #d4b07a;               /* numbers and data */
+
+    /* Opacity tints */
+    --mint-glow: rgba(232, 181, 176, 0.08);
+    --mint-border: rgba(232, 181, 176, 0.22);
+    --blue-soft: rgba(165, 193, 236, 0.1);
+    --gold-soft: rgba(212, 176, 122, 0.14);
+
+    /* Typography */
+    --display: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --body: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--body);
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Page container */
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 64px 44px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+  .page:last-of-type { border-bottom: none; }
+
+  /* Alternating grid-textured surface */
+  .page.grid-surface {
+    background:
+      linear-gradient(rgba(232, 181, 176, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232, 181, 176, 0.02) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-color: var(--surface);
+  }
+
+  /* Header */
+  .doc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 44px;
+  }
+  .mark {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--mint);
+    text-transform: uppercase;
+  }
+  .trefoil {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+  .ref {
+    font-family: var(--body);
+    font-size: 10.5px;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Page pills */
+  .pills {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 44px;
+    flex-wrap: wrap;
+  }
+  .pill {
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .pill.active {
+    background: var(--mint-glow);
+    color: var(--mint);
+    border-color: var(--mint-border);
+  }
+
+  /* Eyebrow label, per type scale: Inter 700, 11px, 2px tracking, mint caps */
+  .eyebrow {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 20px;
+  }
+
+  /* Headlines, per type scale */
+  h1.display {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2rem, 4.2vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+  }
+  h1.display .mint-accent {
+    color: var(--mint);
+  }
+  h2.section {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 36px 0 14px;
+    color: var(--text-primary);
+  }
+  h3.card-heading {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 36px;
+    max-width: 680px;
+    line-height: 1.6;
+  }
+
+  p {
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+  }
+  p.primary { color: var(--text-primary); }
+
+  strong { color: var(--text-primary); font-weight: 600; }
+
+  /* The shift block */
+  .shift-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--mint);
+    padding: 24px 28px;
+    margin: 36px 0;
+    border-radius: 0 10px 10px 0;
+  }
+  .shift-block .label {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 10px;
+  }
+  .shift-block .body {
+    color: var(--text-primary);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Act cards */
+  .act-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 40px 0;
+  }
+  .act-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .act-card .num {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--mint);
+    margin-bottom: 10px;
+  }
+  .act-card .title {
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+  .act-card .desc {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* Parties grid */
+  .parties {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+  .party .label {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .party .value {
+    font-family: var(--body);
+    font-size: 14.5px;
+    color: var(--text-primary);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  /* Engagement timeline, 3 phases */
+  .phase-timeline {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 28px 0;
+  }
+  .phase {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .phase .stage-label {
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--mint);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .phase .stage-name {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .phase .when {
+    font-family: var(--body);
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+  .phase .what {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* Team architecture */
+  .arch {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px 24px;
+    margin: 28px 0;
+    background-image:
+      linear-gradient(rgba(232, 181, 176, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232, 181, 176, 0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .arch-label {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .arch-teams {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .arch-team {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 14px;
+    text-align: center;
+  }
+  .arch-team.active {
+    border-color: var(--mint-border);
+    background: var(--mint-glow);
+  }
+  .arch-team .heading {
+    font-family: var(--display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .arch-team .sub {
+    font-family: var(--body);
+    font-size: 11.5px;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+  .arch-team.active .heading { color: var(--mint); }
+
+  /* Agent grid */
+  .agent-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin: 32px 0;
+  }
+  .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .agent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--mint);
+  }
+  .agent-card .badge {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .agent-card .num {
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .agent-card .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--mint);
+  }
+  .agent-card .name {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .agent-card .role {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--mint);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .agent-card .desc {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .agent-card .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .agent-card .tag {
+    font-family: var(--body);
+    font-size: 10.5px;
+    padding: 4px 9px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+  }
+
+  /* Human lead callout */
+  .human-lead-callout {
+    background: linear-gradient(135deg, var(--mint-glow), transparent);
+    border: 1px solid var(--mint-border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-top: 24px;
+  }
+  .human-lead-callout .label {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--mint);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .human-lead-callout .stmt {
+    font-size: 16px;
+    color: var(--text-primary);
+    line-height: 1.55;
+    margin: 0;
+  }
+  .human-lead-callout .stmt .mint-accent { color: var(--mint); }
+
+  /* Scenarios */
+  .scenario {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 16px;
+  }
+  .scenario-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .scenario-time {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .scenario-agents {
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .chat {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .bubble {
+    max-width: 84%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .bubble .sender {
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    color: var(--mint);
+  }
+  .bubble.agent {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    align-self: flex-start;
+  }
+  .bubble.human {
+    background: var(--mint-glow);
+    border: 1px solid var(--mint-border);
+    color: var(--text-primary);
+    align-self: flex-end;
+  }
+  .bubble.human .sender { color: var(--gold); }
+  .scenario-note {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    font-style: italic;
+    line-height: 1.55;
+  }
+
+  /* Before/after */
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0 32px;
+  }
+  .ba-box {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    background: var(--surface);
+  }
+  .ba-box.conventional { opacity: 0.7; }
+  .ba-box.agent {
+    border-color: var(--mint-border);
+    background: linear-gradient(160deg, var(--mint-glow), var(--surface));
+  }
+  .ba-box .label {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    color: var(--text-muted);
+  }
+  .ba-box.agent .label { color: var(--mint); }
+  .ba-box ul { list-style: none; }
+  .ba-box li {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    padding: 7px 0 7px 16px;
+    position: relative;
+    line-height: 1.55;
+  }
+  .ba-box li::before {
+    content: '·';
+    position: absolute;
+    left: 4px;
+    top: 7px;
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .ba-box.agent li::before { color: var(--mint); }
+
+  /* Five-dimension bar chart */
+  .dim-chart {
+    margin: 20px 0 32px;
+    padding: 28px 30px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+  .dim-scale {
+    position: relative;
+    height: 14px;
+    margin-bottom: 18px;
+    margin-left: 140px;
+    border-bottom: 1px dashed rgba(232, 181, 176, 0.18);
+  }
+  .dim-scale .scale-mark {
+    position: absolute;
+    top: 0;
+    font-family: var(--body);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .dim-row-v2 {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 20px;
+    align-items: start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .dim-row-v2:last-child { border-bottom: none; }
+  .dim-row-v2 .dim-name {
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.005em;
+    padding-top: 3px;
+  }
+  .dim-bar {
+    position: relative;
+    width: 100%;
+    height: 15px;
+    background: rgba(232, 181, 176, 0.06);
+    border: 1px solid rgba(232, 181, 176, 0.12);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .dim-fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(232, 181, 176, 0.45), var(--mint));
+    border-radius: 3px;
+  }
+  .dim-why {
+    font-family: var(--body);
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* Baseline sentence */
+  .baseline-sentence {
+    font-size: 16px;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    padding: 22px 26px;
+    background: var(--surface);
+    border-left: 2px solid var(--gold);
+    border-radius: 0 10px 10px 0;
+  }
+  .baseline-sentence .gold-num {
+    color: var(--gold);
+    font-weight: 600;
+    font-family: var(--display);
+  }
+
+  /* Map / Transform / Operate */
+  .mto-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 28px 0;
+  }
+  .mto-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px 22px;
+  }
+  .mto-card.highlight {
+    border-color: var(--mint-border);
+    background: linear-gradient(180deg, var(--mint-glow), var(--surface));
+  }
+  .mto-card .stage-eyebrow {
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--mint);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .mto-card .mto-label {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+  .mto-card .fee {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    line-height: 1.1;
+  }
+  .mto-card .fee .fee-plus {
+    font-size: 18px;
+    font-weight: 600;
+    opacity: 0.7;
+    margin-left: 3px;
+  }
+  .mto-card .fee-note {
+    font-family: var(--body);
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    letter-spacing: 0.04em;
+    line-height: 1.55;
+  }
+  .mto-card ul { list-style: none; }
+  .mto-card li {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    padding: 5px 0 5px 14px;
+    position: relative;
+    line-height: 1.55;
+  }
+  .mto-card li::before {
+    content: '·';
+    position: absolute;
+    left: 3px;
+    color: var(--mint);
+    font-weight: 700;
+    font-size: 16px;
+    top: 3px;
+  }
+
+  /* Scaling schedule */
+  .schedule-wrap {
+    margin: 24px 0 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .schedule-title-row {
+    padding: 14px 22px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .schedule {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .schedule th, .schedule td {
+    padding: 14px 22px;
+    text-align: left;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  .schedule th {
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .schedule tr:last-child td { border-bottom: none; }
+  .schedule .month {
+    font-family: var(--display);
+    color: var(--mint);
+    font-weight: 600;
+  }
+  .schedule .amt {
+    font-family: var(--display);
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .schedule .team { color: var(--text-primary); }
+
+  /* Two options */
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 24px 0 32px;
+  }
+  .options.single {
+    grid-template-columns: 1fr;
+    max-width: 620px;
+  }
+  .option-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px 24px;
+  }
+  .option-card.hero {
+    border-color: var(--mint-border);
+    background: linear-gradient(180deg, var(--mint-glow), var(--surface));
+  }
+  .option-card .tag {
+    font-family: var(--body);
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .option-card.hero .tag { color: var(--mint); }
+  .option-card .option-name {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    letter-spacing: -0.015em;
+  }
+  .option-card .headline-fee {
+    font-family: var(--display);
+    font-size: 26px;
+    color: var(--gold);
+    font-weight: 700;
+    margin: 14px 0 4px;
+    letter-spacing: -0.02em;
+  }
+  .option-card .fee-caption {
+    font-family: var(--body);
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    letter-spacing: 0.03em;
+  }
+  .option-card .agent-list { list-style: none; margin-bottom: 18px; }
+  .option-card .agent-list li {
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 5px 0 5px 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .option-card .agent-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--mint);
+  }
+  .option-card .three-month {
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .option-card .three-month .num {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-family: var(--display);
+  }
+
+  /* Commitment band */
+  .commit-band {
+    background: linear-gradient(135deg, var(--mint-glow), transparent);
+    border: 1px solid var(--mint-border);
+    border-radius: 14px;
+    padding: 30px 32px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .commit-band .label {
+    font-family: var(--body);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mint);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .commit-band .figure {
+    font-family: var(--display);
+    font-size: 44px;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: -0.035em;
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  .commit-band .pct {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .commit-band .pct strong { color: var(--text-primary); }
+
+  /* Commit breakdown (build + monthly structure) */
+  .commit-breakdown {
+    margin: 24px 0 32px;
+    padding: 28px 32px;
+    background: linear-gradient(135deg, var(--mint-glow), transparent);
+    border: 1px solid var(--mint-border);
+    border-radius: 14px;
+  }
+  .commit-breakdown .breakdown-title {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .commit-breakdown .breakdown-context {
+    padding-top: 18px;
+    border-top: 1px solid rgba(232, 181, 176, 0.15);
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    text-align: center;
+  }
+  .commit-breakdown .breakdown-context strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* Commitment timeline (three-step ramp) */
+  .commit-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 20px;
+  }
+  .commit-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(232, 181, 176, 0.12);
+  }
+  .commit-step:last-child { border-bottom: none; }
+  .commit-step .step-num {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--mint);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    padding-top: 2px;
+  }
+  .commit-step .step-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .commit-step .step-heading {
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.005em;
+  }
+  .commit-step .step-sub {
+    font-family: var(--body);
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* Pricing notes */
+  .pricing-notes {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin: 24px 0 32px;
+  }
+  .pricing-notes .title {
+    font-family: var(--body);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .pricing-notes ul { list-style: none; padding: 0; }
+  .pricing-notes li {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    padding: 5px 0 5px 14px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .pricing-notes li::before {
+    content: '·';
+    position: absolute;
+    left: 2px;
+    color: var(--mint);
+    font-weight: 700;
+    font-size: 16px;
+    top: 3px;
+  }
+
+  /* CTA */
+  .cta-block {
+    margin-top: 32px;
+    padding: 36px;
+    background: var(--surface);
+    border: 1px solid var(--mint-border);
+    border-radius: 16px;
+    text-align: center;
+  }
+  .cta-block .cta-title {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .cta-block .cta-sub {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 22px;
+  }
+  .cta-btn {
+    display: inline-block;
+    padding: 14px 30px;
+    background: var(--mint);
+    color: var(--bg);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .cta-btn:hover {
+    background: var(--mint-soft);
+    transform: translateY(-1px);
+  }
+
+  /* Accept proposal block */
+  .accept-block {
+    margin-top: 40px;
+    padding: 40px;
+    background: var(--surface);
+    border: 1px solid var(--mint-border);
+    border-radius: 16px;
+  }
+  .accept-block .accept-title {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+  .accept-block .accept-intro {
+    font-size: 14.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .accept-block .accept-intro strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .accept-block .accept-backup {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 26px;
+  }
+  .accept-block .accept-backup a {
+    color: var(--mint);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(232, 181, 176, 0.35);
+    transition: border-color 0.15s;
+  }
+  .accept-block .accept-backup a:hover {
+    border-bottom-color: var(--mint);
+  }
+
+  .accept-fields {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .accept-field {
+    display: flex;
+    flex-direction: column;
+  }
+  .accept-field label {
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .accept-field input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--text-primary);
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    transition: border-color 0.15s, background 0.15s;
+    width: 100%;
+    min-width: 0; /* so flexbox doesn't blow out on mobile */
+  }
+  .accept-field input:focus {
+    outline: none;
+    border-color: var(--mint);
+    background: var(--surface-2);
+  }
+  .accept-field input.invalid {
+    border-color: #d96866;
+    background: rgba(217, 104, 102, 0.06);
+  }
+  /* Normalise date input look on webkit */
+  .accept-field input[type="date"] {
+    color-scheme: dark;
+  }
+
+  .accept-btn {
+    display: block;
+    width: 100%;
+    padding: 16px 30px;
+    background: var(--mint);
+    color: var(--bg);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.03em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.15s;
+    margin-bottom: 14px;
+  }
+  .accept-btn:hover {
+    background: var(--mint-soft);
+    transform: translateY(-1px);
+  }
+  .accept-btn:active {
+    transform: translateY(0);
+  }
+  .accept-fine-print {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    text-align: center;
+  }
+
+  @media (max-width: 520px) {
+    .accept-fields { grid-template-columns: 1fr; }
+  }
+
+  /* Page footer */
+  .page-footer {
+    margin-top: 56px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--body);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .page-footer .brand-pol {
+    color: var(--mint);
+    font-weight: 700;
+  }
+
+  @media (max-width: 680px) {
+    .page { padding: 40px 24px; }
+    h1.display { font-size: 28px; }
+    .act-grid, .phase-timeline, .arch-teams, .mto-grid, .before-after, .options, .parties, .agent-grid {
+      grid-template-columns: 1fr;
+    }
+    .commit-band .figure { font-size: 34px; }
+    .commit-breakdown { padding: 22px 20px; }
+    .dim-row-v2 { grid-template-columns: 1fr; gap: 6px; }
+    .dim-scale { margin-left: 0; }
+    .dim-chart { padding: 20px 18px; }
+    .doc-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SVG trefoil definition, reusable -->
+<svg width="0" height="0" style="position: absolute;">
+  <defs>
+    <symbol id="trefoil" viewBox="0 0 40 40">
+      <g fill="none" stroke="#e8b5b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="20" cy="13" r="7"/>
+        <circle cx="13" cy="25" r="7"/>
+        <circle cx="27" cy="25" r="7"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============================= PAGE 1: INTRODUCTION ============================= -->
+<section class="page" id="introduction">
+  <div class="doc-header">
+    <div class="mark">
+      <svg class="trefoil"><use href="#trefoil"/></svg>
+      POLYNIZE AGENTIC
+    </div>
+    <div class="ref">REF · PAL-SS-001</div>
+  </div>
+
+  <div class="pills">
+    <span class="pill active">Introduction</span>
+    <span class="pill">What we build</span>
+    <span class="pill">Meet the team</span>
+    <span class="pill">A day with the team</span>
+    <span class="pill">What it's worth</span>
+  </div>
+
+  <div class="eyebrow">Agent Team Blueprint · Personalised for Social Studio</div>
+  <h1 class="display">Validate the market. <span class="mint-accent">Then</span> build the product.</h1>
+  <p class="subtitle">Prepared for the Social Studio team. This is the agent team we would build, how it works on the Social Studio app as its first project, and the staged commercial structure that scales as the team proves itself.</p>
+
+  <div class="shift-block">
+    <div class="label">The shift</div>
+    <p class="body">You have been building product before signal. This engagement installs signal first. The agent team goes live, runs landing pages and email sequences, qualifies inbound, and tells you what the market will actually pay for. If Social Studio validates, the team scales with it. If the market says something else, you pivot with data in hand.</p>
+  </div>
+
+  <div class="act-grid">
+    <div class="act-card">
+      <div class="num">01</div>
+      <div class="title">What we build</div>
+      <div class="desc">An agent team sized to your stage. Starting with one agent in month one, scaling to a full team of five by month three.</div>
+    </div>
+    <div class="act-card">
+      <div class="num">02</div>
+      <div class="title">Meet the team</div>
+      <div class="desc">Five agents, each trained on Social Studio before it ships. Named, specific, with clearly defined capabilities and connectors.</div>
+    </div>
+    <div class="act-card">
+      <div class="num">03</div>
+      <div class="title">A day with the team</div>
+      <div class="desc">Three real scenarios. Monday morning strategy. A 2:30am inbound lead. A Friday signal report with a concrete recommendation.</div>
+    </div>
+    <div class="act-card">
+      <div class="num">04</div>
+      <div class="title">What it's worth</div>
+      <div class="desc">Two engagement options, the build fee and service fee structure, and a clear picture of what the conventional alternative costs.</div>
+    </div>
+  </div>
+
+  <div class="parties">
+    <div class="party">
+      <div class="label">Prepared for</div>
+      <div class="value">The Social Studio team<br>Jess K and Leigh</div>
+    </div>
+    <div class="party">
+      <div class="label">Prepared by</div>
+      <div class="value">Polynize Agentic<br>Marrs Coiro, co-founder</div>
+    </div>
+    <div class="party">
+      <div class="label">First project</div>
+      <div class="value">Social Studio app<br>market validation and pipeline</div>
+    </div>
+    <div class="party">
+      <div class="label">Engagement type</div>
+      <div class="value">Staged agent team build<br>Map · Transform · Operate</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span><span class="brand-pol">POLYNIZE</span> AGENTIC · polynize.ai</span>
+    <span>Page 1 of 5 · Introduction</span>
+  </div>
+</section>
+
+<!-- ============================= PAGE 2: WHAT WE BUILD ============================= -->
+<section class="page grid-surface" id="what-we-build">
+  <div class="pills">
+    <span class="pill">Introduction</span>
+    <span class="pill active">What we build</span>
+    <span class="pill">Meet the team</span>
+    <span class="pill">A day with the team</span>
+    <span class="pill">What it's worth</span>
+  </div>
+
+  <div class="eyebrow">The work unit</div>
+  <h1 class="display">An agent team, trained on your business, living inside the tools you <span class="mint-accent">already use</span>.</h1>
+  <p class="subtitle">A conventional marketing team for Social Studio runs approximately $150,000 to $250,000 a year fully loaded and still takes three months to produce meaningful signal. This agent team covers the same work, sized to your stage, with the first signal arriving in the first thirty days.</p>
+
+  <h2 class="section">The three functions the team covers</h2>
+  <p>Every marketing unit does three things. Strategy, creative, and distribution. Our team covers all three, with data feedback loops built in, and everything routed through a human lead. That human lead is you.</p>
+
+  <div class="arch">
+    <div class="arch-label">Social Studio · Marketing Work Unit</div>
+    <div class="arch-teams">
+      <div class="arch-team active">
+        <div class="heading">Strategy & Signal</div>
+        <div class="sub">Phase 1 focus</div>
+      </div>
+      <div class="arch-team">
+        <div class="heading">Creative Production</div>
+        <div class="sub">Added Phase 2</div>
+      </div>
+      <div class="arch-team">
+        <div class="heading">Distribution & Nurture</div>
+        <div class="sub">Added Phase 3</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section">Channel strategy</h2>
+  <p>The team deploys into the channels already producing signal for you. Paid ads on Meta. Landing pages tied to specific beauty treatment personas. Email sequences running through Klaviyo. Organic social across Instagram and TikTok. The agents connect directly to these tools. No dashboard-hopping, no waiting on a developer to change a flow.</p>
+
+  <h2 class="section">How the engagement unfolds</h2>
+  <p>The build is staged across three phases. You are not committing to a full team before the first one proves itself. Each phase has a fixed scope, a fixed fee, and a clear output.</p>
+
+  <div class="phase-timeline">
+    <div class="phase">
+      <div class="stage-label">Phase 01 · Map</div>
+      <div class="stage-name">Map</div>
+      <div class="when">Week 1</div>
+      <div class="what">Two cognition sessions with the Social Studio founders. We install Social Studio's voice, positioning, and commercial rules into the first agent. Blueprint for the full team is locked.</div>
+    </div>
+    <div class="phase">
+      <div class="stage-label">Phase 02 · Transform</div>
+      <div class="stage-name">Transform</div>
+      <div class="when">Weeks 2 to 12</div>
+      <div class="what">Agents deploy in sequence. Strategist first. Designer and social media manager added month two. Customer service and email marketing added month three. The team is live and producing from week two.</div>
+    </div>
+    <div class="phase">
+      <div class="stage-label">Phase 03 · Operate</div>
+      <div class="stage-name">Operate</div>
+      <div class="when">Ongoing</div>
+      <div class="what">Weekly signal reviews. Agent refinement. New capabilities added as the work dictates. The team sharpens as it learns Social Studio's audience.</div>
+    </div>
+  </div>
+
+  <p>Every agent carries a COGNITION.md file, the reasoning protocol installed during Map. It is the difference between an agent that guesses and an agent that reasons the way you would. It is how we prevent drift, the hidden cost of AI without expert thinking installed.</p>
+
+  <div class="page-footer">
+    <span><span class="brand-pol">POLYNIZE</span> AGENTIC · polynize.ai</span>
+    <span>Page 2 of 5 · What we build</span>
+  </div>
+</section>
+
+<!-- ============================= PAGE 3: MEET THE TEAM ============================= -->
+<section class="page" id="meet-the-team">
+  <div class="pills">
+    <span class="pill">Introduction</span>
+    <span class="pill">What we build</span>
+    <span class="pill active">Meet the team</span>
+    <span class="pill">A day with the team</span>
+    <span class="pill">What it's worth</span>
+  </div>
+
+  <div class="eyebrow">The agents</div>
+  <h1 class="display">Meet the <span class="mint-accent">Social Studio</span> marketing team.</h1>
+  <p class="subtitle">Up to five agents, deployed in stages. Each one carries a COGNITION.md specification, installed during Map, that teaches it how Social Studio thinks, talks, and decides. When the first project closes, these agents stay on payroll and take the next brief.</p>
+
+  <div class="agent-grid">
+    <div class="agent-card">
+      <div class="badge">
+        <div class="num">Agent 01</div>
+        <div class="dot"></div>
+      </div>
+      <div class="name">Jelida</div>
+      <div class="role">Marketing Strategist</div>
+      <div class="desc">The brain of the team. Writes the weekly strategy, defines the test matrix for landing pages and ads, segments the audience, and flags which signals matter. Retrainable for any future Social Studio product, any spin-off, any pivot.</div>
+      <div class="tags">
+        <span class="tag">Strategy</span>
+        <span class="tag">Segmentation</span>
+        <span class="tag">A/B testing</span>
+        <span class="tag">Campaign planning</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="badge">
+        <div class="num">Agent 02</div>
+        <div class="dot"></div>
+      </div>
+      <div class="name">Odette</div>
+      <div class="role">Customer Service & Qualifying</div>
+      <div class="desc">The first voice your market meets. Handles inbound DMs, qualifies by budget and business stage, educates on pricing, and routes hot leads to the founders directly. Branded to Social Studio, honest that she is an agent, warm in tone.</div>
+      <div class="tags">
+        <span class="tag">Inbound DMs</span>
+        <span class="tag">Lead qualifying</span>
+        <span class="tag">Objection handling</span>
+        <span class="tag">Routing</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="badge">
+        <div class="num">Agent 03</div>
+        <div class="dot"></div>
+      </div>
+      <div class="name">Vera</div>
+      <div class="role">Designer, Image and Video</div>
+      <div class="desc">Produces the visual side. Ad creative, landing page imagery, product mockups, short-form video. Works from Social Studio's brand palette and the beauty treatment library. Swaps creative every few days, which is what makes paid ads actually work.</div>
+      <div class="tags">
+        <span class="tag">Ad creative</span>
+        <span class="tag">Product mockups</span>
+        <span class="tag">Short-form video</span>
+        <span class="tag">Brand consistency</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="badge">
+        <div class="num">Agent 04</div>
+        <div class="dot"></div>
+      </div>
+      <div class="name">Maren</div>
+      <div class="role">Social Media Manager</div>
+      <div class="desc">The voice. Writes captions, hashtags, short-form copy, and manages the posting schedule across Instagram, TikTok, and any spin-off channels. When a content pillar starts performing, she helps Jelida spin off a dedicated channel for it.</div>
+      <div class="tags">
+        <span class="tag">Copywriting</span>
+        <span class="tag">Scheduling</span>
+        <span class="tag">Content pillars</span>
+        <span class="tag">Engagement</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="badge">
+        <div class="num">Agent 05</div>
+        <div class="dot"></div>
+      </div>
+      <div class="name">Cleo</div>
+      <div class="role">Email Marketing, Klaviyo Specialist</div>
+      <div class="desc">Runs the nurture layer. Builds email sequences in Klaviyo, segments the list by qualifying data, tests subject lines, and reports on open and conversion rates. Where the bulk of the signal actually comes from, because email is where the market decides.</div>
+      <div class="tags">
+        <span class="tag">Klaviyo flows</span>
+        <span class="tag">List segmentation</span>
+        <span class="tag">Nurture sequences</span>
+        <span class="tag">Conversion testing</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="human-lead-callout">
+    <div class="label">The human lead</div>
+    <p class="stmt">Every agent team has a <span class="mint-accent">human lead</span>. For Social Studio, that is the founders. The agents execute; you decide. They surface signal, draft work, and wait for approval. Approvals happen in a Telegram thread you can answer in under a minute. The team is the capability. You are still the company.</p>
+  </div>
+
+  <div class="page-footer">
+    <span><span class="brand-pol">POLYNIZE</span> AGENTIC · polynize.ai</span>
+    <span>Page 3 of 5 · Meet the team</span>
+  </div>
+</section>
+
+<!-- ============================= PAGE 4: A DAY WITH THE TEAM ============================= -->
+<section class="page grid-surface" id="a-day">
+  <div class="pills">
+    <span class="pill">Introduction</span>
+    <span class="pill">What we build</span>
+    <span class="pill">Meet the team</span>
+    <span class="pill active">A day with the team</span>
+    <span class="pill">What it's worth</span>
+  </div>
+
+  <div class="eyebrow">Three scenarios</div>
+  <h1 class="display">What a week with the team <span class="mint-accent">actually</span> looks like.</h1>
+  <p class="subtitle">Not a pitch, a preview. These are the kinds of messages you will see in your Telegram thread with the team, every week, once the build is live.</p>
+
+  <div class="scenario">
+    <div class="scenario-head">
+      <span class="scenario-time">Monday · 7:12 AM</span>
+      <span class="scenario-agents">Jelida + Maren</span>
+    </div>
+    <div class="chat">
+      <div class="bubble agent">
+        <div class="sender">Jelida</div>
+        Morning Jess. Weekend data came in. The LED-treatment landing page is converting at 4.1%, almost three times the pilates page. I'd recommend doubling ad spend behind LED this week and spinning up a dedicated Instagram channel. Maren is drafting content for your approval.
+      </div>
+      <div class="bubble agent">
+        <div class="sender">Maren</div>
+        Five post drafts for the new LED channel, Tuesday to Saturday. All captions, hashtags, and Reels hooks in the Social Studio voice. Reply "approve" or tell me which ones to rework.
+      </div>
+      <div class="bubble human">
+        <div class="sender">Jess</div>
+        Approve all five. Let's push LED harder.
+      </div>
+    </div>
+    <div class="scenario-note">Without the team, this is three emails to a freelancer, a copywriting request, and a two-day wait. With the team, it is done before your first coffee.</div>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-head">
+      <span class="scenario-time">Wednesday · 2:30 AM</span>
+      <span class="scenario-agents">Odette + Cleo</span>
+    </div>
+    <div class="chat">
+      <div class="bubble human">
+        <div class="sender">Inbound · Lauren</div>
+        Hi, I saw your ad saying $29 a month. Does that include a photoshoot and someone to post for me?
+      </div>
+      <div class="bubble agent">
+        <div class="sender">Odette</div>
+        Hi Lauren, thanks for reaching out. Quick note, I'm Odette, an AI agent on the Social Studio team. The $29 plan gives you access to the design library, not a done-for-you service. If you're after posting and photoshoots, I can walk you through our premium tier. Want more info?
+      </div>
+      <div class="bubble human">
+        <div class="sender">Inbound · Lauren</div>
+        Yes please, what's the price?
+      </div>
+      <div class="bubble agent">
+        <div class="sender">Cleo</div>
+        Added Lauren to the premium-curious segment in Klaviyo. Two-tier comparison email going out in ten minutes, follow-up Friday if she hasn't converted.
+      </div>
+    </div>
+    <div class="scenario-note">Every enquiry that would have been a block is now a qualifying moment. The ones who self-select into a higher plan convert. The ones who don't, Cleo nurtures.</div>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-head">
+      <span class="scenario-time">Friday · 5:00 PM</span>
+      <span class="scenario-agents">Jelida · Weekly Signal Report</span>
+    </div>
+    <div class="chat">
+      <div class="bubble agent">
+        <div class="sender">Jelida</div>
+        Week 6 signal report is in your inbox. Top-line: the LED pivot worked. Pipeline up 32% week-on-week. Two recommendations: one, kill the pilates-facing ad set, it is not converting. Two, Cleo and Maren are drafting a dry-skin-specific LED landing page, our second-highest converting segment. Approval needed by Monday.
+      </div>
+      <div class="bubble human">
+        <div class="sender">Jess</div>
+        Approved both. Let's also think about the brand-ambassador agent idea we discussed.
+      </div>
+      <div class="bubble agent">
+        <div class="sender">Jelida</div>
+        Noted. Brief for the next build sprint will be in your inbox Sunday evening, ready for Monday review.
+      </div>
+    </div>
+    <div class="scenario-note">Every Friday, the team gives you a decision, not a dashboard. Data, interpretation, and a concrete next step. This is how validation actually happens.</div>
+  </div>
+
+  <div class="page-footer">
+    <span><span class="brand-pol">POLYNIZE</span> AGENTIC · polynize.ai</span>
+    <span>Page 4 of 5 · A day with the team</span>
+  </div>
+</section>
+
+<!-- ============================= PAGE 5: THE TRANSFORMATION ============================= -->
+<section class="page" id="transformation">
+  <div class="pills">
+    <span class="pill">Introduction</span>
+    <span class="pill">What we build</span>
+    <span class="pill">Meet the team</span>
+    <span class="pill">A day with the team</span>
+    <span class="pill active">What it's worth</span>
+  </div>
+
+  <div class="eyebrow">The transformation</div>
+  <h1 class="display">The team is the <span class="mint-accent">asset</span>. Social Studio is the first project.</h1>
+  <p class="subtitle">This is not a campaign you are buying. It is an agent team you are acquiring, installed into your business, trained on your context, and transferable to every product you build after this one.</p>
+
+  <h2 class="section">The asset you own</h2>
+  <p>Most agencies sell you effort. When the contract ends, the effort ends with it. What we install stays. The agents, the cognition files, the infrastructure, and the brand training move forward with you into every project you take on next.</p>
+
+  <div class="before-after">
+    <div class="ba-box conventional">
+      <div class="label">Conventional path</div>
+      <ul>
+        <li>You hire or engage an agency for the Social Studio app</li>
+        <li>Work is done by people you do not directly manage</li>
+        <li>IP and process live with the agency, not you</li>
+        <li>If the app does not validate, the engagement ends and you start again</li>
+        <li>Any pivot starts from scratch, same cost, same learning curve</li>
+      </ul>
+    </div>
+    <div class="ba-box agent">
+      <div class="label">Agent team path</div>
+      <ul>
+        <li>A five-agent marketing team is installed into Social Studio</li>
+        <li>Every agent carries your voice, your rules, your cognition</li>
+        <li>The team belongs to Social Studio, not to Polynize</li>
+        <li>If the app does not validate, the team takes the next brief</li>
+        <li>Every pivot compounds what the team has already learned</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section">Where the value comes from</h2>
+  <p>Five dimensions frame the commercial case. Each one is scored against the specific situation Social Studio is in right now.</p>
+
+  <div class="dim-chart">
+    <div class="dim-scale">
+      <span class="scale-mark" style="left: 0%">Low</span>
+      <span class="scale-mark" style="left: 33%">Medium</span>
+      <span class="scale-mark" style="left: 66%">High</span>
+      <span class="scale-mark" style="left: 100%; transform: translateX(-100%);">Very High</span>
+    </div>
+
+    <div class="dim-row-v2">
+      <div class="dim-name">Economic</div>
+      <div class="dim-bar"><div class="dim-fill" style="width: 75%"></div></div>
+      <div class="dim-why">Avoids hiring a marketing team at fully loaded cost of approximately $150,000 a year.</div>
+    </div>
+
+    <div class="dim-row-v2">
+      <div class="dim-name">Capability</div>
+      <div class="dim-bar"><div class="dim-fill" style="width: 75%"></div></div>
+      <div class="dim-why">The founders are both marketers, but they're wearing every hat at once. This extends capacity across strategy, creative, customer service, social, and email without adding headcount.</div>
+    </div>
+
+    <div class="dim-row-v2">
+      <div class="dim-name">Velocity</div>
+      <div class="dim-bar"><div class="dim-fill" style="width: 100%"></div></div>
+      <div class="dim-why">Signal arrives in thirty days, not three months. Creative refreshes happen every few days instead of every few weeks, which is what actually keeps paid ads converting.</div>
+    </div>
+
+    <div class="dim-row-v2">
+      <div class="dim-name">Risk &amp; Control</div>
+      <div class="dim-bar"><div class="dim-fill" style="width: 100%"></div></div>
+      <div class="dim-why">The whole engagement is structured to de-risk further product investment. You get the data before you write the next development cheque.</div>
+    </div>
+
+    <div class="dim-row-v2">
+      <div class="dim-name">Strategic</div>
+      <div class="dim-bar"><div class="dim-fill" style="width: 100%"></div></div>
+      <div class="dim-why">The team outlasts the app. B2B LED, e-commerce, physical products, any future pivot inherits a trained marketing unit instead of starting over.</div>
+    </div>
+  </div>
+
+  <h2 class="section">What the conventional alternative costs</h2>
+  <div class="baseline-sentence">A conventional marketing team for a business at Social Studio's stage runs at approximately <span class="gold-num">$150,000 to $250,000 per year</span> fully loaded: a strategist, a designer, a social media manager, and the tools they need. A well-configured agent team delivers <span class="gold-num">5 to 10 times</span> the throughput of the equivalent hire, at a fraction of the annual cost.</div>
+
+  <div class="before-after">
+    <div class="ba-box conventional">
+      <div class="label">Conventional team, per year</div>
+      <ul>
+        <li>Marketing strategist, $80,000 to $100,000</li>
+        <li>Designer on contract, $50,000 to $80,000</li>
+        <li>Social media manager, $50,000 to $65,000</li>
+        <li>Tools, platforms, and overhead, $10,000 to $20,000</li>
+        <li>Approximately twenty qualified leads per month</li>
+      </ul>
+    </div>
+    <div class="ba-box agent">
+      <div class="label">Agent team, 3-month engagement</div>
+      <ul>
+        <li>Five agents deployed, all trained on Social Studio</li>
+        <li>Weekly signal reports, Friday decision memos</li>
+        <li>Creative produced on demand, no freelancer bottleneck</li>
+        <li>5 to 10 times the throughput of the conventional team</li>
+        <li>Team persists for every future project, not just the app</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section">Map. Transform. Operate.</h2>
+  <p>Every engagement runs across three stages. The pricing is transparent. The scope at each stage is fixed. You only move forward when the previous stage has delivered.</p>
+
+  <div class="mto-grid">
+    <div class="mto-card">
+      <div class="stage-eyebrow">Stage 01 · Map</div>
+      <div class="mto-label">Setup + first agent live</div>
+      <div class="fee">$2,500 <span class="fee-plus">+ $2,500</span></div>
+      <div class="fee-note">AUD · $2,500 upfront, $2,500 on Map completion · $699 / mo service fee begins from that point</div>
+      <ul>
+        <li>Two cognition sessions with the Social Studio founders</li>
+        <li>Social Studio voice and positioning installed</li>
+        <li>Commercial rules and qualifying logic captured</li>
+        <li>Full agent team blueprint delivered</li>
+        <li>Jelida deployed live by end of Map</li>
+      </ul>
+    </div>
+    <div class="mto-card highlight">
+      <div class="stage-eyebrow">Stage 02 · Transform</div>
+      <div class="mto-label">Agents 2 to 5 deployed</div>
+      <div class="fee">$10,000</div>
+      <div class="fee-note">AUD · one-time · decided together after Map</div>
+      <ul>
+        <li>Additional agents built, trained on your business, deployed</li>
+        <li>Each agent carries its own COGNITION.md file</li>
+        <li>Connectors installed for Klaviyo, Meta, socials, Telegram</li>
+        <li>Agent Console access for the Social Studio founders</li>
+        <li>Deployed in waves, so you scale commitment with confidence</li>
+      </ul>
+    </div>
+    <div class="mto-card">
+      <div class="stage-eyebrow">Stage 03 · Operate</div>
+      <div class="mto-label">Monthly service fee</div>
+      <div class="fee">From $699 / mo</div>
+      <div class="fee-note">AUD · scales with team size · 6-month minimum from Map completion</div>
+      <ul>
+        <li>Weekly signal reports, Friday decision memos</li>
+        <li>Ongoing agent refinement and training</li>
+        <li>Infrastructure monitoring and uptime</li>
+        <li>COGNITION.md updates as the market teaches you</li>
+        <li>New capabilities installed as the work dictates</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="schedule-wrap">
+    <div class="schedule-title-row">Staged rollout · how the team scales across the first three months</div>
+    <table class="schedule">
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>What happens</th>
+          <th>Team at end of month</th>
+          <th>Stage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="month">Month 1</td>
+          <td>Map delivered. Jelida goes live. Service fee begins.</td>
+          <td class="team">1 agent</td>
+          <td class="amt">Map</td>
+        </tr>
+        <tr>
+          <td class="month">Month 2+</td>
+          <td>Stage 02 rollout begins if agreed. Pace set together.</td>
+          <td class="team">Growing</td>
+          <td class="amt">Transform</td>
+        </tr>
+        <tr>
+          <td class="month">Ongoing</td>
+          <td>Full team live. Service fee at team-size rate.</td>
+          <td class="team">Up to 5 agents</td>
+          <td class="amt">Operate</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section">Your engagement</h2>
+  <p>A full five-agent marketing team, trained on Social Studio, deployed across three stages. You commit $2,500 to begin, see Map delivered, and decide the pace of the full build from there.</p>
+
+  <div class="options single">
+    <div class="option-card hero">
+      <div class="tag">Full team</div>
+      <div class="option-name">Five agents, deployed in stages</div>
+      <div class="headline-fee">$2,500</div>
+      <div class="fee-caption">AUD · upfront to begin Map · $2,500 more on Map completion, $699 / mo service fee begins from that point</div>
+      <ul class="agent-list">
+        <li>Jelida, marketing strategist</li>
+        <li>Odette, customer service and qualifying</li>
+        <li>Vera, designer, images and video</li>
+        <li>Maren, social media manager</li>
+        <li>Cleo, email marketing and Klaviyo</li>
+      </ul>
+      <div class="three-month">
+        Map <span class="num">$2,500 + $2,500</span> · Transform build <span class="num">$10,000</span> · Service fee <span class="num">From $699 / mo</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="commit-breakdown">
+    <div class="breakdown-title">How the commitment ramps up</div>
+
+    <div class="commit-timeline">
+      <div class="commit-step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-heading">To start</div>
+          <div class="step-sub">$2,500 AUD upfront. Map begins.</div>
+        </div>
+      </div>
+      <div class="commit-step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-heading">On Map completion</div>
+          <div class="step-sub">$2,500 AUD + $699 / mo service fee begins. Jelida is live.</div>
+        </div>
+      </div>
+      <div class="commit-step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-heading">Then, together</div>
+          <div class="step-sub">Decide Stage 02 rollout, timing, and pace. Service fee scales as agents come online.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="breakdown-context">
+      Low-friction start. You commit <strong>$2,500 to begin</strong>, see Map delivered, meet Jelida, and decide the pace of the full build from there.
+    </div>
+  </div>
+
+  <div class="pricing-notes">
+    <div class="title">What is and is not included</div>
+    <ul>
+      <li>All fees are in Australian dollars and exclude GST.</li>
+      <li>The service fee reflects the ongoing service we provide alongside the agent team. It covers signal reviews, agent refinement, infrastructure monitoring, and new capabilities installed as Social Studio's market teaches you what to build next.</li>
+      <li>Third-party costs (Meta ad spend, Klaviyo subscription, Canva if retained, paid stock) sit with Social Studio directly and are not included in the engagement fee.</li>
+      <li>Jelida is deployed and live by the end of Map, so you start producing signal in week two, not week six.</li>
+      <li>Agents are trained on your business during Map and retrainable on demand. If Social Studio pivots to B2B LED or any other product, the team moves with you.</li>
+    </ul>
+  </div>
+
+  <div class="accept-block">
+    <div class="accept-title">Next steps</div>
+    <p class="accept-intro">If you are <strong>ready to move forward</strong>, sign and date below and hit accept.</p>
+    <p class="accept-backup">Prefer to talk it through first? <a href="https://calendly.com/marrscoiro/meeting30">Book a thirty-minute call</a> and we'll walk through the engagement together.</p>
+
+    <div class="accept-fields">
+      <div class="accept-field">
+        <label for="accept-name">Full name</label>
+        <input type="text" id="accept-name" autocomplete="name" spellcheck="false">
+      </div>
+      <div class="accept-field">
+        <label for="accept-date">Date</label>
+        <input type="date" id="accept-date">
+      </div>
+    </div>
+
+    <button type="button" class="accept-btn" onclick="acceptProposal()">Accept Proposal</button>
+
+    <p class="accept-fine-print">By accepting, you confirm you are ready to proceed with the Social Studio agent team build as outlined in this proposal. Final payment schedule and terms to be agreed prior to commencement.</p>
+  </div>
+
+  <script>
+    (function () {
+      // Auto-fill today's date into the date input on page load
+      var dateInput = document.getElementById('accept-date');
+      if (dateInput) {
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var dd = String(today.getDate()).padStart(2, '0');
+        dateInput.value = yyyy + '-' + mm + '-' + dd;
+      }
+
+      // Clear invalid state on input
+      var nameInput = document.getElementById('accept-name');
+      if (nameInput) {
+        nameInput.addEventListener('input', function () {
+          this.classList.remove('invalid');
+        });
+        // Submit on Enter since we're not using a form tag
+        nameInput.addEventListener('keypress', function (e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            acceptProposal();
+          }
+        });
+      }
+    })();
+
+    function acceptProposal() {
+      var nameInput = document.getElementById('accept-name');
+      var dateInput = document.getElementById('accept-date');
+      var name = (nameInput.value || '').trim();
+
+      if (!name) {
+        nameInput.classList.add('invalid');
+        nameInput.focus();
+        return;
+      }
+
+      // Format the date readably for the email body
+      var dateValue = dateInput.value;
+      var readableDate = dateValue;
+      if (dateValue) {
+        var parts = dateValue.split('-');
+        if (parts.length === 3) {
+          var d = new Date(parts[0], parseInt(parts[1], 10) - 1, parts[2]);
+          var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+          readableDate = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+        }
+      }
+
+      var subject = 'Social Studio Proposal Accepted';
+      var bodyLines = [
+        'Hi Marrs,',
+        '',
+        'I am accepting the Polynize Agentic proposal for the Social Studio agent team build.',
+        '',
+        'Signed: ' + name,
+        'Date: ' + readableDate,
+        '',
+        'Engagement: Social Studio agent team build',
+        '',
+        'Pricing and package: TBD, to be decided together.',
+        '',
+        'Ready to schedule kickoff.',
+        '',
+        'Thanks,',
+        name
+      ];
+      var body = bodyLines.join('\n');
+
+      var mailto = 'mailto:marrs@polynize.io'
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(body);
+
+      window.location.href = mailto;
+    }
+  </script>
+
+  <div class="page-footer">
+    <span><span class="brand-pol">POLYNIZE</span> AGENTIC · polynize.ai · Generated from your Polynize discovery session · April 2026</span>
+    <span>Page 5 of 5 · What it's worth</span>
+  </div>
+</section>
+
+</body>
+</html>
