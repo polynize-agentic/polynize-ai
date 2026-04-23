@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EverStock · Market Validation Agent Team · Polynize Agentic</title>
+<style>
+  :root {
+    --charcoal:    #2B2F33;
+    --deep:        #1F2326;
+    --deeper:      #171A1D;
+    --card:        #252A2E;
+    --border:      #333B42;
+    --gold:        #C6A45A;
+    --gold-dim:    #A8883E;
+    --gold-glow:   rgba(198,164,90,0.12);
+    --gold-border: rgba(198,164,90,0.3);
+    --white:       #F0F4F8;
+    --light:       #C0CAD4;
+    --muted:       #5A6470;
+    --scout:       #4A9EBF;
+    --lure:        #7FB87A;
+    --ember:       #C6845A;
+    --pulse:       #9A7CC6;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deeper);
+    color: var(--white);
+    font-family: Georgia, 'Times New Roman', serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    background-image:
+      linear-gradient(rgba(198,164,90,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(198,164,90,0.025) 1px, transparent 1px);
+    background-size: 52px 52px;
+  }
+
+  .nav {
+    position: fixed; right: 20px; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 10px; z-index: 100;
+  }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--border); border: 1px solid var(--muted);
+    cursor: pointer; transition: all 0.25s;
+  }
+  .dot.active { background: var(--gold); border-color: var(--gold); transform: scale(1.6); box-shadow: 0 0 10px var(--gold-border); }
+
+  .slide {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; padding: 88px 7vw 72px;
+    position: relative; overflow: hidden; border-bottom: 1px solid var(--border);
+  }
+  .slide-brand { position: absolute; top: 28px; left: 7vw; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; opacity: 0.8; }
+  .slide-num { position: absolute; top: 28px; right: 7vw; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase; }
+
+  .eyebrow { font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.25em; color: var(--gold); text-transform: uppercase; margin-bottom: 18px; }
+  .rule { width: 44px; height: 2px; background: var(--gold); opacity: 0.55; margin-bottom: 28px; }
+  .h-display { font-size: clamp(2.8rem, 7vw, 6.5rem); font-weight: 400; line-height: 1.02; letter-spacing: -0.02em; margin-bottom: 28px; }
+  .h-display em { font-style: italic; color: var(--gold); }
+  .h-section { font-size: clamp(2rem, 4.5vw, 4rem); font-weight: 400; line-height: 1.1; letter-spacing: -0.015em; margin-bottom: 32px; }
+  .h-section em { font-style: italic; color: var(--gold); }
+  .lede { font-family: 'Courier New', monospace; font-size: clamp(0.82rem, 1.3vw, 0.95rem); color: var(--light); line-height: 1.75; max-width: 660px; }
+
+  /* COVER */
+  .cover-meta { display: flex; gap: 48px; flex-wrap: wrap; margin-top: 52px; padding-top: 36px; border-top: 1px solid var(--border); max-width: 800px; }
+  .cover-meta-item { display: flex; flex-direction: column; gap: 5px; }
+  .cm-label { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
+  .cm-val { font-family: 'Courier New', monospace; font-size: 13px; color: var(--light); }
+  .scroll-hint { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0.5; animation: bob 2.4s ease-in-out infinite; }
+  .scroll-line { width: 1px; height: 22px; background: linear-gradient(var(--muted), transparent); }
+  @keyframes bob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(5px)} }
+
+  /* THREE COL */
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; max-width: 900px; margin-top: 36px; }
+  .tc-cell { background: var(--card); padding: 28px 24px; }
+  .tc-num { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+  .tc-title { font-family: Georgia, serif; font-size: 1.15rem; color: var(--white); margin-bottom: 10px; line-height: 1.3; }
+  .tc-body { font-family: 'Courier New', monospace; font-size: 0.75rem; color: var(--muted); line-height: 1.65; }
+
+  /* REFRAME */
+  .reframe-two { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; max-width: 900px; margin-top: 36px; }
+  .rf-col { background: var(--deep); padding: 28px 24px; }
+  .rf-col.gold { background: rgba(198,164,90,0.04); }
+  .rf-label { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .rf-label.old { color: var(--muted); }
+  .rf-label.new { color: var(--gold); }
+  .rf-item { font-family: 'Courier New', monospace; font-size: 0.82rem; padding: 9px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px; color: var(--muted); line-height: 1.5; text-decoration: line-through; text-decoration-color: rgba(90,100,112,0.3); }
+  .rf-item.pos { color: var(--light); text-decoration: none; }
+  .rf-item:last-child { border-bottom: none; }
+  .rf-icon { flex-shrink: 0; }
+  .big-quote { font-size: clamp(1rem, 1.8vw, 1.4rem); font-style: italic; color: var(--light); line-height: 1.55; max-width: 700px; margin-top: 36px; }
+  .big-quote em { font-style: normal; color: var(--gold); }
+
+  /* THREE TEAMS */
+  .team-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 960px; margin-top: 36px; }
+  .team-card { border-radius: 12px; padding: 26px 22px; border: 1px solid var(--border); background: var(--card); position: relative; overflow: hidden; }
+  .team-card.active { border-color: var(--gold); background: rgba(198,164,90,0.04); }
+  .team-card.active::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:linear-gradient(90deg,var(--gold),transparent 70%); }
+  .tc-phase { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 12px; color: var(--muted); }
+  .team-card.active .tc-phase { color: var(--gold); }
+  .tc-icon { font-size: 1.6rem; margin-bottom: 10px; }
+  .tc-name { font-family: Georgia, serif; font-size: 1.15rem; margin-bottom: 8px; }
+  .team-card.active .tc-name { color: var(--gold); }
+  .tc-desc { font-family: 'Courier New', monospace; font-size: 0.75rem; color: var(--muted); line-height: 1.65; }
+  .tc-badge { display: inline-block; margin-top: 14px; font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.08em; background: rgba(198,164,90,0.1); color: var(--gold); border: 1px solid rgba(198,164,90,0.25); padding: 3px 9px; border-radius: 4px; }
+
+  /* CHANNELS */
+  .channel-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 960px; margin-top: 20px; }
+  .ch-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px 16px; }
+  .ch-icon { font-size: 1.4rem; margin-bottom: 8px; }
+  .ch-name { font-family: Georgia, serif; font-size: 0.95rem; margin-bottom: 5px; }
+  .ch-desc { font-family: 'Courier New', monospace; font-size: 0.71rem; color: var(--muted); line-height: 1.6; }
+
+  /* AGENTS */
+  .agent-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 960px; margin-top: 28px; }
+  .agent-card { border-radius: 10px; padding: 20px 16px; border: 1px solid var(--border); background: var(--card); position: relative; overflow: hidden; }
+  .agent-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; }
+  .agent-card.sc::before { background: var(--scout); }
+  .agent-card.lu::before { background: var(--lure); }
+  .agent-card.em::before { background: var(--ember); }
+  .agent-card.pu::before { background: var(--pulse); }
+  .a-num { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 7px; }
+  .agent-card.sc .a-num { color: var(--scout); }
+  .agent-card.lu .a-num { color: var(--lure); }
+  .agent-card.em .a-num { color: var(--ember); }
+  .agent-card.pu .a-num { color: var(--pulse); }
+  .a-name { font-family: Georgia, serif; font-size: 1.15rem; margin-bottom: 3px; }
+  .a-role { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  .agent-card.sc .a-role { color: var(--scout); }
+  .agent-card.lu .a-role { color: var(--lure); }
+  .agent-card.em .a-role { color: var(--ember); }
+  .agent-card.pu .a-role { color: var(--pulse); }
+  .a-desc { font-family: 'Courier New', monospace; font-size: 0.71rem; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+  .a-points { list-style: none; }
+  .a-points li { font-family: 'Courier New', monospace; font-size: 0.68rem; color: var(--muted); padding: 4px 0; border-top: 1px solid var(--border); display: flex; gap: 7px; line-height: 1.4; }
+  .a-points li::before { content: '·'; color: var(--gold-dim); flex-shrink: 0; }
+
+  .callout-box { margin-top: 24px; max-width: 960px; background: rgba(198,164,90,0.04); border: 1px solid rgba(198,164,90,0.2); border-radius: 10px; padding: 20px 24px; font-family: 'Courier New', monospace; font-size: 0.78rem; color: var(--light); line-height: 1.7; }
+  .callout-box strong { color: var(--white); }
+
+  /* SCENARIOS */
+  .scenario-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 960px; margin-top: 28px; }
+  .sc-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 22px 20px; position: relative; overflow: hidden; }
+  .sc-card::before { content:''; position:absolute; top:0;left:0; width:3px;height:100%; background:var(--gold); opacity:0.4; }
+  .sc-time { font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--gold); margin-bottom: 5px; }
+  .sc-agents { display: inline-block; font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.08em; background: rgba(198,164,90,0.08); border: 1px solid rgba(198,164,90,0.2); border-radius: 3px; padding: 2px 7px; color: var(--gold-dim); margin-bottom: 14px; }
+  .sc-quote { font-family: Georgia, serif; font-size: 0.88rem; color: var(--white); line-height: 1.55; margin-bottom: 10px; font-style: italic; }
+  .sc-note { font-family: 'Courier New', monospace; font-size: 0.71rem; color: var(--muted); line-height: 1.6; }
+
+  /* VALUE */
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 960px; margin-top: 28px; }
+  .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px 16px; text-align: center; }
+  .stat-num { font-family: Georgia, serif; font-size: 2rem; color: var(--gold); line-height: 1; margin-bottom: 6px; }
+  .stat-label { font-family: 'Courier New', monospace; font-size: 0.71rem; color: var(--muted); line-height: 1.5; }
+  .compare-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 960px; margin-top: 20px; }
+  .cmp-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 16px; }
+  .cmp-card.hi { border-color: var(--gold); background: rgba(198,164,90,0.04); }
+  .cmp-label { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+  .cmp-card.hi .cmp-label { color: var(--gold); }
+  .cmp-figure { font-family: Georgia, serif; font-size: 1.2rem; color: var(--white); margin-bottom: 6px; }
+  .cmp-card.hi .cmp-figure { color: var(--gold); }
+  .cmp-desc { font-family: 'Courier New', monospace; font-size: 0.7rem; color: var(--muted); line-height: 1.6; }
+
+  /* MTO */
+  .mto-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 960px; margin-top: 28px; }
+  .mto-card { background: var(--deep); border: 1px solid var(--border); border-radius: 12px; padding: 26px 22px; position: relative; overflow: hidden; }
+  .mto-card.hi { border-color: var(--gold); background: rgba(198,164,90,0.04); }
+  .mto-card.hi::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:linear-gradient(90deg,var(--gold),transparent 70%); }
+  .mto-stage { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .mto-name { font-family: Georgia, serif; font-size: 1rem; color: var(--white); margin-bottom: 14px; line-height: 1.3; }
+  .mto-fee { font-family: Georgia, serif; font-size: 1.9rem; color: var(--gold); letter-spacing: -0.02em; margin-bottom: 6px; line-height: 1.1; }
+  .mto-sub { font-family: 'Courier New', monospace; font-size: 0.71rem; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+  .mto-includes { list-style: none; padding-top: 12px; border-top: 1px solid var(--border); }
+  .mto-includes li { font-family: 'Courier New', monospace; font-size: 0.69rem; color: var(--muted); padding: 5px 0; border-bottom: 1px solid rgba(51,59,66,0.5); display: flex; gap: 7px; line-height: 1.45; }
+  .mto-includes li:last-child { border-bottom: none; }
+  .mto-includes li::before { content: '·'; color: var(--gold-dim); flex-shrink: 0; }
+
+  .commit-block { margin-top: 20px; max-width: 960px; background: rgba(198,164,90,0.04); border: 1px solid rgba(198,164,90,0.2); border-radius: 12px; padding: 24px 28px; }
+  .commit-title { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; text-align: center; }
+  .commit-steps { display: flex; flex-direction: column; margin-bottom: 16px; }
+  .commit-step { display: grid; grid-template-columns: 36px 1fr; gap: 14px; padding: 11px 0; border-bottom: 1px solid rgba(198,164,90,0.1); }
+  .commit-step:last-child { border-bottom: none; }
+  .cs-num { font-family: Georgia, serif; font-size: 1.2rem; color: var(--gold); padding-top: 1px; }
+  .cs-head { font-family: Georgia, serif; font-size: 0.9rem; color: var(--white); margin-bottom: 3px; }
+  .cs-sub { font-family: 'Courier New', monospace; font-size: 0.71rem; color: var(--muted); line-height: 1.55; }
+  .commit-ctx { padding-top: 14px; border-top: 1px solid rgba(198,164,90,0.12); font-family: 'Courier New', monospace; font-size: 0.75rem; color: var(--light); line-height: 1.65; text-align: center; }
+  .commit-ctx strong { color: var(--white); }
+
+  /* CLOSE */
+  .next-steps { max-width: 680px; margin-top: 36px; }
+  .ns { display: flex; gap: 22px; padding: 18px 0; border-bottom: 1px solid var(--border); }
+  .ns:last-child { border-bottom: none; }
+  .ns-num { font-family: Georgia, serif; font-size: 1.3rem; color: var(--gold); width: 28px; flex-shrink: 0; padding-top: 1px; }
+  .ns-title { font-family: Georgia, serif; font-size: 1.05rem; color: var(--white); margin-bottom: 4px; }
+  .ns-desc { font-family: 'Courier New', monospace; font-size: 0.77rem; color: var(--muted); line-height: 1.6; }
+  .cta-btn { display: inline-block; margin-top: 44px; background: var(--gold); color: var(--deeper); font-family: 'Courier New', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; padding: 14px 36px; border-radius: 4px; }
+
+  .bg-glow { position: absolute; border-radius: 50%; filter: blur(150px); pointer-events: none; }
+
+  /* ── CHAT INTERFACE ── */
+  .chat-scenarios { display: flex; flex-direction: column; gap: 24px; max-width: 960px; margin-top: 28px; }
+  .chat-block { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  .chat-meta { font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--gold); padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; grid-column: 1/-1; }
+  .chat-agents { background: rgba(198,164,90,0.08); border: 1px solid rgba(198,164,90,0.2); border-radius: 3px; padding: 2px 8px; font-size: 9px; letter-spacing: 0.08em; color: var(--gold-dim); }
+  .chat-thread { display: flex; flex-direction: column; gap: 10px; }
+  .chat-bubble { padding: 13px 16px; border-radius: 12px; max-width: 92%; }
+  .chat-bubble .sender { font-family: 'Courier New', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 6px; }
+  .chat-bubble.agent { background: var(--card); border: 1px solid var(--border); font-family: 'Courier New', monospace; font-size: 0.78rem; color: var(--light); line-height: 1.65; align-self: flex-start; }
+  .chat-bubble.agent .sender { color: var(--gold); }
+  .chat-bubble.human { background: rgba(198,164,90,0.07); border: 1px solid rgba(198,164,90,0.22); font-family: 'Courier New', monospace; font-size: 0.78rem; color: var(--light); line-height: 1.65; align-self: flex-end; margin-left: auto; }
+  .chat-bubble.human .sender { color: var(--light); }
+  .chat-note { font-family: Georgia, serif; font-style: italic; font-size: 0.95rem; color: var(--muted); line-height: 1.6; padding-left: 18px; border-left: 2px solid rgba(198,164,90,0.4); align-self: center; }
+
+  /* ── COST COMPARE ── */
+  .cost-compare { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 960px; margin-top: 28px; }
+  .cost-col { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px 18px; }
+  .cost-col.hi { border-color: var(--gold); background: rgba(198,164,90,0.04); }
+  .cost-label { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .cost-col.hi .cost-label { color: var(--gold); }
+  .cost-figure { font-family: Georgia, serif; font-size: 1.2rem; color: var(--white); margin-bottom: 8px; }
+  .cost-col.hi .cost-figure { color: var(--gold); }
+  .cost-desc { font-family: 'Courier New', monospace; font-size: 0.71rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── DIMENSIONS ── */
+  .dim-block { margin-top: 28px; max-width: 960px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; }
+  .dim-header { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+  .dim-scale-row { display: grid; grid-template-columns: 120px 1fr; gap: 16px; margin-bottom: 8px; }
+  .dim-name-spacer { }
+  .dim-scale-labels { display: flex; justify-content: space-between; font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-bottom: 8px; border-bottom: 1px dashed rgba(198,164,90,0.15); }
+  .dim-row { display: grid; grid-template-columns: 120px 1fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .dim-row:last-of-type { border-bottom: none; }
+  .dim-name { font-family: Georgia, serif; font-size: 0.95rem; color: var(--white); padding-top: 2px; }
+  .dim-right { display: flex; flex-direction: column; gap: 8px; }
+  .dim-bar { height: 14px; background: rgba(198,164,90,0.06); border: 1px solid rgba(198,164,90,0.12); border-radius: 4px; overflow: hidden; }
+  .dim-fill { height: 100%; background: linear-gradient(90deg, rgba(198,164,90,0.35), var(--gold)); border-radius: 3px; }
+  .dim-why { font-family: 'Courier New', monospace; font-size: 0.71rem; color: var(--muted); line-height: 1.6; }
+  .throughput-line { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); font-family: Georgia, serif; font-size: 1rem; color: var(--light); line-height: 1.5; }
+  .throughput-line strong { color: var(--gold); }
+
+  /* ── THREE OPTIONS ── */
+  .options-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 960px; margin-top: 28px; }
+  .option-card { background: var(--deep); border: 1px solid var(--border); border-radius: 12px; padding: 26px 22px; position: relative; overflow: hidden; }
+  .option-card.hi { border-color: var(--gold); background: rgba(198,164,90,0.04); }
+  .option-card.hi::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:linear-gradient(90deg,var(--gold),transparent 70%); }
+  .option-num { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .option-name { font-family: Georgia, serif; font-size: 1.3rem; color: var(--white); margin-bottom: 4px; }
+  .option-card.hi .option-name { color: var(--gold); }
+  .option-timeline { font-family: 'Courier New', monospace; font-size: 0.72rem; color: var(--muted); margin-bottom: 18px; }
+  .option-prices { border-top: 1px solid var(--border); padding-top: 14px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .op-row { display: flex; justify-content: space-between; align-items: baseline; }
+  .op-stage { font-family: 'Courier New', monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.06em; }
+  .op-fee { font-family: Georgia, serif; font-size: 1rem; color: var(--white); }
+  .option-card.hi .op-fee { color: var(--gold); }
+  .op-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 4px; }
+  .op-total span:first-child { font-family: 'Courier New', monospace; font-size: 0.72rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
+  .op-total span:last-child { font-family: Georgia, serif; font-size: 1.3rem; color: var(--gold); }
+  .option-note { font-family: 'Courier New', monospace; font-size: 0.72rem; color: var(--muted); line-height: 1.65; }
+  .options-note { margin-top: 18px; max-width: 960px; font-family: 'Courier New', monospace; font-size: 0.75rem; color: var(--muted); line-height: 1.7; padding: 16px 20px; border: 1px solid var(--border); border-radius: 8px; background: rgba(198,164,90,0.02); }
+
+  @media (max-width: 768px) {
+    .chat-block { grid-template-columns: 1fr; }
+    .cost-compare, .options-grid { grid-template-columns: 1fr; }
+    .dim-row, .dim-scale-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav" id="nav"></div>
+
+<!-- 01 COVER -->
+<section class="slide" id="s1">
+  <div class="bg-glow" style="width:700px;height:700px;background:var(--gold);top:-280px;right:-200px;opacity:0.09;"></div>
+  <div class="slide-brand">EverStock · Optio Capital</div>
+  <div class="slide-num">01 of 10</div>
+  <div class="eyebrow">Agent Blueprint · Personalised for EverStock</div>
+  <div class="h-display">A market validation<br>team built for<br><em>Optio Capital.</em></div>
+  <p class="lede">The full EverStock agent system spans three teams. Phase 1 builds the Market Validation Team from the ground up, with Sales and Operations scoped for subsequent phases once the market validates.</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><span class="cm-label">First project</span><span class="cm-val">EverStock</span></div>
+    <div class="cover-meta-item"><span class="cm-label">Prepared by</span><span class="cm-val">Polynize Agentic</span></div>
+    <div class="cover-meta-item"><span class="cm-label">Engagement type</span><span class="cm-val">Market Validation Team Build</span></div>
+    <div class="cover-meta-item"><span class="cm-label">Timeline</span><span class="cm-val">2 weeks build · 1 week test</span></div>
+  </div>
+  <div class="scroll-hint">Scroll<div class="scroll-line"></div></div>
+</section>
+
+<!-- 02 THE PROBLEM -->
+<section class="slide" id="s2">
+  <div class="slide-brand">EverStock · Optio Capital</div>
+  <div class="slide-num">02 of 10</div>
+  <div class="eyebrow">Where EverStock sits today</div>
+  <div class="rule"></div>
+  <div class="h-section">EverStock has a brand.<br>What it doesn't have is <em>signal.</em></div>
+  <div class="three-col">
+    <div class="tc-cell">
+      <div class="tc-num">01</div>
+      <div class="tc-title">No market validation team</div>
+      <div class="tc-body">No capability to find, test, or qualify the audience that would buy this product.</div>
+    </div>
+    <div class="tc-cell">
+      <div class="tc-num">02</div>
+      <div class="tc-title">No market signal</div>
+      <div class="tc-body">No data on which segments respond, which narratives convert, or what demand actually looks like.</div>
+    </div>
+    <div class="tc-cell">
+      <div class="tc-num">03</div>
+      <div class="tc-title">No decision basis</div>
+      <div class="tc-body">No evidence to support committing capital to inventory, storage, or a full product build.</div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- 04 THREE TEAMS + CHANNELS -->
+<section class="slide" id="s3">
+  <div class="slide-brand">EverStock · Optio Capital</div>
+  <div class="slide-num">03 of 09</div>
+  <div class="eyebrow">Full system architecture</div>
+  <div class="rule"></div>
+  <div class="h-section">Three teams.<br><em>Phase 1 builds here.</em></div>
+  <div class="team-trio">
+    <div class="team-card active">
+      <div class="tc-phase">Phase 1 · This engagement</div>
+      <div class="tc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 6a6 6 0 0 1 6 6"/><path d="M12 10a2 2 0 0 1 2 2"/><line x1="12" y1="12" x2="4.5" y2="4.5"/></svg></div>
+      <div class="tc-name">Market Validation Team</div>
+      <p class="tc-desc">Market validation, content strategy, social presence, lead generation, landing pages, analytics, and audience qualification.</p>
+      <div class="tc-badge">This engagement</div>
+    </div>
+    <div class="team-card">
+      <div class="tc-phase">Phase 2 · Post validation</div>
+      <div class="tc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 3 19 3 19 6"/><line x1="14.5" y1="5.5" x2="19" y2="1"/></svg></div>
+      <div class="tc-name">Sales Team</div>
+      <p class="tc-desc">Lead qualification, CRM routing, waitlist-to-sale conversion, and product-tier sales flows.</p>
+    </div>
+    <div class="team-card">
+      <div class="tc-phase">Phase 3 · At scale</div>
+      <div class="tc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+      <div class="tc-name">Operations Team</div>
+      <p class="tc-desc">Order management, customer service, storage network coordination, and post-sale experience.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top:24px;margin-bottom:14px;">Four channels. One main EverStock account per channel, with two to three sub-Persona accounts running simultaneously to test different narrative angles.</p>
+  <div class="channel-grid">
+    <div class="ch-card"><div class="ch-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="var(--gold)" stroke-width="1.5"/><circle cx="12" cy="12" r="4.5" stroke="var(--gold)" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="var(--gold)"/></svg></div><div class="ch-name">Instagram</div><div class="ch-desc">Visual storytelling, Reels, lifestyle sub-Persona content</div></div>
+    <div class="ch-card"><div class="ch-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="ch-name">Facebook</div><div class="ch-desc">Family audience, targeted ads. Primary conversion channel.</div></div>
+    <div class="ch-card"><div class="ch-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="ch-name">TikTok</div><div class="ch-desc">Short-form hooks, 'normal people prepare' framing</div></div>
+    <div class="ch-card"><div class="ch-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="5" width="20" height="14" rx="3" stroke="var(--gold)" stroke-width="1.5"/><polygon points="10,9 16,12 10,15" stroke="var(--gold)" stroke-width="1.5" stroke-linejoin="round"/></svg></div><div class="ch-name">YouTube</div><div class="ch-desc">Long-form authority, product education, storage explainers</div></div>
+  </div>
+</section>
+
+<!-- 05 MEET THE TEAM -->
+<section class="slide" id="s4">
+  <div class="slide-brand">EverStock · Optio Capital</div>
+  <div class="slide-num">04 of 09</div>
+  <div class="eyebrow">Phase 1 agent roster</div>
+  <div class="rule"></div>
+  <div class="h-section">Meet your<br><em>marketing team.</em></div>
+  <div class="agent-grid">
+    <div class="agent-card sc">
+      <div class="a-num">Agent 01</div>
+      <div class="a-name">Scout</div>
+      <div class="a-role">Content & Social</div>
+      <div class="a-desc">The content arm. Human sets strategy. Scout executes continuously.</div>
+      <ul class="a-points">
+        <li>Manages all 4 channels simultaneously</li>
+        <li>Runs main account + sub-Persona accounts</li>
+        <li>A/B tests narrative angles weekly</li>
+        <li>Signals when a pillar is ready to scale</li>
+      </ul>
+    </div>
+    <div class="agent-card lu">
+      <div class="a-num">Agent 02</div>
+      <div class="a-name">Lure</div>
+      <div class="a-role">Lead Gen & Capture</div>
+      <div class="a-desc">The capture arm. Human lead sees qualified leads. Lure handles every step that gets them there.</div>
+      <ul class="a-points">
+        <li>ManyChat comment-trigger flows</li>
+        <li>Household Readiness Quiz delivery</li>
+        <li>Scores and buckets leads by tier</li>
+        <li>Routes to matching funnel automatically</li>
+      </ul>
+    </div>
+    <div class="agent-card em">
+      <div class="a-num">Agent 03</div>
+      <div class="a-name">Ember</div>
+      <div class="a-role">Website Agent</div>
+      <div class="a-desc">The inbound arm. No unqualified inquiry reaches the team. Ember handles it first.</div>
+      <ul class="a-points">
+        <li>Live chat on everstock.com.au, 24/7</li>
+        <li>Trained on full brand and product range</li>
+        <li>Pre-qualifies every visitor before handoff</li>
+        <li>Passes structured lead data to Lure</li>
+      </ul>
+    </div>
+    <div class="agent-card pu">
+      <div class="a-num">Agent 04</div>
+      <div class="a-name">Pulse</div>
+      <div class="a-role">Analytics & Signal</div>
+      <div class="a-desc">The intelligence arm. Human makes the call. Pulse makes sure it's an informed one.</div>
+      <ul class="a-points">
+        <li>Monitors all channels every week</li>
+        <li>Generates SEO content continuously</li>
+        <li>Friday report: data, interpretation, rec</li>
+        <li>Drives the day-30 go/no-go call</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout-box"><strong>The cognitive unit:</strong> One human lead at Optio directs a layer of agents that handle the high-volume work underneath. The human makes the calls. The agents execute, report back, and adapt. One coordinated unit with a human at the top.</div>
+</section>
+
+<!-- 05 DAY IN THE LIFE - TELEGRAM STYLE -->
+<section class="slide" id="s5">
+  <div class="slide-brand">EverStock · Optio Capital</div>
+  <div class="slide-num">05 of 09</div>
+  <div class="eyebrow">A day with the team</div>
+  <div class="rule"></div>
+  <div class="h-section">The team at work.<br><em>Three moments.</em></div>
+
+  <div class="tg-outer">
+
+    <div class="tg-col">
+      <div class="tg-col-header">Monday 7:00am <span class="chat-agents">SCOUT</span></div>
+      <div class="tg-inner">
+        <div class="tg-row-a">
+          <div class="tg-av">S</div>
+          <div class="tg-b agent-b">
+            <div class="tg-snd">Scout</div>
+            Week two is live. 36 pieces published across all channels. Pulse flagged 'family insurance' as the strongest under-tested angle. ManyChat triggers set. Anyone who comments gets routed to the Readiness Quiz automatically.
+            <div class="tg-ts">07:02</div>
+          </div>
+        </div>
+      </div>
+      <div class="tg-note">No briefing. No meeting. The loop runs itself.</div>
+    </div>
+
+    <div class="tg-col">
+      <div class="tg-col-header">Wednesday 2:30am <span class="chat-agents">EMBER</span></div>
+      <div class="tg-inner">
+        <div class="tg-row-h">
+          <div class="tg-b human-b">
+            <div class="tg-snd human-snd">Visitor</div>
+            Hi, family of four in Brisbane. What's the storage situation? We don't have room at home.
+            <div class="tg-ts">02:31</div>
+          </div>
+          <div class="tg-av human-av">V</div>
+        </div>
+        <div class="tg-row-a">
+          <div class="tg-av">E</div>
+          <div class="tg-b agent-b">
+            <div class="tg-snd">Ember</div>
+            That's exactly what EverStock is built for. We store your supplies locally, no space at home needed. I'd recommend the Home System for a family of four. Want me to add you to the waitlist?
+            <div class="tg-ts">02:31</div>
+          </div>
+        </div>
+      </div>
+      <div class="tg-note">Qualified. Tagged. Routed. At 2:30am.</div>
+    </div>
+
+    <div class="tg-col">
+      <div class="tg-col-header">Friday 5:00pm <span class="chat-agents">PULSE</span></div>
+      <div class="tg-inner">
+        <div class="tg-row-a">
+          <div class="tg-av">P</div>
+          <div class="tg-b agent-b">
+            <div class="tg-snd">Pulse</div>
+            Week 2: 103 quiz completions, 72 qualified, 41 waitlist additions. Best angle: Facebook family/storage, 4.1x CTR. Recommendation: cut doom framing, double family content next week.
+            <div class="tg-ts">17:02</div>
+          </div>
+        </div>
+        <div class="tg-row-h">
+          <div class="tg-b human-b">
+            <div class="tg-snd human-snd">Optio team</div>
+            Approved. Can we look at a Brisbane-specific landing page?
+            <div class="tg-ts">17:08</div>
+          </div>
+          <div class="tg-av human-av">O</div>
+        </div>
+        <div class="tg-row-a">
+          <div class="tg-av">P</div>
+          <div class="tg-b agent-b">
+            <div class="tg-snd">Pulse</div>
+            On it. Brief in your inbox Sunday evening.
+            <div class="tg-ts">17:08</div>
+          </div>
+        </div>
+      </div>
+      <div class="tg-note">Data. Interpretation. Next step. Every Friday.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 06 WHAT IT'S WORTH -->
+<section class="slide" id="s6">
+  <div class="slide-brand">EverStock · Optio Capital</div>
+  <div class="slide-num">06 of 09</div>
+  <div class="eyebrow">Where the value comes from</div>
+  <div class="rule"></div>
+  <div class="h-section">What a market validation<br><em>team really costs.</em></div>
+
+  <div class="cost-compare" style="grid-template-columns:repeat(3,1fr);">
+    <div class="cost-col">
+      <div class="cost-label">Content & Social Manager</div>
+      <div class="cost-figure">$75–95k / yr</div>
+      <div class="cost-desc">Manages one or two channels. Cannot operate multiple Persona accounts simultaneously or self-optimise from signal data.</div>
+    </div>
+    <div class="cost-col">
+      <div class="cost-label">Growth & Lead Gen Specialist</div>
+      <div class="cost-figure">$70–90k / yr</div>
+      <div class="cost-desc">Builds funnels. Cannot run quiz delivery, ManyChat flows, and lead scoring at the same time without significant setup time.</div>
+    </div>
+    <div class="cost-col">
+      <div class="cost-label">Website & Inbound Manager</div>
+      <div class="cost-figure">$60–80k / yr</div>
+      <div class="cost-desc">Available during business hours. A 2:30am enquiry waits until morning. No intent scoring. No automatic lead handoff.</div>
+    </div>
+    <div class="cost-col">
+      <div class="cost-label">Analytics & Insights Manager</div>
+      <div class="cost-figure">$80–100k / yr</div>
+      <div class="cost-desc">Produces weekly reports. Cannot simultaneously generate SEO content, cross-reference channel signals, and issue a concrete recommendation.</div>
+    </div>
+    <div class="cost-col">
+      <div class="cost-label">Platforms, tools & paid media</div>
+      <div class="cost-figure">$3–6k / mo</div>
+      <div class="cost-desc">ManyChat, Meta Ads, analytics, email platform, CRM. Required on top of headcount. No cognitive layer included.</div>
+    </div>
+    <div class="cost-col hi">
+      <div class="cost-label">Year one conventional total</div>
+      <div class="cost-figure">$315–415k</div>
+      <div class="cost-desc">Four roles fully loaded with super, recruitment fees, and tools. Before a single piece of content is published.</div>
+    </div>
+  </div>
+
+  <div class="dim-block">
+    <div class="dim-header">Scored on the five dimensions that matter</div>
+    <div class="dim-scale-row">
+      <div class="dim-name-spacer"></div>
+      <div class="dim-scale-labels">
+        <span>Low</span><span>Medium</span><span>High</span><span>Very High</span>
+      </div>
+    </div>
+    <div class="dim-row">
+      <div class="dim-name">Economic</div>
+      <div class="dim-right"><div class="dim-bar"><div class="dim-fill" style="width:75%"></div></div><div class="dim-why">Avoids building a conventional marketing team at A$120–180k per year before you have a single data point.</div></div>
+    </div>
+    <div class="dim-row">
+      <div class="dim-name">Capability</div>
+      <div class="dim-right"><div class="dim-bar"><div class="dim-fill" style="width:100%"></div></div><div class="dim-why">Optio has no marketing function at all. This builds the entire capability from zero, in 30 days, without a single hire.</div></div>
+    </div>
+    <div class="dim-row">
+      <div class="dim-name">Velocity</div>
+      <div class="dim-right"><div class="dim-bar"><div class="dim-fill" style="width:100%"></div></div><div class="dim-why">Market signal in 30 days instead of 3 months. Creative refreshed weekly instead of quarterly.</div></div>
+    </div>
+    <div class="dim-row">
+      <div class="dim-name">Risk & Control</div>
+      <div class="dim-right"><div class="dim-bar"><div class="dim-fill" style="width:100%"></div></div><div class="dim-why">De-risks the inventory commit. Data arrives before capital is deployed. Go/no-go at day 30.</div></div>
+    </div>
+    <div class="dim-row">
+      <div class="dim-name">Strategic</div>
+      <div class="dim-right"><div class="dim-bar"><div class="dim-fill" style="width:75%"></div></div><div class="dim-why">The team outlasts the project. Every future Optio Capital idea inherits a trained, redeployable marketing unit.</div></div>
+    </div>
+    <div class="throughput-line">A well-configured agent team delivers <strong>5 to 10 times</strong> the throughput of the equivalent hire, at a fraction of the annual cost.</div>
+  </div>
+</section>
+
+<!-- 07 THREE-OPTION COMMERCIAL -->
+<section class="slide" id="s7">
+  <div class="slide-brand">EverStock · Optio Capital</div>
+  <div class="slide-num">07 of 09</div>
+  <div class="eyebrow">Map · Transform · Operate</div>
+  <div class="rule"></div>
+  <div class="h-section">Three ways to<br><em>engage.</em></div>
+
+  <p style="font-family:'Courier New',monospace;font-size:0.78rem;color:var(--muted);line-height:1.75;max-width:820px;margin-bottom:24px;">You are investors in Polynize and you are friends. We want to build this for you. The three options below are honest: the discount is real, the build is identical every time, and the only reason any of this exists is that we have to keep generating revenue while we grow. We are not deprioritising you. We are keeping the lights on while we build for you.</p>
+
+  <div class="options-grid">
+
+    <div class="option-card">
+      <div class="option-num">Option 01</div>
+      <div class="option-name">Full commitment</div>
+      <div class="option-timeline">Live in 2 weeks · Full rate</div>
+      <div class="option-prices">
+        <div class="op-row"><span class="op-stage">Map</span><span class="op-fee">$6,000</span></div>
+        <div class="op-row"><span class="op-stage">Transform</span><span class="op-fee">$22,000</span></div>
+        <div class="op-row"><span class="op-stage">Operate</span><span class="op-fee">$1,999 / mo</span></div>
+        <div class="op-total"><span>Build total</span><span>$28,000</span></div>
+      </div>
+      <div class="option-note">We drop everything else and get the team live in two weeks. This is the rate that lets us pay our people properly for that level of focus.</div>
+    </div>
+
+    <div class="option-card hi">
+      <div class="option-num">Option 02</div>
+      <div class="option-name">Founder rate</div>
+      <div class="option-timeline">Live within 1 month · 50% off</div>
+      <div class="option-prices">
+        <div class="op-row"><span class="op-stage">Map</span><span class="op-fee">$3,000</span></div>
+        <div class="op-row"><span class="op-stage">Transform</span><span class="op-fee">$11,000</span></div>
+        <div class="op-row"><span class="op-stage">Operate</span><span class="op-fee">$999 / mo</span></div>
+        <div class="op-total"><span>Build total</span><span>$14,000</span></div>
+      </div>
+      <div class="option-note">Half price. Same full build, same four agents, same everything. Takes a month instead of two weeks because we have to keep taking revenue alongside it. We are not deprioritising you.</div>
+    </div>
+
+    <div class="option-card">
+      <div class="option-num">Option 03</div>
+      <div class="option-name">Skin in the game</div>
+      <div class="option-timeline">Live within 1 month · 75% off + revenue share</div>
+      <div class="option-prices">
+        <div class="op-row"><span class="op-stage">Map</span><span class="op-fee">$2,000</span></div>
+        <div class="op-row"><span class="op-stage">Transform</span><span class="op-fee">$8,000</span></div>
+        <div class="op-row"><span class="op-stage">Operate</span><span class="op-fee">$999 / mo</span></div>
+        <div class="op-total"><span>Build total</span><span>$10,000</span></div>
+      </div>
+      <div class="option-note">Polynize takes a revenue share for the first 12 months, terms to be agreed at the Map session. We are invested in the outcome, not just the build. Scheduled build, everything included.</div>
+    </div>
+
+  </div>
+
+  <div class="options-note">
+    All three options include the full build: Scout, Lure, Ember, Pulse, website, landing pages, email drip, SEO layer, Agent Console, and PAM infrastructure. The difference is timeline and how we share in the outcome.
+  </div>
+</section>
+
+<!-- 09 THE ASSET -->
+<section class="slide" id="s8">
+  <div class="bg-glow" style="width:500px;height:500px;background:var(--gold);bottom:-200px;left:-100px;opacity:0.08;"></div>
+  <div class="slide-brand">EverStock · Optio Capital</div>
+  <div class="slide-num">08 of 09</div>
+  <div class="eyebrow">What you're really acquiring</div>
+  <div class="rule"></div>
+  <div class="h-section">The team persists.<br><em>The project doesn't.</em></div>
+  <div class="reframe-two">
+    <div class="rf-col">
+      <div class="rf-label old">What a campaign gives you</div>
+      <div class="rf-item"><span class="rf-icon">✗</span>Three months of activity</div>
+      <div class="rf-item"><span class="rf-icon">✗</span>A report when the contract ends</div>
+      <div class="rf-item"><span class="rf-icon">✗</span>Leads that stop the day you stop paying</div>
+      <div class="rf-item"><span class="rf-icon">✗</span>IP and process that leave with the agency</div>
+    </div>
+    <div class="rf-col gold">
+      <div class="rf-label new">What this engagement gives you</div>
+      <div class="rf-item pos"><span class="rf-icon" style="color:var(--gold)">✓</span>A four-agent market validation team</div>
+      <div class="rf-item pos"><span class="rf-icon" style="color:var(--gold)">✓</span>Expert thinking installed, retrainable on demand</div>
+      <div class="rf-item pos"><span class="rf-icon" style="color:var(--gold)">✓</span>Infrastructure owned and portable</div>
+      <div class="rf-item pos"><span class="rf-icon" style="color:var(--gold)">✓</span>Every project inherits what the team has learned</div>
+    </div>
+  </div>
+  <div class="big-quote" style="margin-top:40px;">
+    If EverStock validates, the team <em>scales it.</em><br>
+    If it doesn't, the team takes the <em>next brief.</em><br>
+    Either way, Optio Capital has the capability.
+  </div>
+</section>
+
+<!-- 10 NEXT STEPS -->
+<section class="slide" id="s9">
+  <div class="bg-glow" style="width:600px;height:600px;background:var(--gold);top:-200px;right:-150px;opacity:0.09;"></div>
+  <div class="slide-brand">EverStock · Optio Capital</div>
+  <div class="slide-num">09 of 09</div>
+  <div class="eyebrow">How we move forward</div>
+  <div class="rule"></div>
+  <div class="h-section">Three steps from<br><em>here to a live team.</em></div>
+  <div class="next-steps">
+    <div class="ns">
+      <div class="ns-num">01</div>
+      <div>
+        <div class="ns-title">Share your docs</div>
+        <div class="ns-desc">Google Drive folder with business plan, product range, and branding assets. Read access is enough. The more context, the sharper the COGNITION.md specs.</div>
+      </div>
+    </div>
+    <div class="ns">
+      <div class="ns-num">02</div>
+      <div>
+        <div class="ns-title">Book the Map session</div>
+        <div class="ns-desc">60 minutes to confirm scope, write the COGNITION.md specs, and lock the unit design. By the end, scope is confirmed and Transform begins.</div>
+      </div>
+    </div>
+    <div class="ns">
+      <div class="ns-num">03</div>
+      <div>
+        <div class="ns-title">Build: 2 weeks. Test: 1 week.</div>
+        <div class="ns-desc">The team is live within three weeks of Map completion. Pulse reports every Friday. Go/no-go dataset at day 30. Before a dollar spent on inventory.</div>
+      </div>
+    </div>
+  </div>
+  <a href="https://calendly.com/marrscoiro/meeting30" class="cta-btn">Book the Map session →</a>
+</section>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const nav = document.getElementById('nav');
+  slides.forEach((s, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.addEventListener('click', () => s.scrollIntoView({ behavior: 'smooth' }));
+    nav.appendChild(d);
+  });
+  const dots = nav.querySelectorAll('.dot');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const idx = Array.from(slides).indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

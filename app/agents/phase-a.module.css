@@ -1,0 +1,309 @@
+.phaseA {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 72px 24px 24px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+.progress {
+  position: relative;
+  height: 6px;
+  background: var(--tac-inset);
+  margin-bottom: 80px;
+  border-radius: 999px;
+  box-shadow: var(--tac-shadow-inset);
+  overflow: hidden;
+}
+.progressFill {
+  position: absolute;
+  inset: 0;
+  background: var(--tac-button-gradient);
+  transition: width 0.5s;
+  box-shadow: var(--tac-shadow-progress-fill);
+  border-radius: 999px;
+}
+.progressLabel {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+
+.stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+.card {
+  max-width: 720px;
+  width: 100%;
+}
+.num {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--mint);
+  letter-spacing: 0.15em;
+  margin-bottom: 24px;
+}
+.q {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: clamp(26px, 3.6vw, 44px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin: 0 0 16px;
+  color: var(--text);
+}
+.sub {
+  font-size: 15px;
+  color: var(--text-3);
+  line-height: 1.5;
+  margin: 0 0 40px;
+  max-width: 560px;
+}
+.input {
+  width: 100%;
+  background: var(--tac-inset);
+  border: none;
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 22px;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  padding: 18px 20px;
+  outline: none;
+  resize: none;
+  min-height: 80px;
+  margin-top: 32px;
+  box-shadow: var(--tac-shadow-inset);
+  transition: box-shadow var(--tac-transition);
+}
+.input:focus {
+  box-shadow:
+    2px 2px 5px rgba(0, 0, 0, 0.45) inset,
+    -1px -1px 3px var(--tac-rim) inset,
+    0 0 0 2px var(--mint);
+}
+.input::placeholder {
+  color: var(--text-3);
+}
+.inputThin {
+  font-size: 16px;
+  min-height: 0;
+  padding: 14px 18px;
+  margin-top: 0;
+}
+.business {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 32px;
+}
+.business .input {
+  margin-top: 0;
+}
+.email {
+  max-width: 520px;
+  margin-top: 32px;
+}
+.email .input {
+  margin-top: 0;
+}
+.emailPromise {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-3);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+}
+.lock {
+  color: var(--mint);
+  font-size: 10px;
+}
+
+.pairs {
+  display: grid;
+  gap: 32px;
+  margin-top: 32px;
+}
+.sublabel {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.chip {
+  padding: 12px 20px;
+  border: none;
+  background: var(--tac-surface);
+  color: var(--text-2);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--tac-shadow-secondary);
+  transition: transform var(--tac-transition), color var(--tac-transition);
+}
+.chip:hover {
+  color: var(--mint);
+  transform: translate(-1px, -1px);
+}
+.chipOn {
+  background: var(--tac-button-gradient);
+  color: var(--tac-button-text);
+  font-weight: 600;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    2px 2px 4px rgba(0, 0, 0, 0.45),
+    0 0 14px rgba(105, 252, 203, 0.3);
+}
+.chipOn:hover { color: var(--tac-button-text); }
+
+.multi,
+.single {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+  margin-top: 32px;
+}
+.single {
+  grid-template-columns: 1fr;
+  max-width: 560px;
+}
+.opt {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border: none;
+  background: var(--tac-surface);
+  color: var(--text);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 15px;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 12px;
+  box-shadow: var(--tac-shadow-raised-soft);
+  transition: transform var(--tac-transition);
+  position: relative;
+}
+.opt:hover {
+  transform: translate(-1px, -1px);
+}
+.optOn {
+  background: var(--tac-surface-2);
+  box-shadow:
+    var(--tac-shadow-raised-soft),
+    0 0 0 2px var(--mint),
+    0 0 18px rgba(105, 252, 203, 0.25);
+}
+.check {
+  color: var(--mint);
+  font-size: 14px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+}
+.back {
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 8px 0;
+}
+.next {
+  background: var(--tac-button-gradient);
+  color: var(--tac-button-text);
+  border: none;
+  padding: 14px 24px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  border-radius: 12px;
+  box-shadow: var(--tac-shadow-button-primary);
+  transition: transform var(--tac-transition), box-shadow var(--tac-transition);
+}
+.next:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+}
+.next:active:not(:disabled) {
+  transform: translate(0, 1px);
+  box-shadow: var(--tac-shadow-pressed);
+}
+.next:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.hint {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.cardEnter {
+  animation: slideInR 0.5s both;
+}
+.cardBack {
+  animation: slideInL 0.5s both;
+}
+
+@keyframes slideInR {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes slideInL {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardEnter,
+  .cardBack {
+    animation: none;
+  }
+  .progressFill {
+    transition: none;
+  }
+}

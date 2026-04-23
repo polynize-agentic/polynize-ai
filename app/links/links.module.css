@@ -1,0 +1,308 @@
+.page {
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: var(--text);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+/* Terminal chrome — raised card with an inner recessed bar */
+.chrome {
+  border: none;
+  border-radius: 18px;
+  background: var(--tac-surface);
+  box-shadow: var(--tac-shadow-raised);
+  overflow: hidden;
+  position: relative;
+}
+.chromeBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: var(--tac-surface-2);
+  box-shadow: 0 -1px 0 var(--tac-edge-dark) inset;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+}
+.chromeDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(244, 236, 228, 0.18);
+}
+.chromeDotLive {
+  background: var(--mint);
+  box-shadow: 0 0 8px rgba(105, 252, 203, 0.5);
+}
+.chromePath {
+  flex: 1;
+  text-align: center;
+  opacity: 0.7;
+}
+.chromeRight {
+  font-size: 10px;
+  opacity: 0.55;
+}
+
+.hero {
+  padding: 32px 28px 28px;
+}
+.heroPrompt {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--mint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.heroPrompt::before {
+  content: '>';
+  opacity: 0.7;
+}
+.heroCursor {
+  width: 7px;
+  height: 14px;
+  background: var(--mint);
+  display: inline-block;
+  animation: blink 1.1s steps(2) infinite;
+  margin-left: 2px;
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.heroTitle {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
+  margin: 0 0 10px;
+}
+.heroDot { color: var(--mint); }
+.heroSub {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.5;
+  max-width: 42ch;
+  margin: 0;
+}
+
+.sectionLabel {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-3);
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2px;
+}
+.sectionLabel::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  background: var(--mint);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+.sectionLabel::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--tac-edge-dark);
+}
+.sectionIdx {
+  color: var(--text-2);
+  margin-left: -4px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  display: flex;
+  align-items: stretch;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--tac-surface);
+  border: none;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--tac-shadow-raised-soft);
+  transition: transform var(--tac-transition), box-shadow var(--tac-transition);
+  position: relative;
+}
+.card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow:
+    0 1px 0 var(--tac-edge-light) inset,
+    0 -1px 0 var(--tac-edge-dark) inset,
+    -4px -4px 10px var(--tac-rim),
+    5px 5px 14px rgba(0, 0, 0, 0.4),
+    0 0 18px rgba(105, 252, 203, 0.15);
+}
+.card:active {
+  transform: translate(0, 1px);
+}
+
+.cardGutter {
+  width: 56px;
+  background: var(--tac-inset);
+  box-shadow:
+    1px 0 0 var(--tac-edge-dark) inset,
+    -1px 0 0 var(--tac-edge-light) inset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cardGutter svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--text-2);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke var(--tac-transition);
+}
+.card:hover .cardGutter svg {
+  stroke: var(--mint);
+}
+
+.cardBody {
+  flex: 1;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.cardMeta {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tag {
+  padding: 2px 8px;
+  background: var(--tac-inset);
+  border-radius: 999px;
+  box-shadow: var(--tac-shadow-inset);
+}
+.tagMint {
+  color: var(--mint);
+}
+.cardTitle {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.cardDesc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.45;
+}
+.cardTail {
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 14px;
+  transition: color var(--tac-transition), transform var(--tac-transition);
+}
+.card:hover .cardTail {
+  color: var(--mint);
+  transform: translateX(3px);
+}
+
+/* Featured variant — emphasised elevation with mint accent */
+.cardFeatured {
+  background: var(--tac-surface-2);
+  box-shadow:
+    var(--tac-shadow-raised),
+    0 0 0 1px rgba(105, 252, 203, 0.25),
+    0 0 22px rgba(105, 252, 203, 0.12);
+}
+.cardFeatured .cardGutter {
+  background: rgba(105, 252, 203, 0.08);
+  box-shadow:
+    1px 0 0 rgba(105, 252, 203, 0.3) inset,
+    -1px 0 0 var(--tac-edge-light) inset;
+}
+.cardFeatured .cardGutter svg {
+  stroke: var(--mint);
+}
+
+.footer {
+  margin-top: 24px;
+  padding: 22px 4px 0;
+  border-top: 1px solid var(--tac-edge-dark);
+  box-shadow: 0 1px 0 var(--tac-edge-light);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+.footerRow {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.footerRow a {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color var(--tac-transition);
+}
+.footerRow a:hover {
+  color: var(--mint);
+}
+.footerCopy {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-3);
+  opacity: 0.6;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 480px) {
+  .heroTitle { font-size: 36px; }
+  .cardGutter { width: 48px; }
+  .cardBody { padding: 14px; }
+  .cardTail { padding: 0 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroCursor { animation: none; }
+}

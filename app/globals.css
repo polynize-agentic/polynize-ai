@@ -1,0 +1,46 @@
+/* polynize.ai brand tokens — source of truth, ported from design_handoff/designs/shared/tokens.css */
+:root {
+  --bg: #0a0a0f;
+  --surface: #13131a;
+  --surface-2: #1a1a23;
+  --mint: #69fccb;
+  --blue: #a5c1ec;
+  --gold: #f0e1b6;
+  --text: #f4ece4;
+  --text-2: #c7b9ac;
+  --text-3: #8a7d72;
+  --border: rgba(105, 252, 203, 0.18);
+  --border-soft: rgba(244, 236, 228, 0.08);
+  --coral: #ff7a6b;
+  --amber: #f0b86b;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Heat-map allocation tokens — semantic, do not remap.
+   coral = human, amber = hybrid, mint = agent. */
+.alloc-human  { color: var(--coral); --alloc-bg: rgba(255,122,107,0.12); --alloc-bd: rgba(255,122,107,0.38); }
+.alloc-hybrid { color: var(--amber); --alloc-bg: rgba(240,184,107,0.12); --alloc-bd: rgba(240,184,107,0.38); }
+.alloc-agent  { color: var(--mint);  --alloc-bg: rgba(105,252,203,0.12); --alloc-bd: rgba(105,252,203,0.38); }
+
+/* Reveal-on-scroll base */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
