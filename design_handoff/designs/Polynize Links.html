@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>links.polynize.ai</title>
+<meta name="description" content="polynize.ai resources — map your business, run build protocols, talk to our team.">
+<meta property="og:title" content="links | polynize.ai">
+<meta property="og:description" content="polynize.ai resources — map your business, run build protocols, talk to our team.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://polynize.ai/links">
+<meta property="og:site_name" content="polynize.ai">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="shared/tokens.css">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+  ::selection { background: var(--mint); color: var(--bg); }
+
+  .page {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Terminal chrome (matches homepage) */
+  .chrome {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .chrome-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--surface-2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.04em;
+  }
+  .chrome-dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(244,236,228,0.18); }
+  .chrome-dot.live { background: var(--mint); box-shadow: 0 0 8px rgba(105,252,203,0.5); }
+  .chrome-path { flex: 1; text-align: center; opacity: 0.7; }
+  .chrome-right { font-size: 10px; opacity: 0.55; }
+
+  /* Hero block */
+  .hero { padding: 32px 28px 28px; }
+  .hero-prompt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--mint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-prompt::before { content: '>'; opacity: 0.7; }
+  .hero-prompt .cursor {
+    width: 7px; height: 14px;
+    background: var(--mint);
+    display: inline-block;
+    animation: blink 1.1s steps(2) infinite;
+    margin-left: 2px;
+  }
+  @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+
+  .hero-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    text-transform: lowercase;
+    margin-bottom: 10px;
+  }
+  .hero-title .dot { color: var(--mint); }
+  .hero-sub {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.5;
+    max-width: 42ch;
+  }
+
+  /* Section labels */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--text-3);
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2px;
+  }
+  .section-label::before {
+    content: '';
+    width: 5px; height: 5px;
+    background: var(--mint);
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-soft);
+  }
+  .section-label .idx {
+    color: var(--text-2);
+    margin-left: -4px;
+  }
+
+  /* Link stack */
+  .stack { display: flex; flex-direction: column; gap: 10px; }
+
+  .card {
+    display: flex;
+    align-items: stretch;
+    text-decoration: none;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+    position: relative;
+  }
+  .card:hover {
+    border-color: rgba(105, 252, 203, 0.35);
+    background: var(--surface-2);
+    transform: translateY(-1px);
+  }
+  .card:active { transform: translateY(0); }
+
+  .card-gutter {
+    width: 56px;
+    border-right: 1px solid var(--border-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 10, 15, 0.4);
+    flex-shrink: 0;
+  }
+  .card-gutter svg {
+    width: 20px; height: 20px;
+    stroke: var(--text-2);
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.2s;
+  }
+  .card:hover .card-gutter svg { stroke: var(--mint); }
+
+  .card-body {
+    flex: 1;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .card-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-meta .tag {
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: rgba(244,236,228,0.03);
+  }
+  .card-meta .tag.mint { color: var(--mint); border-color: rgba(105,252,203,0.3); background: rgba(105,252,203,0.06); }
+  .card-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.45;
+  }
+
+  .card-tail {
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    color: var(--text-3);
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .card:hover .card-tail { color: var(--mint); transform: translateX(3px); }
+
+  /* Featured variant */
+  .card.featured {
+    border-color: rgba(105, 252, 203, 0.22);
+    background: linear-gradient(135deg, rgba(105, 252, 203, 0.05) 0%, var(--surface) 60%);
+  }
+  .card.featured .card-gutter {
+    background: rgba(105, 252, 203, 0.08);
+    border-right-color: rgba(105, 252, 203, 0.18);
+  }
+  .card.featured .card-gutter svg { stroke: var(--mint); }
+
+  /* Footer */
+  .footer {
+    margin-top: 24px;
+    padding: 22px 4px 0;
+    border-top: 1px solid var(--border-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  .footer-row {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .footer-row a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-3);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .footer-row a:hover { color: var(--mint); }
+  .footer-copy {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-3);
+    opacity: 0.6;
+    letter-spacing: 0.06em;
+  }
+
+  @media (max-width: 480px) {
+    .hero-title { font-size: 36px; }
+    .card-gutter { width: 48px; }
+    .card-body { padding: 14px 14px; }
+    .card-tail { padding: 0 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Hero chrome -->
+  <div class="chrome">
+    <div class="chrome-bar">
+      <span class="chrome-dot live"></span>
+      <span class="chrome-dot"></span>
+      <span class="chrome-dot"></span>
+      <span class="chrome-path">~/polynize/links</span>
+      <span class="chrome-right">online</span>
+    </div>
+    <div class="hero">
+      <div class="hero-prompt">resources<span class="cursor"></span></div>
+      <h1 class="hero-title">links<span class="dot">.</span></h1>
+      <p class="hero-sub">map your business into an agent workforce. run the build protocol. talk to our team.</p>
+    </div>
+  </div>
+
+  <!-- Get started -->
+  <div class="section-label"><span class="idx">01</span> &nbsp;get started</div>
+  <div class="stack">
+
+    <a href="/agents" class="card featured">
+      <div class="card-gutter">
+        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span class="tag mint">recommended</span><span>5 min · free</span></div>
+        <div class="card-title">Map your business</div>
+        <div class="card-desc">Answer 11 questions. See your heat map. Meet your agent team.</div>
+      </div>
+      <div class="card-tail">→</div>
+    </a>
+
+    <a href="https://app.polynize.io/#/loop/0f5acd09-8627-479b-9c74-1f044c2e880b/execute?from=%2Fstudio%2Fdesign" target="_blank" class="card featured">
+      <div class="card-gutter">
+        <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span class="tag">protocol</span><span>studio</span></div>
+        <div class="card-title">Mission control build protocol</div>
+        <div class="card-desc">Run the structured build protocol in polynize studio.</div>
+      </div>
+      <div class="card-tail">↗</div>
+    </a>
+
+    <a href="https://calendly.com/marrscoiro" target="_blank" class="card">
+      <div class="card-gutter">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span class="tag">calendly</span><span>20 min</span></div>
+        <div class="card-title">Book a call with Marrs</div>
+        <div class="card-desc">Talk to our co-founder about your agent needs.</div>
+      </div>
+      <div class="card-tail">↗</div>
+    </a>
+
+  </div>
+
+  <!-- Connect -->
+  <div class="section-label"><span class="idx">02</span> &nbsp;connect</div>
+  <div class="stack">
+
+    <a href="https://www.tiktok.com/@polynize.labs" target="_blank" class="card">
+      <div class="card-gutter">
+        <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.52a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.98a8.22 8.22 0 0 0 4.76 1.52V7.05a4.83 4.83 0 0 1-1-0.36z"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span class="tag">tiktok</span><span>@polynize.labs</span></div>
+        <div class="card-title">TikTok</div>
+        <div class="card-desc">Behind the scenes at polynize labs.</div>
+      </div>
+      <div class="card-tail">↗</div>
+    </a>
+
+    <a href="https://www.instagram.com/polynize.labs/" target="_blank" class="card">
+      <div class="card-gutter">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span class="tag">instagram</span><span>@polynize.labs</span></div>
+        <div class="card-title">Instagram</div>
+        <div class="card-desc">Follow polynize labs for updates and insights.</div>
+      </div>
+      <div class="card-tail">↗</div>
+    </a>
+
+    <a href="https://www.youtube.com/@polynize-labs" target="_blank" class="card">
+      <div class="card-gutter">
+        <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.13C5.12 19.56 12 19.56 12 19.56s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="10 15 16 12 10 9 10 15" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span class="tag">youtube</span><span>@polynize-labs</span></div>
+        <div class="card-title">YouTube</div>
+        <div class="card-desc">Watch Think Better podcast and agent demos.</div>
+      </div>
+      <div class="card-tail">↗</div>
+    </a>
+
+    <a href="https://www.linkedin.com/in/marrscoiro/" target="_blank" class="card">
+      <div class="card-gutter">
+        <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span class="tag">linkedin</span><span>marrs coiro</span></div>
+        <div class="card-title">LinkedIn</div>
+        <div class="card-desc">Connect with Marrs Coiro.</div>
+      </div>
+      <div class="card-tail">↗</div>
+    </a>
+
+    <a href="https://polynize.io" target="_blank" class="card">
+      <div class="card-gutter">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span class="tag">studio</span><span>polynize.io</span></div>
+        <div class="card-title">Polynize cognitive studio</div>
+        <div class="card-desc">Run thinking protocols and design cognitive systems.</div>
+      </div>
+      <div class="card-tail">↗</div>
+    </a>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-row">
+      <a href="/">polynize.ai</a>
+      <a href="https://polynize.io">polynize.io</a>
+      <a href="https://polynize.io/misc/tos.pdf" target="_blank">terms</a>
+    </div>
+    <div class="footer-copy">© 2026 polynize pty ltd</div>
+  </div>
+
+</div>
+</body>
+</html>

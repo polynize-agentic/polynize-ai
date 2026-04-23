@@ -1,0 +1,315 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-04-21",
+  "description": "Cognitive Work Unit shape library. Drives Heat Map row generation and suggested team composition in the polynize.ai /agents flow. Reference: CWU Design System v0.1. Shape selection driven by Q4 bottleneck category. Human-led = red. Hybrid = amber. Agent-executable = mint/green.",
+  "allocation_legend": {
+    "human-led": "Requires trust, judgment, accountability, or live decisions. Human cannot be removed.",
+    "hybrid": "Agent drafts or executes under human direction. Human reviews and signs off.",
+    "agent-executable": "Structured, repeatable, pattern-based. Runs without human involvement in the task itself."
+  },
+  "shapes": {
+    "analysis_and_judgment": {
+      "id": "analysis_and_judgment",
+      "shape_number": 1,
+      "display_name": "Analysis and Judgment",
+      "q4_trigger": "Analysis and research",
+      "what_it_is": "A unit that converts information into a recommendation or decision. Multiple parallel research streams feed a synthesis layer, which surfaces a decision surface for the human. The human never touches raw inputs. They review synthesised output and make the call.",
+      "human_center_type": "Senior judgment holder. Investment lead, research director, senior advisor, strategy lead.",
+      "structural_signature": "Parallel streams → synthesis → human judgment call",
+      "leverage_range": "3-6x",
+      "leverage_source": "Parallelising research streams, compressing time from question to synthesised decision surface, concentrating human time on judgment not groundwork.",
+      "rows": [
+        { "function": "Domain research (market, competitive, technical)", "allocation": "agent-executable" },
+        { "function": "Data gathering and structuring", "allocation": "agent-executable" },
+        { "function": "First-pass analysis per stream", "allocation": "agent-executable" },
+        { "function": "Cross-stream synthesis and reconciliation", "allocation": "agent-executable" },
+        { "function": "Red-flag identification and escalation", "allocation": "hybrid" },
+        { "function": "Recommendation drafting", "allocation": "hybrid" },
+        { "function": "Weighting evidence under uncertainty", "allocation": "human-led" },
+        { "function": "Final judgment and accountability", "allocation": "human-led" }
+      ],
+      "team_roles": [
+        { "title": "Research Specialist", "priority": 1, "first_agent": true, "description": "Takes a brief, returns structured research on one domain stream. Standalone value from day one." },
+        { "title": "Domain Analyst", "priority": 1, "description": "First-pass analysis across a specific research stream, structured for synthesis." },
+        { "title": "Synthesis Specialist", "priority": 2, "description": "Reconciles parallel streams into a single decision-ready surface for the human." },
+        { "title": "Contradiction Detector", "priority": 2, "description": "Flags contradictions across streams and surfaces red flags before the human sees the output." },
+        { "title": "Memo Specialist", "priority": 3, "description": "Drafts recommendation memos in the human's voice, ready for sign-off." }
+      ],
+      "discriminating_signals": [
+        "We spend too much time on groundwork before we can form a view",
+        "Our senior people are doing research that shouldn't need them",
+        "We review a lot of deals or candidates and it takes too long"
+      ],
+      "domain_examples": ["Investment DD", "market research", "legal review", "strategic planning", "procurement evaluation", "FP&A", "competitive intelligence"]
+    },
+    "pipeline_and_conversion": {
+      "id": "pipeline_and_conversion",
+      "shape_number": 2,
+      "display_name": "Pipeline and Conversion",
+      "q4_trigger": "Sales and pipeline",
+      "what_it_is": "A unit that moves opportunities through sequential stages toward a commitment. The human holds the relationship and closes. Agents carry every scaffolding function around the human's live interactions.",
+      "human_center_type": "Relationship holder and closer. Founder, AE, BD lead, partner, recruiter, fundraiser.",
+      "structural_signature": "Sequential stages with human at key gates",
+      "leverage_range": "2-4x",
+      "leverage_source": "Eliminating prep and admin burden from human, increasing outreach volume without proportional human time, tightening follow-through.",
+      "rows": [
+        { "function": "Target identification and qualification", "allocation": "agent-executable" },
+        { "function": "Outreach and warming sequences", "allocation": "agent-executable" },
+        { "function": "Pre-meeting research and intel briefs", "allocation": "agent-executable" },
+        { "function": "Live client conversations", "allocation": "human-led" },
+        { "function": "Proposal drafting and customisation", "allocation": "hybrid" },
+        { "function": "Objection handling and negotiation", "allocation": "human-led" },
+        { "function": "Follow-through and pipeline state tracking", "allocation": "agent-executable" },
+        { "function": "Close and commitment management", "allocation": "human-led" },
+        { "function": "Post-sale handoff and documentation", "allocation": "agent-executable" }
+      ],
+      "team_roles": [
+        { "title": "Meeting Prep and Intelligence Analyst", "priority": 1, "first_agent": true, "description": "Produces a structured brief before every meeting: company context, contact background, likely objections, suggested angles." },
+        { "title": "Targeting and Qualification Specialist", "priority": 1, "description": "Identifies and qualifies prospects against the unit's definition of fit, filters noise before it reaches the human." },
+        { "title": "Proposal Specialist", "priority": 2, "description": "Drafts tailored proposals using the unit's commercial logic, keeps every proposal consistent with the deal state." },
+        { "title": "Pipeline Coordinator", "priority": 2, "description": "Tracks deal state across the pipeline, surfaces going-cold signals, maintains next-step discipline." },
+        { "title": "Outreach Coordinator", "priority": 3, "description": "Runs warming sequences and cadence management, keeps prospects moving without manual intervention." }
+      ],
+      "discriminating_signals": [
+        "I spend too much time on admin around meetings",
+        "We're not following up consistently",
+        "We can't scale outreach without hiring",
+        "I need to be in more conversations but there aren't enough hours"
+      ],
+      "domain_examples": ["B2B sales", "fundraising", "BD and partnerships", "recruitment", "grant applications", "enterprise sales cycles"]
+    },
+    "execution_and_delivery": {
+      "id": "execution_and_delivery",
+      "shape_number": 3,
+      "display_name": "Execution and Delivery",
+      "q4_trigger": "Building and delivery",
+      "what_it_is": "A unit that takes a specification and builds something. The human is the architect and director. Agents carry building, testing, iteration, and structured production.",
+      "human_center_type": "Architect, technical director, product owner, creative producer, delivery lead.",
+      "structural_signature": "Spec → decompose → build → test → iterate → deliver",
+      "leverage_range": "3-7x",
+      "leverage_source": "Compressing build cycles, parallelising independent workstreams, eliminating human time on structured work, concentrating human on design and exception handling.",
+      "rows": [
+        { "function": "Specification decomposition and planning", "allocation": "agent-executable" },
+        { "function": "Task sequencing and orchestration", "allocation": "agent-executable" },
+        { "function": "Building, coding, or production work", "allocation": "agent-executable" },
+        { "function": "Testing and quality assurance", "allocation": "agent-executable" },
+        { "function": "Iteration on feedback", "allocation": "hybrid" },
+        { "function": "Edge case and exception handling", "allocation": "human-led" },
+        { "function": "Integration, assembly, and deployment", "allocation": "hybrid" },
+        { "function": "Architecture and trade-off decisions", "allocation": "human-led" },
+        { "function": "Final quality judgment and sign-off", "allocation": "human-led" }
+      ],
+      "team_roles": [
+        { "title": "Orchestrator and Spec Decomposition Agent", "priority": 1, "first_agent": true, "description": "Takes a brief or spec and returns a decomposed, sequenced task list with dependencies. Removes the planning burden immediately." },
+        { "title": "Build Specialist", "priority": 1, "description": "Executes the core production work inside the defined spec, parallel where work is decomposable." },
+        { "title": "QA and Evaluation Specialist", "priority": 2, "description": "Checks output against spec, detects regressions, verifies components cohere with each other." },
+        { "title": "Integration Coordinator", "priority": 2, "description": "Assembles parallel workstreams into a coherent shipped output, manages dependencies." },
+        { "title": "Exception Monitor", "priority": 3, "description": "Watches for spec drift and edge cases, escalates novel failures to the human architect." }
+      ],
+      "discriminating_signals": [
+        "We can't ship fast enough",
+        "Too much time on repetitive or boilerplate work",
+        "We need to produce more output than our team can handle"
+      ],
+      "domain_examples": ["software engineering", "content production", "marketing campaign execution", "product development", "financial reporting", "data engineering", "event production"]
+    },
+    "executive_leverage": {
+      "id": "executive_leverage",
+      "shape_number": 4,
+      "display_name": "Executive Leverage",
+      "q4_trigger": "Managing my own time and attention",
+      "what_it_is": "A unit built around one high-value human whose attention is the scarce resource. Agents expand the human's reach, reduce coordination loss, and ensure the human's time is concentrated on decisions only they can make.",
+      "human_center_type": "Founder, CEO, senior partner, department head, board-level executive.",
+      "structural_signature": "Continuous parallel workstreams, attention protection",
+      "leverage_range": "2-4x",
+      "leverage_source": "Protecting the attention frontier, reducing time from decision to action, eliminating context-switching cost, compressing translation loss between intent and execution.",
+      "rows": [
+        { "function": "Inbox and communication triage", "allocation": "agent-executable" },
+        { "function": "Meeting preparation and briefing", "allocation": "agent-executable" },
+        { "function": "Research on demand", "allocation": "agent-executable" },
+        { "function": "Internal coordination and follow-through", "allocation": "agent-executable" },
+        { "function": "External outreach and relationship warming", "allocation": "hybrid" },
+        { "function": "Strategic context maintenance", "allocation": "agent-executable" },
+        { "function": "Output drafting (comms, decks, docs)", "allocation": "hybrid" },
+        { "function": "Strategic priority calls", "allocation": "human-led" },
+        { "function": "Relationship-level decisions", "allocation": "human-led" }
+      ],
+      "team_roles": [
+        { "title": "Clearing and Triage Specialist", "priority": 1, "first_agent": true, "description": "Triages communications, surfaces what actually needs the human's attention, filters the rest." },
+        { "title": "Research and Intelligence Analyst", "priority": 1, "description": "Handles research on demand, produces briefs before meetings, maintains strategic context on ongoing workstreams." },
+        { "title": "Internal Coordination Specialist", "priority": 2, "description": "Manages follow-through on commitments the human has made, tracks what's in flight across parallel workstreams." },
+        { "title": "Outreach and Warming Coordinator", "priority": 2, "description": "Maintains relationship cadence with external contacts the human doesn't have time to warm themselves." },
+        { "title": "Drafting and Synthesis Specialist", "priority": 3, "description": "Drafts communications, decks, and documents in the human's voice for review and sign-off." }
+      ],
+      "discriminating_signals": [
+        "I'm the bottleneck in my own organisation",
+        "Too much of my time goes on things that shouldn't need me",
+        "I lose track of what's in flight",
+        "There's too much to coordinate and things are falling through"
+      ],
+      "domain_examples": ["founder operations", "CEO office", "senior partner leverage", "chief of staff function", "department head with wide span of control"]
+    },
+    "relationship_continuity": {
+      "id": "relationship_continuity",
+      "shape_number": 5,
+      "display_name": "Relationship Continuity",
+      "q4_trigger": "Account and relationship management",
+      "what_it_is": "A unit that maintains ongoing relationships at scale. There is no pipeline end state. The work is continuous. The human holds relationship depth and handles anything requiring genuine trust or judgment. Agents carry monitoring, preparation, routine communication, and follow-through.",
+      "human_center_type": "Account manager, customer success lead, relationship partner, ongoing advisor.",
+      "structural_signature": "Continuous monitoring, human at high-value moments",
+      "leverage_range": "2-4x",
+      "leverage_source": "Scaling relationship coverage without proportional headcount, ensuring no account goes dark, concentrating human time on high-value interactions.",
+      "rows": [
+        { "function": "Account health monitoring across signals", "allocation": "agent-executable" },
+        { "function": "Usage and engagement tracking", "allocation": "agent-executable" },
+        { "function": "Proactive outreach preparation", "allocation": "agent-executable" },
+        { "function": "Periodic review and QBR preparation", "allocation": "hybrid" },
+        { "function": "Issue detection and early triage", "allocation": "agent-executable" },
+        { "function": "Escalation handling and conflict", "allocation": "human-led" },
+        { "function": "Renewal and expansion conversations", "allocation": "human-led" },
+        { "function": "Routine communication and check-ins", "allocation": "hybrid" },
+        { "function": "Relationship-level judgment calls", "allocation": "human-led" }
+      ],
+      "team_roles": [
+        { "title": "Account Health Monitor", "priority": 1, "first_agent": true, "description": "Tracks engagement signals across accounts and surfaces at-risk relationships before they go cold." },
+        { "title": "Engagement Signal Analyst", "priority": 1, "description": "Synthesises usage and engagement data into account state summaries the human can act on." },
+        { "title": "Review Prep Specialist", "priority": 2, "description": "Builds QBR materials and periodic review packs tailored to each account's history and current state." },
+        { "title": "Communication Coordinator", "priority": 2, "description": "Handles routine check-ins and cadence management, escalates anything requiring human judgment." },
+        { "title": "Opportunity Detection Analyst", "priority": 3, "description": "Spots expansion and renewal signals early, surfaces them to the human with context ready for the conversation." }
+      ],
+      "discriminating_signals": [
+        "We can't keep up with all our accounts",
+        "We only talk to clients when they reach out to us",
+        "We're losing accounts we didn't see coming",
+        "Our CS team is stretched too thin"
+      ],
+      "domain_examples": ["customer success", "account management", "ongoing advisory relationships", "partner management", "key account programmes"]
+    },
+    "high_volume_operations": {
+      "id": "high_volume_operations",
+      "shape_number": 6,
+      "display_name": "High-Volume Operations",
+      "q4_trigger": "High-volume operations",
+      "what_it_is": "An inverted structure. Agents are the primary execution layer handling high-volume, structured work. The human is not the center of the work. The human is the exception handler and quality arbiter.",
+      "human_center_type": "Operations lead, compliance officer, service manager, quality lead.",
+      "structural_signature": "Inverted, agents primary, human handles exceptions",
+      "leverage_range": "5-20x",
+      "leverage_source": "Handling volume impossible with human-only processing, concentrating human time on genuinely complex cases, improving consistency of standard processing.",
+      "rows": [
+        { "function": "Intake classification of incoming work", "allocation": "agent-executable" },
+        { "function": "Structured processing (tickets, claims, requests)", "allocation": "agent-executable" },
+        { "function": "Standard response generation", "allocation": "agent-executable" },
+        { "function": "Quality sampling and audit", "allocation": "agent-executable" },
+        { "function": "Exception identification and routing", "allocation": "agent-executable" },
+        { "function": "Complex case handling", "allocation": "human-led" },
+        { "function": "Regulatory and legal judgment calls", "allocation": "human-led" },
+        { "function": "Pattern reporting and process redesign", "allocation": "hybrid" },
+        { "function": "Accountability for output quality at scale", "allocation": "human-led" }
+      ],
+      "team_roles": [
+        { "title": "Classification and Routing Specialist", "priority": 1, "first_agent": true, "description": "Assesses every incoming item and routes it correctly. Standalone value at any volume." },
+        { "title": "Processing Specialist", "priority": 1, "description": "Handles structured, high-volume processing work inside defined scope, parallel where work decomposes." },
+        { "title": "Quality Sampling Analyst", "priority": 2, "description": "Audits agent output at a sampled rate, flags quality degradation early." },
+        { "title": "Exception Detection Specialist", "priority": 2, "description": "Identifies work that falls outside the defined agent scope and routes to the human for handling." },
+        { "title": "Pattern Reporting Analyst", "priority": 3, "description": "Reports on exception rates and patterns, surfaces process drift or input shifts for human review." }
+      ],
+      "discriminating_signals": [
+        "We can't handle the volume",
+        "Too much time on routine processing that feels like it shouldn't need a human",
+        "We need to respond faster but we're understaffed",
+        "Quality is inconsistent because the team is overwhelmed"
+      ],
+      "domain_examples": ["customer support at scale", "compliance monitoring", "claims processing", "loan or application processing", "HR operations", "content moderation", "regulatory reporting"]
+    },
+    "creative_direction": {
+      "id": "creative_direction",
+      "shape_number": 7,
+      "display_name": "Creative Direction",
+      "q4_trigger": "Creative and content production",
+      "what_it_is": "A unit where the human's taste and judgment is the generative source, not the review layer. The human sets creative direction. Agents produce variants, handle production, and explore option spaces.",
+      "human_center_type": "Creative director, brand strategist, editor, designer, content lead.",
+      "structural_signature": "Human direction → agent generation → human curation → agent production",
+      "leverage_range": "2-5x",
+      "leverage_source": "Expanding what the creative director can produce without expanding headcount, compressing production cycles, enabling broader option exploration before committing.",
+      "rows": [
+        { "function": "Creative brief development", "allocation": "hybrid" },
+        { "function": "Research and reference gathering", "allocation": "agent-executable" },
+        { "function": "Concept and variant generation", "allocation": "agent-executable" },
+        { "function": "Option space exploration", "allocation": "agent-executable" },
+        { "function": "Human curation and creative direction", "allocation": "human-led" },
+        { "function": "Production and refinement", "allocation": "agent-executable" },
+        { "function": "Adaptation across formats and channels", "allocation": "agent-executable" },
+        { "function": "Brand and voice consistency checking", "allocation": "agent-executable" },
+        { "function": "Final taste and on-brand judgment", "allocation": "human-led" }
+      ],
+      "team_roles": [
+        { "title": "Research and Reference Specialist", "priority": 1, "first_agent": true, "description": "Ingests a brief and returns a structured reference pack: competitive examples, relevant trends, inspiration directions." },
+        { "title": "Concept Generation Specialist", "priority": 1, "description": "Produces variant concepts and option spaces for human curation, not single answers." },
+        { "title": "Production Specialist", "priority": 2, "description": "Takes curated direction and produces finished output at volume, across formats." },
+        { "title": "Adaptation and Formatting Coordinator", "priority": 2, "description": "Adapts approved output across channels, formats, and platforms without losing voice." },
+        { "title": "Consistency Monitor", "priority": 3, "description": "Checks every output against brand and voice standards, flags drift across iteration cycles." }
+      ],
+      "discriminating_signals": [
+        "We can't produce content at the quality and volume we need",
+        "Our creative team is a bottleneck",
+        "We want to explore more options before committing",
+        "Production is taking too long after the creative direction is set"
+      ],
+      "domain_examples": ["brand strategy", "content production at scale", "editorial direction", "design systems", "marketing creative", "campaign development"]
+    },
+    "learning_and_capability": {
+      "id": "learning_and_capability",
+      "shape_number": 8,
+      "display_name": "Learning and Capability Development",
+      "q4_trigger": "Team learning and development",
+      "what_it_is": "A unit designed to develop human capability at scale. The human expert or L&D lead defines what good looks like and holds the curriculum judgment. Agents deliver, assess, personalise, and surface cohort patterns.",
+      "human_center_type": "L&D lead, subject matter expert, team leader, CHRO.",
+      "structural_signature": "Assessment → gaps → development → cohort intelligence",
+      "leverage_range": "5-15x",
+      "leverage_source": "Delivering at scale without proportional expert time, generating individual gap maps, surfacing cohort patterns previously invisible.",
+      "rows": [
+        { "function": "Capability needs analysis", "allocation": "hybrid" },
+        { "function": "Curriculum and scenario design", "allocation": "human-led" },
+        { "function": "Content and scenario delivery at scale", "allocation": "agent-executable" },
+        { "function": "Individual assessment and scoring", "allocation": "agent-executable" },
+        { "function": "Gap identification per individual", "allocation": "agent-executable" },
+        { "function": "Cohort pattern synthesis", "allocation": "agent-executable" },
+        { "function": "Personalised pathway design", "allocation": "agent-executable" },
+        { "function": "Development investment decisions", "allocation": "human-led" },
+        { "function": "Interpretation of cohort patterns in context", "allocation": "human-led" }
+      ],
+      "team_roles": [
+        { "title": "Assessment and Gap Analysis Specialist", "priority": 1, "first_agent": true, "description": "Delivers capability scenarios, scores performance, returns individual gap maps." },
+        { "title": "Delivery Specialist", "priority": 1, "description": "Runs simulations and scenarios at scale, handles the learner-facing layer without expert time." },
+        { "title": "Personalisation Specialist", "priority": 2, "description": "Designs adaptive development pathways per individual based on their gap map." },
+        { "title": "Cohort Pattern Analyst", "priority": 2, "description": "Synthesises individual assessment data into team-level gap maps and development priorities." },
+        { "title": "Reporting and Visibility Coordinator", "priority": 3, "description": "Surfaces cohort intelligence to leadership in formats ready for workforce and promotion decisions." }
+      ],
+      "discriminating_signals": [
+        "We don't have visibility into our team's real capability",
+        "Training isn't sticking, we don't know if it's working",
+        "We can't assess at the scale we need",
+        "We need to onboard faster",
+        "We want to know who's actually ready before we promote"
+      ],
+      "domain_examples": ["corporate L&D", "onboarding programmes", "sales capability development", "leadership development", "compliance training", "capability assessment for workforce planning"]
+    }
+  },
+  "compound_patterns": {
+    "description": "When a visitor ticks multiple Q4 categories, the top category is the dominant shape. Common secondary pairings below. Use these to augment team composition when a secondary shape is strongly indicated.",
+    "common_compounds": [
+      {
+        "pattern": "analysis_and_judgment + execution_and_delivery",
+        "description": "Research and strategy phase feeding an execution and delivery phase. Common in product launches, market entry, strategic builds."
+      },
+      {
+        "pattern": "executive_leverage + pipeline_and_conversion",
+        "description": "Executive leverage unit with an embedded pipeline function. Common for founder-led sales operations."
+      },
+      {
+        "pattern": "analysis_and_judgment + learning_and_capability",
+        "description": "Analysis of capability gaps feeding a development programme. Common in organisational transformation engagements."
+      }
+    ]
+  }
+}

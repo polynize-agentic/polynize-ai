@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!--
+  =========================================================================
+  polynize.ai · transactional email template · "your blueprint is ready"
+  =========================================================================
+
+  CC-TODO for Claude Code:
+  - Send via Resend (per CLAUDE.md §13).
+  - Subject line is templated in the subject_hint comment below — do not
+    render it into the body.
+  - Replace {{ handlebars }} tokens with real values at send time. If a
+    token is empty, fall back gracefully (e.g. "your heat map" if no shape).
+  - HTML is table-based and inline-styled for broad email client support
+    (Gmail, Outlook 2016+, iOS Mail, Apple Mail, Yahoo). Do NOT switch to
+    flexbox or CSS grid; many email clients silently drop them.
+  - Plain-text fallback is provided below (commented). Include both parts
+    in the multipart MIME message.
+  - Test before launch:
+      1. Litmus or Email on Acid render pass across 6+ clients
+      2. Dark mode: use `<meta name="color-scheme" content="light dark">`
+         and test with Gmail dark theme
+      3. Preheader text shows on iOS inbox preview
+      4. CTA link carries UTM params: ?utm_source=email&utm_medium=blueprint_ready
+      5. Unsubscribe / one-click list-unsubscribe header is required for
+         bulk sending; this is a transactional email so exempt, but confirm
+         with legal.
+
+  subject_hint: "your {{ shape }} blueprint is ready"
+  preheader: "{{ teamCount }} agents. {{ agentPercent }}% of execution shifted. here's what we'd build."
+  =========================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<title>your blueprint is ready</title>
+<style>
+  /* Clients that do support <style> will use these; everything below is also inlined for safety. */
+  body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+  table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
+  img { border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+  a { text-decoration: none; }
+  @media screen and (max-width: 600px) {
+    .container { width: 100% !important; }
+    .px-28 { padding-left: 20px !important; padding-right: 20px !important; }
+    .hero-title { font-size: 32px !important; line-height: 1.1 !important; }
+    .heat-cell { padding: 10px 6px !important; font-size: 10px !important; }
+    .btn-lg { font-size: 14px !important; padding: 16px 24px !important; }
+  }
+</style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0f; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; color: #f4ece4; -webkit-font-smoothing: antialiased;">
+
+<!-- Preheader (hidden) -->
+<div style="display: none; max-height: 0; overflow: hidden; mso-hide: all; font-size: 1px; line-height: 1px; color: #0a0a0f; opacity: 0;">
+  {{ teamCount }} agents. {{ agentPercent }}% of execution shifted. here's what we'd build.
+</div>
+
+<!-- Outer wrapper -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #0a0a0f;">
+  <tr>
+    <td align="center" style="padding: 32px 16px;">
+
+      <!-- Container -->
+      <table role="presentation" class="container" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; background-color: #13131a; border: 1px solid rgba(244,236,228,0.12); border-radius: 16px; overflow: hidden;">
+
+        <!-- Terminal chrome header -->
+        <tr>
+          <td style="padding: 14px 20px; background-color: #1a1a23; border-bottom: 1px solid rgba(244,236,228,0.08); font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 11px; color: rgba(244,236,228,0.42); letter-spacing: 0.04em;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td width="70" style="line-height: 0;">
+                  <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background-color: #69fccb; margin-right: 4px;"></span>
+                  <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background-color: rgba(244,236,228,0.18); margin-right: 4px;"></span>
+                  <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background-color: rgba(244,236,228,0.18);"></span>
+                </td>
+                <td align="center" style="font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 11px; color: rgba(244,236,228,0.42);">
+                  ~/polynize/blueprints/{{ blueprintId }}
+                </td>
+                <td width="70" align="right" style="font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 10px; color: rgba(244,236,228,0.42);">ready</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Hero -->
+        <tr>
+          <td class="px-28" style="padding: 44px 36px 28px;">
+            <div style="font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 11px; color: #69fccb; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 18px;">
+              &gt; blueprint_ready
+            </div>
+            <h1 class="hero-title" style="font-family: 'Space Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.0; color: #f4ece4; margin: 0 0 16px 0;">
+              {{ firstName }}, your blueprint<br>is ready<span style="color: #69fccb;">.</span>
+            </h1>
+            <p style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.55; color: rgba(244,236,228,0.72); margin: 0;">
+              We mapped {{ companyName }} into a <strong style="color: #f4ece4;">{{ shape }}</strong> shape. {{ teamCount }} agents around one human lead. Here's what we'd build.
+            </p>
+          </td>
+        </tr>
+
+        <!-- Heat map mini preview (table of 3 colored cells showing percentages) -->
+        <tr>
+          <td class="px-28" style="padding: 4px 36px 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border: 1px solid rgba(244,236,228,0.12); border-radius: 10px; overflow: hidden;">
+              <tr>
+                <td class="heat-cell" align="center" style="padding: 18px 10px; background-color: rgba(255,122,107,0.14); border-right: 1px solid rgba(244,236,228,0.12); font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 11px; color: rgba(244,236,228,0.72); letter-spacing: 0.08em;">
+                  <div style="font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: #ff7a6b; letter-spacing: -0.02em; margin-bottom: 4px;">{{ humanPercent }}%</div>
+                  HUMAN
+                </td>
+                <td class="heat-cell" align="center" style="padding: 18px 10px; background-color: rgba(240,184,107,0.12); border-right: 1px solid rgba(244,236,228,0.12); font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 11px; color: rgba(244,236,228,0.72); letter-spacing: 0.08em;">
+                  <div style="font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: #f0b86b; letter-spacing: -0.02em; margin-bottom: 4px;">{{ hybridPercent }}%</div>
+                  HYBRID
+                </td>
+                <td class="heat-cell" align="center" style="padding: 18px 10px; background-color: rgba(105,252,203,0.14); font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 11px; color: rgba(244,236,228,0.72); letter-spacing: 0.08em;">
+                  <div style="font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: #69fccb; letter-spacing: -0.02em; margin-bottom: 4px;">{{ agentPercent }}%</div>
+                  AGENT
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Divider -->
+        <tr>
+          <td class="px-28" style="padding: 0 36px;">
+            <div style="border-top: 1px solid rgba(244,236,228,0.08); height: 1px; line-height: 1px; font-size: 1px;">&nbsp;</div>
+          </td>
+        </tr>
+
+        <!-- What's inside -->
+        <tr>
+          <td class="px-28" style="padding: 28px 36px 8px;">
+            <div style="font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 10px; color: rgba(244,236,228,0.42); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 14px;">
+              &mdash; inside your blueprint
+            </div>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td style="padding: 10px 0; font-family: 'Inter', sans-serif; font-size: 14px; color: #f4ece4; border-bottom: 1px solid rgba(244,236,228,0.06);">
+                  <span style="color: #69fccb; font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-right: 10px;">01</span>
+                  <strong style="font-family: 'Space Grotesk', sans-serif; font-weight: 600;">Cover</strong> <span style="color: rgba(244,236,228,0.42);">— your shape, at a glance</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; font-family: 'Inter', sans-serif; font-size: 14px; color: #f4ece4; border-bottom: 1px solid rgba(244,236,228,0.06);">
+                  <span style="color: #69fccb; font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-right: 10px;">02</span>
+                  <strong style="font-family: 'Space Grotesk', sans-serif; font-weight: 600;">Heat map</strong> <span style="color: rgba(244,236,228,0.42);">— every function, colour-coded</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; font-family: 'Inter', sans-serif; font-size: 14px; color: #f4ece4; border-bottom: 1px solid rgba(244,236,228,0.06);">
+                  <span style="color: #69fccb; font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-right: 10px;">03</span>
+                  <strong style="font-family: 'Space Grotesk', sans-serif; font-weight: 600;">Your team</strong> <span style="color: rgba(244,236,228,0.42);">— you + {{ teamCount }} named agents</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; font-family: 'Inter', sans-serif; font-size: 14px; color: #f4ece4; border-bottom: 1px solid rgba(244,236,228,0.06);">
+                  <span style="color: #69fccb; font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-right: 10px;">04</span>
+                  <strong style="font-family: 'Space Grotesk', sans-serif; font-weight: 600;">A day in the life</strong> <span style="color: rgba(244,236,228,0.42);">— timeline of your new week</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; font-family: 'Inter', sans-serif; font-size: 14px; color: #f4ece4;">
+                  <span style="color: #69fccb; font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-right: 10px;">05</span>
+                  <strong style="font-family: 'Space Grotesk', sans-serif; font-weight: 600;">Map / Transform / Operate</strong> <span style="color: rgba(244,236,228,0.42);">— how we'd build it</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Primary CTA -->
+        <tr>
+          <td class="px-28" align="center" style="padding: 32px 36px 16px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td align="center" style="border-radius: 8px; background-color: #69fccb;">
+                  <a href="{{ blueprintUrl }}?utm_source=email&utm_medium=blueprint_ready&utm_campaign=agents_v1" class="btn-lg" style="display: inline-block; padding: 18px 34px; font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 15px; font-weight: 500; color: #0a0a0f; text-decoration: none; letter-spacing: 0.04em; border-radius: 8px;">
+                    &rarr; open_blueprint
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Secondary CTA -->
+        <tr>
+          <td class="px-28" align="center" style="padding: 0 36px 8px;">
+            <a href="{{ bookingUrl }}?utm_source=email&utm_medium=blueprint_ready" style="font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 13px; color: rgba(244,236,228,0.72); text-decoration: none; letter-spacing: 0.04em;">
+              or book a 20-min call with marrs &rarr;
+            </a>
+          </td>
+        </tr>
+
+        <!-- Share line -->
+        <tr>
+          <td class="px-28" align="center" style="padding: 24px 36px 36px;">
+            <div style="font-family: 'Inter', sans-serif; font-size: 12px; color: rgba(244,236,228,0.42); line-height: 1.5;">
+              This link is yours to share. Forward this email, or send<br>
+              <a href="{{ blueprintUrl }}" style="color: rgba(244,236,228,0.72); text-decoration: underline;">{{ blueprintUrl }}</a>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="padding: 24px 36px; background-color: #0a0a0f; border-top: 1px solid rgba(244,236,228,0.08);">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td style="font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 11px; color: rgba(244,236,228,0.42); letter-spacing: 0.04em;">
+                  [polynize<span style="color: rgba(244,236,228,0.28);">.ai</span>]
+                </td>
+                <td align="right" style="font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 10px; color: rgba(244,236,228,0.42); letter-spacing: 0.04em;">
+                  sent {{ sentAt }}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" style="padding-top: 14px; font-family: 'Inter', sans-serif; font-size: 11px; color: rgba(244,236,228,0.42); line-height: 1.55;">
+                  You're receiving this because you mapped your business at polynize.ai. This is a one-time transactional email; we won't add you to any list without your say-so.
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" style="padding-top: 10px;">
+                  <a href="https://polynize.ai" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(244,236,228,0.42); text-decoration: none; letter-spacing: 0.08em; margin-right: 16px;">polynize.ai</a>
+                  <a href="https://polynize.ai/brand" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(244,236,228,0.42); text-decoration: none; letter-spacing: 0.08em; margin-right: 16px;">brand</a>
+                  <a href="{{ bookingUrl }}" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(244,236,228,0.42); text-decoration: none; letter-spacing: 0.08em;">book a call</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+<!--
+  =========================================================================
+  PLAIN-TEXT FALLBACK (include as text/plain part of multipart MIME)
+  =========================================================================
+
+  {{ firstName }}, your blueprint is ready.
+
+  We mapped {{ companyName }} into a {{ shape }} shape.
+  {{ teamCount }} agents around one human lead.
+
+  YOUR HEAT MAP
+    {{ humanPercent }}% human  |  {{ hybridPercent }}% hybrid  |  {{ agentPercent }}% agent
+
+  INSIDE
+    01 · Cover
+    02 · Heat map
+    03 · Your team ({{ teamCount }} agents)
+    04 · A day in the life
+    05 · Map / Transform / Operate
+
+  Open your blueprint:
+  {{ blueprintUrl }}
+
+  Or book 20 minutes with Marrs:
+  {{ bookingUrl }}
+
+  --
+  polynize.ai
+  sent {{ sentAt }}
+  =========================================================================
+-->
+
+</body>
+</html>

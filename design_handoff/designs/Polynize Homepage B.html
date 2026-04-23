@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Polynize.ai</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="shared/tokens.css"/>
+
+<style>
+  html, body { background: #0a0a0f; margin: 0; }
+  body { font-family: 'Inter', sans-serif; color: #f4ece4; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="shared/data.js"></script>
+<script type="text/babel" src="directions/direction-b.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "headline": "shape",
+  "cta": "map",
+  "accent": "mint"
+}/*EDITMODE-END*/;
+
+const App = () => {
+  const [tweaks, setTweaks] = React.useState(TWEAK_DEFAULTS);
+  const [editOn, setEditOn] = React.useState(false);
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--mint', tweaks.accent === 'blue' ? '#a5c1ec' : '#69fccb');
+  }, [tweaks]);
+
+  React.useEffect(() => {
+    const handler = (e) => {
+      if (!e.data || typeof e.data !== 'object') return;
+      if (e.data.type === '__activate_edit_mode') setEditOn(true);
+      if (e.data.type === '__deactivate_edit_mode') setEditOn(false);
+    };
+    window.addEventListener('message', handler);
+    window.parent.postMessage({type: '__edit_mode_available'}, '*');
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  const update = (patch) => {
+    const next = {...tweaks, ...patch};
+    setTweaks(next);
+    window.parent.postMessage({type: '__edit_mode_set_keys', edits: patch}, '*');
+  };
+
+  const btn = (active) => ({
+    padding:'6px 10px', fontSize: 11, border:'1px solid rgba(105,252,203,0.25)',
+    background: active ? '#69fccb' : 'transparent', color: active ? '#0a0a0f' : '#c7b9ac',
+    cursor:'pointer', marginRight: 6, marginBottom: 6, borderRadius: 2,
+    fontFamily:'"JetBrains Mono", monospace',
+  });
+  const lbl = {fontSize: 11, letterSpacing:'.15em', color:'#8a7d72', textTransform:'uppercase', fontFamily:'"JetBrains Mono", monospace', marginBottom: 6, display:'block'};
+
+  return (
+    <>
+      <DirectionB/>
+      {editOn && (
+        <div style={{
+          position:'fixed', right: 20, bottom: 20, width: 280,
+          background:'#13131a', border:'1px solid rgba(105,252,203,0.25)', borderRadius: 6,
+          padding: 18, color:'#f4ece4', fontFamily:'Inter, sans-serif',
+          boxShadow:'0 20px 60px rgba(0,0,0,0.6)', zIndex: 9999,
+        }}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 16, paddingBottom: 12, borderBottom:'1px solid rgba(105,252,203,0.15)'}}>
+            <div style={{fontSize: 12, letterSpacing:'.2em', color:'#69fccb', fontFamily:'"JetBrains Mono", monospace'}}>TWEAKS</div>
+          </div>
+          <div style={{marginBottom: 14}}>
+            <div style={lbl}>Headline</div>
+            <div>
+              {[['shape','Shape'], ['unit','1 + 4 = 5×'], ['team','Team']].map(([k,l]) => (
+                <button key={k} style={btn(tweaks.headline===k)} onClick={()=>update({headline:k})}>{l}</button>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom: 14}}>
+            <div style={lbl}>CTA</div>
+            <div>
+              {[['map','Map Your Business'], ['agentify','See What You Can Agentify']].map(([k,l]) => (
+                <button key={k} style={btn(tweaks.cta===k)} onClick={()=>update({cta:k})}>{l}</button>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom: 0}}>
+            <div style={lbl}>Accent</div>
+            <div>
+              {[['mint','Mint'], ['blue','Blue']].map(([k,l]) => (
+                <button key={k} style={btn(tweaks.accent===k)} onClick={()=>update({accent:k})}>{l}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
