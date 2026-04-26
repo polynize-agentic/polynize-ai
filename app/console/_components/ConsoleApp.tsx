@@ -28,12 +28,14 @@ import { ProjectDetail } from './ProjectDetail';
 import { AgentsList } from './AgentsList';
 import { AgentDetail } from './AgentDetail';
 import { HumansList } from './HumansList';
+import { NewProjectModal, type CreateProjectPayload } from './NewProjectModal';
 import s from '../console.module.css';
 
 export function ConsoleApp() {
   const [tab, setTab] = useState<Tab>('dashboard');
   const [openProjectId, setOpenProjectId] = useState<string | null>(null);
   const [openAgentId, setOpenAgentId] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [projects, setProjects] = useState(PROJECTS);
   const [tasks, setTasks] = useState(TASKS);
   const [activity, setActivity] = useState(SEED_ACTIVITY);
@@ -215,6 +217,38 @@ export function ConsoleApp() {
     []
   );
 
+  const handleCreateProject = useCallback(
+    ({ project, starterTasks }: CreateProjectPayload) => {
+      setProjects((prev) => [...prev, project]);
+      setTasks((prev) => [...starterTasks, ...prev]);
+      const lead = AGENT_BY_ID[project.leadAgent];
+      const actor = lead?.name ?? 'Agent';
+      setActivity((prev) => [
+        {
+          kind: 'plan' as const,
+          actor: 'Evelyn Harrow',
+          text: `created ${project.name}`,
+          project: project.id,
+          ago: 'now',
+          isNew: true,
+        },
+        {
+          kind: 'proposed' as const,
+          actor,
+          text: `proposed ${starterTasks.length} starter tasks for ${project.name}`,
+          project: project.id,
+          ago: 'now',
+          isNew: true,
+        },
+        ...prev,
+      ].slice(0, 40));
+      setTab('projects');
+      setOpenProjectId(project.id);
+      setModalOpen(false);
+    },
+    []
+  );
+
   const handleReset = useCallback(() => {
     clearPersisted();
     setTab(SEED_STATE.tab);
@@ -227,10 +261,13 @@ export function ConsoleApp() {
     setTweaksOpen(false);
   }, []);
 
-  // Keyboard: Esc closes the tweaks panel (and later, modal + drawer)
+  // Keyboard: Esc closes tweaks/modal (drawer manages its own Esc handler)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setTweaksOpen(false);
+      if (e.key === 'Escape') {
+        setTweaksOpen(false);
+        setModalOpen(false);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -268,9 +305,7 @@ export function ConsoleApp() {
               setTab('agents');
               setOpenAgentId(id);
             }}
-            onNewProject={() => {
-              /* Phase 6 wires the modal */
-            }}
+            onNewProject={() => setModalOpen(true)}
           />
         )}
         {tab === 'projects' && !openProjectId && (
@@ -278,9 +313,7 @@ export function ConsoleApp() {
             projects={projects}
             tasks={tasks}
             onOpenProject={(id) => setOpenProjectId(id)}
-            onNewProject={() => {
-              /* Phase 6 wires the modal */
-            }}
+            onNewProject={() => setModalOpen(true)}
           />
         )}
         {tab === 'projects' && openProjectId && (() => {
@@ -320,6 +353,10 @@ export function ConsoleApp() {
           />
         );
       })()}
+
+      {modalOpen && (
+        <NewProjectModal onClose={() => setModalOpen(false)} onCreate={handleCreateProject} />
+      )}
 
       <TweaksPanel
         open={tweaksOpen}
