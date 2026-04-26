@@ -6,6 +6,7 @@ import { PhaseA } from './PhaseA';
 import { PhaseB } from './PhaseB';
 import { PhaseC, type ChatMessage } from './PhaseC';
 import { track, emailDomain } from '@/lib/analytics';
+import { persistAnswers, persistHeatMap } from '@/lib/persist-client';
 
 const STORAGE_KEY = 'polynize_agents_state_v2';
 
@@ -23,8 +24,7 @@ export function AgentsController() {
   const [state, setState] = useState<Persisted>(INITIAL);
   const [hydrated, setHydrated] = useState(false);
 
-  // Hydrate from localStorage on first client render.
-  // CC-TODO: replace with cookie + Supabase session read once env is wired.
+  // Hydrate from localStorage + bootstrap server session on first mount.
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -42,6 +42,13 @@ export function AgentsController() {
       /* ignore corrupted state */
     }
     setHydrated(true);
+
+    // Issue (or refresh) the server session cookie. The actual sessions
+    // row is created lazily by ensureSession on the first write, so this
+    // POST is just to mint the cookie up-front for cleaner debugging.
+    void fetch('/api/session', { method: 'POST', credentials: 'same-origin' }).catch(() => {
+      /* offline ok — writes will retry */
+    });
   }, []);
 
   useEffect(() => {
@@ -55,6 +62,9 @@ export function AgentsController() {
 
   const handleAnswersChange = useCallback((answers: Partial<Answers>, step: number) => {
     setState((prev) => ({ ...prev, answers, step }));
+    // Persist the partial answers per step. Max ~12 writes per flow,
+    // not per keystroke — handleAnswersChange fires on step transitions.
+    persistAnswers(answers, false);
   }, []);
 
   const handlePhaseAComplete = useCallback((answers: Partial<Answers>) => {
@@ -65,6 +75,7 @@ export function AgentsController() {
     if (answers.email) {
       track('email_captured', { domain: emailDomain(answers.email) });
     }
+    persistAnswers(answers, true);
     setState((prev) => ({ ...prev, answers, phase: 'B' }));
   }, []);
 
@@ -75,6 +86,7 @@ export function AgentsController() {
       pct_hybrid: data.percentages.hybrid,
       pct_agent: data.percentages.agent,
     });
+    persistHeatMap(data);
     setState((prev) => ({ ...prev, data, phase: 'C' }));
   }, []);
 

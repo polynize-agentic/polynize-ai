@@ -179,6 +179,42 @@
   align-items: center;
   gap: 6px;
 }
+.headRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.sendBlueprintBtn {
+  background: var(--tac-button-gradient);
+  color: var(--tac-button-text);
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: var(--tac-shadow-button-primary);
+  transition: transform var(--tac-transition);
+}
+.sendBlueprintBtn:hover:not(:disabled) { transform: translate(-1px, -1px); }
+.sendBlueprintBtn:active:not(:disabled) {
+  transform: translate(0, 1px);
+  box-shadow: var(--tac-shadow-pressed);
+}
+.sendBlueprintBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+.createError {
+  margin: 14px 32px 0;
+  padding: 10px 14px;
+  background: rgba(255, 122, 107, 0.08);
+  color: var(--coral);
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgba(255, 122, 107, 0.25);
+  font-size: 13px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+}
 .liveDot {
   width: 6px;
   height: 6px;

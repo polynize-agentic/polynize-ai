@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Answers, HeatMapData, TeamMember } from '@/lib/types';
 import { buildAgentSystemPrompt } from '@/lib/agents/system-prompt';
 import { track } from '@/lib/analytics';
+import { persistMessage, createBlueprint } from '@/lib/persist-client';
 import s from './phase-c.module.css';
 
 export type ChatMessage = {
@@ -86,6 +87,7 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
       setInput('');
       setLoading(true);
       track('phase_c_message', { agent_id: agent.role, message_count: newHistory.length });
+      persistMessage('user', trimmed);
 
       const system = buildAgentSystemPrompt(agent, answers, data);
       const apiMessages = newHistory.map(({ role, content }) => ({ role, content }));
@@ -104,6 +106,7 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
           ...prev,
           { role: 'assistant', content: replyText, agentName: agent.name, agentRole: agent.role },
         ]);
+        persistMessage('assistant', replyText, agent.role);
       } catch {
         setMessages((prev) => [
           ...prev,
@@ -127,6 +130,23 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
     e.preventDefault();
     send(input);
   };
+
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
+
+  const sendMyBlueprint = useCallback(async () => {
+    if (creating) return;
+    setCreating(true);
+    setCreateError(null);
+    const res = await createBlueprint();
+    if ('id' in res) {
+      track('blueprint_created', { id: res.id, shape_id: data.shape_id });
+      window.location.href = `/blueprints/${res.id}`;
+      return;
+    }
+    setCreateError(res.error);
+    setCreating(false);
+  }, [creating, data.shape_id]);
 
   if (agents.length === 0) {
     return (
@@ -192,10 +212,26 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
               {active.name} <span className={s.chatRoleSuffix}>· {active.role}</span>
             </div>
           </div>
-          <div className={s.live}>
-            <span className={s.liveDot} /> online
+          <div className={s.headRight}>
+            <div className={s.live}>
+              <span className={s.liveDot} /> online
+            </div>
+            <button
+              type="button"
+              className={s.sendBlueprintBtn}
+              onClick={sendMyBlueprint}
+              disabled={creating}
+              aria-label="Send me my Blueprint"
+            >
+              {creating ? 'sending…' : 'send my blueprint →'}
+            </button>
           </div>
         </div>
+        {createError && (
+          <div className={s.createError} role="alert">
+            {createError}
+          </div>
+        )}
 
         <div
           className={s.msgs}

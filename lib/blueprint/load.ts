@@ -1,6 +1,7 @@
 import type { Answers, HeatMapData } from '../types';
 import { deriveHeatMap } from '../agents/derive-heatmap';
 import { DEMO_ANSWERS } from './demo-default';
+import { supabaseService } from '../supabase';
 
 export type BlueprintPayload = {
   id: string;
@@ -16,14 +17,10 @@ export type BlueprintPayload = {
  *
  * Resolution order:
  *   1. id === 'demo' OR ?demo=1 → return demo payload
- *   2. SUPABASE_URL set → query blueprints table; null result triggers 404
- *      (page.tsx calls notFound())
+ *   2. SUPABASE_URL set → query blueprints table; null result triggers
+ *      404 (page.tsx calls notFound())
  *   3. SUPABASE_URL not set (dev without creds) → return demo so the
  *      page is browseable
- *
- * The Supabase fetch is a CC-TODO; the shape of the function lets the
- * upgrade be local. A null return from this function should always
- * trigger notFound() in the calling page.
  */
 export async function loadBlueprint(
   id: string,
@@ -33,15 +30,28 @@ export async function loadBlueprint(
   if (isDemo) return demoPayload(id, true);
 
   if (process.env.SUPABASE_URL) {
-    // CC-TODO: real Supabase fetch
-    // const { data: row } = await supabaseService()
-    //   .from('blueprints').select('*').eq('id', id).maybeSingle();
-    // if (!row) return null;  // → triggers notFound() in page.tsx
-    // return rowToPayload(row);
-    //
-    // Until then, even with SUPABASE_URL set, we 404 unknown ids so the
-    // share-link surface stays honest.
-    return null;
+    try {
+      const { data: row } = await supabaseService()
+        .from('blueprints')
+        .select('id, created_at, data')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (!row) return null;
+
+      const snapshot = row.data as { answers: Partial<Answers>; data: HeatMapData };
+      return {
+        id: row.id,
+        isDemo: false,
+        answers: snapshot.answers,
+        data: snapshot.data,
+        issuedAt: new Date(row.created_at as string),
+        docRef: docRefFromId(row.id),
+      };
+    } catch (e) {
+      console.error('[blueprint] supabase fetch failed', e);
+      return null;
+    }
   }
 
   // No Supabase wired (dev) — fall back to demo so the route is browseable.
