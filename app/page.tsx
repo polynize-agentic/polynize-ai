@@ -274,10 +274,8 @@ export default function HomePage() {
             eventProps={{ surface: 'home_podcast', label: 'youtube_channel' }}
             aria-label="Watch the latest Think Better Podcast episode on YouTube"
           >
-            {/* CC-TODO: drop the real Ep05 thumbnail at public/assets/podcast-thumbnail.jpg
-                and change this src to .jpg. SVG placeholder ships in the meantime. */}
             <img
-              src="/assets/podcast-thumbnail.svg"
+              src="/assets/podcast-thumbnail.jpg"
               alt="The Future of Agentic AI · Think Better Podcast Ep05"
               className={s.podThumbImg}
               width={1920}
