@@ -255,6 +255,21 @@
   color: var(--text);
   white-space: pre-wrap;
 }
+.retryBtn {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: var(--tac-inset);
+  color: var(--mint);
+  border: none;
+  border-radius: 999px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: var(--tac-shadow-inset);
+  transition: color var(--tac-transition);
+}
+.retryBtn:hover { color: var(--text); }
 .typing {
   display: flex;
   gap: 4px;

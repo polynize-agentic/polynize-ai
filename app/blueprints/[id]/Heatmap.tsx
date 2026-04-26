@@ -40,7 +40,7 @@ export function Heatmap({ payload }: { payload: BlueprintPayload }) {
             </div>
           </div>
           {data.rows.map((r, i) => (
-            <div key={i} className={s.gridRow}>
+            <div key={i} className={s.gridRow} role="row" aria-label={`${r.fn}: allocated to ${r.alloc}`}>
               <div className={s.gridFn}>{r.fn}</div>
               {(['human', 'hybrid', 'agent'] as const).map((c) => {
                 const on = r.alloc === c;
@@ -49,6 +49,8 @@ export function Heatmap({ payload }: { payload: BlueprintPayload }) {
                   <div
                     key={c}
                     className={s.gridCell}
+                    role="cell"
+                    aria-hidden="true"
                     style={{
                       background: on
                         ? `linear-gradient(90deg, transparent, ${rgba(c, 0.19)}, transparent)`

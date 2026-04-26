@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Answers, HeatMapData, TeamMember } from '@/lib/types';
 import { buildAgentSystemPrompt } from '@/lib/agents/system-prompt';
+import { track } from '@/lib/analytics';
 import s from './phase-c.module.css';
 
 export type ChatMessage = {
@@ -10,6 +11,8 @@ export type ChatMessage = {
   content: string;
   agentName?: string;
   agentRole?: string;
+  isError?: boolean;
+  retryText?: string;
 };
 
 type Props = {
@@ -27,7 +30,15 @@ const STARTERS = [
   'Show me a sample deliverable from Week 1',
 ];
 
-const FALLBACK_MESSAGE = "I'm having trouble reaching my context. Try again in a moment?";
+const FALLBACK_GENERIC = "I'm having trouble reaching my context. Try again in a moment?";
+const FALLBACK_RATE_LIMIT = "We're answering a lot of questions right now. Wait a few seconds and resend.";
+const FALLBACK_OFFLINE = 'Chat is in maintenance mode. We will be back shortly.';
+
+function fallbackForStatus(status: number | null): string {
+  if (status === 429) return FALLBACK_RATE_LIMIT;
+  if (status === 401 || status === 403 || status === 503) return FALLBACK_OFFLINE;
+  return FALLBACK_GENERIC;
+}
 
 export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBack }: Props) {
   const agents = useMemo(() => data.team.filter((m): m is TeamMember => m.type === 'agent'), [data.team]);
@@ -74,16 +85,19 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
       setMessages(newHistory);
       setInput('');
       setLoading(true);
+      track('phase_c_message', { agent_id: agent.role, message_count: newHistory.length });
 
       const system = buildAgentSystemPrompt(agent, answers, data);
       const apiMessages = newHistory.map(({ role, content }) => ({ role, content }));
 
+      let status: number | null = null;
       try {
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ system, messages: apiMessages }),
         });
+        status = res.status;
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const { text: replyText } = (await res.json()) as { text: string };
         setMessages((prev) => [
@@ -93,7 +107,14 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
       } catch {
         setMessages((prev) => [
           ...prev,
-          { role: 'assistant', content: FALLBACK_MESSAGE, agentName: agent.name, agentRole: agent.role },
+          {
+            role: 'assistant',
+            content: fallbackForStatus(status),
+            agentName: agent.name,
+            agentRole: agent.role,
+            isError: true,
+            retryText: trimmed,
+          },
         ]);
       } finally {
         setLoading(false);
@@ -134,7 +155,15 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
               key={`${a.name}-${i}`}
               type="button"
               className={`${s.teamItem} ${i === activeAgent ? s.teamItemOn : ''}`}
-              onClick={() => setActiveAgent(i)}
+              onClick={() => {
+                if (i !== activeAgent) {
+                  track('phase_c_agent_switch', {
+                    from_agent: agents[activeAgent]?.role,
+                    to_agent: a.role,
+                  });
+                }
+                setActiveAgent(i);
+              }}
             >
               <div className={`${s.avatar} ${i === activeAgent ? s.avatarActive : ''}`}>
                 {a.name[0]}
@@ -168,27 +197,55 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
           </div>
         </div>
 
-        <div className={s.msgs} ref={scrollRef}>
+        <div
+          className={s.msgs}
+          ref={scrollRef}
+          role="log"
+          aria-live="polite"
+          aria-label={`Conversation with ${active.name}`}
+        >
           {messages.map((m, i) => {
             const isUser = m.role === 'user';
+            const speaker = isUser ? 'You' : (m.agentName ?? 'Agent');
             return (
-              <div key={i} className={`${s.msg} ${isUser ? s.msgUser : ''}`}>
+              <div
+                key={i}
+                className={`${s.msg} ${isUser ? s.msgUser : ''}`}
+                role="article"
+                aria-label={`${speaker}: ${m.content}`}
+              >
                 {!isUser && (
-                  <div className={`${s.avatar} ${s.avatarSm}`}>{m.agentName?.[0] ?? '·'}</div>
+                  <div className={`${s.avatar} ${s.avatarSm}`} aria-hidden="true">
+                    {m.agentName?.[0] ?? '·'}
+                  </div>
                 )}
                 <div className={`${s.bubble} ${isUser ? s.bubbleUser : ''}`}>
                   {!isUser && m.agentName && <div className={s.bubbleName}>{m.agentName}</div>}
                   <div className={s.bubbleText}>{m.content}</div>
+                  {m.isError && m.retryText && (
+                    <button
+                      type="button"
+                      className={s.retryBtn}
+                      onClick={() => {
+                        setMessages((prev) => prev.slice(0, -2));
+                        setTimeout(() => send(m.retryText!), 0);
+                      }}
+                    >
+                      retry →
+                    </button>
+                  )}
                 </div>
               </div>
             );
           })}
           {loading && (
-            <div className={s.msg}>
-              <div className={`${s.avatar} ${s.avatarSm}`}>{active.name[0]}</div>
+            <div className={s.msg} aria-label={`${active.name} is typing`}>
+              <div className={`${s.avatar} ${s.avatarSm}`} aria-hidden="true">
+                {active.name[0]}
+              </div>
               <div className={s.bubble}>
                 <div className={s.bubbleName}>{active.name}</div>
-                <div className={s.typing}>
+                <div className={s.typing} aria-hidden="true">
                   <span />
                   <span />
                   <span />
@@ -208,15 +265,25 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
           </div>
         )}
 
-        <form className={s.composer} onSubmit={onSubmit}>
+        <form className={s.composer} onSubmit={onSubmit} aria-label="Send message">
+          <label htmlFor="phase-c-input" className="sr-only">
+            Message {active.name}
+          </label>
           <input
+            id="phase-c-input"
             className={s.input}
             placeholder={`Message ${active.name}…`}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={loading}
+            aria-label={`Message ${active.name}`}
           />
-          <button type="submit" className={s.send} disabled={!input.trim() || loading}>
+          <button
+            type="submit"
+            className={s.send}
+            disabled={!input.trim() || loading}
+            aria-label="Send message"
+          >
             send →
           </button>
         </form>

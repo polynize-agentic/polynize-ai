@@ -1,5 +1,6 @@
 import s from './blueprint.module.css';
 import { BOOKING_URL } from './util';
+import { TrackedLink } from '@/app/_components/TrackedLink';
 
 type Props = {
   docRef: string;
@@ -11,9 +12,15 @@ export function TopBar({ docRef }: Props) {
       <a href="/">polynize.ai</a>
       <span>BP-{docRef}</span>
       <div className={s.topRight}>
-        <a className={s.topBtn} href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
+        <TrackedLink
+          className={s.topBtn}
+          href={BOOKING_URL}
+          external
+          event="booking_click"
+          eventProps={{ surface: 'blueprint_topbar' }}
+        >
           book a call
-        </a>
+        </TrackedLink>
       </div>
     </header>
   );

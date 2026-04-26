@@ -4,6 +4,7 @@ import { Terminal } from './_home/Terminal';
 import { HeatMapGrid } from './_home/HeatMapGrid';
 import { CWUSchematic } from './_home/CWUSchematic';
 import { HOME_SAMPLE } from './_home/sample-data';
+import { TrackedLink } from './_components/TrackedLink';
 
 const BOOKING_URL = 'https://calendly.com/marrscoiro/meeting30';
 const POLYNIZE_IO = 'https://polynize.io';
@@ -66,10 +67,15 @@ export default function HomePage() {
           </div>
 
           <div className={s.ctaRow}>
-            <Link className={s.ctaPrimary} href="/agents">
+            <TrackedLink
+              className={s.ctaPrimary}
+              href="/agents"
+              event="cta_click"
+              eventProps={{ surface: 'home_hero', label: 'map_your_business' }}
+            >
               <span className={s.ctaArrow}>→</span>
               map_your_business
-            </Link>
+            </TrackedLink>
           </div>
         </div>
 
@@ -139,10 +145,15 @@ export default function HomePage() {
               team, and a written Blueprint, in minutes.
             </p>
           </div>
-          <Link className={s.midCtaBtn} href="/agents">
+          <TrackedLink
+            className={s.midCtaBtn}
+            href="/agents"
+            event="cta_click"
+            eventProps={{ surface: 'home_mid_cta', label: 'map_your_business' }}
+          >
             <span className={s.ctaArrow}>→</span>
             map_your_business
-          </Link>
+          </TrackedLink>
         </div>
       </section>
 
@@ -188,8 +199,8 @@ export default function HomePage() {
       </section>
 
       {/* §07 PROOF */}
-      {/* CC-TODO: Replace placeholder logos, metrics, and testimonial with real content per CLAUDE.md
-          "Placeholders that need real data". The Optio.ai / AJ Milne quote is approved; others need backing. */}
+      {/* CC-TODO: Replace placeholder logos and metrics with real content per CLAUDE.md
+          "Placeholders that need real data". AJ Milne / Optio Capital testimonial is real and approved. */}
       <section className={s.section}>
         <SectionHeader n="07" title="proof.log" subtitle="structural lifts, not marginal ones" />
 
@@ -218,15 +229,25 @@ export default function HomePage() {
         <div className={s.quoteCard}>
           <div className={s.quoteLabel}>/* testimonial_01 */</div>
           <p className={s.quoteText}>
-            &quot;polynize didn&apos;t sell us a tool. they redesigned how our team works. our
-            analysts now hold judgment, not task execution. the lift has been structural, not
-            marginal.&quot;
+            &quot;The Polynize team built me an investment analyst agent. On the first day I used
+            it, it was the best day of work I&apos;d had in nine months. After that, I knew I
+            needed the whole team.&quot;
           </p>
           <div className={s.quoteFoot}>
             <div className={s.quoteAv}>AJ</div>
             <div>
               <div className={s.quoteName}>aj milne</div>
-              <div className={s.quoteRole}>PARTNER · OPTIO CAPITAL</div>
+              <div className={s.quoteRole}>
+                PARTNER ·{' '}
+                <a
+                  href="https://www.optio.capital/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                >
+                  OPTIO CAPITAL
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -301,9 +322,14 @@ export default function HomePage() {
           YOUR BUSINESS<span style={{ color: 'var(--mint)' }}>.</span>
         </h2>
         <div className={s.ctaRow} style={{ marginTop: 48 }}>
-          <Link className={s.ctaPrimary} href="/agents">
+          <TrackedLink
+            className={s.ctaPrimary}
+            href="/agents"
+            event="cta_click"
+            eventProps={{ surface: 'home_final_cta', label: 'map_your_business' }}
+          >
             <span className={s.ctaArrow}>→</span>map_your_business
-          </Link>
+          </TrackedLink>
           <span className={s.ctaNote}>$ curl -X POST /agents, 4 min</span>
         </div>
       </section>

@@ -1,6 +1,7 @@
 import type { BlueprintPayload } from '@/lib/blueprint/load';
 import s from './blueprint.module.css';
 import { BOOKING_URL, firstNameOf } from './util';
+import { TrackedLink } from '@/app/_components/TrackedLink';
 
 export function FinalCTA({ payload }: { payload: BlueprintPayload }) {
   const firstName = firstNameOf(payload.answers.name);
@@ -14,12 +15,23 @@ export function FinalCTA({ payload }: { payload: BlueprintPayload }) {
         engagement.
       </p>
       <div className={s.ctas}>
-        <a className={`${s.cta} ${s.ctaPrimary}`} href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
+        <TrackedLink
+          className={`${s.cta} ${s.ctaPrimary}`}
+          href={BOOKING_URL}
+          external
+          event="booking_click"
+          eventProps={{ surface: 'blueprint_final_cta' }}
+        >
           book the call →
-        </a>
-        <a className={`${s.cta} ${s.ctaSecondary}`} href="/agents">
+        </TrackedLink>
+        <TrackedLink
+          className={`${s.cta} ${s.ctaSecondary}`}
+          href="/agents"
+          event="cta_click"
+          eventProps={{ surface: 'blueprint_final_cta', label: 'edit_my_answers' }}
+        >
           ← edit my answers
-        </a>
+        </TrackedLink>
       </div>
     </section>
   );

@@ -5,6 +5,7 @@ import type { Answers, HeatMapData, SessionState } from '@/lib/types';
 import { PhaseA } from './PhaseA';
 import { PhaseB } from './PhaseB';
 import { PhaseC, type ChatMessage } from './PhaseC';
+import { track, emailDomain } from '@/lib/analytics';
 
 const STORAGE_KEY = 'polynize_agents_state_v2';
 
@@ -57,10 +58,23 @@ export function AgentsController() {
   }, []);
 
   const handlePhaseAComplete = useCallback((answers: Partial<Answers>) => {
+    track('phase_a_complete', {
+      steps_completed: 12,
+      has_email: Boolean(answers.email),
+    });
+    if (answers.email) {
+      track('email_captured', { domain: emailDomain(answers.email) });
+    }
     setState((prev) => ({ ...prev, answers, phase: 'B' }));
   }, []);
 
   const handlePhaseBReady = useCallback((data: HeatMapData) => {
+    track('phase_b_complete', {
+      shape_id: data.shape_id,
+      pct_human: data.percentages.human,
+      pct_hybrid: data.percentages.hybrid,
+      pct_agent: data.percentages.agent,
+    });
     setState((prev) => ({ ...prev, data, phase: 'C' }));
   }, []);
 

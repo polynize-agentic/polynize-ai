@@ -12,24 +12,45 @@ export type BlueprintPayload = {
 };
 
 /**
- * Loads a blueprint payload by id. v1 always returns the demo (Sarah / Keel /
- * Pipeline), since the Supabase blueprints table isn't wired yet. The shape
- * of this function lets the upgrade be local: when Supabase lands, plug the
- * fetch into the non-demo branch.
+ * Loads a blueprint payload by id.
  *
- * Demo paths:
- *   - id === 'demo'
- *   - any id with searchParams.demo === '1'
+ * Resolution order:
+ *   1. id === 'demo' OR ?demo=1 → return demo payload
+ *   2. SUPABASE_URL set → query blueprints table; null result triggers 404
+ *      (page.tsx calls notFound())
+ *   3. SUPABASE_URL not set (dev without creds) → return demo so the
+ *      page is browseable
  *
- * CC-TODO (Phase 2): query supabase blueprints table by id; on miss, 404
- * instead of falling back to demo (keeps share links honest).
+ * The Supabase fetch is a CC-TODO; the shape of the function lets the
+ * upgrade be local. A null return from this function should always
+ * trigger notFound() in the calling page.
  */
-export async function loadBlueprint(id: string, demoQuery: boolean): Promise<BlueprintPayload> {
+export async function loadBlueprint(
+  id: string,
+  demoQuery: boolean
+): Promise<BlueprintPayload | null> {
   const isDemo = demoQuery || id === 'demo';
-  // For Phase 1 every non-demo id also resolves to demo; replace with Supabase fetch.
+  if (isDemo) return demoPayload(id, true);
+
+  if (process.env.SUPABASE_URL) {
+    // CC-TODO: real Supabase fetch
+    // const { data: row } = await supabaseService()
+    //   .from('blueprints').select('*').eq('id', id).maybeSingle();
+    // if (!row) return null;  // → triggers notFound() in page.tsx
+    // return rowToPayload(row);
+    //
+    // Until then, even with SUPABASE_URL set, we 404 unknown ids so the
+    // share-link surface stays honest.
+    return null;
+  }
+
+  // No Supabase wired (dev) — fall back to demo so the route is browseable.
+  return demoPayload(id, false);
+}
+
+function demoPayload(id: string, isDemo: boolean): BlueprintPayload {
   const answers = DEMO_ANSWERS;
   const data = deriveHeatMap(answers);
-
   return {
     id,
     isDemo,

@@ -108,6 +108,8 @@ export function PhaseB({ answers, onReady }: Props) {
                   key={i}
                   className={`${s.row} ${on ? s.rowLit : ''}`}
                   style={{ transitionDelay: `${i * 60}ms` }}
+                  role="row"
+                  aria-label={`${r.fn}: allocated to ${r.alloc}`}
                 >
                   <div className={s.fn}>{r.fn}</div>
                   {(['human', 'hybrid', 'agent'] as const).map((c) => {
@@ -117,6 +119,8 @@ export function PhaseB({ answers, onReady }: Props) {
                       <div
                         key={c}
                         className={s.cell}
+                        role="cell"
+                        aria-hidden="true"
                         style={{
                           background: active
                             ? `linear-gradient(90deg, transparent, ${rgbaFromVar(c, 0.19)}, transparent)`

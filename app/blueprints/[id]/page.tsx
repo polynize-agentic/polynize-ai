@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { loadBlueprint } from '@/lib/blueprint/load';
 import { TopBar } from './TopBar';
 import { Cover } from './Cover';
@@ -26,6 +27,7 @@ export default async function BlueprintPage({
   const { id } = await params;
   const sp = await searchParams;
   const payload = await loadBlueprint(id, sp.demo === '1');
+  if (!payload) notFound();
 
   return (
     <div className={s.body}>
