@@ -1,13 +1,33 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { PersistedState, Tab, Tweaks } from '@/lib/console/types';
+import type {
+  ApexPlan as ApexPlanT,
+  AutonomyLevel,
+  PersistedState,
+  Tab,
+  TaskStatus,
+  Tweaks,
+} from '@/lib/console/types';
 import { DEFAULT_TWEAKS } from '@/lib/console/constants';
-import { PROJECTS, TASKS, SEED_ACTIVITY } from '@/lib/console/seed';
+import {
+  AGENTS,
+  AGENT_BY_ID,
+  HUMANS,
+  PROJECTS,
+  SEED_ACTIVITY,
+  TASKS,
+} from '@/lib/console/seed';
 import { loadPersisted, savePersisted, clearPersisted, SEED_STATE } from '@/lib/console/persist';
 import { simulationTick } from '@/lib/console/simulation';
 import { Shell } from './Shell';
 import { TweaksPanel } from './TweaksPanel';
+import { Dashboard } from './Dashboard';
+import { ProjectsList } from './ProjectsList';
+import { ProjectDetail } from './ProjectDetail';
+import { AgentsList } from './AgentsList';
+import { AgentDetail } from './AgentDetail';
+import { HumansList } from './HumansList';
 import s from '../console.module.css';
 
 export function ConsoleApp() {
@@ -110,6 +130,91 @@ export function ConsoleApp() {
     setActivity(result.activity);
   }, [tasks, activity]);
 
+  // Task action — approve/reject a proposed task, or move between columns
+  const taskAction = useCallback(
+    (taskId: string, action: 'approve' | 'reject' | 'move', arg?: TaskStatus) => {
+      setTasks((prev) => {
+        const target = prev.find((t) => t.id === taskId);
+        if (!target) return prev;
+        const agent = AGENT_BY_ID[target.agent];
+        const actor = agent?.name ?? 'Agent';
+
+        if (action === 'approve') {
+          setActivity((a) => [
+            { kind: 'approved' as const, actor: 'Evelyn Harrow', text: `approved ${target.title}`, project: target.project, ago: 'now', isNew: true },
+            ...a,
+          ].slice(0, 40));
+          return prev.map((t) => (t.id === taskId ? { ...t, status: 'todo' as const } : t));
+        }
+        if (action === 'reject') {
+          setActivity((a) => [
+            { kind: 'proposed' as const, actor: 'Evelyn Harrow', text: `rejected ${target.title}`, project: target.project, ago: 'now', isNew: true },
+            ...a,
+          ].slice(0, 40));
+          return prev.filter((t) => t.id !== taskId);
+        }
+        if (action === 'move' && arg) {
+          if (target.status !== arg) {
+            const kind: 'done' | 'doing' | 'plan' = arg === 'done' ? 'done' : arg === 'doing' ? 'doing' : 'plan';
+            setActivity((a) => [
+              { kind, actor, text: `moved ${target.title} to ${arg}`, project: target.project, ago: 'now', isNew: true },
+              ...a,
+            ].slice(0, 40));
+          }
+          return prev.map((t) => (t.id === taskId ? { ...t, status: arg } : t));
+        }
+        return prev;
+      });
+    },
+    []
+  );
+
+  const handleApproveAll = useCallback(
+    (projectId: string) => {
+      setTasks((prev) => {
+        const toApprove = prev.filter((t) => t.project === projectId && t.status === 'proposed');
+        if (toApprove.length === 0) return prev;
+        setActivity((a) => [
+          {
+            kind: 'approved' as const,
+            actor: 'Evelyn Harrow',
+            text: `approved ${toApprove.length} proposed ${toApprove.length === 1 ? 'task' : 'tasks'}`,
+            project: projectId,
+            ago: 'now',
+            isNew: true,
+          },
+          ...a,
+        ].slice(0, 40));
+        return prev.map((t) =>
+          t.project === projectId && t.status === 'proposed' ? { ...t, status: 'todo' as const } : t
+        );
+      });
+    },
+    []
+  );
+
+  const handleUpdatePlan = useCallback(
+    (projectId: string, plan: ApexPlanT) => {
+      setProjects((prev) => prev.map((p) => (p.id === projectId ? { ...p, plan } : p)));
+      setActivity((a) => {
+        const proj = projects.find((pp) => pp.id === projectId);
+        if (!proj) return a;
+        return [
+          { kind: 'plan' as const, actor: 'Evelyn Harrow', text: `updated APEX Plan for ${proj.name}`, project: projectId, ago: 'now', isNew: true },
+          ...a,
+        ].slice(0, 40);
+      });
+    },
+    [projects]
+  );
+
+  const handleUpdateAutonomy = useCallback(
+    (projectId: string, next: AutonomyLevel) => {
+      setProjects((prev) => prev.map((p) => (p.id === projectId ? { ...p, autonomy: next } : p)));
+    },
+    []
+  );
+
   const handleReset = useCallback(() => {
     clearPersisted();
     setTab(SEED_STATE.tab);
@@ -149,58 +254,72 @@ export function ConsoleApp() {
       />
 
       <main className={s.main}>
-        {/* Phase 3-5 views render here */}
         {tab === 'dashboard' && (
-          <div>
-            <div className={s.pageHeader}>
-              <div>
-                <h1 className={s.pageTitle}>Dashboard</h1>
-                <p className={s.pageSub}>
-                  {hydrated ? `${pendingApprovals} proposed · ${tasks.filter((t) => t.status === 'doing').length} in flight · ${activity.length} recent events` : 'Loading...'}
-                </p>
-              </div>
-              <button type="button" className={s.btnPrimary}>+ New Project</button>
-            </div>
-            <p style={{ color: 'var(--text-3)', fontStyle: 'italic', fontSize: 14 }}>
-              Dashboard content lands in Phase 3.
-            </p>
-          </div>
+          <Dashboard
+            projects={projects}
+            tasks={tasks}
+            activity={activity}
+            agents={AGENTS}
+            onOpenProject={(id) => {
+              setTab('projects');
+              setOpenProjectId(id);
+            }}
+            onOpenAgent={(id) => {
+              setTab('agents');
+              setOpenAgentId(id);
+            }}
+            onNewProject={() => {
+              /* Phase 6 wires the modal */
+            }}
+          />
         )}
-        {tab === 'projects' && (
-          <div>
-            <div className={s.pageHeader}>
-              <div>
-                <h1 className={s.pageTitle}>Projects</h1>
-                <p className={s.pageSub}>{projects.length} active</p>
-              </div>
-              <button type="button" className={s.btnPrimary}>+ New Project</button>
-            </div>
-            <p style={{ color: 'var(--text-3)', fontStyle: 'italic', fontSize: 14 }}>
-              Projects list + detail land in Phase 4.
-            </p>
-          </div>
+        {tab === 'projects' && !openProjectId && (
+          <ProjectsList
+            projects={projects}
+            tasks={tasks}
+            onOpenProject={(id) => setOpenProjectId(id)}
+            onNewProject={() => {
+              /* Phase 6 wires the modal */
+            }}
+          />
         )}
+        {tab === 'projects' && openProjectId && (() => {
+          const project = projects.find((p) => p.id === openProjectId);
+          if (!project) return null;
+          return (
+            <ProjectDetail
+              project={project}
+              tasks={tasks}
+              onBack={() => setOpenProjectId(null)}
+              onUpdatePlan={(plan) => handleUpdatePlan(openProjectId, plan)}
+              onUpdateAutonomy={(next) => handleUpdateAutonomy(openProjectId, next)}
+              onTaskAction={taskAction}
+              onApproveAll={() => handleApproveAll(openProjectId)}
+            />
+          );
+        })()}
         {tab === 'agents' && (
-          <div>
-            <div className={s.pageHeader}>
-              <h1 className={s.pageTitle}>Agents</h1>
-            </div>
-            <p style={{ color: 'var(--text-3)', fontStyle: 'italic', fontSize: 14 }}>
-              Agents list + drawer land in Phase 5.
-            </p>
-          </div>
+          <AgentsList agents={AGENTS} tasks={tasks} onOpen={(id) => setOpenAgentId(id)} />
         )}
-        {tab === 'humans' && (
-          <div>
-            <div className={s.pageHeader}>
-              <h1 className={s.pageTitle}>Humans</h1>
-            </div>
-            <p style={{ color: 'var(--text-3)', fontStyle: 'italic', fontSize: 14 }}>
-              Humans table lands in Phase 5.
-            </p>
-          </div>
-        )}
+        {tab === 'humans' && <HumansList humans={HUMANS} />}
       </main>
+
+      {openAgentId && (() => {
+        const agent = AGENTS.find((a) => a.id === openAgentId);
+        if (!agent) return null;
+        return (
+          <AgentDetail
+            agent={agent}
+            tasks={tasks}
+            onClose={() => setOpenAgentId(null)}
+            onOpenTask={(_taskId, projectId) => {
+              setOpenAgentId(null);
+              setTab('projects');
+              setOpenProjectId(projectId);
+            }}
+          />
+        );
+      })()}
 
       <TweaksPanel
         open={tweaksOpen}
