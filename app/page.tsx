@@ -253,63 +253,42 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* §08 PODCAST */}
-      {/* CC-TODO: Wire real Think Better episodes, swap placeholder copy with RSS pull. */}
+      {/* §08 PODCAST — single thumbnail linking to the YouTube channel */}
       <section className={s.section}>
-        <SectionHeader n="08" title="founders.podcast" subtitle="weekly, from the people doing the work" />
-
-        <div className={s.podGrid}>
-          <a href="#" className={s.podMeta} style={{ display: 'block' }}>
-            <div className={s.podThumb}>
-              <div className={s.podWave}>
-                {Array.from({ length: 32 }).map((_, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      height: `${20 + Math.sin(i * 0.7) * 50 + (i % 3) * 15}%`,
-                      background: i < 10 ? 'var(--mint)' : 'var(--border)',
-                    }}
-                  />
-                ))}
-              </div>
-              <div className={s.podPlay}>▶</div>
-            </div>
-            <div className={s.podMeta}>
-              <div className={s.podMetaTag}>EP_014 · 42:15 · LATEST</div>
-              <div className={s.podMetaTitle}>
-                the end of the employee as the unit of work
-              </div>
-              <div className={s.podMetaDesc}>
-                sagar and vas on why the hiring-loop economy is finished, and what replaces it.
-                with live reads of two recent heat maps.
-              </div>
-            </div>
-          </a>
-
-          <div className={s.podSide}>
-            <a className={s.podCardMini} href="#">
-              <div className={s.podMiniTag}>EP_013 · 31:08</div>
-              <div className={s.podMiniTitle}>heat maps vs. org charts, a rehearsal</div>
-            </a>
-            <a className={s.podCardMini} href="#">
-              <div className={s.podMiniTag}>EP_012 · 38:44</div>
-              <div className={s.podMiniTitle}>why agents hate your kanban board</div>
-            </a>
-            <a className={s.podCardMini} href="#">
-              <div className={s.podMiniTag}>EP_011 · 29:52</div>
-              <div className={s.podMiniTitle}>the cognitive work unit, a working definition</div>
-            </a>
-            <a className={`${s.podCardMini} ${s.podMiniMore}`} href="#">
-              $ ls episodes/*.mp3, all_episodes →
-            </a>
-          </div>
-        </div>
-
-        <div className={s.podLinks}>
-          <a href="#">YOUTUBE ↗</a>
-          <a href="#">SPOTIFY ↗</a>
-          <a href="#">APPLE ↗</a>
-          <a href="#">RSS ↗</a>
+        <div className={s.podCentered}>
+          <div className={s.podCenteredEyebrow}>FROM THE FOUNDERS</div>
+          <h2 className={s.podCenteredTitle}>
+            Hear the latest from the
+            <br />
+            Polynize founders<span style={{ color: 'var(--mint)' }}>.</span>
+          </h2>
+          <p className={s.podCenteredSubtitle}>
+            Polynize founders Marrs Coiro and Shourov Bhattacharya explore the latest from the
+            frontier of Agentic AI.
+          </p>
+          <TrackedLink
+            className={s.podThumbLink}
+            href="https://www.youtube.com/@polynize.agentic"
+            external
+            event="cta_click"
+            eventProps={{ surface: 'home_podcast', label: 'youtube_channel' }}
+            aria-label="Watch the latest Think Better Podcast episode on YouTube"
+          >
+            {/* CC-TODO: drop the real Ep05 thumbnail at public/assets/podcast-thumbnail.jpg
+                and change this src to .jpg. SVG placeholder ships in the meantime. */}
+            <img
+              src="/assets/podcast-thumbnail.svg"
+              alt="The Future of Agentic AI · Think Better Podcast Ep05"
+              className={s.podThumbImg}
+              width={1920}
+              height={1080}
+            />
+            <span className={s.podPlayBtn} aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="36" height="36">
+                <path d="M8 5v14l11-7z" fill="currentColor" />
+              </svg>
+            </span>
+          </TrackedLink>
         </div>
       </section>
 

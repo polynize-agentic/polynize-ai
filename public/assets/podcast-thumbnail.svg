@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1c1c27"/>
+      <stop offset="50%" stop-color="#22222e"/>
+      <stop offset="100%" stop-color="#161620"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.4">
+      <stop offset="0%" stop-color="#69fccb" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#69fccb" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <circle cx="960" cy="540" r="320" fill="url(#halo)"/>
+  <text x="960" y="490" text-anchor="middle"
+        font-family="'Space Grotesk', system-ui, sans-serif"
+        font-weight="700" font-size="120" fill="#69fccb"
+        letter-spacing="-3" stroke="#69fccb" stroke-width="2">
+    The Future of
+  </text>
+  <text x="960" y="620" text-anchor="middle"
+        font-family="'Space Grotesk', system-ui, sans-serif"
+        font-weight="700" font-size="120" fill="#69fccb"
+        letter-spacing="-3" stroke="#69fccb" stroke-width="2">
+    Agentic AI
+  </text>
+  <text x="80" y="980" text-anchor="start"
+        font-family="'Inter', system-ui, sans-serif"
+        font-weight="600" font-size="42" fill="#f4ece4">
+    Think Better Podcast
+  </text>
+  <text x="1840" y="980" text-anchor="end"
+        font-family="'Inter', system-ui, sans-serif"
+        font-weight="600" font-size="42" fill="#f4ece4">
+    Ep05
+  </text>
+</svg>
