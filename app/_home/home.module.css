@@ -85,6 +85,13 @@
   font-weight: 500;
 }
 
+/* Reveal-on-scroll base — kept simple (no IntersectionObserver here);
+   the design only uses this on the hero equation as a class hook. */
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+
 .dot {
   display: inline-block;
   width: 8px;
@@ -105,8 +112,8 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 40px;
   padding: 18px 48px;
@@ -144,22 +151,6 @@
   background: radial-gradient(circle at 50% 60%, var(--mint), transparent 70%);
   opacity: 0.85;
 }
-.dcNavLinks {
-  display: flex;
-  gap: 36px;
-  justify-content: center;
-}
-.dcNavLinks a {
-  font-size: 14px;
-  color: var(--text-2);
-  text-decoration: none;
-  transition: color 0.2s;
-  letter-spacing: -0.005em;
-}
-.dcNavLinks a:hover {
-  color: var(--mint);
-}
-
 /* ===== Buttons ===== */
 .dcBtn {
   display: inline-flex;
@@ -341,7 +332,7 @@
   font-weight: 600;
   letter-spacing: -0.045em;
   line-height: 0.9;
-  margin-top: 32px;
+  margin-top: 8px;
 }
 .dcEqCardGold .dcEqNum { color: var(--gold); }
 .dcEqCardMint .dcEqNum { color: var(--mint); }
@@ -352,10 +343,6 @@
   font-weight: 500;
   color: var(--text);
   letter-spacing: -0.005em;
-}
-.dcEqSub {
-  font-size: 13px;
-  color: var(--text-2);
 }
 .dcEqPlus {
   font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
@@ -582,6 +569,10 @@
   width: 3px;
   background: linear-gradient(180deg, var(--mint), transparent);
 }
+.dcMidCtaText {
+  display: flex;
+  flex-direction: column;
+}
 .dcMidCtaTitle {
   font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
   font-size: 32px;
@@ -691,6 +682,18 @@
   color: var(--text-3);
   margin-bottom: 24px;
 }
+.dcHowIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  color: var(--mint);
+  background: var(--bg-deep);
+  box-shadow: var(--inset), 0 0 22px -8px var(--mint-glow);
+  margin-bottom: 22px;
+}
 .dcHowTitle {
   font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
   font-size: 26px;
@@ -703,34 +706,7 @@
   font-size: 14px;
   line-height: 1.6;
   color: var(--text-2);
-  margin-bottom: 18px;
-}
-.dcHowPrice {
-  padding-top: 16px;
-  border-top: 1px solid var(--hairline);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.dcHowPriceK {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-3);
-  font-weight: 500;
-}
-.dcHowPriceV {
-  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--mint);
-  letter-spacing: -0.015em;
-}
-.dcHowPriceV small {
-  font-size: 12px;
-  color: var(--text-3);
-  font-weight: 400;
-  margin-left: 2px;
+  margin: 0;
 }
 
 /* ===== Podcast ===== */
@@ -782,18 +758,19 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #ff0000;
-  color: #ffffff;
+  background: linear-gradient(180deg, #7fffd4, #4de0ad);
+  color: #0a0a0f;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  font-size: 20px;
+  padding-left: 4px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
     0 4px 10px rgba(0, 0, 0, 0.4),
-    0 0 24px rgba(255, 0, 0, 0.3);
+    0 0 24px rgba(105, 252, 203, 0.4);
   transition: transform 0.2s;
 }
-.dcPodPlay svg { margin-left: 3px; }
 .dcPodFeat:hover .dcPodPlay {
   transform: translate(-50%, -50%) scale(1.05);
 }
@@ -876,6 +853,26 @@
   box-shadow: var(--inset-soft), inset 0 0 0 1px rgba(105, 252, 203, 0.18);
   align-self: flex-start;
   text-decoration: none;
+}
+.dcPodPlatforms {
+  display: flex;
+  gap: 28px;
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--hairline);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  flex-wrap: wrap;
+}
+.dcPodPlatforms a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.dcPodPlatforms a:hover {
+  color: var(--mint);
 }
 
 /* ===== Final CTA ===== */
@@ -985,10 +982,8 @@
 @media (max-width: 760px) {
   .dcNav {
     padding: 14px 20px;
-    grid-template-columns: auto auto;
     gap: 16px;
   }
-  .dcNavLinks { display: none; }
   .dcSection,
   .dcHero,
   .dcMapHero {
