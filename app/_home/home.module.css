@@ -731,26 +731,18 @@
 .dcPodFeat:hover { transform: translateY(-2px); }
 .dcPodThumb {
   aspect-ratio: 16 / 9;
-  background:
-    radial-gradient(circle at 25% 25%, rgba(105, 252, 203, 0.14), transparent 60%),
-    var(--bg-deep);
+  background: var(--bg-deep);
   position: relative;
   overflow: hidden;
   box-shadow: var(--inset-soft);
 }
-.dcPodWave {
+.dcPodThumbImg {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  padding: 28px;
-}
-.dcPodWave > span {
-  flex: 1;
-  min-width: 0;
-  border-radius: 2px;
-  opacity: 0.85;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .dcPodPlay {
   position: absolute;
@@ -760,19 +752,19 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: linear-gradient(180deg, #7fffd4, #4de0ad);
-  color: #0a0a0f;
+  background: #ff0000;
+  color: #ffffff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  padding-left: 4px;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    0 4px 10px rgba(0, 0, 0, 0.4),
-    0 0 24px rgba(105, 252, 203, 0.4);
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 4px 10px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(255, 0, 0, 0.35);
   transition: transform 0.2s;
+  z-index: 2;
 }
+.dcPodPlay svg { margin-left: 3px; }
 .dcPodFeat:hover .dcPodPlay {
   transform: translate(-50%, -50%) scale(1.05);
 }
@@ -788,6 +780,7 @@
   background: rgba(15, 15, 23, 0.8);
   border-radius: 4px;
   box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  z-index: 2;
 }
 .dcPodMeta { padding: 28px 28px 32px; }
 .dcPodTag {

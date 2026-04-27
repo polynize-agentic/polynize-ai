@@ -317,39 +317,35 @@ function DirCPodcast() {
           external
           event="cta_click"
           eventProps={{ surface: 'home_podcast', label: 'youtube_channel' }}
-          aria-label="Watch Think Better Podcast Episode 14 on YouTube"
+          aria-label="Watch Think Better Podcast Episode 5 on YouTube"
         >
           <div className={s.dcPodThumb}>
-            <div className={s.dcPodWave} aria-hidden>
-              {Array.from({ length: 36 }).map((_, i) => (
-                <span
-                  key={i}
-                  style={{
-                    height: `${22 + Math.sin(i * 0.55) * 38 + (i % 4) * 9}%`,
-                    background: i < 12 ? 'var(--mint)' : 'rgba(244,236,228,0.16)',
-                  }}
-                />
-              ))}
-            </div>
+            <img
+              src="/assets/podcast-thumbnail.jpg"
+              alt="The Future of Agentic AI · Think Better Podcast Ep05"
+              className={s.dcPodThumbImg}
+            />
             <div className={s.dcPodPlay} aria-hidden>
-              ▶
+              <svg viewBox="0 0 24 24" width="22" height="22">
+                <path d="M8 5v14l11-7z" fill="currentColor" />
+              </svg>
             </div>
-            <div className={s.dcPodRuntime}>42:15</div>
+            <div className={s.dcPodRuntime}>44:49</div>
           </div>
           <div className={s.dcPodMeta}>
-            <div className={s.dcPodTag}>Latest · Episode 14</div>
-            <div className={s.dcPodTitle}>The end of the employee as the unit of work</div>
+            <div className={s.dcPodTag}>Latest episode 5</div>
+            <div className={s.dcPodTitle}>Why Your First Agent Changes Everything</div>
             <div className={s.dcPodDesc}>
-              Marrs and Shourov on why the hiring loop is finished, and what replaces it. Two live
-              capability maps, read on air.
+              Marrs and Shourov go deep on the cognitive layer, the thinking framework that gets
+              installed into an agent.
             </div>
           </div>
         </TrackedLink>
 
         <div className={s.dcPodSide}>
-          <PodMini ep="13" run="31:08" t="Capability maps vs. org charts, a rehearsal" />
-          <PodMini ep="12" run="38:44" t="Why agents hate your kanban board" />
-          <PodMini ep="11" run="29:52" t="The cognitive work unit, a working definition" />
+          <PodMini ep="04" run="1:09:30" t="The Missing Layer Between Your Brain and AI" />
+          <PodMini ep="03" run="1:03:55" t="The Only Thing to Stop the AI Bubble Bursting" />
+          <PodMini ep="02" run="1:00:36" t="How to Think Like a Machine and Learn Like a Human" />
           <TrackedLink
             className={s.dcPodAll}
             href={YOUTUBE_CHANNEL}
