@@ -32,9 +32,10 @@ const BodySchema = z.object({ answers: AnswersSchema });
 /**
  * POST /api/capability-map/generate
  *
- * Calls OpenAI (default gpt-4o) with the Capability Map prompt, validates the JSON, retries
- * once on validation failure, and falls back to the rule-based derivation if
- * both attempts fail. Always returns a CapabilityMapData.
+ * Calls the configured LLM (default Kimi via Moonshot) with the Capability Map
+ * prompt, validates the JSON, retries once on validation failure, and falls
+ * back to the rule-based derivation if both attempts fail. Always returns a
+ * CapabilityMapData.
  */
 export async function POST(req: Request) {
   let body: z.infer<typeof BodySchema>;
@@ -46,8 +47,8 @@ export async function POST(req: Request) {
 
   const userMessage = buildCapabilityMapUserMessage(body.answers);
 
-  const provider = process.env.LLM_PROVIDER ?? 'openai';
-  const model = process.env.OPENAI_MODEL ?? 'gpt-4o';
+  const provider = process.env.LLM_PROVIDER ?? 'kimi';
+  const model = modelForProvider(provider);
   console.log(`[capability-map.generate] starting, provider=${provider} model=${model}`);
 
   for (let attempt = 1; attempt <= 2; attempt++) {
@@ -105,6 +106,21 @@ export async function POST(req: Request) {
   console.error('[capability-map.generate] both attempts failed, returning rule-based fallback');
   const fallback = deriveCapabilityMapFallback(body.answers);
   return NextResponse.json({ ok: true, data: fallback, fallback: true });
+}
+
+function modelForProvider(provider: string): string {
+  switch (provider) {
+    case 'kimi':
+    case 'moonshot':
+      return process.env.KIMI_MODEL ?? 'moonshot-v1-128k';
+    case 'openai':
+      return process.env.OPENAI_MODEL ?? 'gpt-4o';
+    case 'minimax':
+    case 'openrouter':
+      return process.env.OPENROUTER_MODEL ?? 'minimax/minimax-01';
+    default:
+      return 'unknown';
+  }
 }
 
 function parseJsonLoose(raw: string): unknown {

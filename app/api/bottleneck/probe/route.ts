@@ -62,8 +62,8 @@ export async function POST(req: Request) {
 
   const userMessage = formatExchanges(body.exchanges);
 
-  const provider = process.env.LLM_PROVIDER ?? 'openai';
-  const model = process.env.OPENAI_MODEL ?? 'gpt-4o';
+  const provider = process.env.LLM_PROVIDER ?? 'kimi';
+  const model = modelForProvider(provider);
   console.log(`[bottleneck.probe] starting, provider=${provider} model=${model}`);
 
   try {
@@ -109,6 +109,21 @@ function formatExchanges(exchanges: { user: string; follow_up?: string }[]): str
       return lines.join('\n');
     })
     .join('\n\n');
+}
+
+function modelForProvider(provider: string): string {
+  switch (provider) {
+    case 'kimi':
+    case 'moonshot':
+      return process.env.KIMI_MODEL ?? 'moonshot-v1-128k';
+    case 'openai':
+      return process.env.OPENAI_MODEL ?? 'gpt-4o';
+    case 'minimax':
+    case 'openrouter':
+      return process.env.OPENROUTER_MODEL ?? 'minimax/minimax-01';
+    default:
+      return 'unknown';
+  }
 }
 
 function parseJsonLoose(raw: string): unknown {
