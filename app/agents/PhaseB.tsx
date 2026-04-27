@@ -210,16 +210,21 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
 
             <div className={s.teamPreview}>
               <div className={s.eyebrow}>§ the team that emerges</div>
-              <div className={s.teamRow}>
+              <div className={s.teamHuman}>
                 <div className={s.humanNode} title={data.team.human_owner.role}>
-                  <div className={s.humanInitial}>{firstName[0] || 'Y'}</div>
-                  <div className={s.humanLabel}>{firstName || 'You'}</div>
+                  <PersonIcon className={s.personIconHuman} />
                 </div>
+                <div className={s.humanLabel}>{firstName || 'You'}</div>
+              </div>
+              <div className={s.teamAgentRow}>
                 {data.team.agents.map((a) => (
-                  <div key={a.name} className={s.agentNode} title={a.short_desc}>
-                    <div className={s.agentInitial}>{a.name[0]}</div>
-                    <div className={s.agentLabel}>{a.name}</div>
-                    <div className={s.agentRole}>{a.role}</div>
+                  <div
+                    key={a.name}
+                    className={s.agentSquare}
+                    title={`${a.name} · ${a.role}`}
+                    aria-label={`${a.name}, ${a.role}`}
+                  >
+                    <PersonIcon className={s.personIconAgent} />
                   </div>
                 ))}
               </div>
@@ -239,11 +244,10 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
                 <div className={s.hiringDivider}>vs</div>
                 <div className={s.hiringAgent}>
                   <div className={s.hiringFte}>This team</div>
-                  <div className={s.hiringCost}>
-                    ${data.pricing_indicative.transform.from.toLocaleString()} build + $
-                    {data.pricing_indicative.operate.from.toLocaleString()}/mo
+                  <div className={s.hiringCost}>from $5,000 to build + $399/mo</div>
+                  <div className={s.hiringNote}>
+                    Build, train, deploy your team. Ongoing operation and tuning.
                   </div>
-                  <div className={s.hiringNote}>{data.pricing_indicative.transform.description}</div>
                 </div>
               </div>
             </div>
@@ -295,6 +299,24 @@ function Pct({ label, v, color }: { label: string; v: number; color: string }) {
         />
       </div>
     </div>
+  );
+}
+
+function PersonIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="8" r="3.5" />
+      <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
+    </svg>
   );
 }
 

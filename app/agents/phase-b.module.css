@@ -409,36 +409,30 @@
 .teamPreview {
   margin-top: 32px;
 }
-.teamRow {
-  display: grid;
-  grid-template-columns: auto repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
-  align-items: stretch;
-  margin-top: 16px;
-}
-.humanNode {
+.teamHuman {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 18px 14px;
-  background: var(--tac-surface);
-  border-radius: 14px;
-  box-shadow: var(--tac-shadow-raised-soft), 0 0 0 2px var(--mint), 0 0 14px rgba(105, 252, 203, 0.18);
-  min-width: 120px;
+  gap: 10px;
+  margin: 18px 0 24px;
 }
-.humanInitial {
-  width: 44px;
-  height: 44px;
+.humanNode {
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--tac-button-gradient);
   color: var(--tac-button-text);
-  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  font-weight: 700;
-  font-size: 18px;
+  box-shadow:
+    var(--tac-shadow-raised-soft),
+    0 0 0 2px var(--mint),
+    0 0 24px rgba(105, 252, 203, 0.28);
+}
+.personIconHuman {
+  width: 38px;
+  height: 38px;
 }
 .humanLabel {
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
@@ -447,42 +441,27 @@
   color: var(--text-2);
   text-transform: uppercase;
 }
-.agentNode {
+.teamAgentRow {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 18px 14px;
-  background: var(--tac-surface);
-  border-radius: 14px;
-  box-shadow: var(--tac-shadow-raised-soft);
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
 }
-.agentInitial {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+.agentSquare {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background: var(--tac-inset);
+  color: var(--text-3);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--tac-inset);
-  color: var(--mint);
-  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
   box-shadow: var(--tac-shadow-inset);
+  cursor: default;
 }
-.agentLabel {
-  font-size: 14px;
-  color: var(--text);
-  font-weight: 600;
-}
-.agentRole {
-  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: var(--text-3);
-  text-align: center;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.personIconAgent {
+  width: 32px;
+  height: 32px;
 }
 
 /* ===== Hiring comparison callout ===== */
@@ -546,7 +525,12 @@
   .hiringDivider {
     text-align: left;
   }
-  .teamRow {
-    grid-template-columns: 1fr 1fr;
+  .agentSquare {
+    width: 56px;
+    height: 56px;
+  }
+  .personIconAgent {
+    width: 28px;
+    height: 28px;
   }
 }
