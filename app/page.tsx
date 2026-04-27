@@ -46,7 +46,11 @@ function DirCNav() {
   return (
     <nav className={s.dcNav}>
       <Link className={s.dcWordmark} href="/">
-        <span className={s.dcMark} aria-hidden />
+        <span className={s.dcMark} aria-hidden>
+          {/* Drop /public/assets/polynize-mark.gif to upgrade to the
+              animated mark; .png is the static fallback shipped today. */}
+          <img src="/assets/polynize-mark.png" alt="" />
+        </span>
         <span>
           polynize<span style={{ color: 'var(--text-3)' }}>.ai</span>
         </span>
@@ -434,7 +438,9 @@ function DirCFooter() {
       <div className={s.dcFooterTop}>
         <div>
           <Link className={s.dcWordmark} href="/" style={{ marginBottom: 16 }}>
-            <span className={s.dcMark} aria-hidden />
+            <span className={s.dcMark} aria-hidden>
+              <img src="/assets/polynize-mark.png" alt="" />
+            </span>
             <span>
               polynize<span style={{ color: 'var(--text-3)' }}>.ai</span>
             </span>
