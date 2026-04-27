@@ -1,13 +1,15 @@
 /**
- * Phase A question set, ported verbatim from
- * design_handoff/designs/agents/phase-a.jsx. All visitor-facing copy is final
- * per CLAUDE.md §2 — do not paraphrase.
+ * Phase A question set — redesigned for the multi-team LLM heat map.
+ * Spec: HEATMAP_REDESIGN_SPEC.md (the 11 questions feed POST /api/heatmap/generate).
  *
- * Q4 option labels match the `q4_trigger` strings in config/cwu-shapes.json
- * exactly so derive-heatmap.ts can map a tick straight to a shape.
+ * All visitor-facing copy is final per CLAUDE.md §2 — do not paraphrase.
+ *
+ * The shape closely mirrors the prior question set so PhaseA.tsx can reuse the
+ * same renderers (text/business/multi/single/email). Q04 ("primary_area") is
+ * dynamic: its option list is derived from the answer to Q03 (functional_areas).
  */
 
-export type QuestionType = 'text' | 'business' | 'role_size' | 'multi' | 'single' | 'email';
+export type QuestionType = 'text' | 'business' | 'textarea' | 'multi' | 'single' | 'email';
 
 export type Question = {
   id: string;
@@ -18,139 +20,134 @@ export type Question = {
   placeholder?: string;
   short?: boolean;
   options?: string[];
+  /**
+   * When true, options are derived at runtime from another field's answer.
+   * PhaseA wires the resolver explicitly for `primary_area`.
+   */
+  dynamicOptions?: boolean;
 };
 
-export const ROLE_OPTIONS = ['Founder', 'CEO', 'Operator', 'Team Lead', 'IC / Specialist', 'Other'];
-export const SIZE_OPTIONS = ['Just me', '2-5', '6-20', '20+'];
+export const FUNCTIONAL_AREAS = [
+  'Marketing & Content',
+  'Sales & BD',
+  'Operations & Delivery',
+  'Finance & Admin',
+  'Product & Development',
+  'Customer Success & Support',
+  'Creative & Brand',
+  'Research & Strategy',
+  'HR & People',
+];
+
+export const TEAM_SIZES = ['Just me', '2-5', '6-15', '16-50', '50+'];
+export const RISK_OPTIONS = [
+  'Lost money',
+  'Lost client',
+  'Lost time',
+  'Reputation damage',
+  'Compliance risk',
+  'Quality drops',
+];
+export const TOOL_OPTIONS = [
+  'Gmail',
+  'Slack',
+  'Telegram',
+  'WhatsApp',
+  'Notion',
+  'Google Docs',
+  'Excel',
+  'Figma',
+  'Xero',
+  'Salesforce',
+  'Other',
+];
+export const URGENCY_OPTIONS = ['This week', 'Within the month', 'Just exploring'];
 
 export const QUESTIONS: Question[] = [
   {
     id: 'name',
-    type: 'text',
-    short: true,
-    label: 'First, what should we call you?',
-    placeholder: 'your first name',
-    tag: 'Q00 · hello',
-  },
-  {
-    id: 'q1',
     type: 'business',
-    label: (firstName) =>
-      firstName
-        ? `Nice to meet you, ${firstName}. What does your business do?`
-        : 'What does your business do?',
-    sub: 'One or two sentences, plus the name so we can brand your report.',
-    tag: 'Q01 · context',
+    label: "Before we map your business, what's your name?",
+    sub: 'And the name of your business?',
+    tag: 'Q00 · identity',
   },
   {
-    id: 'q2',
-    type: 'role_size',
-    label: "What's your role, and how big is your team?",
-    tag: 'Q02 · shape',
+    id: 'business_description',
+    type: 'textarea',
+    label: 'Describe your business in a sentence. What do you sell or deliver?',
+    placeholder:
+      'e.g. We run a boutique investment advisory firm managing portfolios for high-net-worth clients',
+    tag: 'Q01 · what you do',
   },
   {
-    id: 'q3',
-    type: 'text',
-    label: "What's the one outcome you most need your team to deliver better right now?",
-    placeholder: 'e.g. more qualified pipeline without me being in every call',
-    tag: 'Q03 · outcome',
+    id: 'team_size',
+    type: 'single',
+    label: 'How many people work in your business, including you?',
+    options: TEAM_SIZES,
+    tag: 'Q02 · team size',
   },
   {
-    id: 'q4',
+    id: 'functional_areas',
     type: 'multi',
-    label: "Where's the bottleneck? Pick as many as apply.",
-    sub: "We'll use your first pick as the shape of your Cognitive Work Unit.",
-    options: [
-      'Analysis and research',
-      'Sales and pipeline',
-      'Building and delivery',
-      'Managing my own time and attention',
-      'Account and relationship management',
-      'High-volume operations',
-      'Creative and content production',
-      'Team learning and development',
-    ],
-    tag: 'Q04 · bottleneck',
+    label: 'Which of these areas does your business actively run?',
+    sub: 'Select all that apply',
+    options: FUNCTIONAL_AREAS,
+    tag: 'Q03 · functional areas',
   },
   {
-    id: 'q5_volume',
+    id: 'primary_area',
     type: 'single',
-    label: "What's the current volume in that bottleneck area?",
-    sub: 'Rough order of magnitude per week, helps us size the agent team.',
-    options: [
-      'Low, under 20 items / week',
-      'Medium, 20 to 100 / week',
-      'High, 100 to 500 / week',
-      'Very high, 500+ / week',
-    ],
-    tag: 'Q05 · volume',
+    label: 'Which of those areas do YOU spend most of your time in?',
+    options: [],
+    dynamicOptions: true,
+    tag: 'Q04 · where you sit',
   },
   {
-    id: 'q6_tools',
+    id: 'drowning_work',
+    type: 'textarea',
+    label:
+      "What's the work that's drowning you right now? The stuff that takes up your week but shouldn't need you.",
+    placeholder:
+      'e.g. I spend half my week on client reporting and meeting prep that could be templated',
+    tag: 'Q05 · drowning',
+  },
+  {
+    id: 'human_critical',
+    type: 'textarea',
+    label:
+      "What's the one thing in your business that completely falls apart if you're not personally doing it?",
+    placeholder:
+      'e.g. Client relationships and investment decisions, they trust me specifically',
+    tag: 'Q06 · human-only',
+  },
+  {
+    id: 'primary_risk',
+    type: 'single',
+    label: 'When something goes wrong in your business, what hurts most?',
+    options: RISK_OPTIONS,
+    tag: 'Q07 · stakes',
+  },
+  {
+    id: 'tools',
     type: 'multi',
-    label: 'Which tools does this work already live in?',
-    sub: 'Your agents will plug into these.',
-    options: [
-      'Gmail / Outlook',
-      'Slack',
-      'Notion',
-      'Linear / Jira',
-      'HubSpot',
-      'Salesforce',
-      'Airtable / sheets',
-      'Figma',
-      'GitHub',
-      'Google Docs',
-      'Calendar',
-      "Other / we'll tell you later",
-    ],
-    tag: 'Q06 · surface area',
+    label: 'What tools does your team live in?',
+    options: TOOL_OPTIONS,
+    tag: 'Q08 · tools',
   },
   {
-    id: 'q7_constraint',
+    id: 'urgency',
     type: 'single',
-    label: "What's currently preventing you from fixing this yourself?",
-    options: [
-      "I don't have the time",
-      "I don't have the team capacity",
-      "I don't have the right expertise",
-      "I've tried and it didn't stick",
-      "I haven't seen a good enough approach yet",
-    ],
-    tag: 'Q07 · constraint',
-  },
-  {
-    id: 'q8_metric',
-    type: 'text',
-    label: 'If this worked, what would change that you could measure?',
-    placeholder: 'e.g. cut meeting prep time by 80%, 2× qualified demos, response time under 2h',
-    tag: 'Q08 · success metric',
-  },
-  {
-    id: 'q9_urgency',
-    type: 'single',
-    label: 'When do you need this working?',
-    options: ['This week', 'Within the month', 'This quarter', 'Exploring, no fixed timeline'],
+    label: 'How soon do you want to start building agent teams?',
+    options: URGENCY_OPTIONS,
     tag: 'Q09 · urgency',
-  },
-  {
-    id: 'q10_stance',
-    type: 'single',
-    label: 'How hands-on do you want to be?',
-    options: [
-      "Build and deploy it for me, I'll review",
-      'Partner with me, I want to shape it',
-      'I want to build it myself, point me in the right direction',
-    ],
-    tag: 'Q10 · stance',
   },
   {
     id: 'email',
     type: 'email',
     label: (firstName) =>
-      firstName ? `${firstName}, where should we send your Heat Map?` : 'Where should we send your Heat Map?',
+      firstName ? `${firstName}, where should we send your business map?` : 'Where should we send your business map?',
     sub: 'A full PDF report + your team blueprint, tailored to your answers. No spam, one email, yours to keep.',
-    tag: 'Q11 · delivery',
+    tag: 'Q10 · delivery',
   },
 ];
 

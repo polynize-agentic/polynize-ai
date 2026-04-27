@@ -2,13 +2,12 @@ import { NextResponse } from 'next/server';
 import { ensureSession } from '@/lib/session';
 import { supabaseService } from '@/lib/supabase';
 import { PRICING_VERSION } from '@/lib/pricing';
-import { getShape } from '@/lib/agents/shape-library';
 
 export const runtime = 'nodejs';
 
 /**
- * Snapshot the current session's answers + heat map into a blueprint
- * row, return the new blueprint id. The visitor is then sent to
+ * Snapshot the current session's answers + multi-team heat map into a
+ * blueprint row, return the new blueprint id. The visitor is then sent to
  * /blueprints/<id>.
  *
  * Idempotent per session: blueprints.session_id is UNIQUE, so calling
@@ -32,24 +31,16 @@ export async function POST() {
       sb.from('heat_maps').select('*').eq('session_id', sessionId).maybeSingle(),
     ]);
 
-    if (!ans || !hm) {
+    if (!ans || !hm || !hm.data) {
       return NextResponse.json(
         { error: 'Complete Phase A and Phase B before generating a blueprint.' },
         { status: 400 }
       );
     }
 
-    const shapeMeta = getShape(hm.shape as string);
     const snapshot = {
       answers: ans.answers,
-      data: {
-        shape_id: hm.shape,
-        shape_display_name: shapeMeta?.display_name ?? hm.shape,
-        shape_short_name: shapeMeta?.short_name ?? hm.shape,
-        percentages: hm.percentages,
-        rows: hm.rows,
-        team: hm.team,
-      },
+      data: hm.data,
     };
 
     const { data: blueprint, error } = await sb

@@ -1,17 +1,8 @@
-import type { TeamMember } from '../types';
-
-/**
- * Day-in-the-life timeline for Blueprint Page 4. Ported verbatim from
- * design_handoff/designs/blueprints/bp-04-day.jsx. The narrative is shaped
- * around the Pipeline shape (the demo). For other shapes, the prototype
- * recycles the same script with different agent names.
- *
- * CC-TODO: shape-specific timelines (or LLM generation) in Phase 2.
- */
+import type { MultiTeamHeatMap, HeatMapAgent } from '../types';
 
 export type TimelineMessage =
   | { from: 'human'; text: string }
-  | { from: 'agent'; agent: TeamMember; text: string };
+  | { from: 'agent'; agent: HeatMapAgent; teamName: string; text: string };
 
 export type TimelineBlock = {
   time: string;
@@ -19,12 +10,29 @@ export type TimelineBlock = {
   items: TimelineMessage[];
 };
 
-export function buildPipelineTimeline(
-  agents: TeamMember[],
+/**
+ * Day-in-the-life timeline for Blueprint Page 4. Picks the 2-3 most impactful
+ * scenarios across all teams in the unit, weaving in named agents from
+ * different teams so the visitor sees the whole unit acting in concert.
+ */
+export function buildMultiTeamTimeline(
+  data: MultiTeamHeatMap,
   firstName: string
 ): TimelineBlock[] {
-  if (agents.length === 0) return [];
-  const a = (i: number) => agents[i % agents.length];
+  const teams = data.teams;
+  if (teams.length === 0) return [];
+
+  // Pick a representative agent from each team in order so the timeline
+  // showcases all teams without exceeding 4 blocks.
+  const pick = (teamIdx: number, agentIdx = 0) => {
+    const team = teams[teamIdx % teams.length];
+    return { agent: team.agents[agentIdx % team.agents.length], teamName: team.name };
+  };
+
+  const morning = pick(0);
+  const midmorning = pick(1 % teams.length, teams.length > 1 ? 0 : 1);
+  const afternoon = pick(Math.min(2, teams.length - 1));
+  const close = pick(0, teams[0].agents.length > 1 ? 1 : 0);
 
   return [
     {
@@ -33,13 +41,15 @@ export function buildPipelineTimeline(
       items: [
         {
           from: 'agent',
-          agent: a(0),
-          text: `Morning ${firstName}. Today's ranked pipeline is in your inbox. 4 accounts are worth a call this week, 1 is likely to slip without a nudge. Top of the list: Merrick Holdings.`,
+          agent: morning.agent,
+          teamName: morning.teamName,
+          text: `Morning ${firstName}. Here's what's already moving across the unit. Today's priorities sit on the ${morning.teamName} side.`,
         },
         {
           from: 'agent',
-          agent: a(1),
-          text: `Your 10:30 with Merrick has a briefing doc ready. Two-page summary, three questions I'd expect, and the answer I'd lead with.`,
+          agent: midmorning.agent,
+          teamName: midmorning.teamName,
+          text: `From ${midmorning.teamName}: your 10:30 has a brief ready, two-page summary plus the answer I'd lead with.`,
         },
       ],
     },
@@ -49,23 +59,25 @@ export function buildPipelineTimeline(
       items: [
         {
           from: 'human',
-          text: 'Merrick call ran 12 minutes over. They want to see pricing by Friday.',
+          text: 'Call ran long. We need pricing by Friday and a check-in scheduled with the delivery lead.',
         },
         {
           from: 'agent',
-          agent: a(2),
-          text: `On it. Draft proposal in your review folder by 2pm today. I've used the structure you approved for the Westfield deal and adjusted for their scope. Tagging you on one price call I'm not sure about.`,
+          agent: afternoon.agent,
+          teamName: afternoon.teamName,
+          text: `On it. ${afternoon.teamName} is drafting; I'll have a first pass in your review folder by 2pm. Tagging you on one decision I want your call on.`,
         },
       ],
     },
     {
-      time: '13:00',
+      time: '13:30',
       label: 'lunch, actually',
       items: [
         {
           from: 'agent',
-          agent: a(3),
-          text: `While you were eating: Tollworth hasn't replied in 11 days. Drafted a warm nudge in your voice. Waiting for your yes before it goes out.`,
+          agent: midmorning.agent,
+          teamName: midmorning.teamName,
+          text: `While you were eating: a soft-touch follow-up went out across two stalled threads. Drafted in your voice, held the third for your eyes.`,
         },
       ],
     },
@@ -73,17 +85,18 @@ export function buildPipelineTimeline(
       time: '16:00',
       label: 'end of day',
       items: [
-        { from: 'human', text: 'Review + sign-off sweep.' },
-        { from: 'agent', agent: a(2), text: `Proposal ready for your eyes. One flagged section.` },
+        { from: 'human', text: 'Review and sign-off sweep.' },
         {
           from: 'agent',
-          agent: a(3),
-          text: `Pipeline clean. HubSpot matches reality. 3 nudges sent, 1 held for your review.`,
+          agent: close.agent,
+          teamName: close.teamName,
+          text: `Ready for your eyes. Two flagged items. Everything else has been dispatched.`,
         },
         {
           from: 'agent',
-          agent: a(0),
-          text: `Tomorrow's shortlist brewing. Nothing's on fire.`,
+          agent: morning.agent,
+          teamName: morning.teamName,
+          text: `Tomorrow's shortlist brewing across the unit. Nothing's on fire.`,
         },
       ],
     },

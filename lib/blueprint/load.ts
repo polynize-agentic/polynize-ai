@@ -1,13 +1,13 @@
-import type { Answers, HeatMapData } from '../types';
-import { deriveHeatMap } from '../agents/derive-heatmap';
-import { DEMO_ANSWERS } from './demo-default';
+import type { Answers, MultiTeamHeatMap } from '../types';
+import { deriveHeatMapFallback } from '../agents/derive-heatmap-fallback';
+import { DEMO_ANSWERS, DEMO_HEATMAP } from './demo-default';
 import { supabaseService } from '../supabase';
 
 export type BlueprintPayload = {
   id: string;
   isDemo: boolean;
   answers: Partial<Answers>;
-  data: HeatMapData;
+  data: MultiTeamHeatMap;
   issuedAt: Date;
   docRef: string;
 };
@@ -39,7 +39,7 @@ export async function loadBlueprint(
 
       if (!row) return null;
 
-      const snapshot = row.data as { answers: Partial<Answers>; data: HeatMapData };
+      const snapshot = row.data as { answers: Partial<Answers>; data: MultiTeamHeatMap };
       return {
         id: row.id,
         isDemo: false,
@@ -59,13 +59,11 @@ export async function loadBlueprint(
 }
 
 function demoPayload(id: string, isDemo: boolean): BlueprintPayload {
-  const answers = DEMO_ANSWERS;
-  const data = deriveHeatMap(answers);
   return {
     id,
     isDemo,
-    answers,
-    data,
+    answers: DEMO_ANSWERS,
+    data: DEMO_HEATMAP,
     issuedAt: new Date(),
     docRef: docRefFromId(id),
   };

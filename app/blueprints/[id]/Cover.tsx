@@ -5,19 +5,25 @@ import { firstNameOf } from './util';
 export function Cover({ payload }: { payload: BlueprintPayload }) {
   const { answers, data, issuedAt, docRef } = payload;
   const firstName = firstNameOf(answers.name);
-  const company = (answers.q1_company ?? '').trim();
+  const company = (answers.company ?? '').trim();
   const issuedLabel = issuedAt.toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
 
+  // Build a compact preview that interleaves a couple of rows from each team.
+  const previewRows = data.teams.flatMap((team) =>
+    team.functions.slice(0, 2).map((fn) => ({ team: team.name, label: fn.label, alloc: fn.allocation }))
+  );
+
   return (
     <section className={s.cover} data-screen-label="Page 01 · Cover">
       <div className={s.coverMeta}>
         <Meta k="document" v="agent_team_blueprint" />
         <Meta k="prepared_for" v={`${firstName}${company ? ` at ${company}` : ''}`} />
-        <Meta k="shape" v={data.shape_display_name} />
+        <Meta k="shape" v={data.shape_primary} />
+        <Meta k="teams" v={`${data.teams.length} teams`} />
         <Meta k="issued" v={issuedLabel} />
         <Meta k="ref" v={`BP-${docRef}`} />
       </div>
@@ -27,11 +33,11 @@ export function Cover({ payload }: { payload: BlueprintPayload }) {
         <br />
         for <span className={s.mint}>{firstName}&apos;s</span>
         <br />
-        next team<span className={s.mint}>.</span>
+        next unit<span className={s.mint}>.</span>
       </h1>
 
       <p className={s.coverLede}>
-        {company ? `${company} has` : 'You have'} a <strong>{data.shape_display_name}</strong> shape.
+        {company ? `${company} runs as` : 'You run as'} a <strong>{data.shape_primary}</strong> shape across {data.teams.length} teams.
         The page below is the first look at how we&apos;d organise the execution behind it,
         colour-coded, staffed, and priced. Read it like a draft. We&apos;ll sharpen it together.
       </p>
@@ -39,14 +45,17 @@ export function Cover({ payload }: { payload: BlueprintPayload }) {
       <div className={s.coverMap}>
         <div className={s.eyebrow}>§ heat_map / preview</div>
         <div className={s.minimap}>
-          {data.rows.map((r, i) => {
+          {previewRows.map((r, i) => {
             const allocs: ('human' | 'hybrid' | 'agent')[] = ['human', 'hybrid', 'agent'];
             const colorFor = (a: 'human' | 'hybrid' | 'agent') =>
               a === 'human' ? 'var(--coral)' : a === 'hybrid' ? 'var(--amber)' : 'var(--mint)';
             const activeColor = colorFor(r.alloc);
             return (
               <div key={i} className={s.minimapRow}>
-                <div className={s.minimapFn}>{r.fn}</div>
+                <div className={s.minimapFn}>
+                  <span style={{ color: 'var(--text-3)', marginRight: 6 }}>{r.team}</span>
+                  {r.label}
+                </div>
                 <div className={s.minimapCells}>
                   {allocs.map((a) => {
                     const on = r.alloc === a;

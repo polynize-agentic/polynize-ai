@@ -327,11 +327,91 @@
 .statBar > div {
   height: 100%;
 }
+.read {
+  background: var(--tac-surface);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: var(--tac-shadow-raised);
+  margin-top: 32px;
+}
 .read p {
   font-size: 15px;
   line-height: 1.65;
   color: var(--text-2);
   margin: 0 0 14px;
+}
+.read p:last-child {
+  margin-bottom: 0;
+}
+
+.summaryRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  gap: 24px;
+  align-items: end;
+  margin-bottom: 40px;
+  padding: 24px;
+  background: var(--tac-surface);
+  border-radius: 18px;
+  box-shadow: var(--tac-shadow-raised);
+}
+.statBlockItem {
+  display: flex;
+  flex-direction: column;
+}
+.leverageBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  padding-left: 24px;
+  border-left: 1px solid var(--border-soft);
+}
+.leverageVal {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--mint);
+}
+
+.teamsStack {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.teamBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.teamBlockHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 0 6px;
+}
+.teamBlockName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  line-height: 1.1;
+}
+.teamBlockShape {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--mint);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.teamBlockPct {
+  display: flex;
+  gap: 14px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 13px;
 }
 
 /* ==================== TEAM PAGE ==================== */
@@ -404,6 +484,38 @@
   color: var(--text-2);
   margin: 0;
   max-width: 620px;
+}
+
+.teamSection {
+  margin-bottom: 56px;
+}
+.teamSectionHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.teamSectionName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: clamp(28px, 3.5vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 6px 0 4px;
+  line-height: 1;
+}
+.teamSectionShape {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--mint);
+  text-transform: uppercase;
+}
+.teamSectionPct {
+  display: flex;
+  gap: 14px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 13px;
 }
 
 .agentGrid {

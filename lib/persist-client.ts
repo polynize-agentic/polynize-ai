@@ -6,7 +6,7 @@
  * The httpOnly session cookie is attached automatically by fetch.
  */
 
-import type { Answers, HeatMapData } from './types';
+import type { Answers, MultiTeamHeatMap } from './types';
 
 async function silentPost(path: string, body: unknown): Promise<void> {
   try {
@@ -26,15 +26,8 @@ export function persistAnswers(answers: Partial<Answers>, completed: boolean): v
   void silentPost('/api/session/answers', { answers, completed });
 }
 
-export function persistHeatMap(data: HeatMapData): void {
-  void silentPost('/api/session/heat-map', {
-    shape_id: data.shape_id,
-    shape_display_name: data.shape_display_name,
-    shape_short_name: data.shape_short_name,
-    percentages: data.percentages,
-    rows: data.rows,
-    team: data.team,
-  });
+export function persistHeatMap(data: MultiTeamHeatMap): void {
+  void silentPost('/api/session/heat-map', { data });
 }
 
 export function persistMessage(

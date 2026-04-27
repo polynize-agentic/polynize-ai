@@ -31,8 +31,6 @@ export default function HomePage() {
           <span style={{ color: 'var(--text-3)' }}>build 2026.04.23</span>
         </div>
         <div className={s.navLinks}>
-          {/* CC-TODO: /thesis page does not exist yet — placeholder anchor */}
-          <a className={s.navLink} href="#thesis">/thesis</a>
           <Link className={s.navLink} href="/agents">/agents</Link>
           <Link className={s.navLink} href="/brand">/brand</Link>
           <a className={s.navLink} href={POLYNIZE_IO} target="_blank" rel="noopener noreferrer">

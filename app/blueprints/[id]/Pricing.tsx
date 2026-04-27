@@ -18,8 +18,9 @@ type Stage = {
 export function Pricing({ payload }: { payload: BlueprintPayload }) {
   const { answers, data } = payload;
   const firstName = firstNameOf(answers.name, 'you');
-  const teamCount = data.team.filter((m) => m.type === 'agent').length;
-  const company = (answers.q1_company ?? '').trim();
+  const totalAgents = data.teams.reduce((sum, t) => sum + t.agents.length, 0);
+  const teamCount = data.teams.length;
+  const company = (answers.company ?? '').trim();
   const pricing = computePricing(answers);
 
   const stages: Stage[] = [
@@ -33,7 +34,7 @@ export function Pricing({ payload }: { payload: BlueprintPayload }) {
       scope: [
         'One agent deployed end-to-end',
         'Cognitive layer installed in your tools',
-        'Workshop with you on your heat map',
+        `Workshop with you on your ${teamCount}-team heat map`,
         'Decision checkpoint before Transform',
       ],
       accent: 'mint',
@@ -41,11 +42,12 @@ export function Pricing({ payload }: { payload: BlueprintPayload }) {
     {
       stage: 'Transform',
       from: `from $${pricing.transform.from.toLocaleString()}`,
-      unit: 'AUD, scales with team size',
-      window: 'Week 3 to 6',
-      what: `The full ${teamCount}-agent team built, trained in your voice, plugged into your tools, and deployed behind the human lead. This is where your calendar starts clearing.`,
+      unit: 'AUD, scales with unit size',
+      window: `Week 3 to ${Math.max(6, teamCount * 3)}`,
+      what: `The full unit, ${totalAgents} agents across ${teamCount} teams, built, trained in your voice, plugged into your tools, and deployed behind the human lead. This is where your calendar starts clearing.`,
       scope: [
-        `${teamCount} agents designed, built and trained`,
+        `${totalAgents} agents designed, built and trained`,
+        `${teamCount} teams structured around your work`,
         'Integration with your existing toolchain',
         'Human-in-the-loop review flows',
         'Handoff: you, running the unit',
@@ -59,7 +61,7 @@ export function Pricing({ payload }: { payload: BlueprintPayload }) {
       unit: 'AUD / month, service fee',
       window: 'Ongoing',
       what:
-        'We keep the team healthy. Prompts tuned, tools updated, connectors working, and a monthly check-in on how the unit is actually performing against your metric.',
+        'We keep the unit healthy. Prompts tuned, tools updated, connectors working, and a monthly check-in on how each team is actually performing against your metric.',
       scope: [
         'Monthly monitoring and tuning',
         'Connector maintenance',

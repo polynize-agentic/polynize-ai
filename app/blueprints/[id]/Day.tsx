@@ -1,14 +1,13 @@
 import type { BlueprintPayload } from '@/lib/blueprint/load';
-import { buildPipelineTimeline } from '@/lib/blueprint/timeline';
+import { buildMultiTeamTimeline } from '@/lib/blueprint/timeline';
 import s from './blueprint.module.css';
 import { firstNameOf } from './util';
 
 export function Day({ payload }: { payload: BlueprintPayload }) {
   const { answers, data } = payload;
   const firstName = firstNameOf(answers.name, 'you');
-  const company = (answers.q1_company ?? '').trim() || 'your business';
-  const agents = data.team.filter((m) => m.type === 'agent');
-  const timeline = buildPipelineTimeline(agents, firstName);
+  const company = (answers.company ?? '').trim() || 'your business';
+  const timeline = buildMultiTeamTimeline(data, firstName);
 
   return (
     <section className={s.page} data-screen-label="Page 04 · Day in the Life">
@@ -22,8 +21,9 @@ export function Day({ payload }: { payload: BlueprintPayload }) {
         </h2>
         <p className={s.pageLede}>
           Based on what you told us about {company}, here&apos;s a lightly fictionalised walk-through
-          of a typical day with the team in place. The point isn&apos;t the specifics. It&apos;s the
-          rhythm. You show up, you make decisions, the execution happens around you.
+          of a typical day with the unit in place. Agents from across {data.teams.length} teams
+          coordinate around you. The point isn&apos;t the specifics. It&apos;s the rhythm. You show
+          up, you make decisions, the execution happens around you.
         </p>
       </div>
 
@@ -38,15 +38,15 @@ export function Day({ payload }: { payload: BlueprintPayload }) {
               {block.items.map((m, i) => {
                 if (m.from === 'agent') {
                   const initial = m.agent.name[0];
-                  const labelRole = m.agent.role.split(/[&,]/)[0]?.trim() ?? m.agent.role;
                   return (
                     <div key={i} className={s.tlMsg}>
-                      <div className={s.tlAv} title={m.agent.name}>
+                      <div className={s.tlAv} title={`${m.agent.name} · ${m.teamName}`}>
                         {initial}
                       </div>
                       <div className={s.tlBubble}>
                         <div className={s.tlFrom}>
-                          {m.agent.name} · {labelRole}
+                          {m.agent.name} · {m.agent.role}{' '}
+                          <span style={{ color: 'var(--text-3)' }}>· {m.teamName}</span>
                         </div>
                         <div className={s.tlText}>{m.text}</div>
                       </div>

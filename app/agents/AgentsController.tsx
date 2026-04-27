@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { Answers, HeatMapData, SessionState } from '@/lib/types';
+import type { Answers, MultiTeamHeatMap, SessionState } from '@/lib/types';
 import { PhaseA } from './PhaseA';
 import { PhaseB } from './PhaseB';
 import { PhaseC, type ChatMessage } from './PhaseC';
@@ -14,7 +14,7 @@ type Persisted = {
   phase: SessionState['phase'];
   answers: Partial<Answers>;
   step: number;
-  data?: HeatMapData;
+  data?: MultiTeamHeatMap;
   messages?: ChatMessage[];
 };
 
@@ -69,7 +69,7 @@ export function AgentsController() {
 
   const handlePhaseAComplete = useCallback((answers: Partial<Answers>) => {
     track('phase_a_complete', {
-      steps_completed: 12,
+      steps_completed: 11,
       has_email: Boolean(answers.email),
     });
     if (answers.email) {
@@ -79,12 +79,14 @@ export function AgentsController() {
     setState((prev) => ({ ...prev, answers, phase: 'B' }));
   }, []);
 
-  const handlePhaseBReady = useCallback((data: HeatMapData) => {
+  const handlePhaseBReady = useCallback((data: MultiTeamHeatMap) => {
     track('phase_b_complete', {
-      shape_id: data.shape_id,
-      pct_human: data.percentages.human,
-      pct_hybrid: data.percentages.hybrid,
-      pct_agent: data.percentages.agent,
+      shape_primary: data.shape_primary,
+      team_count: data.teams.length,
+      pct_human: data.total.human,
+      pct_hybrid: data.total.hybrid,
+      pct_agent: data.total.agent,
+      generated_by: data.generated_by ?? 'llm',
     });
     persistHeatMap(data);
     setState((prev) => ({ ...prev, data, phase: 'C' }));
@@ -119,7 +121,7 @@ export function AgentsController() {
   }
 
   if (state.phase === 'B') {
-    return <PhaseB answers={state.answers} onReady={handlePhaseBReady} />;
+    return <PhaseB answers={state.answers} preloaded={state.data} onReady={handlePhaseBReady} />;
   }
 
   if (state.phase === 'C' && state.data) {

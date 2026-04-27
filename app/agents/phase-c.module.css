@@ -45,7 +45,24 @@
 .teamList {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 18px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  padding-right: 4px;
+}
+.teamGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.teamGroupHead {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mint);
+  padding: 0 4px 6px;
 }
 .teamItem {
   display: flex;

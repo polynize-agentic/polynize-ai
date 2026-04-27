@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Answers } from '@/lib/types';
-import { QUESTIONS, ROLE_OPTIONS, SIZE_OPTIONS, resolveLabel, type Question } from '@/lib/agents/questions';
+import { QUESTIONS, resolveLabel, type Question } from '@/lib/agents/questions';
 import s from './phase-a.module.css';
 
 type Props = {
@@ -14,18 +14,16 @@ type Props = {
 
 const BLANK: Partial<Answers> = {
   name: '',
-  q1: '',
-  q1_company: '',
-  q2_role: '',
-  q2_size: '',
-  q3: '',
-  q4: [],
-  q5_volume: '',
-  q6_tools: [],
-  q7_constraint: '',
-  q8_metric: '',
-  q9_urgency: '',
-  q10_stance: '',
+  company: '',
+  business_description: '',
+  team_size: '',
+  functional_areas: [],
+  primary_area: '',
+  drowning_work: '',
+  human_critical: '',
+  primary_risk: '',
+  tools: [],
+  urgency: '',
   email: '',
 };
 
@@ -39,6 +37,12 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
   const firstName = (answers.name ?? '').trim().split(/\s+/)[0] ?? '';
   const label = resolveLabel(q, firstName);
   const progress = ((step + 1) / QUESTIONS.length) * 100;
+
+  // Q04 (primary_area) options come from Q03 (functional_areas) at runtime.
+  const dynamicOptions = useMemo(() => {
+    if (q.id !== 'primary_area') return null;
+    return answers.functional_areas ?? [];
+  }, [q.id, answers.functional_areas]);
 
   const canAdvance = useCallback((): boolean => {
     return checkCanAdvance(q, answers);
@@ -70,12 +74,11 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
     onAnswersChange?.(answers, step);
   }, [answers, step, onAnswersChange]);
 
-  // Global Enter handling. Plain Enter advances on non-text inputs;
-  // Cmd/Ctrl+Enter advances on text inputs.
+  // Plain Enter advances on chip/email; Cmd/Ctrl+Enter advances in textarea.
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key !== 'Enter' || e.shiftKey) return;
-      const isTextLike = q.type === 'text' || q.type === 'business' || q.type === 'email';
+      const isTextLike = q.type === 'textarea' || q.type === 'business' || q.type === 'email';
       if (!isTextLike) {
         e.preventDefault();
         next();
@@ -109,24 +112,7 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
           <h2 className={s.q}>{label}</h2>
           {q.sub && <p className={s.sub}>{q.sub}</p>}
 
-          {q.type === 'text' && q.short && (
-            <input
-              className={s.input}
-              type="text"
-              placeholder={q.placeholder}
-              value={(answers[q.id as keyof Answers] as string) ?? ''}
-              autoFocus
-              onChange={(e) => setField(q.id as keyof Answers, e.target.value as never)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  next();
-                }
-              }}
-            />
-          )}
-
-          {q.type === 'text' && !q.short && (
+          {q.type === 'textarea' && (
             <textarea
               className={s.input}
               placeholder={q.placeholder}
@@ -138,19 +124,26 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
 
           {q.type === 'business' && (
             <div className={s.business}>
-              <textarea
+              <input
                 className={s.input}
-                placeholder="e.g. we help mid-market ops teams roll out internal tooling"
-                value={answers.q1 ?? ''}
+                type="text"
+                placeholder="your first name"
+                value={answers.name ?? ''}
                 autoFocus
-                onChange={(e) => setField('q1', e.target.value)}
+                onChange={(e) => setField('name', e.target.value)}
               />
               <input
                 className={`${s.input} ${s.inputThin}`}
                 type="text"
-                placeholder="business name (optional)"
-                value={answers.q1_company ?? ''}
-                onChange={(e) => setField('q1_company', e.target.value)}
+                placeholder="business name"
+                value={answers.company ?? ''}
+                onChange={(e) => setField('company', e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && checkCanAdvance(q, answers)) {
+                    e.preventDefault();
+                    next();
+                  }
+                }}
               />
             </div>
           )}
@@ -178,41 +171,6 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
             </div>
           )}
 
-          {q.type === 'role_size' && (
-            <div className={s.pairs}>
-              <div>
-                <div className={s.sublabel}>Role</div>
-                <div className={s.chips}>
-                  {ROLE_OPTIONS.map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      className={`${s.chip} ${answers.q2_role === r ? s.chipOn : ''}`}
-                      onClick={() => setField('q2_role', r)}
-                    >
-                      {r}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <div className={s.sublabel}>Team size</div>
-                <div className={s.chips}>
-                  {SIZE_OPTIONS.map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      className={`${s.chip} ${answers.q2_size === r ? s.chipOn : ''}`}
-                      onClick={() => setField('q2_size', r)}
-                    >
-                      {r}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
           {q.type === 'multi' && q.options && (
             <div className={s.multi}>
               {q.options.map((o) => {
@@ -236,9 +194,9 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
             </div>
           )}
 
-          {q.type === 'single' && q.options && (
+          {q.type === 'single' && (q.options || dynamicOptions) && (
             <div className={s.single}>
-              {q.options.map((o) => (
+              {(dynamicOptions ?? q.options ?? []).map((o) => (
                 <button
                   key={o}
                   type="button"
@@ -260,6 +218,11 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
                   <span>{o}</span>
                 </button>
               ))}
+              {q.dynamicOptions && (dynamicOptions?.length ?? 0) === 0 && (
+                <div className={s.sub} style={{ marginTop: 0 }}>
+                  Pick at least one functional area on the previous step.
+                </div>
+              )}
             </div>
           )}
 
@@ -272,12 +235,12 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
             <div className={s.spacer} />
             <button type="button" className={s.next} disabled={!canAdvance()} onClick={next}>
               {q.type === 'email'
-                ? 'send_my_heat_map →'
+                ? 'send_my_business_map →'
                 : step === QUESTIONS.length - 1
-                  ? 'generate_heat_map →'
+                  ? 'generate_business_map →'
                   : 'next →'}
             </button>
-            {q.type === 'text' && <span className={s.hint}>⌘ + enter</span>}
+            {q.type === 'textarea' && <span className={s.hint}>⌘ + enter</span>}
           </div>
         </div>
       </div>
@@ -286,11 +249,15 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
 }
 
 function checkCanAdvance(q: Question, answers: Partial<Answers>): boolean {
-  if (q.id === 'name') return ((answers.name ?? '').trim().length >= 2);
-  if (q.id === 'q1' || q.type === 'business') return ((answers.q1 ?? '').trim().length > 3);
-  if (q.type === 'role_size') return Boolean(answers.q2_role && answers.q2_size);
-  if (q.type === 'multi') return ((answers[q.id as keyof Answers] as string[] | undefined)?.length ?? 0) > 0;
+  if (q.type === 'business') {
+    return ((answers.name ?? '').trim().length >= 2) && ((answers.company ?? '').trim().length >= 2);
+  }
+  if (q.type === 'multi') {
+    return ((answers[q.id as keyof Answers] as string[] | undefined)?.length ?? 0) > 0;
+  }
   if (q.type === 'email') return /^\S+@\S+\.\S+$/.test(answers.email ?? '');
-  if (q.type === 'text') return ((answers[q.id as keyof Answers] as string | undefined) ?? '').trim().length > 3;
+  if (q.type === 'textarea') {
+    return ((answers[q.id as keyof Answers] as string | undefined) ?? '').trim().length > 3;
+  }
   return Boolean(answers[q.id as keyof Answers]);
 }
