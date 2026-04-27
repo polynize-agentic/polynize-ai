@@ -1,505 +1,505 @@
 import Link from 'next/link';
 import s from './_home/home.module.css';
-import { Terminal } from './_home/Terminal';
-import { HeatMapGrid } from './_home/HeatMapGrid';
-import { CWUSchematic } from './_home/CWUSchematic';
-import { HOME_SAMPLE } from './_home/sample-data';
+import { CapabilityMapPreview } from './_home/CapabilityMapPreview';
 import { TrackedLink } from './_components/TrackedLink';
 
 const BOOKING_URL = 'https://calendly.com/marrscoiro/meeting30';
 const POLYNIZE_IO = 'https://polynize.io';
+const YOUTUBE_CHANNEL = 'https://www.youtube.com/@polynize.agentic';
 
 export const metadata = {
-  title: 'polynize.ai · the new shape of a working business',
+  title: 'polynize.ai · map your bottleneck',
   description:
-    'We design agent teams around the shape of your work. One accountable human at the centre. A small team of agents on execution. One real outcome.',
+    "We take the one thing choking your business, decompose it into capabilities, and design a small team of agents to handle the parts a person doesn't need to.",
 };
 
 export default function HomePage() {
   return (
-    <div className={s.root}>
-      {/* NAV */}
-      <nav className={s.nav}>
-        <div className={s.wordmark}>
-          <span style={{ color: 'var(--mint)' }}>[</span>polynize
-          <span style={{ color: 'var(--text-3)' }}>.ai</span>
-          <span style={{ color: 'var(--mint)' }}>]</span>
+    <div className={s.dirC}>
+      {/* ===== NAV ===== */}
+      <nav className={s.dcNav}>
+        <Link className={s.dcWordmark} href="/">
+          <span className={s.dcMark} aria-hidden />
+          <span>
+            polynize<span style={{ color: 'var(--text-3)' }}>.ai</span>
+          </span>
+        </Link>
+        <div className={s.dcNavLinks}>
+          <Link href="/">Home</Link>
+          <Link href="/agents">Map Your Bottleneck</Link>
+          <Link href="/brand">Brand</Link>
+          <Link href="/console">Console</Link>
         </div>
-        <div className={s.statusRow}>
-          <span className={s.dot} /> <span>cwu.v0.1</span>
-          <span style={{ opacity: 0.5 }}>·</span>
-          <span style={{ color: 'var(--text-3)' }}>build 2026.04.23</span>
-        </div>
-        <div className={s.navLinks}>
-          <Link className={s.navLink} href="/agents">/agents</Link>
-          <Link className={s.navLink} href="/brand">/brand</Link>
-          <a className={s.navLink} href={POLYNIZE_IO} target="_blank" rel="noopener noreferrer">
-            polynize.io ↗
-          </a>
-        </div>
+        <TrackedLink
+          className={`${s.dcBtn} ${s.dcBtnGhost}`}
+          href={BOOKING_URL}
+          external
+          event="booking_click"
+          eventProps={{ surface: 'home_nav' }}
+        >
+          Talk to the Team <span className={s.dcArr}>→</span>
+        </TrackedLink>
       </nav>
 
-      {/* §01 HERO */}
-      <section className={s.hero}>
-        <div>
-          <div className={s.eyebrow}>§01 · the cognitive work unit</div>
-          <h1 className={s.h1}>
-            THE NEW SHAPE
-            <br />
-            OF A WORKING
-            <br />
-            BUSINESS<span style={{ color: 'var(--mint)' }}>.</span>
-          </h1>
-          <p className={s.lede}>
-            Execution is no longer the constraint. We design agent teams around the shape of your
-            work. One accountable human at the centre. A small team of agents on execution. One real
-            outcome.
-          </p>
-
-          <div className={s.equation}>
-            <EqTerm num="1" label="human" color="var(--gold)" />
-            <span className={s.eqOp}>+</span>
-            <EqTerm num="4" label="agents" color="var(--mint)" />
-            <span className={s.eqOp}>=</span>
-            <EqTerm num="5×" label="output" color="var(--text)" emph />
-          </div>
-
-          <div className={s.ctaRow}>
-            <TrackedLink
-              className={s.ctaPrimary}
-              href="/agents"
-              event="cta_click"
-              eventProps={{ surface: 'home_hero', label: 'map_your_bottleneck' }}
-            >
-              <span className={s.ctaArrow}>→</span>
-              map_your_bottleneck
-            </TrackedLink>
-          </div>
-        </div>
-
-        <div>
-          <Terminal />
-        </div>
-      </section>
-
-      {/* §02 THE SHIFT */}
-      <section className={s.section} id="thesis">
-        <SectionHeader n="02" title="the_shift()" subtitle="execution.cost → 0, judgment.value → ∞" />
-        <div className={s.twoCol}>
-          <div>
-            <h3 className={s.h3}>old constraint</h3>
-            <p className={s.body}>
-              &quot;how do i get more work done.&quot; hire harder. stretch people thinner. output
-              climbs linearly with cost.
-            </p>
-            <ComparisonBar label="headcount → output" ratio={0.92} tone="muted" />
-            <ComparisonBar label="cost → output" ratio={0.98} tone="muted" />
-          </div>
-          <div>
-            <h3 className={s.h3}>new constraint</h3>
-            <p className={s.body}>
-              &quot;how do i get more of the <em>right</em> work done without being in every
-              decision.&quot; judgment scales. execution compounds.
-            </p>
-            <ComparisonBar label="agents → output" ratio={0.45} tone="mint" />
-            <ComparisonBar label="judgment → outcome" ratio={0.28} tone="gold" />
-          </div>
-        </div>
-      </section>
-
-      {/* §03 CWU */}
-      <section className={s.section}>
-        <SectionHeader n="03" title="cognitive_work_unit" subtitle="1 human + 4 agents = 5× output" />
-        <div className={s.cwuGrid}>
-          <CWUTable />
-          <CWUSchematic />
-        </div>
-      </section>
-
-      {/* §04 RECOGNITION */}
-      <section className={s.section}>
-        <SectionHeader n="04" title="recognition_first" subtitle="you can't redesign what you can't see" />
-        <p className={s.body} style={{ maxWidth: 720, fontSize: 18 }}>
-          most owners sense they should be using agents. they bolt AI onto legacy workflows and
-          wonder why nothing compounds.{' '}
-          <span style={{ color: 'var(--mint)' }}>the heat map makes it visible.</span> human-critical
-          vs hybrid vs agent-executable, mapped across your actual work.
+      {/* ===== HERO ===== */}
+      <section className={s.dcHero}>
+        <h1 className={s.dcH1}>
+          Map your business problem
+          <br />
+          <span className={s.dcMintEmph}>into an agent team.</span>
+        </h1>
+        <p className={s.dcLede}>
+          We take the one thing choking your business, decompose it into capabilities, and
+          design a small team of agents to handle the parts a person doesn&apos;t need to.
+          What stays human, what becomes hybrid, what an agent can run end&#8209;to&#8209;end,
+          colour&#8209;coded, in a single map.
         </p>
-        <HeatMapGrid rows={HOME_SAMPLE.rows} />
+
+        <div className={s.dcEquation}>
+          <div className={`${s.dcEqCard} ${s.dcEqCardGold}`}>
+            <div className={s.dcEqNum}>1</div>
+            <div className={s.dcEqMeta}>
+              <div className={s.dcEqLabel}>Human</div>
+              <div className={s.dcEqSub}>You, accountable.</div>
+            </div>
+          </div>
+          <div className={s.dcEqPlus}>+</div>
+          <div className={`${s.dcEqCard} ${s.dcEqCardMint}`}>
+            <div className={s.dcEqNum}>4</div>
+            <div className={s.dcEqMeta}>
+              <div className={s.dcEqLabel}>Agents</div>
+              <div className={s.dcEqSub}>One team. Yours.</div>
+            </div>
+          </div>
+          <div className={s.dcEqPlus}>=</div>
+          <div className={`${s.dcEqCard} ${s.dcEqCardOut}`}>
+            <div className={s.dcEqNum}>5×</div>
+            <div className={s.dcEqMeta}>
+              <div className={s.dcEqLabel}>Throughput</div>
+              <div className={s.dcEqSub}>Same headcount.</div>
+            </div>
+          </div>
+        </div>
+
+        <div className={s.dcCtaRow}>
+          <TrackedLink
+            className={`${s.dcBtn} ${s.dcBtnPrimary}`}
+            href="/agents"
+            event="cta_click"
+            eventProps={{ surface: 'home_hero', label: 'map_your_bottleneck' }}
+          >
+            Map Your Bottleneck <span className={s.dcArr}>→</span>
+          </TrackedLink>
+          <TrackedLink
+            className={`${s.dcBtn} ${s.dcBtnSecondary}`}
+            href={BOOKING_URL}
+            external
+            event="booking_click"
+            eventProps={{ surface: 'home_hero' }}
+          >
+            Talk to the Team
+          </TrackedLink>
+        </div>
       </section>
 
-      {/* §04.5 MID CTA */}
-      <section className={s.midCta}>
-        <div className={s.midCtaInner}>
+      {/* ===== CAPABILITY MAP HERO ===== */}
+      <section className={s.dcMapHero}>
+        <div className={s.dcSectionHead}>
+          <div className={s.dcSectionEyebrow}>The capability map</div>
+          <h2 className={s.dcH2}>
+            See your bottleneck,
+            <br />
+            <span className={s.dcMintEmph}>colour&#8209;coded.</span>
+          </h2>
+          <p className={s.dcSectionLede}>
+            Every row is a real capability inside the work that&apos;s choking you. Coral stays
+            human. Amber becomes hybrid. Mint becomes fully agent&#8209;executable. One map. No
+            ambiguity about who does what.
+          </p>
+        </div>
+
+        <CapabilityMapPreview />
+
+        <div className={s.dcMidCta}>
           <div>
-            <div className={s.eyebrow} style={{ marginBottom: 16 }}>§04.5 · your turn</div>
-            <div className={s.midCtaTitle}>
-              See your business,
-              <br />
-              colour-coded<span style={{ color: 'var(--mint)' }}>.</span>
+            <div className={s.dcMidCtaTitle}>Get your capability map.</div>
+            <div className={s.dcMidCtaSub}>
+              A capability map of your real bottleneck, in days, not weeks.
             </div>
-            <p className={s.midCtaBlurb}>
-              Answer a handful of questions. Get a Heat Map of your own work, a suggested agent
-              team, and a written Blueprint, in minutes.
-            </p>
           </div>
           <TrackedLink
-            className={s.midCtaBtn}
+            className={`${s.dcBtn} ${s.dcBtnPrimary}`}
             href="/agents"
             event="cta_click"
             eventProps={{ surface: 'home_mid_cta', label: 'map_your_bottleneck' }}
           >
-            <span className={s.ctaArrow}>→</span>
-            map_your_bottleneck
+            Map Your Bottleneck <span className={s.dcArr}>→</span>
           </TrackedLink>
         </div>
       </section>
 
-      {/* §05 ARTIFACTS */}
-      <section className={s.section}>
-        <SectionHeader n="05" title="artifacts[]" subtitle="3 things you leave with" />
-        <div className={s.artifacts}>
-          <Artifact
-            k="01"
-            name="heat_map.svg"
-            body="every function colour-coded across human / hybrid / agent. directional, not precise."
-          />
-          <Artifact
-            k="02"
-            name="agent_team.json"
-            body="3-5 named agents, shaped around your specific work. not generic assistants."
-          />
-          <Artifact
-            k="03"
-            name="blueprint.html"
-            body="4-page written blueprint, emailed. shareable link, yours to keep."
-          />
-        </div>
-      </section>
-
-      {/* §06 PIPELINE */}
-      <section className={s.section}>
-        <SectionHeader n="06" title="pipeline()" subtitle="map → train → engineer → deploy" />
-        <div className={s.pipelineMono}>
-          {[
-            ['01', 'map', 'we map the work. judgment points, execution points, where throughput leaks.'],
-            ['02', 'train', 'we train the team on your context, voice, constraints, tooling.'],
-            ['03', 'engineer', 'we engineer connectors, handoffs, human touchpoints. quietly.'],
-            ['04', 'deploy', 'we deploy into your working week. one accountable human at the centre.'],
-          ].map(([n, t, body]) => (
-            <div key={n} className={s.pipeRow}>
-              <div className={s.pipeNum}>{n}</div>
-              <div className={s.pipeName}>{t}()</div>
-              <div className={s.pipeDesc}>{body}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* §07 PROOF */}
-      {/* CC-TODO: Replace placeholder logos and metrics with real content per CLAUDE.md
-          "Placeholders that need real data". AJ Milne / Optio Capital testimonial is real and approved. */}
-      <section className={s.section}>
-        <SectionHeader n="07" title="proof.log" subtitle="structural lifts, not marginal ones" />
-
-        <div className={s.logoStrip}>
-          <div className={s.logoLabel}>§ operated_with</div>
-          <div className={s.logoRow}>
-            <span className={s.logo}>OPTIO CAPITAL</span>
-            <span className={s.logoDot}>·</span>
-            <span className={s.logo}>MERRICK HOLDINGS</span>
-            <span className={s.logoDot}>·</span>
-            <span className={s.logo}>WESTFIELD LABS</span>
-            <span className={s.logoDot}>·</span>
-            <span className={s.logo}>KEEL OPERATIONS</span>
-            <span className={s.logoDot}>·</span>
-            <span className={s.logo}>TOLLWORTH &amp; CO</span>
-          </div>
-        </div>
-
-        <div className={s.metricsStrip}>
-          <Metric num="+70" suffix="%" meta="throughput uplift" sub="global tech co, one engagement" />
-          <Metric num="5" suffix="×" meta="output per human lead" sub="average across units" />
-          <Metric num="48" suffix="h" meta="first agent live" sub="after map workshop" />
-          <Metric num="0" meta="cognitive layer vendors" sub="we build it, you keep it" />
-        </div>
-
-        <div className={s.quoteCard}>
-          <div className={s.quoteLabel}>/* testimonial_01 */</div>
-          <p className={s.quoteText}>
-            &quot;The Polynize team built me an investment analyst agent. On the first day I used
-            it, it was the best day of work I&apos;d had in nine months. After that, I knew I
-            needed the whole team.&quot;
+      {/* ===== HIRING COMPARISON ===== */}
+      <section className={s.dcSection}>
+        <div className={s.dcSectionHead}>
+          <div className={s.dcSectionEyebrow}>The cost difference</div>
+          <h2 className={s.dcH2}>
+            Two analysts, or
+            <br />
+            <span className={s.dcMintEmph}>a team you own.</span>
+          </h2>
+          <p className={s.dcSectionLede}>
+            Solving the bottleneck above with traditional hiring means roughly two FTE. Or you can
+            stand up the agent team for the build cost of one quarter&apos;s salary, and run it for
+            less than a single junior monthly.
           </p>
-          <div className={s.quoteFoot}>
-            <div className={s.quoteAv}>AJ</div>
+        </div>
+
+        <div className={s.dcHiring}>
+          <div className={s.dcHiringCards}>
+            <div className={`${s.dcHiringCard} ${s.dcHiringCardOld}`}>
+              <span className={`${s.dcHiringTag} ${s.dcHiringTagOld}`}>Traditional hiring</span>
+              <div className={s.dcHiringHeadline}>Hire an analyst + a coordinator</div>
+              <div className={`${s.dcHiringPrice} ${s.dcHiringPriceStrike}`}>
+                $130,000<span className={s.dcHiringPriceUnit}> AUD / year</span>
+              </div>
+              <ul className={s.dcHiringList}>
+                <li>3 to 6 months to find, hire, ramp</li>
+                <li>Salary, oncosts, leave, equipment</li>
+                <li>Management overhead and review loops</li>
+                <li>You stay the constraint on every decision</li>
+              </ul>
+            </div>
+
+            <div className={s.dcHiringArrowWrap}>
+              <div className={s.dcHiringArrowTrack} />
+              <div className={s.dcHiringArrowHead}>→</div>
+            </div>
+
+            <div className={`${s.dcHiringCard} ${s.dcHiringCardNew}`}>
+              <span className={`${s.dcHiringTag} ${s.dcHiringTagNew}`}>Polynize agent team</span>
+              <div className={s.dcHiringHeadline}>Map, Transform, Operate</div>
+              <div className={s.dcHiringPrice}>
+                <span className={s.dcHiringPriceBuildSub}>BUILD</span>
+                <span className={s.dcHiringPriceBuild}>$15,000</span>
+                <span className={s.dcHiringPriceDivider}>·</span>
+                <span className={s.dcHiringPriceMrr}>$999</span>
+                <span className={s.dcHiringPriceUnit}>/mo</span>
+              </div>
+              <ul className={s.dcHiringList}>
+                <li>Capability map of your bottleneck in days</li>
+                <li>4 agents designed, built, trained in your voice</li>
+                <li>Tuned monthly, you stay the human at the centre</li>
+                <li>No recruiting, no onboarding, no leave cover</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className={s.dcHiringCta}>
             <div>
-              <div className={s.quoteName}>aj milne</div>
-              <div className={s.quoteRole}>
-                PARTNER ·{' '}
-                <a
-                  href="https://www.optio.capital/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: 'inherit', textDecoration: 'underline' }}
-                >
-                  OPTIO CAPITAL
-                </a>
+              <div className={s.dcHiringCtaEyebrow}>Ready to compare for your business?</div>
+              <div className={s.dcHiringCtaTitle}>
+                Map your bottleneck, see the real numbers for your team.
               </div>
             </div>
+            <TrackedLink
+              className={`${s.dcBtn} ${s.dcBtnPrimary}`}
+              href="/agents"
+              event="cta_click"
+              eventProps={{ surface: 'home_hiring_cta', label: 'map_your_bottleneck' }}
+            >
+              Map Your Bottleneck <span className={s.dcArr}>→</span>
+            </TrackedLink>
           </div>
         </div>
       </section>
 
-      {/* §08 PODCAST — single thumbnail linking to the YouTube channel */}
-      <section className={s.section}>
-        <div className={s.podCentered}>
-          <div className={s.podCenteredEyebrow}>FROM THE FOUNDERS</div>
-          <h2 className={s.podCenteredTitle}>
-            Hear the latest from the
+      {/* ===== RESULTS / QUOTE ===== */}
+      <section className={s.dcSection}>
+        <div className={s.dcSectionHead}>
+          <div className={s.dcSectionEyebrow}>What clients say</div>
+          <h2 className={s.dcH2}>
+            The kind of result that makes
             <br />
-            Polynize founders<span style={{ color: 'var(--mint)' }}>.</span>
+            you build the rest of the team.
           </h2>
-          <p className={s.podCenteredSubtitle}>
-            Polynize founders Marrs Coiro and Shourov Bhattacharya explore the latest from the
-            frontier of Agentic AI.
+        </div>
+
+        <div className={s.dcQuoteCard}>
+          <div className={s.dcQuoteStrip} />
+          <div className={s.dcQuoteMark}>&ldquo;</div>
+          <p className={s.dcQuoteText}>
+            The Polynize team built me an investment analyst agent. On the first day I used it,
+            it was the best day of work I&apos;d had in nine months. After that, I knew I needed
+            the whole team.
           </p>
+          <div className={s.dcQuoteAttr}>
+            <div className={s.dcQuoteAv} aria-label="AJ Milne">
+              AJ
+            </div>
+            <div>
+              <div className={s.dcQuoteName}>AJ Milne</div>
+              <div className={s.dcQuoteRole}>Partner, Optio Capital</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== HOW WE WORK ===== */}
+      <section className={s.dcSection}>
+        <div className={s.dcSectionHead}>
+          <div className={s.dcSectionEyebrow}>How we work</div>
+          <h2 className={s.dcH2}>
+            From a problem you can name
+            <br />
+            to a team that solves it.
+          </h2>
+        </div>
+
+        <div className={`${s.dcHowGrid} ${s.dcHowGrid3}`}>
+          <HowCard
+            n="01"
+            t="Map"
+            d="We sit with you and decompose your bottleneck into the capabilities inside it. Every one gets allocated: human, hybrid, or agent."
+            icon="map"
+            priceK="from"
+            priceV="$5,000"
+            priceSub="AUD · capability map + team design"
+          />
+          <HowCard
+            n="02"
+            t="Transform"
+            d="We design and engineer the agent team. Connectors, handoffs, human touchpoints. First agent live in 48 hours, on average."
+            icon="build"
+            priceK="from"
+            priceV="$10,000"
+            priceSub="AUD · build, train, deploy"
+          />
+          <HowCard
+            n="03"
+            t="Operate"
+            d="We run the team alongside you and tune it as the work shifts. You stay the accountable human at the centre. We carry the rest."
+            icon="operate"
+            priceK="from"
+            priceV="$999"
+            priceSub="AUD / month · ongoing operation"
+          />
+        </div>
+      </section>
+
+      {/* ===== PODCAST ===== */}
+      <section className={s.dcSection}>
+        <div className={s.dcSectionHead}>
+          <div className={s.dcSectionEyebrow}>From the founders</div>
+          <h2 className={s.dcH2}>
+            Think Better.
+            <br />
+            <span className={s.dcText3}>Marrs Coiro &amp; Shourov Bhattacharya, weekly.</span>
+          </h2>
+        </div>
+
+        <div className={s.dcPodGrid}>
           <TrackedLink
-            className={s.podThumbLink}
-            href="https://www.youtube.com/@polynize.agentic"
+            className={s.dcPodFeat}
+            href={YOUTUBE_CHANNEL}
             external
             event="cta_click"
             eventProps={{ surface: 'home_podcast', label: 'youtube_channel' }}
-            aria-label="Watch the latest Think Better Podcast episode on YouTube"
+            aria-label="Watch Think Better Podcast on YouTube"
           >
-            <img
-              src="/assets/podcast-thumbnail.jpg"
-              alt="The Future of Agentic AI · Think Better Podcast Ep05"
-              className={s.podThumbImg}
-              width={1920}
-              height={1080}
-            />
-            <span className={s.podPlayBtn} aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="36" height="36">
-                <path d="M8 5v14l11-7z" fill="currentColor" />
-              </svg>
-            </span>
-          </TrackedLink>
-        </div>
-      </section>
-
-      {/* §09 FINAL CTA */}
-      <section className={s.finalCta}>
-        <div className={s.eyebrow}>§09 · next()</div>
-        <h2 className={s.finalH1}>
-          SEE THE SHAPE OF
-          <br />
-          YOUR BUSINESS<span style={{ color: 'var(--mint)' }}>.</span>
-        </h2>
-        <div className={s.ctaRow} style={{ marginTop: 48 }}>
-          <TrackedLink
-            className={s.ctaPrimary}
-            href="/agents"
-            event="cta_click"
-            eventProps={{ surface: 'home_final_cta', label: 'map_your_bottleneck' }}
-          >
-            <span className={s.ctaArrow}>→</span>map_your_bottleneck
-          </TrackedLink>
-          <span className={s.ctaNote}>$ curl -X POST /agents, 4 min</span>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className={s.footer}>
-        <div className={s.footerTop}>
-          <div>
-            <div className={s.wordmark}>
-              <span style={{ color: 'var(--mint)' }}>[</span>polynize
-              <span style={{ color: 'var(--text-3)' }}>.ai</span>
-              <span style={{ color: 'var(--mint)' }}>]</span>
+            <div className={s.dcPodThumb}>
+              <div className={s.dcPodWave} aria-hidden>
+                {Array.from({ length: 36 }).map((_, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      height: `${22 + Math.sin(i * 0.55) * 38 + (i % 4) * 9}%`,
+                      background: i < 12 ? 'var(--mint)' : 'rgba(244,236,228,0.16)',
+                    }}
+                  />
+                ))}
+              </div>
+              <div className={s.dcPodPlay} aria-hidden>
+                <svg viewBox="0 0 24 24" width="22" height="22">
+                  <path d="M8 5v14l11-7z" fill="currentColor" />
+                </svg>
+              </div>
+              <div className={s.dcPodRuntime}>42:15</div>
             </div>
-            <p className={s.footerBlurb}>
-              the agentic arm of polynize. we design and deploy cognitive work units for small and
-              mid-size businesses.
+            <div className={s.dcPodMeta}>
+              <div className={s.dcPodTag}>Latest · Episode 14</div>
+              <div className={s.dcPodTitle}>The end of the employee as the unit of work</div>
+              <div className={s.dcPodDesc}>
+                Marrs and Shourov on why the hiring loop is finished, and what replaces it. Two
+                live capability maps, read on air.
+              </div>
+            </div>
+          </TrackedLink>
+
+          <div className={s.dcPodSide}>
+            <PodMini ep="13" run="31:08" t="Capability maps vs. org charts, a rehearsal" />
+            <PodMini ep="12" run="38:44" t="Why agents hate your kanban board" />
+            <PodMini ep="11" run="29:52" t="The cognitive work unit, a working definition" />
+            <TrackedLink
+              className={s.dcPodAll}
+              href={YOUTUBE_CHANNEL}
+              external
+              event="cta_click"
+              eventProps={{ surface: 'home_podcast', label: 'youtube_all_episodes' }}
+            >
+              All episodes <span className={s.dcArr}>→</span>
+            </TrackedLink>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FINAL CTA ===== */}
+      <section className={s.dcFinal}>
+        <div className={s.dcFinalCard}>
+          <div className={s.dcFinalStrip} />
+          <div className={s.dcSectionEyebrow}>Ready when you are</div>
+          <h2 className={s.dcFinalTitle}>
+            Your bottleneck
+            <br />
+            won&apos;t map itself.
+          </h2>
+          <p className={s.dcFinalLede}>
+            Forty minutes with us. A capability map of the one thing slowing you down. A team you
+            could actually run.
+          </p>
+          <div className={s.dcCtaRow} style={{ justifyContent: 'center' }}>
+            <TrackedLink
+              className={`${s.dcBtn} ${s.dcBtnPrimary}`}
+              href="/agents"
+              event="cta_click"
+              eventProps={{ surface: 'home_final_cta', label: 'map_your_bottleneck' }}
+            >
+              Map Your Bottleneck <span className={s.dcArr}>→</span>
+            </TrackedLink>
+            <TrackedLink
+              className={`${s.dcBtn} ${s.dcBtnSecondary}`}
+              href={BOOKING_URL}
+              external
+              event="booking_click"
+              eventProps={{ surface: 'home_final_cta' }}
+            >
+              Talk to the Team
+            </TrackedLink>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FOOTER ===== */}
+      <footer className={s.dcFooter}>
+        <div className={s.dcFooterTop}>
+          <div>
+            <Link className={s.dcWordmark} href="/" style={{ marginBottom: 16 }}>
+              <span className={s.dcMark} aria-hidden />
+              <span>
+                polynize<span style={{ color: 'var(--text-3)' }}>.ai</span>
+              </span>
+            </Link>
+            <p className={s.dcFooterBlurb}>
+              The agentic arm of polynize. We map the bottleneck choking your business and design
+              the agent team to solve it.
             </p>
           </div>
-          <div className={s.footerCols}>
-            <FooterCol
-              title="~/polynize"
+          <div className={s.dcFooterCols}>
+            <FootCol
+              title="Polynize"
               links={[
-                { label: 'polynize.io', href: POLYNIZE_IO, external: true },
-                { label: 'enterprise', href: '#' },
-                { label: 'brand', href: '/brand' },
+                ['polynize.io', POLYNIZE_IO, true],
+                ['Brand', '/brand', false],
+                ['Console', '/console', false],
               ]}
             />
-            <FooterCol
-              title="~/social"
+            <FootCol
+              title="Social"
               links={[
-                { label: 'linkedin', href: '#' },
-                { label: 'youtube', href: '#' },
-                { label: 'instagram', href: '#' },
-                { label: 'tiktok', href: '#' },
+                ['YouTube', YOUTUBE_CHANNEL, true],
+                ['LinkedIn', 'https://www.linkedin.com/company/polynize', true],
               ]}
             />
-            <FooterCol
-              title="~/contact"
+            <FootCol
+              title="Contact"
               links={[
-                { label: 'hello@polynize.io', href: 'mailto:hello@polynize.io' },
-                { label: 'book a call ↗', href: BOOKING_URL, external: true },
+                ['hello@polynize.ai', 'mailto:hello@polynize.ai', true],
+                ['Book a call ↗', BOOKING_URL, true],
               ]}
             />
           </div>
         </div>
-        <div className={s.footerBase}>
-          <span>© 2026 polynize pty ltd</span>
-          <span style={{ color: 'var(--text-3)' }}>// built in sydney</span>
+        <div className={s.dcFooterBase}>
+          <span>© 2026 Polynize Pty Ltd</span>
+          <span className={s.dcText3}>Built in Sydney</span>
         </div>
       </footer>
     </div>
   );
 }
 
-/* ===== Server-component subcomponents (static) ===== */
-
-function EqTerm({
-  num,
-  label,
-  color,
-  emph,
+function HowCard({
+  n,
+  t,
+  d,
+  priceK,
+  priceV,
+  priceSub,
 }: {
-  num: string;
-  label: string;
-  color: string;
-  emph?: boolean;
+  n: string;
+  t: string;
+  d: string;
+  icon: 'map' | 'build' | 'operate';
+  priceK: string;
+  priceV: string;
+  priceSub: string;
 }) {
   return (
-    <div className={s.eqTerm}>
-      <div className={s.eqNum} style={{ color, fontSize: emph ? 64 : 56 }}>
-        {num}
+    <div className={s.dcHowCard}>
+      <div className={s.dcHowNum}>{n}</div>
+      <div className={s.dcHowTitle}>{t}</div>
+      <div className={s.dcHowDesc}>{d}</div>
+      <div className={s.dcHowPrice}>
+        <div className={s.dcHowPriceK}>{priceK}</div>
+        <div className={s.dcHowPriceV}>
+          {priceV} <small>{priceSub}</small>
+        </div>
       </div>
-      <div className={s.eqLabel}>{label}</div>
     </div>
   );
 }
 
-function SectionHeader({ n, title, subtitle }: { n: string; title: string; subtitle?: string }) {
+function PodMini({ ep, run, t }: { ep: string; run: string; t: string }) {
   return (
-    <div className={s.sectHead}>
-      <div>
-        <div className={s.eyebrow}>§{n}</div>
-        <h2 className={s.h2}>{title}</h2>
+    <a className={s.dcPodMini} href={YOUTUBE_CHANNEL} target="_blank" rel="noopener noreferrer">
+      <div className={s.dcPodMiniMeta}>
+        Ep {ep} · {run}
       </div>
-      {subtitle && <div className={s.subtitle}>{subtitle}</div>}
-    </div>
+      <div className={s.dcPodMiniTitle}>{t}</div>
+    </a>
   );
 }
 
-function ComparisonBar({
-  label,
-  ratio,
-  tone,
+function FootCol({
+  title,
+  links,
 }: {
-  label: string;
-  ratio: number;
-  tone: 'mint' | 'gold' | 'muted';
+  title: string;
+  links: [string, string, boolean][];
 }) {
-  const color = tone === 'mint' ? 'var(--mint)' : tone === 'gold' ? 'var(--gold)' : 'var(--text-3)';
-  const ticks = 30;
-  return (
-    <div className={s.barRow}>
-      <div className={s.barLabel}>{label}</div>
-      <div className={s.barTicks}>
-        {Array.from({ length: ticks }).map((_, i) => {
-          const lit = i < ratio * ticks;
-          return (
-            <span
-              key={i}
-              style={{
-                height: lit ? 18 : 6,
-                background: lit ? color : 'var(--border-soft)',
-              }}
-            />
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function CWUTable() {
-  const ROWS: [string, string, string, string][] = [
-    ['humans', '1', 'judgment, accountability, live decisions', 'var(--gold)'],
-    ['agents', '4', 'execution, research, follow-through', 'var(--mint)'],
-    ['outcome', '1', 'the real thing the unit exists for', 'var(--blue)'],
-    ['throughput', '≈5×', 'vs traditional team structures', 'var(--text)'],
-  ];
   return (
     <div>
-      {ROWS.map(([k, v, d, c]) => (
-        <div key={k} className={s.cwuRow}>
-          <div className={s.cwuKey}>{k}</div>
-          <div className={s.cwuVal} style={{ color: c }}>
-            {v}
-          </div>
-          <div className={s.cwuDesc}>{d}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function Artifact({ k, name, body }: { k: string; name: string; body: string }) {
-  return (
-    <div className={s.artifact}>
-      <div className={s.artifactKey}>&gt;_ {k}</div>
-      <div className={s.artifactName}>{name}</div>
-      <p className={s.artifactBody}>{body}</p>
-    </div>
-  );
-}
-
-function Metric({
-  num,
-  suffix,
-  meta,
-  sub,
-}: {
-  num: string;
-  suffix?: string;
-  meta: string;
-  sub: string;
-}) {
-  return (
-    <div className={s.metric}>
-      <div className={s.metricNum}>
-        {num}
-        {suffix && <span className={s.muted}>{suffix}</span>}
-      </div>
-      <div className={s.metricMeta}>
-        {meta}
-        <br />
-        <span className={s.muted}>{sub}</span>
-      </div>
-    </div>
-  );
-}
-
-type FooterLink = { label: string; href: string; external?: boolean };
-
-function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
-  return (
-    <div className={s.footerCol}>
-      <div className={s.footerColTitle}>{title}/</div>
-      {links.map((l) => (
-        <a
-          key={l.label}
-          className={s.footerLink}
-          href={l.href}
-          {...(l.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-        >
-          {l.label}
-        </a>
-      ))}
+      <div className={s.dcFootH}>{title}</div>
+      {links.map(([label, href, external]) =>
+        external ? (
+          <a key={label} className={s.dcFootL} href={href} target="_blank" rel="noopener noreferrer">
+            {label}
+          </a>
+        ) : (
+          <Link key={label} className={s.dcFootL} href={href}>
+            {label}
+          </Link>
+        )
+      )}
     </div>
   );
 }
