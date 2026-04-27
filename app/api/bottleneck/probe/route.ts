@@ -62,6 +62,10 @@ export async function POST(req: Request) {
 
   const userMessage = formatExchanges(body.exchanges);
 
+  const provider = process.env.LLM_PROVIDER ?? 'openai';
+  const model = process.env.OPENAI_MODEL ?? 'gpt-5.4';
+  console.log(`[bottleneck.probe] starting, provider=${provider} model=${model}`);
+
   try {
     const raw = await complete({
       system: PROBE_SYSTEM_PROMPT,
@@ -71,21 +75,26 @@ export async function POST(req: Request) {
     });
     const json = parseJsonLoose(raw);
     if (typeof json !== 'object' || json === null) {
+      console.log('[bottleneck.probe] LLM returned non-object, accepting answer');
       return NextResponse.json({ sufficient: true });
     }
     const candidate = json as { sufficient?: unknown; follow_up?: unknown };
     if (candidate.sufficient === true) {
+      console.log('[bottleneck.probe] sufficient=true');
       return NextResponse.json({ sufficient: true });
     }
     if (candidate.sufficient === false && typeof candidate.follow_up === 'string') {
+      console.log('[bottleneck.probe] sufficient=false, returning follow-up');
       return NextResponse.json({
         sufficient: false,
         follow_up: stripEmDashes(candidate.follow_up.trim()),
       });
     }
+    console.log('[bottleneck.probe] LLM response shape unrecognised, accepting answer');
     return NextResponse.json({ sufficient: true });
   } catch (e) {
-    console.warn('[bottleneck.probe] LLM call failed, accepting answer', e);
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error(`[bottleneck.probe] LLM call THREW (accepting answer to keep flow alive): ${msg}`);
     return NextResponse.json({ sufficient: true });
   }
 }

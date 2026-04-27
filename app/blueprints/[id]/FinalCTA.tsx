@@ -2,6 +2,7 @@ import type { BlueprintPayload } from '@/lib/blueprint/load';
 import s from './blueprint.module.css';
 import { BOOKING_URL, firstNameOf } from './util';
 import { TrackedLink } from '@/app/_components/TrackedLink';
+import { ResetLink } from '@/app/_components/ResetLink';
 
 export function FinalCTA({ payload }: { payload: BlueprintPayload }) {
   const firstName = firstNameOf(payload.answers.name);
@@ -32,6 +33,14 @@ export function FinalCTA({ payload }: { payload: BlueprintPayload }) {
         >
           ← edit my answers
         </TrackedLink>
+      </div>
+      <div className={s.finalReset}>
+        <ResetLink
+          className={s.resetLink}
+          eventProps={{ surface: 'blueprint_final_cta', label: 'map_another_bottleneck' }}
+        >
+          + map another bottleneck
+        </ResetLink>
       </div>
     </section>
   );

@@ -947,6 +947,23 @@
   color: var(--text);
   box-shadow: var(--tac-shadow-secondary);
 }
+.finalReset {
+  margin-top: 32px;
+}
+.resetLink {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--text-3);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--border-soft);
+  padding-bottom: 2px;
+  transition: color var(--tac-transition), border-color var(--tac-transition);
+}
+.resetLink:hover {
+  color: var(--mint);
+  border-bottom-color: var(--mint);
+}
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 860px) {

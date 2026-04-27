@@ -46,6 +46,10 @@ export async function POST(req: Request) {
 
   const userMessage = buildCapabilityMapUserMessage(body.answers);
 
+  const provider = process.env.LLM_PROVIDER ?? 'openai';
+  const model = process.env.OPENAI_MODEL ?? 'gpt-5.4';
+  console.log(`[capability-map.generate] starting, provider=${provider} model=${model}`);
+
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
       const raw = await complete({
@@ -58,8 +62,8 @@ export async function POST(req: Request) {
       const json = parseJsonLoose(raw);
       const validation = validateCapabilityMap(json);
       if (!validation.ok) {
-        console.warn(
-          `[capability-map.generate] attempt ${attempt} validation failed: ${validation.error}`
+        console.error(
+          `[capability-map.generate] attempt ${attempt} VALIDATION FAILED: ${validation.error}`
         );
         continue;
       }
@@ -90,9 +94,11 @@ export async function POST(req: Request) {
         generated_by: 'llm',
       };
 
+      console.log(`[capability-map.generate] attempt ${attempt} OK, returning LLM result`);
       return NextResponse.json({ ok: true, data });
     } catch (e) {
-      console.warn(`[capability-map.generate] attempt ${attempt} threw`, e);
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error(`[capability-map.generate] attempt ${attempt} THREW: ${msg}`);
     }
   }
 

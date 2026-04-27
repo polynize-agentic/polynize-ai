@@ -7,6 +7,7 @@ import { PhaseB } from './PhaseB';
 import { PhaseC, type ChatMessage } from './PhaseC';
 import { track, emailDomain } from '@/lib/analytics';
 import { persistAnswers, persistCapabilityMap } from '@/lib/persist-client';
+import s from './phase-a.module.css';
 
 const STORAGE_KEY = 'polynize_agents_state_v3';
 
@@ -23,6 +24,7 @@ const INITIAL: Persisted = { phase: 'A', answers: {}, step: 0 };
 export function AgentsController() {
   const [state, setState] = useState<Persisted>(INITIAL);
   const [hydrated, setHydrated] = useState(false);
+  const [resumePromptDismissed, setResumePromptDismissed] = useState(false);
 
   // Hydrate from localStorage + bootstrap server session on first mount.
   useEffect(() => {
@@ -43,11 +45,8 @@ export function AgentsController() {
     }
     setHydrated(true);
 
-    // Issue (or refresh) the server session cookie. The actual sessions
-    // row is created lazily by ensureSession on the first write, so this
-    // POST is just to mint the cookie up-front for cleaner debugging.
     void fetch('/api/session', { method: 'POST', credentials: 'same-origin' }).catch(() => {
-      /* offline ok — writes will retry */
+      /* offline ok */
     });
   }, []);
 
@@ -62,8 +61,6 @@ export function AgentsController() {
 
   const handleAnswersChange = useCallback((answers: Partial<Answers>, step: number) => {
     setState((prev) => ({ ...prev, answers, step }));
-    // Persist the partial answers per step. Max ~12 writes per flow,
-    // not per keystroke — handleAnswersChange fires on step transitions.
     persistAnswers(answers, false);
   }, []);
 
@@ -102,12 +99,30 @@ export function AgentsController() {
   }, []);
 
   const reset = useCallback(() => {
-    window.localStorage.removeItem(STORAGE_KEY);
+    track('cta_click', { surface: 'agents_resume_prompt', label: 'start_fresh' });
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
     setState(INITIAL);
+    setResumePromptDismissed(true);
+  }, []);
+
+  const resumeExisting = useCallback(() => {
+    track('cta_click', { surface: 'agents_resume_prompt', label: 'view_my_map' });
+    setResumePromptDismissed(true);
   }, []);
 
   if (!hydrated) {
     return null;
+  }
+
+  // Resume guard: someone landed on /agents but already finished a flow.
+  // Surface explicit options before dropping them back into Phase C.
+  const hasCompletedSession = state.phase === 'C' && Boolean(state.data);
+  if (hasCompletedSession && !resumePromptDismissed) {
+    return <ResumePrompt onView={resumeExisting} onReset={reset} />;
   }
 
   if (state.phase === 'A') {
@@ -137,14 +152,14 @@ export function AgentsController() {
     );
   }
 
-  // DONE state placeholder; Blueprint render lands next.
+  // DONE state placeholder.
   return (
     <div style={{ padding: '4rem 2rem', maxWidth: 720, margin: '0 auto' }}>
       <p style={{ fontFamily: 'var(--font-jetbrains-mono)', color: 'var(--mint)', fontSize: 12, letterSpacing: '0.15em' }}>
         PHASE {state.phase} · scaffold
       </p>
       <h1 style={{ fontFamily: 'var(--font-space-grotesk)', fontSize: 36, lineHeight: 1.1, marginTop: 24 }}>
-        Flow complete. Blueprint renderer lands next.
+        Flow complete.
       </h1>
       <button
         type="button"
@@ -162,6 +177,56 @@ export function AgentsController() {
       >
         reset_session
       </button>
+    </div>
+  );
+}
+
+function ResumePrompt({ onView, onReset }: { onView: () => void; onReset: () => void }) {
+  return (
+    <div className={s.phaseA}>
+      <div className={s.stage}>
+        <div className={s.card} style={{ textAlign: 'center' }}>
+          <div className={s.num} style={{ marginBottom: 16 }}>[ resume ]</div>
+          <h2 className={s.q} style={{ marginBottom: 18 }}>
+            You already have a capability map.
+          </h2>
+          <p className={s.sub} style={{ marginBottom: 36 }}>
+            Pick up where you left off, or wipe this session and map a fresh bottleneck.
+          </p>
+          <div
+            style={{
+              display: 'flex',
+              gap: 12,
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
+            <button
+              type="button"
+              className={s.next}
+              onClick={onView}
+              style={{ minWidth: 220 }}
+            >
+              view my capability map →
+            </button>
+            <button
+              type="button"
+              className={s.back}
+              onClick={onReset}
+              style={{
+                minWidth: 220,
+                padding: '14px 22px',
+                border: '1px solid var(--border-soft)',
+                borderRadius: 12,
+                background: 'transparent',
+                cursor: 'pointer',
+              }}
+            >
+              + start fresh
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

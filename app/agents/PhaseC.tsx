@@ -5,6 +5,7 @@ import type { Answers, CapabilityMapData, CapabilityAgent } from '@/lib/types';
 import { buildAgentSystemPrompt } from '@/lib/agents/system-prompt';
 import { track } from '@/lib/analytics';
 import { persistMessage, createBlueprint } from '@/lib/persist-client';
+import { ResetLink } from '@/app/_components/ResetLink';
 import s from './phase-c.module.css';
 
 export type ChatMessage = {
@@ -228,6 +229,12 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
             <div className={s.live}>
               <span className={s.liveDot} /> online
             </div>
+            <ResetLink
+              className={s.startOverLink}
+              eventProps={{ surface: 'phase_c_header', label: 'start_over' }}
+            >
+              + start over
+            </ResetLink>
             <button
               type="button"
               className={s.sendBlueprintBtn}
