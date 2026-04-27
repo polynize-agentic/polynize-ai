@@ -1,0 +1,499 @@
+/* Agent Team Console — shared styles. All under the Tactile depth
+ * language; every raised element has the invariant upper-left
+ * highlight + lower-right shadow. */
+
+/* ----- Root wrapper ----- */
+.root {
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  line-height: 1.55;
+  position: relative;
+  padding-bottom: 48px;
+}
+
+/* Flat-depth override: disable Tactile shadows on root scope when
+ * tweaks.depth === 'flat'. The data attribute flips on the root div. */
+.root[data-console-depth='flat'] {
+  --tac-shadow-raised: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --tac-shadow-raised-soft: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --tac-shadow-emphasised: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --tac-shadow-inset: none;
+  --tac-shadow-secondary: 0 0 0 1px var(--border);
+  --tac-shadow-button-primary: 0 0 14px rgba(105, 252, 203, 0.25);
+}
+.root[data-console-depth='flat'] .card,
+.root[data-console-depth='flat'] .raised {
+  border: 1px solid var(--border);
+}
+
+/* ----- Topbar (recessed channel) ----- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--tac-inset);
+  box-shadow:
+    0 1px 0 var(--tac-edge-light) inset,
+    0 -10px 24px rgba(0, 0, 0, 0.35);
+}
+.topbarInner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 14px 28px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brandLogo {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+.brandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  gap: 3px;
+}
+.brandName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.2px;
+  color: var(--text);
+}
+.brandClient {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.tabs {
+  display: flex;
+  gap: 28px;
+  justify-self: center;
+}
+.tab {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-2);
+  background: transparent;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color var(--tac-transition), background var(--tac-transition);
+}
+.tab:hover {
+  color: var(--text);
+  background: rgba(105, 252, 203, 0.06);
+}
+.tabActive {
+  color: var(--text);
+}
+.tabActive::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: -15px;
+  height: 2px;
+  background: var(--mint);
+  border-radius: 2px 2px 0 0;
+  transform-origin: center;
+  transition: transform 180ms cubic-bezier(0.2, 0.9, 0.25, 1.1);
+}
+.tabCount {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-3);
+  background: var(--tac-inset);
+  padding: 2px 6px;
+  border-radius: 999px;
+  min-width: 18px;
+  text-align: center;
+  box-shadow: var(--tac-shadow-inset);
+}
+
+.topbarRight {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.iconBtn {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tac-surface);
+  border: none;
+  border-radius: 10px;
+  color: var(--text-2);
+  cursor: pointer;
+  box-shadow: var(--tac-shadow-secondary);
+  transition: transform var(--tac-transition), color var(--tac-transition);
+  position: relative;
+}
+.iconBtn:hover {
+  color: var(--mint);
+  transform: translate(-1px, -1px);
+}
+.iconBtnDot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(240, 225, 182, 0.5);
+  animation: proposedPulse 2s infinite;
+}
+@keyframes proposedPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.avatarChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 4px;
+  background: var(--tac-surface);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--text);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--tac-shadow-secondary);
+  transition: transform var(--tac-transition);
+}
+.avatarChip:hover {
+  transform: translate(-1px, -1px);
+}
+
+/* ----- Avatars (shared) ----- */
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--bg);
+  background: var(--mint);
+  flex-shrink: 0;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.35) inset,
+    2px 2px 5px rgba(0, 0, 0, 0.45);
+}
+.avatarLg { width: 48px; height: 48px; font-size: 16px; }
+.avatarXl { width: 64px; height: 64px; font-size: 22px; }
+.avatarXxl { width: 96px; height: 96px; font-size: 32px; }
+.avatarSm { width: 22px; height: 22px; font-size: 10px; }
+.avatarMint { background: var(--mint); color: var(--bg); }
+.avatarBlue { background: var(--blue); color: var(--bg); }
+.avatarGold { background: var(--gold); color: var(--bg); }
+.avatarMuted { background: var(--tac-surface-2); color: var(--text-2); }
+.avatarPortrait {
+  background: var(--tac-surface-2);
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--tac-edge-dark);
+}
+.avatarPortrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+/* ----- Main content area ----- */
+.main {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px 28px 80px;
+  width: 100%;
+}
+
+/* ----- Page header ----- */
+.pageHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.pageTitle {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.8px;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+.pageSub {
+  color: var(--text-3);
+  font-size: 14px;
+  margin: 0;
+}
+.eyebrow {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--mint);
+}
+
+/* ----- Buttons ----- */
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--tac-button-gradient);
+  color: var(--tac-button-text);
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--tac-shadow-button-primary);
+  transition: transform var(--tac-transition), box-shadow var(--tac-transition);
+}
+.btnPrimary:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+}
+.btnPrimary:active:not(:disabled) {
+  transform: translate(0, 1px);
+  box-shadow: var(--tac-shadow-pressed);
+}
+.btnPrimary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--tac-surface);
+  color: var(--text);
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--tac-shadow-secondary);
+  transition: transform var(--tac-transition), color var(--tac-transition);
+}
+.btn:hover {
+  transform: translate(-1px, -1px);
+  color: var(--mint);
+}
+.btnSm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* ----- Cards ----- */
+.card {
+  background: var(--tac-surface);
+  border: none;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: var(--tac-shadow-raised);
+  position: relative;
+}
+
+/* ----- Floating Tweaks button + panel ----- */
+.tweaksButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tac-surface);
+  border: none;
+  border-radius: 14px;
+  color: var(--text-2);
+  cursor: pointer;
+  box-shadow: var(--tac-shadow-raised-soft);
+  transition: transform var(--tac-transition), color var(--tac-transition);
+}
+.tweaksButton:hover {
+  color: var(--mint);
+  transform: translate(-1px, -1px);
+}
+.tweaksPanel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 50;
+  width: 300px;
+  background: var(--tac-surface);
+  border: none;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: var(--tac-shadow-raised);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: tweaksIn 180ms ease-out;
+}
+@keyframes tweaksIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.tweaksHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.tweaksSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tweaksLabel {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* Segmented control (used in tabs, tweaks, autonomy dial) */
+.seg {
+  display: flex;
+  background: var(--tac-inset);
+  padding: 4px;
+  border-radius: 12px;
+  box-shadow: var(--tac-shadow-inset);
+}
+.segBtn {
+  flex: 1;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-2);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: color var(--tac-transition);
+}
+.segBtn:hover { color: var(--text); }
+.segBtnOn {
+  background: var(--tac-button-gradient);
+  color: var(--tac-button-text);
+  font-weight: 600;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.2) inset,
+    2px 2px 4px rgba(0, 0, 0, 0.45);
+}
+
+/* Responsive: mobile shadow tone-down + stacked topbar */
+@media (max-width: 767px) {
+  .topbarInner {
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 12px;
+    row-gap: 6px;
+    padding: 12px 16px;
+  }
+  .brandText { display: none; }
+  .tabs {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: stretch;
+    overflow-x: auto;
+    gap: 14px;
+    padding: 0 4px 4px;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 8px 14px;
+  }
+  .tabActive::after { bottom: -6px; }
+  .topbarRight {
+    gap: 6px;
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .main { padding: 20px 16px 64px; }
+  .tweaksPanel {
+    width: auto;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  [data-depth='tactile'] .card {
+    box-shadow:
+      0 1px 0 var(--tac-edge-light) inset,
+      0 -1px 0 var(--tac-edge-dark) inset,
+      5px 5px 14px rgba(0, 0, 0, 0.35),
+      9px 9px 22px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconBtnDot { animation: none; }
+  .tweaksPanel { animation: none; }
+  .tab, .iconBtn, .avatarChip, .tweaksButton, .btn, .btnPrimary {
+    transition: none;
+  }
+}

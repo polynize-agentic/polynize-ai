@@ -1,5 +1,0 @@
-User-agent: *
-Disallow: /proposals/
-Disallow: /proposals
-
-Sitemap: https://polynize.ai/sitemap.xml

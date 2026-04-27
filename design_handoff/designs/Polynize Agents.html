@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Polynize.ai, /agents</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="shared/tokens.css"/>
+
+<style>
+  html, body { background: #0a0a0f; margin: 0; min-height: 100vh; }
+  body { font-family: 'Inter', sans-serif; color: #f4ece4; }
+  #root { min-height: 100vh; }
+
+  /* top chrome */
+  .chrome {
+    position: fixed; top: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--text-3);
+    z-index: 100;
+    pointer-events: none;
+  }
+  .chrome-left, .chrome-right {
+    display: flex; align-items: center; gap: 20px;
+    pointer-events: auto;
+  }
+  .chrome a { color: var(--text-3); text-decoration: none; }
+  .chrome a:hover { color: var(--mint); }
+  .chrome-path { color: var(--text); }
+
+  /* reset btn */
+  .reset-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-3); padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: .15em; text-transform: uppercase;
+    cursor: pointer; border-radius: 2px;
+  }
+  .reset-btn:hover { border-color: var(--mint); color: var(--mint); }
+
+  @media (max-width: 640px) {
+    .chrome { padding: 14px 16px; font-size: 10px; }
+    .chrome-left, .chrome-right { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<header class="chrome">
+  <div class="chrome-left">
+    <a href="Polynize Homepage B.html">← polynize.ai</a>
+    <span class="chrome-path">/ agents</span>
+  </div>
+  <div class="chrome-right" id="chrome-right-slot"></div>
+</header>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="agents/phase-a.jsx"></script>
+<script type="text/babel" src="agents/phase-b.jsx"></script>
+<script type="text/babel" src="agents/phase-c.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+  const STORAGE_KEY = 'polynize_agents_state_v1';
+
+  const App = () => {
+    const [state, setState] = React.useState(() => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) return JSON.parse(saved);
+      } catch(e){}
+      return { phase: 'A', answers: null, data: null };
+    });
+
+    React.useEffect(() => {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+    }, [state]);
+
+    const onAnswers = (answers) => setState({ phase: 'B', answers, data: null });
+    const onReady = (data) => setState(s => ({ ...s, phase: 'C', data }));
+    const onBack = () => setState(s => ({ ...s, phase: 'B' }));
+
+    const reset = () => {
+      if (confirm('Start over? Answers will be cleared.')) {
+        setState({ phase: 'A', answers: null, data: null });
+      }
+    };
+
+    return (
+      <>
+        {state.phase === 'A' && <window.PhaseA onComplete={onAnswers} />}
+        {state.phase === 'B' && state.answers && <window.PhaseB answers={state.answers} onReady={onReady} />}
+        {state.phase === 'C' && state.data && state.answers && <window.PhaseC data={state.data} answers={state.answers} onBack={onBack} />}
+
+        {state.phase !== 'A' && ReactDOM.createPortal(
+          <button className="reset-btn" onClick={reset}>↻ reset</button>,
+          document.getElementById('chrome-right-slot')
+        )}
+      </>
+    );
+  };
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+
+</body>
+</html>

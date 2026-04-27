@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Polynize · Brand</title>
+<meta name="description" content="Polynize.ai brand guidelines. Colour tokens, typography, voice, visual vocabulary, and writing rules. Structured for both humans and AI agents." />
+
+<link rel="stylesheet" href="shared/tokens.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Machine-readable brand tokens, accessible via DOM or JSON -->
+<script type="application/json" id="brand-tokens">
+{
+  "name": "Polynize.ai",
+  "tagline": "The agentic arm of Polynize. We build agent teams for small and mid-size businesses.",
+  "palette": {
+    "bg": "#0a0a0f",
+    "surface": "#13131a",
+    "surface_2": "#1a1a23",
+    "mint": "#69fccb",
+    "blue": "#a5c1ec",
+    "gold": "#f0e1b6",
+    "coral": "#ff7a6b",
+    "amber": "#f0b86b",
+    "text": "#f4ece4",
+    "text_2": "#c7b9ac",
+    "text_3": "#8a7d72",
+    "border": "rgba(105, 252, 203, 0.18)",
+    "border_soft": "rgba(244, 236, 228, 0.08)"
+  },
+  "type": {
+    "display": "Space Grotesk",
+    "body": "Inter",
+    "mono": "JetBrains Mono"
+  },
+  "allocation_colors": {
+    "human_led": "#ff7a6b",
+    "hybrid": "#f0b86b",
+    "agent_executable": "#69fccb"
+  },
+  "voice_rules": {
+    "tone": "founder-to-founder, direct, punchy, business-literate",
+    "never_use_em_dashes": true,
+    "avoid_words": ["revolutionize", "transform (as verb in hero)", "unleash", "supercharge", "ninja", "rockstar", "the future of work", "assistant", "hosting"],
+    "prefer_words": ["team", "work unit", "judgment", "execution", "capability", "outcome", "bottleneck", "leverage", "throughput", "agent team", "cognitive work unit", "human lead", "install", "deploy", "connector", "blueprint"]
+  }
+}
+</script>
+
+<style>
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; line-height: 1.6; }
+
+  .br-top {
+    position: sticky; top: 0; left: 0; right: 0;
+    padding: 18px 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 80;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--text-3);
+    background: linear-gradient(to bottom, rgba(10,10,15,0.96), rgba(10,10,15,0.6) 70%, transparent);
+    backdrop-filter: blur(6px);
+  }
+  .br-top a { color: var(--text-3); text-decoration: none; }
+  .br-top a:hover { color: var(--mint); }
+
+  main { max-width: 1120px; margin: 0 auto; padding: 60px 48px 120px; }
+
+  .br-hero { padding: 80px 0 100px; border-bottom: 1px solid var(--border-soft); }
+  .br-kicker { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .2em; color: var(--mint); text-transform: uppercase; margin-bottom: 24px; }
+  .br-h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(52px, 8vw, 108px);
+    font-weight: 700; letter-spacing: -0.04em; line-height: 0.95;
+    margin: 0 0 32px;
+  }
+  .br-lede { font-size: 19px; color: var(--text-2); max-width: 680px; margin: 0; }
+
+  /* Section shell */
+  section.br-sec {
+    padding: 80px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  section.br-sec:last-of-type { border-bottom: none; }
+
+  .br-sec-head { display: grid; grid-template-columns: 140px 1fr; gap: 48px; align-items: baseline; margin-bottom: 48px; }
+  .br-sec-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-3); letter-spacing: .2em; padding-top: 8px; }
+  .br-sec-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(32px, 4vw, 52px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; margin: 0; }
+  .br-sec-sub { font-size: 16px; color: var(--text-2); margin: 14px 0 0; max-width: 680px; }
+
+  .br-sec-body { display: grid; grid-template-columns: 140px 1fr; gap: 48px; }
+  .br-sec-body > .br-spacer { grid-column: 1; }
+
+  h3 { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600; margin: 32px 0 12px; letter-spacing: -0.01em; }
+  h3:first-child { margin-top: 0; }
+  p { margin: 0 0 16px; color: var(--text-2); font-size: 16px; }
+  p strong { color: var(--text); font-weight: 600; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--mint); background: var(--surface); padding: 2px 6px; border-radius: 2px; }
+
+  /* Colour swatches */
+  .br-swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .br-swatch {
+    background: var(--surface); border: 1px solid var(--border-soft); border-radius: 4px;
+    overflow: hidden;
+  }
+  .br-swatch-chip { height: 100px; border-bottom: 1px solid var(--border-soft); }
+  .br-swatch-meta { padding: 14px 16px; }
+  .br-swatch-name { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text); letter-spacing: .05em; }
+  .br-swatch-role { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+  .br-swatch-hex { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--mint); margin-top: 8px; }
+
+  /* Type specimens */
+  .br-type-specimen {
+    background: var(--surface); border: 1px solid var(--border-soft); border-radius: 4px;
+    padding: 36px; margin-bottom: 12px;
+  }
+  .br-type-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .2em; color: var(--text-3); text-transform: uppercase; margin-bottom: 14px; }
+  .br-specimen-display { font-family: 'Space Grotesk', sans-serif; font-size: 72px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; margin: 0; }
+  .br-specimen-body { font-family: 'Inter', sans-serif; font-size: 18px; line-height: 1.65; margin: 0; color: var(--text-2); }
+  .br-specimen-mono { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--mint); margin: 0; letter-spacing: .02em; }
+
+  /* Allocation swatches */
+  .br-alloc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .br-alloc-card { padding: 24px; border-radius: 4px; border: 1px solid; }
+  .br-alloc-name { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 10px; }
+  .br-alloc-what { font-size: 14px; line-height: 1.55; color: var(--text-2); margin: 0 0 12px; }
+  .br-alloc-hex { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+  /* Voice tables */
+  .br-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .br-list {
+    background: var(--surface); border: 1px solid var(--border-soft); border-radius: 4px;
+    padding: 24px;
+  }
+  .br-list-head { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 14px; }
+  .br-list-head.use { color: var(--mint); }
+  .br-list-head.avoid { color: var(--coral); }
+  .br-list ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .br-list li { font-size: 14px; color: var(--text-2); font-family: 'JetBrains Mono', monospace; }
+
+  /* Rule cards */
+  .br-rules { display: flex; flex-direction: column; gap: 12px; }
+  .br-rule {
+    display: grid; grid-template-columns: 60px 1fr; gap: 20px; align-items: baseline;
+    padding: 20px 24px; background: var(--surface); border: 1px solid var(--border-soft); border-radius: 4px;
+  }
+  .br-rule-n { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--mint); letter-spacing: .2em; }
+  .br-rule-text { font-size: 15px; color: var(--text); line-height: 1.55; margin: 0; }
+  .br-rule-text em { color: var(--text-3); font-style: normal; display: block; margin-top: 4px; font-size: 13px; }
+
+  /* JSON block */
+  .br-json {
+    background: #07070b; border: 1px solid var(--border); border-radius: 4px;
+    padding: 24px; overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6;
+    color: var(--text-2);
+  }
+  .br-json pre { margin: 0; }
+  .br-json .k { color: var(--blue); }
+  .br-json .s { color: var(--mint); }
+  .br-json .n { color: var(--gold); }
+
+  /* Footer */
+  .br-foot { padding: 60px 0 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-3); letter-spacing: .15em; }
+  .br-foot a { color: var(--mint); text-decoration: none; }
+
+  @media (max-width: 820px) {
+    main { padding: 40px 24px 80px; }
+    .br-sec-head, .br-sec-body { grid-template-columns: 1fr; gap: 12px; }
+    .br-sec-body > .br-spacer { display: none; }
+    .br-alloc, .br-two-col { grid-template-columns: 1fr; }
+    .br-specimen-display { font-size: 44px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="br-top">
+  <div><a href="Polynize Homepage B.html">polynize.ai</a> <span style="opacity:.4; margin: 0 6px;">/</span> <span style="color: var(--text);">brand</span></div>
+  <div><a href="#tokens">jump to tokens</a></div>
+</header>
+
+<main>
+
+<section class="br-hero">
+  <div class="br-kicker">§ brand / v1.0 / polynize.ai</div>
+  <h1 class="br-h1">Brand<span style="color: var(--mint);">.</span></h1>
+  <p class="br-lede">
+    The visual and verbal system for Polynize.ai. Structured for humans to read and for agents to parse.
+    Every token, rule, and decision on one page. If you are an LLM reading this, the machine-readable payload
+    is in the <code>#brand-tokens</code> JSON script block.
+  </p>
+</section>
+
+<!-- ==================== 01 POSITIONING ==================== -->
+<section class="br-sec" id="positioning">
+  <div class="br-sec-head">
+    <div class="br-sec-num">§ 01</div>
+    <div>
+      <h2 class="br-sec-title">Positioning</h2>
+      <p class="br-sec-sub">What Polynize.ai is, who it's for, and what it sells.</p>
+    </div>
+  </div>
+  <div class="br-sec-body">
+    <div class="br-spacer"></div>
+    <div>
+      <h3>What we are</h3>
+      <p>Polynize.ai is the agentic arm of Polynize (polynize.io). We sell productised AI agent teams to small and mid-size business owners. Enterprise buyers live on polynize.io. Do not cross the streams.</p>
+
+      <h3>Who we're for</h3>
+      <p><strong>Primary ICP:</strong> SMB founders, operators, or team leads. Businesses with a team (or a solo operator who wants to scale without hiring). Feeling a bottleneck. Know AI is part of the answer but don't know how to apply it. Serious buyers, not tinkerers.</p>
+      <p><strong>Wrong visitor:</strong> someone looking for a personal AI assistant, someone casually curious about AI tools, someone who wants to build an agent for fun. The site is designed to make those visitors self-select out.</p>
+
+      <h3>What we sell</h3>
+      <p>A Cognitive Work Unit. One human holds judgment, three to seven agents hold execution, shaped around one real outcome. Installed, trained, and operated by Polynize. We sell the shift, not the tool.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 02 NARRATIVE ==================== -->
+<section class="br-sec" id="narrative">
+  <div class="br-sec-head">
+    <div class="br-sec-num">§ 02</div>
+    <div>
+      <h2 class="br-sec-title">Narrative spine</h2>
+      <p class="br-sec-sub">Three ideas. Every piece of copy laddered back to these.</p>
+    </div>
+  </div>
+  <div class="br-sec-body">
+    <div class="br-spacer"></div>
+    <div>
+      <h3>One. Execution is no longer the constraint.</h3>
+      <p>AI made execution cheap. What's scarce now is judgment, direction, and alignment. The problem is no longer "how do I get more work done." It's "how do I get more of the right work done, without personally being in every decision."</p>
+
+      <h3>Two. The unit of work has changed.</h3>
+      <p>The old unit was the employee, the team, the department. The new unit is the Cognitive Work Unit: one human holding judgment, three to seven agents holding execution, shaped around one real outcome. Early evidence suggests roughly 5x throughput versus traditional team structures.</p>
+
+      <h3>Three. You can't redesign what you can't see.</h3>
+      <p>Before a business owner can move to this model, they need to see which parts of their work are human-critical and which are agent-executable. The Heat Map makes that visible. It's the recognition step before any agent team is designed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 03 VOICE ==================== -->
+<section class="br-sec" id="voice">
+  <div class="br-sec-head">
+    <div class="br-sec-num">§ 03</div>
+    <div>
+      <h2 class="br-sec-title">Voice &amp; tone</h2>
+      <p class="br-sec-sub">Direct, punchy, business-literate. Short sentences. No hype. Founder-to-founder.</p>
+    </div>
+  </div>
+  <div class="br-sec-body">
+    <div class="br-spacer"></div>
+    <div>
+      <h3>Word choice</h3>
+      <div class="br-two-col">
+        <div class="br-list">
+          <div class="br-list-head use">› use</div>
+          <ul>
+            <li>team</li>
+            <li>work unit</li>
+            <li>judgment</li>
+            <li>execution</li>
+            <li>capability</li>
+            <li>outcome</li>
+            <li>bottleneck</li>
+            <li>leverage</li>
+            <li>throughput</li>
+            <li>agent team</li>
+            <li>cognitive work unit</li>
+            <li>human lead</li>
+            <li>install, deploy</li>
+            <li>connector</li>
+            <li>blueprint</li>
+          </ul>
+        </div>
+        <div class="br-list">
+          <div class="br-list-head avoid">× avoid</div>
+          <ul>
+            <li>revolutionize</li>
+            <li>transform (as verb in hero)</li>
+            <li>unleash</li>
+            <li>supercharge</li>
+            <li>ninja, rockstar</li>
+            <li>"the future of work"</li>
+            <li>assistant (use: agent)</li>
+            <li>hosting (use: service fee)</li>
+            <li>seamless</li>
+            <li>empower</li>
+            <li>game-changer</li>
+            <li>AI-powered</li>
+            <li>cutting-edge</li>
+            <li>best-in-class</li>
+            <li>synergy</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 04 WRITING RULES ==================== -->
+<section class="br-sec" id="rules">
+  <div class="br-sec-head">
+    <div class="br-sec-num">§ 04</div>
+    <div>
+      <h2 class="br-sec-title">Writing rules</h2>
+      <p class="br-sec-sub">Hard rules. No exceptions, including in AI-generated content.</p>
+    </div>
+  </div>
+  <div class="br-sec-body">
+    <div class="br-spacer"></div>
+    <div>
+      <div class="br-rules">
+        <div class="br-rule">
+          <span class="br-rule-n">R.01</span>
+          <p class="br-rule-text">No em-dashes. Anywhere. Not in site copy, not in Blueprint content, not in AI-generated content, not in commit messages that render to users.
+          <em>Use commas, colons, periods, or en-dashes for ranges. Enforce this rule inside every LLM system prompt.</em></p>
+        </div>
+        <div class="br-rule">
+          <span class="br-rule-n">R.02</span>
+          <p class="br-rule-text">Short sentences. Founder-to-founder.
+          <em>If a sentence runs beyond two lines on mobile, split it.</em></p>
+        </div>
+        <div class="br-rule">
+          <span class="br-rule-n">R.03</span>
+          <p class="br-rule-text">No hype adjectives. No "revolutionary," "game-changing," "next-generation."
+          <em>Describe what the thing does. Let the reader decide if it's revolutionary.</em></p>
+        </div>
+        <div class="br-rule">
+          <span class="br-rule-n">R.04</span>
+          <p class="br-rule-text">Use the visitor's language. In the Blueprint, echo their words from Q1 and Q3.
+          <em>Don't substitute generic industry terms when the visitor used specific ones.</em></p>
+        </div>
+        <div class="br-rule">
+          <span class="br-rule-n">R.05</span>
+          <p class="br-rule-text">Name agents with human-sounding names. Not "Agent 1" or "Marketing Assistant."
+          <em>Names should feel like colleagues. Nora, Arlo, Sena, Jules.</em></p>
+        </div>
+        <div class="br-rule">
+          <span class="br-rule-n">R.06</span>
+          <p class="br-rule-text">Numbers get the gold accent. Everywhere they appear in hero copy, stats, pricing.
+          <em>Signals that numbers matter and are worth trusting.</em></p>
+        </div>
+        <div class="br-rule">
+          <span class="br-rule-n">R.07</span>
+          <p class="br-rule-text">One CTA per screen. No secondary action competing for attention.
+          <em>The whole funnel is built around "Map Your Business." Don't dilute it.</em></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 05 TYPOGRAPHY ==================== -->
+<section class="br-sec" id="typography">
+  <div class="br-sec-head">
+    <div class="br-sec-num">§ 05</div>
+    <div>
+      <h2 class="br-sec-title">Typography</h2>
+      <p class="br-sec-sub">Two families plus a mono. Google Fonts, <code>display=swap</code>.</p>
+    </div>
+  </div>
+  <div class="br-sec-body">
+    <div class="br-spacer"></div>
+    <div>
+      <div class="br-type-specimen">
+        <div class="br-type-label">Space Grotesk · Display · 400 / 500 / 600 / 700</div>
+        <p class="br-specimen-display">One human.<br/>Five agents.</p>
+      </div>
+      <div class="br-type-specimen">
+        <div class="br-type-label">Inter · Body · 400 / 500 / 600</div>
+        <p class="br-specimen-body">Polynize.ai is the agentic arm of Polynize. We build productised agent teams for small and mid-size businesses. Founder-to-founder voice. No hype.</p>
+      </div>
+      <div class="br-type-specimen">
+        <div class="br-type-label">JetBrains Mono · Chrome &amp; labels · 400 / 500</div>
+        <p class="br-specimen-mono">§ 07 / shape_02 · pipeline_and_conversion<br/>alloc: { human: 38%, hybrid: 25%, agent: 37% }</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 06 COLOUR ==================== -->
+<section class="br-sec" id="tokens">
+  <div class="br-sec-head">
+    <div class="br-sec-num">§ 06</div>
+    <div>
+      <h2 class="br-sec-title">Colour tokens</h2>
+      <p class="br-sec-sub">Full palette. Also available as JSON at <code>#brand-tokens</code>.</p>
+    </div>
+  </div>
+  <div class="br-sec-body">
+    <div class="br-spacer"></div>
+    <div>
+      <h3>Surfaces &amp; text</h3>
+      <div class="br-swatches">
+        <div class="br-swatch"><div class="br-swatch-chip" style="background:#0a0a0f"></div><div class="br-swatch-meta"><div class="br-swatch-name">--bg</div><div class="br-swatch-role">page background</div><div class="br-swatch-hex">#0a0a0f</div></div></div>
+        <div class="br-swatch"><div class="br-swatch-chip" style="background:#13131a"></div><div class="br-swatch-meta"><div class="br-swatch-name">--surface</div><div class="br-swatch-role">card, panel</div><div class="br-swatch-hex">#13131a</div></div></div>
+        <div class="br-swatch"><div class="br-swatch-chip" style="background:#1a1a23"></div><div class="br-swatch-meta"><div class="br-swatch-name">--surface-2</div><div class="br-swatch-role">lifted card</div><div class="br-swatch-hex">#1a1a23</div></div></div>
+        <div class="br-swatch"><div class="br-swatch-chip" style="background:#f4ece4"></div><div class="br-swatch-meta"><div class="br-swatch-name">--text</div><div class="br-swatch-role">primary text</div><div class="br-swatch-hex">#f4ece4</div></div></div>
+        <div class="br-swatch"><div class="br-swatch-chip" style="background:#c7b9ac"></div><div class="br-swatch-meta"><div class="br-swatch-name">--text-2</div><div class="br-swatch-role">secondary</div><div class="br-swatch-hex">#c7b9ac</div></div></div>
+        <div class="br-swatch"><div class="br-swatch-chip" style="background:#8a7d72"></div><div class="br-swatch-meta"><div class="br-swatch-name">--text-3</div><div class="br-swatch-role">muted / chrome</div><div class="br-swatch-hex">#8a7d72</div></div></div>
+      </div>
+
+      <h3>Accents</h3>
+      <div class="br-swatches">
+        <div class="br-swatch"><div class="br-swatch-chip" style="background:#69fccb"></div><div class="br-swatch-meta"><div class="br-swatch-name">--mint</div><div class="br-swatch-role">primary accent, CTA, agent-executable</div><div class="br-swatch-hex">#69fccb</div></div></div>
+        <div class="br-swatch"><div class="br-swatch-chip" style="background:#a5c1ec"></div><div class="br-swatch-meta"><div class="br-swatch-name">--blue</div><div class="br-swatch-role">supporting accent</div><div class="br-swatch-hex">#a5c1ec</div></div></div>
+        <div class="br-swatch"><div class="br-swatch-chip" style="background:#f0e1b6"></div><div class="br-swatch-meta"><div class="br-swatch-name">--gold</div><div class="br-swatch-role">numbers, data</div><div class="br-swatch-hex">#f0e1b6</div></div></div>
+        <div class="br-swatch"><div class="br-swatch-chip" style="background:#f0b86b"></div><div class="br-swatch-meta"><div class="br-swatch-name">--amber</div><div class="br-swatch-role">hybrid allocation</div><div class="br-swatch-hex">#f0b86b</div></div></div>
+        <div class="br-swatch"><div class="br-swatch-chip" style="background:#ff7a6b"></div><div class="br-swatch-meta"><div class="br-swatch-name">--coral</div><div class="br-swatch-role">human-led allocation</div><div class="br-swatch-hex">#ff7a6b</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 07 HEAT MAP COLOURS ==================== -->
+<section class="br-sec" id="allocation">
+  <div class="br-sec-head">
+    <div class="br-sec-num">§ 07</div>
+    <div>
+      <h2 class="br-sec-title">Allocation palette</h2>
+      <p class="br-sec-sub">The three-colour system used in every Heat Map.</p>
+    </div>
+  </div>
+  <div class="br-sec-body">
+    <div class="br-spacer"></div>
+    <div>
+      <div class="br-alloc">
+        <div class="br-alloc-card" style="border-color:#ff7a6b; background: rgba(255,122,107,0.06);">
+          <div class="br-alloc-name" style="color:#ff7a6b;">human-led</div>
+          <p class="br-alloc-what">Requires trust, accountability, live decisions, or high failure cost. Live client conversations, final judgment calls, commitment moments.</p>
+          <div class="br-alloc-hex" style="color:#ff7a6b;">#ff7a6b</div>
+        </div>
+        <div class="br-alloc-card" style="border-color:#f0b86b; background: rgba(240,184,107,0.06);">
+          <div class="br-alloc-name" style="color:#f0b86b;">hybrid / CWU</div>
+          <p class="br-alloc-what">Needs human direction, agents can execute within it. Proposal drafting, content creation, briefing, review.</p>
+          <div class="br-alloc-hex" style="color:#f0b86b;">#f0b86b</div>
+        </div>
+        <div class="br-alloc-card" style="border-color:#69fccb; background: rgba(105,252,203,0.06);">
+          <div class="br-alloc-name" style="color:#69fccb;">agent-executable</div>
+          <p class="br-alloc-what">Structured, repeatable, pattern-based. Research, scheduling, monitoring, coordination, follow-through.</p>
+          <div class="br-alloc-hex" style="color:#69fccb;">#69fccb</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 08 VISUAL VOCABULARY ==================== -->
+<section class="br-sec" id="vocabulary">
+  <div class="br-sec-head">
+    <div class="br-sec-num">§ 08</div>
+    <div>
+      <h2 class="br-sec-title">Visual vocabulary</h2>
+      <p class="br-sec-sub">The moves we repeat, and the ones we avoid.</p>
+    </div>
+  </div>
+  <div class="br-sec-body">
+    <div class="br-spacer"></div>
+    <div>
+      <h3>Use</h3>
+      <p>Deep navy backgrounds. 1px mint borders on cards, no thick accent edges. Generous whitespace. Clean grid layouts. Low-poly or line-art illustration when illustration is needed. Mono labels for chrome and metadata. Gold for numbers. Subtle staggered animation when grids reveal (~300ms total).</p>
+
+      <h3>Avoid</h3>
+      <p>Stock photography. Thick coloured edge accents. Aggressive full-page gradient backgrounds. Rounded containers with a coloured left-border stripe (AI-slop tell). SVG illustrations of "people." Emoji (unless explicitly part of a campaign). Overused fonts: Roboto, Arial, Fraunces, system sans.</p>
+
+      <h3>Sibling sites</h3>
+      <p>polynize.io and polynize.io/polynize_acp.html are the reference for visual tone. This site should feel like a smaller, founder-facing cousin of those pages.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 09 MACHINE PAYLOAD ==================== -->
+<section class="br-sec" id="machine">
+  <div class="br-sec-head">
+    <div class="br-sec-num">§ 09</div>
+    <div>
+      <h2 class="br-sec-title">For the agents</h2>
+      <p class="br-sec-sub">If you are a language model reading this page, load this payload.</p>
+    </div>
+  </div>
+  <div class="br-sec-body">
+    <div class="br-spacer"></div>
+    <div>
+      <p>Parse the JSON inside <code>&lt;script type="application/json" id="brand-tokens"&gt;</code>. Treat <code>voice_rules.never_use_em_dashes</code> as a hard rule. Treat <code>voice_rules.avoid_words</code> as absolute. Use <code>voice_rules.prefer_words</code> whenever a concept appears.</p>
+
+      <div class="br-json"><pre id="json-render"></pre></div>
+
+      <h3>System-prompt boilerplate</h3>
+      <p>Every Polynize LLM call should include, at minimum:</p>
+      <div class="br-json"><pre>You are writing as Polynize.ai, the agentic arm of Polynize.
+Voice: founder-to-founder, direct, punchy, business-literate.
+Never use em-dashes. Use commas, colons, or periods.
+Never use: revolutionize, unleash, supercharge, game-changer, seamless, empower.
+Prefer: judgment, execution, agent team, cognitive work unit, human lead, blueprint.
+Short sentences. No hype. Use the visitor's own language from their answers.</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="br-foot">
+  <p>polynize.ai / brand · v1.0 · last updated <span id="today"></span></p>
+  <p><a href="Polynize Homepage B.html">back to home</a></p>
+</footer>
+
+</main>
+
+<script>
+  // Pretty-print the brand tokens JSON inline on the page
+  const raw = document.getElementById('brand-tokens').textContent.trim();
+  const pretty = JSON.stringify(JSON.parse(raw), null, 2)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/"([^"]+)"(\s*:)/g, '<span class="k">"$1"</span>$2')
+    .replace(/:\s*"([^"]*)"/g, ': <span class="s">"$1"</span>')
+    .replace(/:\s*(true|false|\d+)/g, ': <span class="n">$1</span>');
+  document.getElementById('json-render').innerHTML = pretty;
+  document.getElementById('today').textContent = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+/* Agents list + detail drawer + Humans table. */
+
+.agentsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.agentCard {
+  background: var(--tac-surface);
+  border: none;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: var(--tac-shadow-raised);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform var(--tac-transition);
+}
+.agentCard:hover { transform: translate(-1px, -2px); }
+.agentCardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.agentName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+.agentRole {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.05em;
+}
+.agentDesc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.agentStatusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--tac-edge-dark);
+  box-shadow: 0 1px 0 var(--tac-edge-light);
+}
+.agentStatPill {
+  background: var(--tac-inset);
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: var(--tac-shadow-inset);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-2);
+}
+.agentStatPillWorking {
+  color: var(--mint);
+}
+.agentMetrics {
+  display: flex;
+  gap: 12px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+}
+.agentMetricNum {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ----- Agent detail drawer ----- */
+.drawerBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 60;
+  animation: backdropFade 200ms ease-out;
+}
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 520px;
+  max-width: 100vw;
+  background: var(--tac-surface);
+  z-index: 61;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    -1px 0 0 var(--tac-edge-light) inset,
+    -16px 0 32px rgba(0, 0, 0, 0.5);
+  animation: drawerSlide 400ms ease-out;
+}
+@keyframes backdropFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes drawerSlide {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+.drawerHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  background: var(--tac-inset);
+  box-shadow:
+    0 -1px 0 var(--tac-edge-dark) inset,
+    0 1px 0 var(--tac-edge-light) inset;
+}
+.drawerTitle {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.drawerClose {
+  width: 32px;
+  height: 32px;
+  background: var(--tac-surface);
+  border: none;
+  border-radius: 10px;
+  color: var(--text-2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--tac-shadow-secondary);
+  transition: color var(--tac-transition);
+}
+.drawerClose:hover { color: var(--mint); }
+.drawerBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.drawerHero {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+.drawerName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: -0.6px;
+  margin: 0;
+}
+.drawerRole {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--mint);
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+.drawerDesc {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin: 0;
+}
+.drawerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.drawerEyebrow {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.toolChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.toolChip {
+  background: var(--tac-inset);
+  padding: 6px 10px;
+  border-radius: 999px;
+  box-shadow: var(--tac-shadow-inset);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-2);
+}
+.taskGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.taskGroupLabel {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+.taskGroupItem {
+  background: var(--tac-inset);
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: var(--tac-shadow-inset);
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  transition: color var(--tac-transition);
+  text-align: left;
+  border: none;
+  display: block;
+  width: 100%;
+}
+.taskGroupItem:hover { color: var(--mint); }
+.taskGroupProject {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-3);
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+.completedMetric {
+  background: var(--tac-surface-2);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: var(--tac-shadow-emphasised);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+.completedNum {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 48px;
+  letter-spacing: -1.5px;
+  color: var(--gold);
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+  line-height: 1;
+}
+.completedLabel {
+  font-size: 14px;
+  color: var(--text-2);
+}
+
+/* ----- Humans table ----- */
+.humansTable {
+  background: var(--tac-surface);
+  border: none;
+  border-radius: 18px;
+  padding: 4px;
+  box-shadow: var(--tac-shadow-raised);
+  position: relative;
+  overflow: hidden;
+}
+.humansHead {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1fr 1fr;
+  align-items: center;
+  padding: 14px 20px;
+  background: var(--tac-inset);
+  border-radius: 14px;
+  margin-bottom: 4px;
+  box-shadow:
+    0 1px 0 var(--tac-edge-light) inset,
+    0 -1px 0 var(--tac-edge-dark) inset;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.humanRow {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1fr 1fr;
+  align-items: center;
+  padding: 14px 20px;
+  border-radius: 12px;
+  transition: background var(--tac-transition);
+}
+.humanRow:hover {
+  background: var(--tac-inset);
+}
+.humanName {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text);
+}
+.humanEmail {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.humanRolePill {
+  display: inline-flex;
+  align-items: center;
+  background: var(--tac-inset);
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: var(--tac-shadow-inset);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--text-2);
+  width: fit-content;
+  text-transform: uppercase;
+}
+.humanRolePillAdmin { color: var(--mint); }
+.humanProjects {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+@media (max-width: 767px) {
+  .drawer { width: 100vw; }
+  .humansHead { display: none; }
+  .humanRow {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    background: var(--tac-inset);
+    margin-bottom: 6px;
+    box-shadow: var(--tac-shadow-inset);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer { animation: none; }
+  .drawerBackdrop { animation: none; }
+  .agentCard, .humanRow, .toolChip, .taskGroupItem, .drawerClose {
+    transition: none;
+  }
+}
