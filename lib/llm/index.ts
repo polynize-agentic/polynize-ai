@@ -12,7 +12,7 @@ export type CompleteArgs = {
 };
 
 /**
- * Single entry point for LLM calls. Default provider is OpenAI (GPT-5.4).
+ * Single entry point for LLM calls. Default provider is OpenAI (model gpt-4o).
  * Override via LLM_PROVIDER=minimax (or openrouter) to fall back to the
  * Minimax via OpenRouter path; the Minimax provider stays in the tree
  * in case we need to flip back.

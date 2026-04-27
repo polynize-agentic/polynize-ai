@@ -32,7 +32,7 @@ const BodySchema = z.object({ answers: AnswersSchema });
 /**
  * POST /api/capability-map/generate
  *
- * Calls GPT-5.4 with the Capability Map prompt, validates the JSON, retries
+ * Calls OpenAI (default gpt-4o) with the Capability Map prompt, validates the JSON, retries
  * once on validation failure, and falls back to the rule-based derivation if
  * both attempts fail. Always returns a CapabilityMapData.
  */
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   const userMessage = buildCapabilityMapUserMessage(body.answers);
 
   const provider = process.env.LLM_PROVIDER ?? 'openai';
-  const model = process.env.OPENAI_MODEL ?? 'gpt-5.4';
+  const model = process.env.OPENAI_MODEL ?? 'gpt-4o';
   console.log(`[capability-map.generate] starting, provider=${provider} model=${model}`);
 
   for (let attempt = 1; attempt <= 2; attempt++) {

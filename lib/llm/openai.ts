@@ -12,7 +12,7 @@ export async function completeWithOpenAI(args: CompleteArgs): Promise<string> {
     console.error('[llm.openai] OPENAI_API_KEY is not set');
     throw new Error('OPENAI_API_KEY is not set');
   }
-  const model = process.env.OPENAI_MODEL ?? 'gpt-5.4';
+  const model = process.env.OPENAI_MODEL ?? 'gpt-4o';
   const keyHint = `${apiKey.slice(0, 7)}…${apiKey.slice(-4)}`;
 
   const res = await fetch(OPENAI_URL, {

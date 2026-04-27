@@ -63,7 +63,7 @@ export async function POST(req: Request) {
   const userMessage = formatExchanges(body.exchanges);
 
   const provider = process.env.LLM_PROVIDER ?? 'openai';
-  const model = process.env.OPENAI_MODEL ?? 'gpt-5.4';
+  const model = process.env.OPENAI_MODEL ?? 'gpt-4o';
   console.log(`[bottleneck.probe] starting, provider=${provider} model=${model}`);
 
   try {
