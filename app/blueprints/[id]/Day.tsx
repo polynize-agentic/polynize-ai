@@ -1,5 +1,5 @@
 import type { BlueprintPayload } from '@/lib/blueprint/load';
-import { buildMultiTeamTimeline } from '@/lib/blueprint/timeline';
+import { buildCapabilityTimeline } from '@/lib/blueprint/timeline';
 import s from './blueprint.module.css';
 import { firstNameOf } from './util';
 
@@ -7,7 +7,7 @@ export function Day({ payload }: { payload: BlueprintPayload }) {
   const { answers, data } = payload;
   const firstName = firstNameOf(answers.name, 'you');
   const company = (answers.company ?? '').trim() || 'your business';
-  const timeline = buildMultiTeamTimeline(data, firstName);
+  const timeline = buildCapabilityTimeline(data, firstName);
 
   return (
     <section className={s.page} data-screen-label="Page 04 · Day in the Life">
@@ -20,10 +20,9 @@ export function Day({ payload }: { payload: BlueprintPayload }) {
           actually looks like<span className={s.mint}>.</span>
         </h2>
         <p className={s.pageLede}>
-          Based on what you told us about {company}, here&apos;s a lightly fictionalised walk-through
-          of a typical day with the unit in place. Agents from across {data.teams.length} teams
-          coordinate around you. The point isn&apos;t the specifics. It&apos;s the rhythm. You show
-          up, you make decisions, the execution happens around you.
+          Based on the bottleneck you described at {company}, here&apos;s a lightly fictionalised
+          walk-through of a typical day with the team in place. The point isn&apos;t the specifics.
+          It&apos;s the rhythm. You show up, you make decisions, the execution happens around you.
         </p>
       </div>
 
@@ -40,13 +39,12 @@ export function Day({ payload }: { payload: BlueprintPayload }) {
                   const initial = m.agent.name[0];
                   return (
                     <div key={i} className={s.tlMsg}>
-                      <div className={s.tlAv} title={`${m.agent.name} · ${m.teamName}`}>
+                      <div className={s.tlAv} title={m.agent.name}>
                         {initial}
                       </div>
                       <div className={s.tlBubble}>
                         <div className={s.tlFrom}>
-                          {m.agent.name} · {m.agent.role}{' '}
-                          <span style={{ color: 'var(--text-3)' }}>· {m.teamName}</span>
+                          {m.agent.name} · {m.agent.role}
                         </div>
                         <div className={s.tlText}>{m.text}</div>
                       </div>

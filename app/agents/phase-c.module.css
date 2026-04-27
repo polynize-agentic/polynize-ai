@@ -51,6 +51,24 @@
   min-height: 0;
   padding-right: 4px;
 }
+.humanCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--tac-surface);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: var(--tac-shadow-raised-soft);
+}
+.avatarHuman {
+  background: var(--tac-button-gradient) !important;
+  color: var(--tac-button-text) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    2px 2px 4px rgba(0, 0, 0, 0.45) !important;
+}
 .teamGroup {
   display: flex;
   flex-direction: column;

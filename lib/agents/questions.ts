@@ -1,15 +1,19 @@
 /**
- * Phase A question set — redesigned for the multi-team LLM heat map.
- * Spec: HEATMAP_REDESIGN_SPEC.md (the 11 questions feed POST /api/heatmap/generate).
+ * Phase A question set, redesigned for the bottleneck-focused capability map.
+ * Spec: HEATMAP_REDESIGN_SPEC.md v3.
  *
- * All visitor-facing copy is final per CLAUDE.md §2 — do not paraphrase.
- *
- * The shape closely mirrors the prior question set so PhaseA.tsx can reuse the
- * same renderers (text/business/multi/single/email). Q04 ("primary_area") is
- * dynamic: its option list is derived from the answer to Q03 (functional_areas).
+ * 10 numbered screens (Q00 through Q09); Q03 is conversational with up to two
+ * follow-up probes; Q09 combines urgency + email on a single screen. All
+ * visitor-facing copy is final per CLAUDE.md §2 — do not paraphrase.
  */
 
-export type QuestionType = 'text' | 'business' | 'textarea' | 'multi' | 'single' | 'email';
+export type QuestionType =
+  | 'business'
+  | 'textarea'
+  | 'single'
+  | 'multi'
+  | 'bottleneck'
+  | 'urgency_email';
 
 export type Question = {
   id: string;
@@ -18,36 +22,30 @@ export type Question = {
   label: string | ((firstName: string) => string);
   sub?: string;
   placeholder?: string;
-  short?: boolean;
   options?: string[];
-  /**
-   * When true, options are derived at runtime from another field's answer.
-   * PhaseA wires the resolver explicitly for `primary_area`.
-   */
-  dynamicOptions?: boolean;
+  /** Used by the urgency_email combined screen. */
+  emailLabel?: string;
 };
 
-export const FUNCTIONAL_AREAS = [
-  'Marketing & Content',
-  'Sales & BD',
-  'Operations & Delivery',
-  'Finance & Admin',
-  'Product & Development',
-  'Customer Success & Support',
-  'Creative & Brand',
-  'Research & Strategy',
-  'HR & People',
+export const ROLE_OPTIONS = [
+  'Founder / CEO',
+  'Operations lead',
+  'Department head',
+  'Team lead',
+  'Solo operator',
 ];
 
 export const TEAM_SIZES = ['Just me', '2-5', '6-15', '16-50', '50+'];
+
 export const RISK_OPTIONS = [
-  'Lost money',
+  'Lost revenue',
   'Lost client',
-  'Lost time',
+  'Wasted time',
   'Reputation damage',
   'Compliance risk',
   'Quality drops',
 ];
+
 export const TOOL_OPTIONS = [
   'Gmail',
   'Slack',
@@ -61,71 +59,72 @@ export const TOOL_OPTIONS = [
   'Salesforce',
   'Other',
 ];
+
 export const URGENCY_OPTIONS = ['This week', 'Within the month', 'Just exploring'];
 
 export const QUESTIONS: Question[] = [
   {
     id: 'name',
     type: 'business',
-    label: "Before we map your business, what's your name?",
+    label: "Before we map your bottleneck, what's your name?",
     sub: 'And the name of your business?',
     tag: 'Q00 · identity',
   },
   {
     id: 'business_description',
     type: 'textarea',
-    label: 'Describe your business in a sentence. What do you sell or deliver?',
+    label: 'In one line, what does your business do?',
     placeholder:
-      'e.g. We run a boutique investment advisory firm managing portfolios for high-net-worth clients',
+      'e.g. We run a boutique auction house specialising in fine art and estate sales',
     tag: 'Q01 · what you do',
   },
   {
-    id: 'team_size',
+    id: 'role',
     type: 'single',
-    label: 'How many people work in your business, including you?',
-    options: TEAM_SIZES,
-    tag: 'Q02 · team size',
+    label: "What's your role in the business?",
+    options: ROLE_OPTIONS,
+    tag: 'Q02 · role',
   },
   {
-    id: 'functional_areas',
-    type: 'multi',
-    label: 'Which of these areas does your business actively run?',
-    sub: 'Select all that apply',
-    options: FUNCTIONAL_AREAS,
-    tag: 'Q03 · functional areas',
+    id: 'bottleneck_full',
+    type: 'bottleneck',
+    label:
+      "What's the one thing choking your business right now? The bottleneck that, if it was solved, would change everything.",
+    sub: 'Be as specific as you can. The more detail you give, the more accurate your capability map will be.',
+    placeholder:
+      "e.g. Our consignment intake process is entirely manual. Every item needs cataloguing, photographing, assessing, and listing. It takes 3 people full-time and we're still behind.",
+    tag: 'Q03 · the bottleneck',
   },
   {
-    id: 'primary_area',
-    type: 'single',
-    label: 'Which of those areas do YOU spend most of your time in?',
-    options: [],
-    dynamicOptions: true,
-    tag: 'Q04 · where you sit',
-  },
-  {
-    id: 'drowning_work',
+    id: 'ideal_outcome',
     type: 'textarea',
     label:
-      "What's the work that's drowning you right now? The stuff that takes up your week but shouldn't need you.",
+      'If this bottleneck was completely solved tomorrow, what would actually change for your business?',
     placeholder:
-      'e.g. I spend half my week on client reporting and meeting prep that could be templated',
-    tag: 'Q05 · drowning',
+      "e.g. We could take on 3x the consignments without hiring. I'd stop doing routine assessments and focus on high-value clients.",
+    tag: 'Q04 · ideal outcome',
   },
   {
-    id: 'human_critical',
+    id: 'time_waste',
     type: 'textarea',
-    label:
-      "What's the one thing in your business that completely falls apart if you're not personally doing it?",
+    label: "What's eating your team's time that honestly shouldn't need them?",
     placeholder:
-      'e.g. Client relationships and investment decisions, they trust me specifically',
-    tag: 'Q06 · human-only',
+      'e.g. Data entry, chasing status updates, basic categorisation, sending routine emails to clients',
+    tag: 'Q05 · time waste',
   },
   {
     id: 'primary_risk',
     type: 'single',
-    label: 'When something goes wrong in your business, what hurts most?',
+    label: 'When this bottleneck causes a failure, what hurts most?',
     options: RISK_OPTIONS,
-    tag: 'Q07 · stakes',
+    tag: 'Q06 · stakes',
+  },
+  {
+    id: 'team_size',
+    type: 'single',
+    label: 'How many people work in your business?',
+    options: TEAM_SIZES,
+    tag: 'Q07 · team size',
   },
   {
     id: 'tools',
@@ -136,18 +135,11 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: 'urgency',
-    type: 'single',
-    label: 'How soon do you want to start building agent teams?',
+    type: 'urgency_email',
+    label: 'How soon do you want to solve this?',
+    emailLabel: 'Where should we send your capability map?',
     options: URGENCY_OPTIONS,
-    tag: 'Q09 · urgency',
-  },
-  {
-    id: 'email',
-    type: 'email',
-    label: (firstName) =>
-      firstName ? `${firstName}, where should we send your business map?` : 'Where should we send your business map?',
-    sub: 'A full PDF report + your team blueprint, tailored to your answers. No spam, one email, yours to keep.',
-    tag: 'Q10 · delivery',
+    tag: 'Q09 · urgency + delivery',
   },
 ];
 

@@ -12,7 +12,7 @@ const LINES: { t: string; c: string }[] = [
   { t: '→ hybrid % ....................... 12', c: 'var(--amber)' },
   { t: '→ agent_executable % ............. 50', c: 'var(--mint)' },
   { t: '→ estimated throughput ........... ×5.0', c: 'var(--gold)' },
-  { t: 'ready. press [map_your_business]', c: 'var(--text)' },
+  { t: 'ready. press [map_your_bottleneck]', c: 'var(--text)' },
 ];
 
 export function Terminal() {

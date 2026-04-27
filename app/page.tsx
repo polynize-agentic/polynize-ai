@@ -69,10 +69,10 @@ export default function HomePage() {
               className={s.ctaPrimary}
               href="/agents"
               event="cta_click"
-              eventProps={{ surface: 'home_hero', label: 'map_your_business' }}
+              eventProps={{ surface: 'home_hero', label: 'map_your_bottleneck' }}
             >
               <span className={s.ctaArrow}>→</span>
-              map_your_business
+              map_your_bottleneck
             </TrackedLink>
           </div>
         </div>
@@ -147,10 +147,10 @@ export default function HomePage() {
             className={s.midCtaBtn}
             href="/agents"
             event="cta_click"
-            eventProps={{ surface: 'home_mid_cta', label: 'map_your_business' }}
+            eventProps={{ surface: 'home_mid_cta', label: 'map_your_bottleneck' }}
           >
             <span className={s.ctaArrow}>→</span>
-            map_your_business
+            map_your_bottleneck
           </TrackedLink>
         </div>
       </section>
@@ -301,9 +301,9 @@ export default function HomePage() {
             className={s.ctaPrimary}
             href="/agents"
             event="cta_click"
-            eventProps={{ surface: 'home_final_cta', label: 'map_your_business' }}
+            eventProps={{ surface: 'home_final_cta', label: 'map_your_bottleneck' }}
           >
-            <span className={s.ctaArrow}>→</span>map_your_business
+            <span className={s.ctaArrow}>→</span>map_your_bottleneck
           </TrackedLink>
           <span className={s.ctaNote}>$ curl -X POST /agents, 4 min</span>
         </div>

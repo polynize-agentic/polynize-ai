@@ -11,35 +11,29 @@ const PercentagesSchema = z.object({
   agent: z.number(),
 });
 
-const TeamSchema = z
-  .object({
-    name: z.string(),
-    shape: z.string(),
-    agents: z.array(z.object({}).passthrough()),
-    functions: z.array(z.object({ label: z.string(), allocation: z.string() })),
-    percentages: PercentagesSchema,
-  })
-  .passthrough();
-
 const BodySchema = z.object({
   data: z
     .object({
-      business_summary: z.string(),
-      shape_primary: z.string(),
-      teams: z.array(TeamSchema).min(1),
-      total: PercentagesSchema,
+      interpretation: z.string(),
+      capabilities: z.array(
+        z.object({ label: z.string(), allocation: z.string(), detail: z.string() })
+      ),
+      percentages: PercentagesSchema,
+      team: z.object({}).passthrough(),
       leverage_estimate: z.string(),
       leverage_rationale: z.string(),
+      pricing_indicative: z.object({}).passthrough(),
+      hiring_comparison: z.object({}).passthrough(),
+      shape_internal: z.string(),
+      shape_id: z.number(),
       generated_by: z.enum(['llm', 'rule_based']).optional(),
     })
     .passthrough(),
 });
 
 /**
- * Upsert the multi-team heat map for this session. Stores the full payload
- * in the new `data` jsonb column. The legacy `shape` column gets the
- * shape_primary string so existing tooling/queries still surface something
- * useful at a glance.
+ * Upsert the capability map for this session. Stores the full payload
+ * in the `data` jsonb column.
  */
 export async function POST(req: Request) {
   if (!process.env.SUPABASE_URL) {
@@ -57,11 +51,11 @@ export async function POST(req: Request) {
   const sb = supabaseService();
 
   try {
-    const upsertRes = await sb.from('heat_maps').upsert(
+    const upsertRes = await sb.from('capability_maps').upsert(
       {
         session_id: sessionId,
-        shape: body.data.shape_primary,
-        percentages: body.data.total,
+        shape_internal: body.data.shape_internal,
+        percentages: body.data.percentages,
         data: body.data,
         generated_by: body.data.generated_by ?? 'llm',
       },
@@ -72,7 +66,7 @@ export async function POST(req: Request) {
     await sb.from('sessions').update({ phase: 'C' }).eq('id', sessionId);
     return NextResponse.json({ ok: true });
   } catch (e) {
-    console.error('[heat-map] upsert failed', e);
+    console.error('[capability-map] upsert failed', e);
     return NextResponse.json({ error: 'Persistence failed' }, { status: 500 });
   }
 }

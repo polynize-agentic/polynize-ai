@@ -1,20 +1,20 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { Answers, MultiTeamHeatMap, SessionState } from '@/lib/types';
+import type { Answers, CapabilityMapData, SessionState } from '@/lib/types';
 import { PhaseA } from './PhaseA';
 import { PhaseB } from './PhaseB';
 import { PhaseC, type ChatMessage } from './PhaseC';
 import { track, emailDomain } from '@/lib/analytics';
-import { persistAnswers, persistHeatMap } from '@/lib/persist-client';
+import { persistAnswers, persistCapabilityMap } from '@/lib/persist-client';
 
-const STORAGE_KEY = 'polynize_agents_state_v2';
+const STORAGE_KEY = 'polynize_agents_state_v3';
 
 type Persisted = {
   phase: SessionState['phase'];
   answers: Partial<Answers>;
   step: number;
-  data?: MultiTeamHeatMap;
+  data?: CapabilityMapData;
   messages?: ChatMessage[];
 };
 
@@ -69,7 +69,7 @@ export function AgentsController() {
 
   const handlePhaseAComplete = useCallback((answers: Partial<Answers>) => {
     track('phase_a_complete', {
-      steps_completed: 11,
+      steps_completed: 10,
       has_email: Boolean(answers.email),
     });
     if (answers.email) {
@@ -79,16 +79,17 @@ export function AgentsController() {
     setState((prev) => ({ ...prev, answers, phase: 'B' }));
   }, []);
 
-  const handlePhaseBReady = useCallback((data: MultiTeamHeatMap) => {
+  const handlePhaseBReady = useCallback((data: CapabilityMapData) => {
     track('phase_b_complete', {
-      shape_primary: data.shape_primary,
-      team_count: data.teams.length,
-      pct_human: data.total.human,
-      pct_hybrid: data.total.hybrid,
-      pct_agent: data.total.agent,
+      shape_id: data.shape_internal,
+      agent_count: data.team.agents.length,
+      capability_count: data.capabilities.length,
+      pct_human: data.percentages.human,
+      pct_hybrid: data.percentages.hybrid,
+      pct_agent: data.percentages.agent,
       generated_by: data.generated_by ?? 'llm',
     });
-    persistHeatMap(data);
+    persistCapabilityMap(data);
     setState((prev) => ({ ...prev, data, phase: 'C' }));
   }, []);
 

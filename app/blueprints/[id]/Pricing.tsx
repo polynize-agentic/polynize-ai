@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react';
 import type { BlueprintPayload } from '@/lib/blueprint/load';
-import { computePricing } from '@/lib/pricing';
 import s from './blueprint.module.css';
 import { firstNameOf } from './util';
 
@@ -18,36 +17,35 @@ type Stage = {
 export function Pricing({ payload }: { payload: BlueprintPayload }) {
   const { answers, data } = payload;
   const firstName = firstNameOf(answers.name, 'you');
-  const totalAgents = data.teams.reduce((sum, t) => sum + t.agents.length, 0);
-  const teamCount = data.teams.length;
   const company = (answers.company ?? '').trim();
-  const pricing = computePricing(answers);
+  const totalAgents = data.team.agents.length;
+  const pricing = data.pricing_indicative;
+  const hiring = data.hiring_comparison;
 
   const stages: Stage[] = [
     {
-      stage: 'Map',
+      stage: pricing.map.label,
       from: `from $${pricing.map.from.toLocaleString()}`,
       unit: 'AUD, one-off',
       window: 'Week 1 to 2',
       what:
-        'We set up the cognitive layer and ship your first agent live. You see the heat map become real. The cheapest way to de-risk the rest of the decision.',
+        'We set up the cognitive layer and ship your first agent live. You see the capability map become real. The cheapest way to de-risk the rest of the decision.',
       scope: [
         'One agent deployed end-to-end',
         'Cognitive layer installed in your tools',
-        `Workshop with you on your ${teamCount}-team heat map`,
+        'Workshop with you on your capability map',
         'Decision checkpoint before Transform',
       ],
       accent: 'mint',
     },
     {
-      stage: 'Transform',
+      stage: pricing.transform.label,
       from: `from $${pricing.transform.from.toLocaleString()}`,
-      unit: 'AUD, scales with unit size',
-      window: `Week 3 to ${Math.max(6, teamCount * 3)}`,
-      what: `The full unit, ${totalAgents} agents across ${teamCount} teams, built, trained in your voice, plugged into your tools, and deployed behind the human lead. This is where your calendar starts clearing.`,
+      unit: 'AUD, scales with team size',
+      window: 'Week 3 to 6',
+      what: `The full team, ${totalAgents} agents built, trained in your voice, plugged into your tools, and deployed behind the human lead. This is where the bottleneck breaks.`,
       scope: [
         `${totalAgents} agents designed, built and trained`,
-        `${teamCount} teams structured around your work`,
         'Integration with your existing toolchain',
         'Human-in-the-loop review flows',
         'Handoff: you, running the unit',
@@ -56,12 +54,12 @@ export function Pricing({ payload }: { payload: BlueprintPayload }) {
       featured: true,
     },
     {
-      stage: 'Operate',
-      from: `from $${pricing.operate.from_per_month.toLocaleString()}`,
-      unit: 'AUD / month, service fee',
+      stage: pricing.operate.label,
+      from: `from $${pricing.operate.from.toLocaleString()}`,
+      unit: `AUD / ${pricing.operate.period ?? 'month'}, service fee`,
       window: 'Ongoing',
       what:
-        'We keep the unit healthy. Prompts tuned, tools updated, connectors working, and a monthly check-in on how each team is actually performing against your metric.',
+        'We keep the team healthy. Prompts tuned, tools updated, connectors working, and a monthly check-in on how the unit is actually performing against your bottleneck.',
       scope: [
         'Monthly monitoring and tuning',
         'Connector maintenance',
@@ -86,6 +84,27 @@ export function Pricing({ payload }: { payload: BlueprintPayload }) {
           Three stages. Each one earns the next. These are indicative bands, {firstName}. The exact
           numbers for {company || 'your team'} get locked in a 30-minute conversation.
         </p>
+      </div>
+
+      <div className={s.hiringCompare}>
+        <div className={s.hiringCompareCol}>
+          <div className={s.eyebrow}>§ traditional hiring</div>
+          <div className={s.hiringCompareFte}>~{hiring.equivalent_fte} FTE</div>
+          <div className={s.hiringCompareCost} style={{ color: 'var(--coral)' }}>
+            ${hiring.estimated_annual_cost} {hiring.currency} / year
+          </div>
+          <div className={s.hiringCompareNote}>{hiring.note}</div>
+        </div>
+        <div className={s.hiringCompareDivider}>vs</div>
+        <div className={s.hiringCompareCol}>
+          <div className={s.eyebrow}>§ this team</div>
+          <div className={s.hiringCompareFte}>{totalAgents} agents</div>
+          <div className={s.hiringCompareCost} style={{ color: 'var(--mint)' }}>
+            ${pricing.transform.from.toLocaleString()} build + $
+            {pricing.operate.from.toLocaleString()}/{pricing.operate.period ?? 'month'}
+          </div>
+          <div className={s.hiringCompareNote}>{pricing.transform.description}</div>
+        </div>
       </div>
 
       <div className={s.priceGrid}>

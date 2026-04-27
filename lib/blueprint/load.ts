@@ -1,13 +1,12 @@
-import type { Answers, MultiTeamHeatMap } from '../types';
-import { deriveHeatMapFallback } from '../agents/derive-heatmap-fallback';
-import { DEMO_ANSWERS, DEMO_HEATMAP } from './demo-default';
+import type { Answers, CapabilityMapData } from '../types';
+import { DEMO_ANSWERS, DEMO_CAPABILITY_MAP } from './demo-default';
 import { supabaseService } from '../supabase';
 
 export type BlueprintPayload = {
   id: string;
   isDemo: boolean;
   answers: Partial<Answers>;
-  data: MultiTeamHeatMap;
+  data: CapabilityMapData;
   issuedAt: Date;
   docRef: string;
 };
@@ -39,7 +38,7 @@ export async function loadBlueprint(
 
       if (!row) return null;
 
-      const snapshot = row.data as { answers: Partial<Answers>; data: MultiTeamHeatMap };
+      const snapshot = row.data as { answers: Partial<Answers>; data: CapabilityMapData };
       return {
         id: row.id,
         isDemo: false,
@@ -54,7 +53,6 @@ export async function loadBlueprint(
     }
   }
 
-  // No Supabase wired (dev) — fall back to demo so the route is browseable.
   return demoPayload(id, false);
 }
 
@@ -63,15 +61,13 @@ function demoPayload(id: string, isDemo: boolean): BlueprintPayload {
     id,
     isDemo,
     answers: DEMO_ANSWERS,
-    data: DEMO_HEATMAP,
+    data: DEMO_CAPABILITY_MAP,
     issuedAt: new Date(),
     docRef: docRefFromId(id),
   };
 }
 
 function docRefFromId(id: string): string {
-  // Deterministic 6-char ref, derived from the id so server + client agree
-  // and a given share link always shows the same BP-XXXXXX.
   let hash = 0;
   for (const ch of id) {
     hash = ((hash << 5) - hash + ch.charCodeAt(0)) | 0;

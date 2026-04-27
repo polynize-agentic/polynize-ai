@@ -12,53 +12,46 @@ export function Cover({ payload }: { payload: BlueprintPayload }) {
     year: 'numeric',
   });
 
-  // Build a compact preview that interleaves a couple of rows from each team.
-  const previewRows = data.teams.flatMap((team) =>
-    team.functions.slice(0, 2).map((fn) => ({ team: team.name, label: fn.label, alloc: fn.allocation }))
-  );
+  // Take the first 6 capabilities for the cover preview.
+  const previewRows = data.capabilities.slice(0, 6);
 
   return (
     <section className={s.cover} data-screen-label="Page 01 · Cover">
       <div className={s.coverMeta}>
-        <Meta k="document" v="agent_team_blueprint" />
+        <Meta k="document" v="capability_map" />
         <Meta k="prepared_for" v={`${firstName}${company ? ` at ${company}` : ''}`} />
-        <Meta k="shape" v={data.shape_primary} />
-        <Meta k="teams" v={`${data.teams.length} teams`} />
+        <Meta k="agents" v={`${data.team.agents.length} agents`} />
+        <Meta k="leverage" v={data.leverage_estimate} />
         <Meta k="issued" v={issuedLabel} />
         <Meta k="ref" v={`BP-${docRef}`} />
       </div>
 
       <h1 className={s.coverTitle}>
-        A blueprint
+        Your <span className={s.mint}>capability</span>
         <br />
-        for <span className={s.mint}>{firstName}&apos;s</span>
-        <br />
-        next unit<span className={s.mint}>.</span>
+        map<span className={s.mint}>.</span>
       </h1>
 
       <p className={s.coverLede}>
-        {company ? `${company} runs as` : 'You run as'} a <strong>{data.shape_primary}</strong> shape across {data.teams.length} teams.
-        The page below is the first look at how we&apos;d organise the execution behind it,
-        colour-coded, staffed, and priced. Read it like a draft. We&apos;ll sharpen it together.
+        {company ? `${company} hit a bottleneck.` : 'You hit a bottleneck.'} The pages below are
+        how we&apos;d decompose it, who picks up which capability, and what it costs to build
+        compared to hiring. Read it like a draft. We&apos;ll sharpen it together.
       </p>
 
       <div className={s.coverMap}>
-        <div className={s.eyebrow}>§ heat_map / preview</div>
+        <div className={s.eyebrow}>§ capability_map / preview</div>
         <div className={s.minimap}>
           {previewRows.map((r, i) => {
             const allocs: ('human' | 'hybrid' | 'agent')[] = ['human', 'hybrid', 'agent'];
             const colorFor = (a: 'human' | 'hybrid' | 'agent') =>
               a === 'human' ? 'var(--coral)' : a === 'hybrid' ? 'var(--amber)' : 'var(--mint)';
-            const activeColor = colorFor(r.alloc);
+            const activeColor = colorFor(r.allocation);
             return (
               <div key={i} className={s.minimapRow}>
-                <div className={s.minimapFn}>
-                  <span style={{ color: 'var(--text-3)', marginRight: 6 }}>{r.team}</span>
-                  {r.label}
-                </div>
+                <div className={s.minimapFn}>{r.label}</div>
                 <div className={s.minimapCells}>
                   {allocs.map((a) => {
-                    const on = r.alloc === a;
+                    const on = r.allocation === a;
                     return (
                       <span
                         key={a}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { Answers, MultiTeamHeatMap, HeatMapAgent } from '@/lib/types';
+import type { Answers, CapabilityMapData, CapabilityAgent } from '@/lib/types';
 import { buildAgentSystemPrompt } from '@/lib/agents/system-prompt';
 import { track } from '@/lib/analytics';
 import { persistMessage, createBlueprint } from '@/lib/persist-client';
@@ -18,16 +18,16 @@ export type ChatMessage = {
 
 type Props = {
   answers: Partial<Answers>;
-  data: MultiTeamHeatMap;
+  data: CapabilityMapData;
   initialMessages?: ChatMessage[];
   onMessagesChange?: (messages: ChatMessage[]) => void;
   onBack: () => void;
 };
 
 const STARTERS = [
-  'Walk me through a typical day with this team',
+  'Walk me through how you and the team would solve this',
   'What should I work on first thing tomorrow?',
-  "How do you decide what's Agent vs Hybrid vs Human?",
+  "What's the very first thing you'd do for me?",
   'Show me a sample deliverable from Week 1',
 ];
 
@@ -41,13 +41,8 @@ function fallbackForStatus(status: number | null): string {
   return FALLBACK_GENERIC;
 }
 
-type FlatAgent = HeatMapAgent & { teamName: string };
-
 export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBack }: Props) {
-  const flatAgents: FlatAgent[] = useMemo(
-    () => data.teams.flatMap((t) => t.agents.map((a) => ({ ...a, teamName: t.name }))),
-    [data.teams]
-  );
+  const agents = data.team.agents;
   const firstName = (answers.name ?? '').trim().split(/\s+/)[0] ?? '';
   const company = (answers.company ?? '').trim();
 
@@ -56,8 +51,8 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     if (initialMessages && initialMessages.length > 0) return initialMessages;
-    if (flatAgents.length === 0) return [];
-    return [seedGreeting(flatAgents[0], firstName, company, answers.business_description ?? '')];
+    if (agents.length === 0) return [];
+    return [seedGreeting(agents[0], firstName, company, answers.bottleneck_full ?? '')];
   });
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -83,7 +78,7 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
     async (text: string) => {
       const trimmed = text.trim();
       if (!trimmed || loading) return;
-      const agent = flatAgents[activeAgent];
+      const agent = agents[activeAgent];
       if (!agent) return;
 
       const userMsg: ChatMessage = { role: 'user', content: trimmed };
@@ -94,7 +89,7 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
       track('phase_c_message', { agent_id: agent.role, message_count: newHistory.length });
       persistMessage('user', trimmed);
 
-      const system = buildAgentSystemPrompt(agent, agent.teamName, answers, data);
+      const system = buildAgentSystemPrompt(agent, answers, data);
       const apiMessages = newHistory.map(({ role, content }) => ({ role, content }));
 
       let status: number | null = null;
@@ -128,7 +123,7 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
         setLoading(false);
       }
     },
-    [activeAgent, flatAgents, answers, data, loading, messages]
+    [activeAgent, agents, answers, data, loading, messages]
   );
 
   const onSubmit = (e: React.FormEvent) => {
@@ -145,15 +140,20 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
     setCreateError(null);
     const res = await createBlueprint();
     if ('id' in res) {
-      track('blueprint_created', { id: res.id, shape_id: data.shape_primary });
+      track('blueprint_created', { id: res.id, shape_id: data.shape_internal });
       window.location.href = `/blueprints/${res.id}`;
       return;
     }
     setCreateError(res.error);
     setCreating(false);
-  }, [creating, data.shape_primary]);
+  }, [creating, data.shape_internal]);
 
-  if (flatAgents.length === 0) {
+  const ownerLabel = useMemo(() => {
+    const name = firstName || 'You';
+    return name;
+  }, [firstName]);
+
+  if (agents.length === 0) {
     return (
       <div className={s.phaseC}>
         <div className={s.right}>
@@ -163,54 +163,54 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
     );
   }
 
-  const active = flatAgents[activeAgent];
+  const active = agents[activeAgent];
 
   return (
     <div className={s.phaseC}>
       <aside className={s.left}>
         <div className={s.miniHead}>
           <button type="button" className={s.back} onClick={onBack}>
-            ← heat_map
+            ← capability_map
           </button>
-          <div className={s.miniTitle}>§ your unit</div>
+          <div className={s.miniTitle}>§ your team</div>
         </div>
         <div className={s.teamList}>
-          {data.teams.map((team, ti) => (
-            <div key={`${team.name}-${ti}`} className={s.teamGroup}>
-              <div className={s.teamGroupHead}>{team.name}</div>
-              {team.agents.map((a) => {
-                const flatIndex = flatAgents.findIndex((f) => f.name === a.name && f.teamName === team.name);
-                const isActive = flatIndex === activeAgent;
-                return (
-                  <button
-                    key={`${team.name}-${a.name}`}
-                    type="button"
-                    className={`${s.teamItem} ${isActive ? s.teamItemOn : ''}`}
-                    onClick={() => {
-                      if (flatIndex !== activeAgent) {
-                        track('phase_c_agent_switch', {
-                          from_agent: flatAgents[activeAgent]?.role,
-                          to_agent: a.role,
-                        });
-                      }
-                      setActiveAgent(flatIndex);
-                    }}
-                  >
-                    <div className={`${s.avatar} ${isActive ? s.avatarActive : ''}`}>{a.name[0]}</div>
-                    <div className={s.teamGrow}>
-                      <div className={s.teamName}>{a.name}</div>
-                      <div className={s.teamRole}>{a.role}</div>
-                    </div>
-                    {isActive && <span className={s.dot} />}
-                  </button>
-                );
-              })}
+          <div className={s.humanCard}>
+            <div className={`${s.avatar} ${s.avatarHuman}`}>{ownerLabel[0]}</div>
+            <div className={s.teamGrow}>
+              <div className={s.teamName}>{ownerLabel} (you)</div>
+              <div className={s.teamRole}>{data.team.human_owner.role}</div>
             </div>
+          </div>
+          {agents.map((a, i) => (
+            <button
+              key={`${a.name}-${i}`}
+              type="button"
+              className={`${s.teamItem} ${i === activeAgent ? s.teamItemOn : ''}`}
+              onClick={() => {
+                if (i !== activeAgent) {
+                  track('phase_c_agent_switch', {
+                    from_agent: agents[activeAgent]?.role,
+                    to_agent: a.role,
+                  });
+                }
+                setActiveAgent(i);
+              }}
+            >
+              <div className={`${s.avatar} ${i === activeAgent ? s.avatarActive : ''}`}>
+                {a.name[0]}
+              </div>
+              <div className={s.teamGrow}>
+                <div className={s.teamName}>{a.name}</div>
+                <div className={s.teamRole}>{a.role}</div>
+              </div>
+              {i === activeAgent && <span className={s.dot} />}
+            </button>
           ))}
         </div>
         <div className={s.miniStat}>
-          <div className={s.eyebrow}>shape</div>
-          <div className={s.miniStatV}>{data.shape_primary}</div>
+          <div className={s.eyebrow}>leverage</div>
+          <div className={s.miniStatV}>{data.leverage_estimate}</div>
         </div>
       </aside>
 
@@ -221,7 +221,7 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
               talking to
             </div>
             <div className={s.chatName}>
-              {active.name} <span className={s.chatRoleSuffix}>· {active.role} · {active.teamName}</span>
+              {active.name} <span className={s.chatRoleSuffix}>· {active.role}</span>
             </div>
           </div>
           <div className={s.headRight}>
@@ -341,21 +341,17 @@ export function PhaseC({ answers, data, initialMessages, onMessagesChange, onBac
 }
 
 function seedGreeting(
-  agent: FlatAgent,
+  agent: CapabilityAgent,
   firstName: string,
   company: string,
-  business: string
+  bottleneck: string
 ): ChatMessage {
   const greet = firstName ? `Hi ${firstName}, ` : 'Hi, ';
-  const focus = (business || 'what you described').toLowerCase().replace(/\.$/, '');
-  const companyNote = company
-    ? ` I know ${company} is focused on ${focus}.`
-    : business
-      ? ` I've read your notes on "${business}".`
-      : '';
+  const target = bottleneck.trim().length > 0 ? 'the bottleneck you described' : "what you're trying to fix";
+  const companyNote = company ? ` Glad to be on the team for ${company}.` : '';
   return {
     role: 'assistant',
-    content: `${greet}I'm ${agent.name}, your ${agent.role} on the ${agent.teamName} team.${companyNote} Ask me anything, or pick a starter below.`,
+    content: `${greet}I'm ${agent.name}, your ${agent.role}.${companyNote} I've been briefed on ${target}, and I'm here to walk you through how I'd own my slice of it. Ask me anything, or pick a starter below.`,
     agentName: agent.name,
     agentRole: agent.role,
   };

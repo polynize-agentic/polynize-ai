@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Answers } from '@/lib/types';
 import { QUESTIONS, resolveLabel, type Question } from '@/lib/agents/questions';
 import s from './phase-a.module.css';
@@ -16,16 +16,20 @@ const BLANK: Partial<Answers> = {
   name: '',
   company: '',
   business_description: '',
-  team_size: '',
-  functional_areas: [],
-  primary_area: '',
-  drowning_work: '',
-  human_critical: '',
+  role: '',
+  bottleneck_full: '',
+  ideal_outcome: '',
+  time_waste: '',
   primary_risk: '',
+  team_size: '',
   tools: [],
   urgency: '',
   email: '',
 };
+
+const MAX_PROBES = 2;
+
+type Exchange = { user: string; follow_up?: string };
 
 export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Props) {
   const [answers, setAnswers] = useState<Partial<Answers>>({ ...BLANK, ...initial });
@@ -33,37 +37,24 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
   const [direction, setDirection] = useState<1 | -1>(1);
   const skipNextNotify = useRef(true);
 
+  // Bottleneck-question state. Reset on mount per step transition.
+  const [exchanges, setExchanges] = useState<Exchange[]>([]);
+  const [bottleneckDraft, setBottleneckDraft] = useState('');
+  const [probing, setProbing] = useState(false);
+
   const q = QUESTIONS[step];
   const firstName = (answers.name ?? '').trim().split(/\s+/)[0] ?? '';
   const label = resolveLabel(q, firstName);
   const progress = ((step + 1) / QUESTIONS.length) * 100;
 
-  // Q04 (primary_area) options come from Q03 (functional_areas) at runtime.
-  const dynamicOptions = useMemo(() => {
-    if (q.id !== 'primary_area') return null;
-    return answers.functional_areas ?? [];
-  }, [q.id, answers.functional_areas]);
-
-  const canAdvance = useCallback((): boolean => {
-    return checkCanAdvance(q, answers);
-  }, [q, answers]);
-
-  const next = useCallback(() => {
-    if (!checkCanAdvance(q, answers)) return;
-    setDirection(1);
-    if (step < QUESTIONS.length - 1) {
-      setStep(step + 1);
-    } else {
-      onComplete(answers);
+  // Reset bottleneck state whenever the step changes onto/off of the bottleneck.
+  useEffect(() => {
+    if (q.type !== 'bottleneck') {
+      setExchanges([]);
+      setBottleneckDraft('');
+      setProbing(false);
     }
-  }, [q, answers, step, onComplete]);
-
-  const prev = useCallback(() => {
-    if (step > 0) {
-      setDirection(-1);
-      setStep(step - 1);
-    }
-  }, [step]);
+  }, [q.type, step]);
 
   // Notify parent of state changes (for persistence). Skip first run.
   useEffect(() => {
@@ -74,11 +65,117 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
     onAnswersChange?.(answers, step);
   }, [answers, step, onAnswersChange]);
 
-  // Plain Enter advances on chip/email; Cmd/Ctrl+Enter advances in textarea.
+  const setField = useCallback(<K extends keyof Answers>(key: K, value: Answers[K]) => {
+    setAnswers((prev) => ({ ...prev, [key]: value }));
+  }, []);
+
+  const advance = useCallback(
+    (current: Partial<Answers>) => {
+      setDirection(1);
+      if (step < QUESTIONS.length - 1) {
+        setStep(step + 1);
+      } else {
+        onComplete(current);
+      }
+    },
+    [step, onComplete]
+  );
+
+  const next = useCallback(() => {
+    if (q.type === 'bottleneck') return;
+    if (!checkCanAdvance(q, answers)) return;
+    advance(answers);
+  }, [q, answers, advance]);
+
+  const prev = useCallback(() => {
+    if (step > 0) {
+      setDirection(-1);
+      setStep(step - 1);
+    }
+  }, [step]);
+
+  // Submit a bottleneck answer (initial or follow-up). Hits the probe endpoint
+  // and either appends a follow-up exchange or commits + advances.
+  const submitBottleneck = useCallback(async () => {
+    const trimmed = bottleneckDraft.trim();
+    if (!trimmed || probing) return;
+    const lastFollowUp = exchanges.length > 0 ? exchanges[exchanges.length - 1].follow_up : undefined;
+    const newExchange: Exchange = lastFollowUp
+      ? { user: trimmed, follow_up: undefined }
+      : { user: trimmed, follow_up: undefined };
+    // The follow_up belongs to the PRIOR exchange (it was the question we asked).
+    // We model exchanges as the user's reply; the follow_up field on each entry
+    // records the probe text shown TO the user before they wrote that reply.
+    const nextExchanges: Exchange[] = (() => {
+      if (exchanges.length === 0) return [{ user: trimmed }];
+      // Attach the new user reply with the follow-up that prompted it.
+      const out = [...exchanges];
+      out.push({ user: trimmed, follow_up: lastFollowUp });
+      return out;
+    })();
+
+    const probesUsed = nextExchanges.length - 1; // how many follow-ups we've already shown
+    const reachedCap = probesUsed >= MAX_PROBES;
+
+    setProbing(true);
+    setExchanges(nextExchanges);
+    setBottleneckDraft('');
+
+    let sufficient = true;
+    let followUp: string | undefined;
+
+    if (!reachedCap) {
+      try {
+        const res = await fetch('/api/bottleneck/probe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ exchanges: nextExchanges.map((e) => ({ user: e.user, follow_up: e.follow_up })) }),
+        });
+        const json = (await res.json().catch(() => ({}))) as { sufficient?: boolean; follow_up?: string };
+        sufficient = json.sufficient !== false;
+        if (!sufficient && typeof json.follow_up === 'string' && json.follow_up.trim().length > 0) {
+          followUp = json.follow_up.trim();
+        } else {
+          sufficient = true;
+        }
+      } catch {
+        sufficient = true;
+      }
+    }
+
+    if (sufficient) {
+      const fullText = formatBottleneckFull(nextExchanges);
+      const updated = { ...answers, bottleneck_full: fullText };
+      setAnswers(updated);
+      setProbing(false);
+      // Small pause so the user sees their last bubble land before transitioning.
+      setTimeout(() => advance(updated), 350);
+      return;
+    }
+
+    // Append the follow-up to the latest exchange so it renders + queues a new textarea.
+    setExchanges((prev) => {
+      const out = [...prev];
+      out[out.length - 1] = { ...out[out.length - 1] };
+      // Stash the probe on a synthetic next exchange placeholder via state we already track.
+      out.push({ user: '', follow_up: followUp });
+      return out;
+    });
+    setProbing(false);
+  }, [bottleneckDraft, probing, exchanges, answers, advance]);
+
+  // Plain Enter advances on chip-style inputs; Cmd/Ctrl+Enter advances in textareas.
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key !== 'Enter' || e.shiftKey) return;
-      const isTextLike = q.type === 'textarea' || q.type === 'business' || q.type === 'email';
+      if (q.type === 'bottleneck') {
+        if (e.metaKey || e.ctrlKey) {
+          e.preventDefault();
+          void submitBottleneck();
+        }
+        return;
+      }
+      const isTextLike = q.type === 'textarea' || q.type === 'business' || q.type === 'urgency_email';
       if (!isTextLike) {
         e.preventDefault();
         next();
@@ -89,13 +186,16 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [q.type, next]);
-
-  const setField = useCallback(<K extends keyof Answers>(key: K, value: Answers[K]) => {
-    setAnswers((prev) => ({ ...prev, [key]: value }));
-  }, []);
+  }, [q.type, next, submitBottleneck]);
 
   const cardClass = direction === 1 ? `${s.card} ${s.cardEnter}` : `${s.card} ${s.cardBack}`;
+
+  // Latest probe (if any) sits on the last exchange entry whose `user` is empty.
+  const pendingProbe =
+    q.type === 'bottleneck' && exchanges.length > 0 && exchanges[exchanges.length - 1].user === ''
+      ? exchanges[exchanges.length - 1].follow_up
+      : null;
+  const renderableExchanges = exchanges.filter((e) => e.user !== '');
 
   return (
     <div className={s.phaseA}>
@@ -148,29 +248,6 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
             </div>
           )}
 
-          {q.type === 'email' && (
-            <div className={s.email}>
-              <input
-                className={s.input}
-                type="email"
-                placeholder="you@company.com"
-                value={answers.email ?? ''}
-                autoFocus
-                onChange={(e) => setField('email', e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && checkCanAdvance(q, { ...answers, email: (e.target as HTMLInputElement).value })) {
-                    e.preventDefault();
-                    next();
-                  }
-                }}
-              />
-              <div className={s.emailPromise}>
-                <span className={s.lock}>▲</span>
-                We won&apos;t share it. You&apos;ll get your report within two minutes.
-              </div>
-            </div>
-          )}
-
           {q.type === 'multi' && q.options && (
             <div className={s.multi}>
               {q.options.map((o) => {
@@ -194,34 +271,111 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
             </div>
           )}
 
-          {q.type === 'single' && (q.options || dynamicOptions) && (
+          {q.type === 'single' && q.options && (
             <div className={s.single}>
-              {(dynamicOptions ?? q.options ?? []).map((o) => (
+              {q.options.map((o) => (
                 <button
                   key={o}
                   type="button"
                   className={`${s.opt} ${answers[q.id as keyof Answers] === o ? s.optOn : ''}`}
                   onClick={() => {
-                    const newAnswers = { ...answers, [q.id]: o };
-                    setAnswers(newAnswers);
-                    setTimeout(() => {
-                      setDirection(1);
-                      if (step < QUESTIONS.length - 1) {
-                        setStep(step + 1);
-                      } else {
-                        onComplete(newAnswers);
-                      }
-                    }, 260);
+                    const updated = { ...answers, [q.id]: o };
+                    setAnswers(updated);
+                    setTimeout(() => advance(updated), 260);
                   }}
                 >
                   <span className={s.check}>{answers[q.id as keyof Answers] === o ? '●' : '○'}</span>
                   <span>{o}</span>
                 </button>
               ))}
-              {q.dynamicOptions && (dynamicOptions?.length ?? 0) === 0 && (
-                <div className={s.sub} style={{ marginTop: 0 }}>
-                  Pick at least one functional area on the previous step.
+            </div>
+          )}
+
+          {q.type === 'urgency_email' && q.options && (
+            <div className={s.urgencyEmail}>
+              <div className={s.single}>
+                {q.options.map((o) => (
+                  <button
+                    key={o}
+                    type="button"
+                    className={`${s.opt} ${answers.urgency === o ? s.optOn : ''}`}
+                    onClick={() => setField('urgency', o)}
+                  >
+                    <span className={s.check}>{answers.urgency === o ? '●' : '○'}</span>
+                    <span>{o}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div className={s.email}>
+                <div className={s.sublabel} style={{ marginBottom: 12, marginTop: 24 }}>
+                  {q.emailLabel}
                 </div>
+                <input
+                  className={s.input}
+                  type="email"
+                  placeholder="you@company.com"
+                  value={answers.email ?? ''}
+                  onChange={(e) => setField('email', e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && checkCanAdvance(q, { ...answers, email: (e.target as HTMLInputElement).value })) {
+                      e.preventDefault();
+                      next();
+                    }
+                  }}
+                />
+                <div className={s.emailPromise}>
+                  <span className={s.lock}>▲</span>
+                  We won&apos;t share it. You&apos;ll get your report within two minutes.
+                </div>
+              </div>
+            </div>
+          )}
+
+          {q.type === 'bottleneck' && (
+            <div className={s.bottleneck}>
+              {renderableExchanges.length > 0 && (
+                <div className={s.exchanges}>
+                  {renderableExchanges.map((ex, i) => (
+                    <div key={i} className={s.exchangeBlock}>
+                      {ex.follow_up && (
+                        <div className={s.probeBubble}>
+                          <div className={s.probeWho}>POLYNIZE</div>
+                          <div className={s.probeText}>{ex.follow_up}</div>
+                        </div>
+                      )}
+                      <div className={s.userBubble}>
+                        <div className={s.userText}>{ex.user}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {pendingProbe && (
+                <div className={s.probeBubble}>
+                  <div className={s.probeWho}>POLYNIZE</div>
+                  <div className={s.probeText}>{pendingProbe}</div>
+                </div>
+              )}
+
+              {probing && (
+                <div className={s.probing} aria-live="polite">
+                  <span className={s.probingDot} />
+                  <span className={s.probingDot} />
+                  <span className={s.probingDot} />
+                  <span className={s.probingLabel}>thinking</span>
+                </div>
+              )}
+
+              {!probing && (
+                <textarea
+                  className={s.input}
+                  placeholder={renderableExchanges.length === 0 ? q.placeholder : 'go deeper…'}
+                  value={bottleneckDraft}
+                  autoFocus
+                  onChange={(e) => setBottleneckDraft(e.target.value)}
+                />
               )}
             </div>
           )}
@@ -233,14 +387,32 @@ export function PhaseA({ initial, initialStep, onAnswersChange, onComplete }: Pr
               </button>
             )}
             <div className={s.spacer} />
-            <button type="button" className={s.next} disabled={!canAdvance()} onClick={next}>
-              {q.type === 'email'
-                ? 'send_my_business_map →'
-                : step === QUESTIONS.length - 1
-                  ? 'generate_business_map →'
-                  : 'next →'}
-            </button>
-            {q.type === 'textarea' && <span className={s.hint}>⌘ + enter</span>}
+            {q.type === 'bottleneck' ? (
+              <button
+                type="button"
+                className={s.next}
+                disabled={probing || bottleneckDraft.trim().length < 4}
+                onClick={() => void submitBottleneck()}
+              >
+                {probing ? 'thinking…' : renderableExchanges.length === 0 ? 'next →' : 'send →'}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className={s.next}
+                disabled={!checkCanAdvance(q, answers)}
+                onClick={next}
+              >
+                {q.type === 'urgency_email'
+                  ? 'send_my_capability_map →'
+                  : step === QUESTIONS.length - 1
+                    ? 'generate_capability_map →'
+                    : 'next →'}
+              </button>
+            )}
+            {(q.type === 'textarea' || q.type === 'bottleneck') && (
+              <span className={s.hint}>⌘ + enter</span>
+            )}
           </div>
         </div>
       </div>
@@ -255,9 +427,24 @@ function checkCanAdvance(q: Question, answers: Partial<Answers>): boolean {
   if (q.type === 'multi') {
     return ((answers[q.id as keyof Answers] as string[] | undefined)?.length ?? 0) > 0;
   }
-  if (q.type === 'email') return /^\S+@\S+\.\S+$/.test(answers.email ?? '');
+  if (q.type === 'urgency_email') {
+    return Boolean(answers.urgency) && /^\S+@\S+\.\S+$/.test(answers.email ?? '');
+  }
   if (q.type === 'textarea') {
     return ((answers[q.id as keyof Answers] as string | undefined) ?? '').trim().length > 3;
   }
+  if (q.type === 'bottleneck') {
+    return (answers.bottleneck_full ?? '').length > 0;
+  }
   return Boolean(answers[q.id as keyof Answers]);
+}
+
+function formatBottleneckFull(exchanges: Exchange[]): string {
+  return exchanges
+    .filter((e) => e.user !== '')
+    .map((e) => {
+      const probe = e.follow_up ? `[Follow-up: ${e.follow_up}]\n` : '';
+      return `${probe}"${e.user.trim()}"`;
+    })
+    .join('\n\n');
 }

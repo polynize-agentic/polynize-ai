@@ -307,3 +307,91 @@
     transition: none;
   }
 }
+
+/* ===== Q03 BOTTLENECK — conversational probe ===== */
+.bottleneck {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.exchanges {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.exchangeBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.probeBubble {
+  align-self: flex-start;
+  max-width: 90%;
+  background: var(--tac-surface);
+  border-radius: 14px 14px 14px 4px;
+  padding: 14px 18px;
+  box-shadow: var(--tac-shadow-raised-soft);
+}
+.probeWho {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--mint);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.probeText {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text);
+}
+.userBubble {
+  align-self: flex-end;
+  max-width: 90%;
+  background: var(--tac-inset);
+  border-radius: 14px 14px 4px 14px;
+  padding: 12px 16px;
+  box-shadow: var(--tac-shadow-inset);
+}
+.userText {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-2);
+  white-space: pre-wrap;
+}
+.probing {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 4px 4px;
+  color: var(--text-3);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.probingDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mint);
+  animation: probingPulse 1s infinite ease-in-out;
+}
+.probingDot:nth-child(2) { animation-delay: 0.15s; }
+.probingDot:nth-child(3) { animation-delay: 0.3s; }
+.probingLabel { margin-left: 8px; }
+@keyframes probingPulse {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.85); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+/* ===== Q09 URGENCY + EMAIL combined ===== */
+.urgencyEmail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .probingDot { animation: none; }
+}

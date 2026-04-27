@@ -285,6 +285,61 @@
   font-size: 13px;
   color: var(--text);
 }
+.gridFnDetail {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+
+.hiringCompare {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 40px;
+  padding: 24px;
+  background: var(--tac-surface);
+  border-radius: 18px;
+  box-shadow: var(--tac-shadow-raised);
+}
+.hiringCompareCol {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hiringCompareDivider {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--text-3);
+  text-transform: uppercase;
+  text-align: center;
+}
+.hiringCompareFte {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 4px;
+}
+.hiringCompareCost {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 14px;
+}
+.hiringCompareNote {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.45;
+}
+@media (max-width: 720px) {
+  .hiringCompare {
+    grid-template-columns: 1fr;
+  }
+  .hiringCompareDivider {
+    text-align: left;
+  }
+}
 .gridCell {
   height: 28px;
   border: 1px solid;

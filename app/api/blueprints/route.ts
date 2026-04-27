@@ -28,7 +28,7 @@ export async function POST() {
   try {
     const [{ data: ans }, { data: hm }] = await Promise.all([
       sb.from('answers').select('answers').eq('session_id', sessionId).maybeSingle(),
-      sb.from('heat_maps').select('*').eq('session_id', sessionId).maybeSingle(),
+      sb.from('capability_maps').select('*').eq('session_id', sessionId).maybeSingle(),
     ]);
 
     if (!ans || !hm || !hm.data) {
