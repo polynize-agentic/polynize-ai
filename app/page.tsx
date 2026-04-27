@@ -195,7 +195,9 @@ function DirCResults() {
           whole team.
         </p>
         <div className={s.dcQuoteAttr}>
-          <div className={s.dcQuoteAv} aria-label="AJ Milne" />
+          <div className={s.dcQuoteAv}>
+            <img src="/assets/aj-milne.jpg" alt="AJ Milne" />
+          </div>
           <div>
             <div className={s.dcQuoteName}>AJ Milne</div>
             <div className={s.dcQuoteRole}>Partner, Optio Capital</div>
