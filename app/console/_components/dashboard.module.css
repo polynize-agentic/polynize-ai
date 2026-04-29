@@ -18,6 +18,13 @@
   flex-direction: column;
   gap: 12px;
 }
+/* When the hero slot holds the AJ team diagram (which already brings its own
+   recessed-well chrome), strip the wrapper card so they don't double-stack. */
+.heroStatTeam {
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
 .sideStats {
   grid-column: span 4;
   display: grid;

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import s from './_home/home.module.css';
 import { CapabilityMapPreview } from './_home/CapabilityMapPreview';
+import { AjTeamDiagram } from './_components/AjTeamDiagram';
 import { TrackedLink } from './_components/TrackedLink';
 
 const BOOKING_URL = 'https://calendly.com/marrscoiro/meeting30';
@@ -202,91 +203,10 @@ function DirCResults() {
         </div>
       </div>
 
-      <AjTeamDiagram />
+      <div className={s.ajWrap}>
+        <AjTeamDiagram />
+      </div>
     </section>
-  );
-}
-
-/* ---------- AJ team diagram ---------- */
-
-function AjTeamDiagram() {
-  return (
-    <div className={s.ajTeam} aria-label="AJ Milne's agent team at Optio Capital">
-      <div className={s.ajTeamCaption}>AJ&apos;s team at Optio Capital</div>
-
-      {/* Level 1 — AJ at the top */}
-      <div className={s.ajTeamLevel}>
-        <TeamNode src="/assets/aj-milne.jpg" alt="AJ Milne" label="AJ Milne" sub="Partner" lead />
-      </div>
-
-      {/* connector AJ → Team Leader */}
-      <div className={s.ajTeamConnector} aria-hidden />
-
-      {/* Level 2 — Team Leader */}
-      <div className={s.ajTeamLevel}>
-        <TeamNode
-          src="/assets/agents/team-leader.png"
-          alt="Team leader agent"
-          label="Cassia"
-          sub="Team Leader"
-        />
-      </div>
-
-      {/* connector trunk + branch from Team Leader to 3 specialists */}
-      <div className={s.ajTeamBranch} aria-hidden>
-        <div className={s.ajTeamBranchTrunk} />
-        <div className={s.ajTeamBranchSpan} />
-        <div className={s.ajTeamBranchLegLeft} />
-        <div className={s.ajTeamBranchLegMid} />
-        <div className={s.ajTeamBranchLegRight} />
-      </div>
-
-      {/* Level 3 — three specialists */}
-      <div className={`${s.ajTeamLevel} ${s.ajTeamLevelRow}`}>
-        <TeamNode
-          src="/assets/agents/investment-analyst.png"
-          alt="Investment analyst agent"
-          label="Beck"
-          sub="Investment Analyst"
-        />
-        <TeamNode
-          src="/assets/agents/research-analyst.png"
-          alt="Research analyst agent"
-          label="Sieve"
-          sub="Research Analyst"
-        />
-        <TeamNode
-          src="/assets/agents/legal-compliance.png"
-          alt="Legal and compliance agent"
-          label="Verity"
-          sub="Legal & Compliance"
-        />
-      </div>
-    </div>
-  );
-}
-
-function TeamNode({
-  src,
-  alt,
-  label,
-  sub,
-  lead,
-}: {
-  src: string;
-  alt: string;
-  label: string;
-  sub: string;
-  lead?: boolean;
-}) {
-  return (
-    <div className={s.ajNode}>
-      <div className={`${s.ajAvatar} ${lead ? s.ajAvatarLead : ''}`}>
-        <img src={src} alt={alt} />
-      </div>
-      <div className={s.ajNodeLabel}>{label}</div>
-      <div className={s.ajNodeSub}>{sub}</div>
-    </div>
   );
 }
 

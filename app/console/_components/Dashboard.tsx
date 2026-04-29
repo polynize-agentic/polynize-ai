@@ -3,6 +3,7 @@ import { AGENT_BY_ID, PROJECT_BY_ID } from '@/lib/console/seed';
 import { AgentAvatar, HumanAvatar } from './Avatar';
 import { HUMAN_BY_ID } from '@/lib/console/seed';
 import { PlusIcon } from './Icons';
+import { AjTeamDiagram } from '@/app/_components/AjTeamDiagram';
 import s from '../console.module.css';
 import d from './dashboard.module.css';
 
@@ -25,7 +26,6 @@ export function Dashboard({
   onOpenAgent,
   onNewProject,
 }: Props) {
-  const completedThisMonth = 147;
   const activeProjects = projects.filter((p) => p.status === 'active').length;
   const agentsWorking = agents.filter((a) => a.status === 'working').length;
   const pendingApprovals = tasks.filter((t) => t.status === 'proposed').length;
@@ -46,13 +46,10 @@ export function Dashboard({
         </button>
       </div>
 
-      {/* Hero + side stats */}
+      {/* Hero (your team) + side stats */}
       <div className={d.grid12}>
-        <div className={`${d.heroStat} ${d.statHero}`}>
-          <div className={d.statEyebrow}>This month</div>
-          <div className={d.statNumber}>{completedThisMonth}</div>
-          <div className={d.statLabel}>tasks completed by your agent team</div>
-          <div className={d.statDelta}>+23 vs. last month</div>
+        <div className={`${d.heroStat} ${d.heroStatTeam}`}>
+          <AjTeamDiagram caption="Your team" />
         </div>
         <div className={d.sideStats}>
           <Stat eyebrow="Active" number={activeProjects} label="projects" />
