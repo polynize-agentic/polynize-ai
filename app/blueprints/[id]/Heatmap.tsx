@@ -15,7 +15,7 @@ export function Heatmap({ payload }: { payload: BlueprintPayload }) {
         <h2 className={s.pageTitle}>
           Your bottleneck,
           <br />
-          decomposed<span className={s.mint}>.</span>
+          mapped<span className={s.mint}>.</span>
         </h2>
         <p className={s.pageLede}>{data.interpretation}</p>
       </div>

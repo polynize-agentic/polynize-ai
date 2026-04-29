@@ -34,7 +34,7 @@ export function Cover({ payload }: { payload: BlueprintPayload }) {
 
       <p className={s.coverLede}>
         {company ? `${company} hit a bottleneck.` : 'You hit a bottleneck.'} The pages below are
-        how we&apos;d decompose it, who picks up which capability, and what it costs to build
+        how we&apos;d map it, who picks up which capability, and what it costs to build
         compared to hiring. Read it like a draft. We&apos;ll sharpen it together.
       </p>
 

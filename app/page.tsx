@@ -12,11 +12,8 @@ const RSS_URL = '/podcast.rss';
 const LINKEDIN_URL = 'https://www.linkedin.com/company/polynize';
 const INSTAGRAM_URL = 'https://www.instagram.com/polynize.ai';
 
-export const metadata = {
-  title: 'polynize.ai · map your bottleneck',
-  description:
-    "We take the one thing choking your business, decompose it into capabilities, and design a small team of agents to handle the parts a person doesn't need to.",
-};
+// Title + description live in app/layout.tsx (root metadata) so the homepage
+// inherits the canonical Polynize meta. No per-page override here.
 
 /**
  * Homepage — Direction C, ported verbatim from
@@ -79,10 +76,10 @@ function DirCHero() {
         <span className={s.dcMintEmph}>into an agent team.</span>
       </h1>
       <p className={s.dcLede}>
-        We take the one thing choking your business, decompose it into capabilities, and design a
-        small team of agents to handle the parts a person doesn&apos;t need to. What stays human,
-        what becomes hybrid, what an agent can run end&#8209;to&#8209;end, colour&#8209;coded, in
-        a single map.
+        We take the one thing choking your business, map it into capabilities, and design a small
+        team of agents to handle the parts a person doesn&apos;t need to. What stays human, what
+        becomes hybrid, what an agent can run end&#8209;to&#8209;end, colour&#8209;coded, in a
+        single map.
       </p>
 
       <div className={`${s.dcEquation} ${s.reveal}`}>
@@ -180,9 +177,9 @@ function DirCResults() {
       <div className={s.dcSectionHead}>
         <div className={s.dcSectionEyebrow}>What clients say</div>
         <h2 className={s.dcH2}>
-          The kind of result that makes
+          From one agent,
           <br />
-          you build the rest of the team.
+          to a <span className={s.dcMintEmph}>full team.</span>
         </h2>
       </div>
 
@@ -204,7 +201,92 @@ function DirCResults() {
           </div>
         </div>
       </div>
+
+      <AjTeamDiagram />
     </section>
+  );
+}
+
+/* ---------- AJ team diagram ---------- */
+
+function AjTeamDiagram() {
+  return (
+    <div className={s.ajTeam} aria-label="AJ Milne's agent team at Optio Capital">
+      <div className={s.ajTeamCaption}>AJ&apos;s team at Optio Capital</div>
+
+      {/* Level 1 — AJ at the top */}
+      <div className={s.ajTeamLevel}>
+        <TeamNode src="/assets/aj-milne.jpg" alt="AJ Milne" label="AJ Milne" sub="Partner" lead />
+      </div>
+
+      {/* connector AJ → Team Leader */}
+      <div className={s.ajTeamConnector} aria-hidden />
+
+      {/* Level 2 — Team Leader */}
+      <div className={s.ajTeamLevel}>
+        <TeamNode
+          src="/assets/agents/team-leader.png"
+          alt="Team leader agent"
+          label="Cassia"
+          sub="Team Leader"
+        />
+      </div>
+
+      {/* connector trunk + branch from Team Leader to 3 specialists */}
+      <div className={s.ajTeamBranch} aria-hidden>
+        <div className={s.ajTeamBranchTrunk} />
+        <div className={s.ajTeamBranchSpan} />
+        <div className={s.ajTeamBranchLegLeft} />
+        <div className={s.ajTeamBranchLegMid} />
+        <div className={s.ajTeamBranchLegRight} />
+      </div>
+
+      {/* Level 3 — three specialists */}
+      <div className={`${s.ajTeamLevel} ${s.ajTeamLevelRow}`}>
+        <TeamNode
+          src="/assets/agents/investment-analyst.png"
+          alt="Investment analyst agent"
+          label="Beck"
+          sub="Investment Analyst"
+        />
+        <TeamNode
+          src="/assets/agents/research-analyst.png"
+          alt="Research analyst agent"
+          label="Sieve"
+          sub="Research Analyst"
+        />
+        <TeamNode
+          src="/assets/agents/legal-compliance.png"
+          alt="Legal and compliance agent"
+          label="Verity"
+          sub="Legal & Compliance"
+        />
+      </div>
+    </div>
+  );
+}
+
+function TeamNode({
+  src,
+  alt,
+  label,
+  sub,
+  lead,
+}: {
+  src: string;
+  alt: string;
+  label: string;
+  sub: string;
+  lead?: boolean;
+}) {
+  return (
+    <div className={s.ajNode}>
+      <div className={`${s.ajAvatar} ${lead ? s.ajAvatarLead : ''}`}>
+        <img src={src} alt={alt} />
+      </div>
+      <div className={s.ajNodeLabel}>{label}</div>
+      <div className={s.ajNodeSub}>{sub}</div>
+    </div>
   );
 }
 
@@ -215,7 +297,7 @@ const HOW_STEPS = [
     n: '01',
     t: 'Map',
     icon: 'map' as const,
-    d: 'We sit with you and decompose your bottleneck into the capabilities inside it. Every one gets allocated: human, hybrid, or agent.',
+    d: 'We sit with you and map your bottleneck into the capabilities inside it. Every one gets allocated: human, hybrid, or agent.',
   },
   {
     n: '02',

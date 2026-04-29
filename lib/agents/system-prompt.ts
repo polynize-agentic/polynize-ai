@@ -3,7 +3,7 @@ import type { Answers, CapabilityMapData, CapabilityAgent } from '../types';
 /**
  * Phase C system prompt for the capability-map flow. Casts the model as the
  * specific agent the visitor is currently chatting with, and conditions it
- * on the visitor's bottleneck + the full capability decomposition + team.
+ * on the visitor's bottleneck + the full capability map + team.
  *
  * The em-dash prohibition is appended automatically by lib/llm/index.ts.
  */
@@ -41,7 +41,7 @@ export function buildAgentSystemPrompt(
     `What's eating their team's time: "${timeWaste}".`,
     `Tools in use: ${tools}.`,
     ``,
-    `Your team has decomposed the work into these capabilities:`,
+    `Your team has mapped the work into these capabilities:`,
     capabilities,
     ``,
     `Your teammates on the unit:`,

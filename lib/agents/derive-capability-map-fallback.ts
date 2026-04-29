@@ -76,7 +76,7 @@ export function deriveCapabilityMapFallback(answers: Partial<Answers>): Capabili
   const percentages = computePercentages(GENERIC_CAPABILITIES);
 
   return {
-    interpretation: `${firstName}${company ? ` at ${company}` : ''}, here's a first-pass decomposition of the bottleneck you described. Roughly ${percentages.agent}% of the work is structured enough for agents, freeing your team to focus on the judgment-heavy parts that need a human.`,
+    interpretation: `${firstName}${company ? ` at ${company}` : ''}, here's a first-pass map of the bottleneck you described. Roughly ${percentages.agent}% of the work is structured enough for agents, freeing your team to focus on the judgment-heavy parts that need a human.`,
     capabilities: GENERIC_CAPABILITIES,
     percentages,
     team: {

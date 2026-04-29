@@ -98,7 +98,7 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
     return (
       <div className={s.phaseB}>
         <div className={s.intro}>
-          <div className={s.tag}>decomposing your bottleneck</div>
+          <div className={s.tag}>mapping your bottleneck</div>
           <div className={s.scan}>
             <div className={s.scanLine} />
             <div className={`${s.scanLine} ${s.scanLineD2}`} />
@@ -134,7 +134,7 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
           <h1 className={s.title}>
             {firstName ? `${firstName}, here's your bottleneck,` : "Here's your bottleneck,"}
             <br />
-            decomposed<span className={s.titleAccent}>.</span>
+            mapped<span className={s.titleAccent}>.</span>
           </h1>
         </div>
 

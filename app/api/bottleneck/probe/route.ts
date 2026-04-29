@@ -12,11 +12,11 @@ const BodySchema = z.object({
     .max(3),
 });
 
-const PROBE_SYSTEM_PROMPT = `You are evaluating whether a business owner's bottleneck description is specific enough to decompose into a capability map.
+const PROBE_SYSTEM_PROMPT = `You are evaluating whether a business owner's bottleneck description is specific enough to map into a capability map.
 
 A GOOD answer describes: a specific process or workflow, what goes wrong or takes too long, who is involved, and ideally some sense of volume or frequency.
 
-A VAGUE answer is things like: "I need more sales", "marketing isn't working", "we're too busy", "growth is slow". These don't describe a specific process that can be decomposed.
+A VAGUE answer is things like: "I need more sales", "marketing isn't working", "we're too busy", "growth is slow". These don't describe a specific process that can be mapped.
 
 If the answer is specific enough, respond with:
 {"sufficient": true}

@@ -27,7 +27,7 @@ export const DEMO_ANSWERS: Partial<Answers> = {
 
 export const DEMO_CAPABILITY_MAP: CapabilityMapData = {
   interpretation:
-    "Scott, your consignment intake pipeline is running on manual coordination that doesn't need to be manual. By decomposing the workflow into its component capabilities, roughly 55% of the work is structured enough for agents to handle, freeing your team to focus on the high-value assessment and client relationship work that actually drives revenue.",
+    "Scott, your consignment intake pipeline is running on manual coordination that doesn't need to be manual. By mapping the workflow into its component capabilities, roughly 55% of the work is structured enough for agents to handle, freeing your team to focus on the high-value assessment and client relationship work that actually drives revenue.",
   capabilities: [
     {
       label: 'Consignment intake logging',
