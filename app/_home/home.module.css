@@ -303,19 +303,22 @@
   display: grid;
   grid-template-columns: 1fr auto 1fr auto 1fr;
   gap: 14px;
-  align-items: stretch;
+  align-items: center;
+  justify-items: center;
   margin: 36px 0 0;
-  max-width: 980px;
+  max-width: 720px;
 }
 .dcEqCard {
   position: relative;
-  padding: 22px 24px 20px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 22px 24px;
   border-radius: 16px;
   background: var(--surface);
   box-shadow: var(--raise);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  justify-content: space-between;
   overflow: hidden;
 }
 .dcEqCard::after {
@@ -975,8 +978,9 @@
 
 /* ===== Responsive ===== */
 @media (max-width: 1080px) {
-  .dcEquation { grid-template-columns: 1fr; gap: 14px; }
-  .dcEqPlus { padding: 0; }
+  /* Stay 3-up but cap card width so they don't grow huge as squares. */
+  .dcEquation { max-width: 540px; }
+  .dcEqCard { max-width: 220px; }
   .dcHowGrid { grid-template-columns: repeat(2, 1fr); }
   .dcHowGrid3 { grid-template-columns: 1fr; }
   .dcPodGrid { grid-template-columns: 1fr; }

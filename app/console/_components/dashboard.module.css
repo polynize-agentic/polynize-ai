@@ -110,6 +110,10 @@
   position: relative;
   cursor: pointer;
   text-align: left;
+  /* Without this, <button> defaults to system canvas-text (black on most OSes)
+     and inherited project name h3 renders black against the dark surface. */
+  color: var(--text);
+  font: inherit;
   display: flex;
   flex-direction: column;
   gap: 14px;

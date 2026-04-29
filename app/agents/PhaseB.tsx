@@ -257,8 +257,9 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
 
       {showNudge && firstAgent && (
         <button type="button" className={s.nudge} onClick={() => onReady(data)}>
-          <span className={s.nudgeDot} />
-          <span className={s.nudgeAv}>{firstAgent.name[0]}</span>
+          <span className={s.nudgeAv} aria-hidden>
+            <img src="/assets/agents/nudge.png" alt="" />
+          </span>
           <div className={s.nudgeBody}>
             <div className={s.nudgeFrom}>
               {firstAgent.name} · {firstAgent.role.split(' ')[0]}
