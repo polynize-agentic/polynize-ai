@@ -640,8 +640,9 @@
   border-top: 1px solid var(--hairline);
 }
 .dcQuoteAv {
-  width: 64px;
-  height: 64px;
+  /* 25% larger than the previous 64px = 80px */
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: var(--bg-deep);
   display: inline-flex;
@@ -670,6 +671,16 @@
   font-size: 13px;
   color: var(--text-3);
   margin-top: 2px;
+}
+.dcQuoteRoleLink {
+  color: var(--text-2);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--border-soft);
+  transition: color var(--tac-transition), border-color var(--tac-transition);
+}
+.dcQuoteRoleLink:hover {
+  color: var(--mint);
+  border-bottom-color: var(--mint);
 }
 
 /* ===== How it works ===== */

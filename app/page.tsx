@@ -28,8 +28,15 @@ export default function HomePage() {
     <div className={s.dirC}>
       <DirCNav />
       <DirCHero />
+      {/* Act 1 — the problem (AJ quote moved up to right after the hero) */}
+      <DirCAjQuoteProblem />
+      {/* Act 2 — we mapped the business */}
       <DirCMapHero />
-      <DirCResults />
+      {/* Act 3 — the team that emerges */}
+      <DirCAjTeam />
+      {/* Act 4 — the result */}
+      <DirCAjQuoteResult />
+      {/* How we work and the rest of the page continue from here */}
       <DirCHow />
       <DirCPodcast />
       <DirCFinal />
@@ -170,43 +177,114 @@ function DirCMapHero() {
   );
 }
 
-/* ---------- Results / quote ---------- */
+/* ---------- Act 1: the problem (AJ quote moved up) ---------- */
 
-function DirCResults() {
+const OPTIO_CAPITAL_URL = 'https://www.optio.capital/';
+
+function DirCAjQuoteProblem() {
   return (
     <section className={s.dcSection}>
       <div className={s.dcSectionHead}>
-        <div className={s.dcSectionEyebrow}>What clients say</div>
+        <div className={s.dcSectionEyebrow}>Where we started</div>
         <h2 className={s.dcH2}>
-          From one agent,
+          Every deal needed
           <br />
-          to a <span className={s.dcMintEmph}>full team.</span>
+          <span className={s.dcMintEmph}>weeks of groundwork.</span>
         </h2>
       </div>
 
-      <div className={s.dcQuoteCard}>
-        <div className={s.dcQuoteStrip} />
-        <div className={s.dcQuoteMark}>&ldquo;</div>
-        <p className={s.dcQuoteText}>
-          The Polynize team built me an investment analyst agent. On the first day I used it, it
-          was the best day of work I&apos;d had in nine months. After that, I knew I needed the
-          whole team.
+      <AjQuoteCard
+        body={
+          <>
+            Every investment decision needed weeks of groundwork before anyone could make a call.
+            We needed a team around us, we just didn&apos;t know what that looked like, until we
+            met the Polynize team.
+          </>
+        }
+      />
+    </section>
+  );
+}
+
+/* ---------- Act 3: AJ's team at Optio Capital ---------- */
+
+function DirCAjTeam() {
+  return (
+    <section className={s.dcSection}>
+      <div className={s.dcSectionHead}>
+        <div className={s.dcSectionEyebrow}>The team that emerged</div>
+        <h2 className={s.dcH2}>
+          AJ&apos;s team
+          <br />
+          at <span className={s.dcMintEmph}>Optio Capital.</span>
+        </h2>
+        <p className={s.dcSectionLede}>
+          One human at the centre, holding the judgment calls. A small team of agents picking up
+          the parts a person doesn&apos;t need to. This is what we built for AJ.
         </p>
-        <div className={s.dcQuoteAttr}>
-          <div className={s.dcQuoteAv}>
-            <img src="/assets/aj-milne.jpg" alt="AJ Milne" />
-          </div>
-          <div>
-            <div className={s.dcQuoteName}>AJ Milne</div>
-            <div className={s.dcQuoteRole}>Partner, Optio Capital</div>
-          </div>
-        </div>
       </div>
 
       <div className={s.ajWrap}>
-        <AjTeamDiagram />
+        <AjTeamDiagram caption="AJ's team at Optio Capital" />
       </div>
     </section>
+  );
+}
+
+/* ---------- Act 4: the result ---------- */
+
+function DirCAjQuoteResult() {
+  return (
+    <section className={s.dcSection}>
+      <div className={s.dcSectionHead}>
+        <div className={s.dcSectionEyebrow}>The result</div>
+        <h2 className={s.dcH2}>
+          The best day of work
+          <br />
+          <span className={s.dcMintEmph}>in nine months.</span>
+        </h2>
+      </div>
+
+      <AjQuoteCard
+        body={
+          <>
+            The first day we worked with our agent team was the best day of work we&apos;d had in
+            nine months.
+          </>
+        }
+      />
+    </section>
+  );
+}
+
+/* ---------- Shared quote card (problem + result variants) ---------- */
+
+function AjQuoteCard({ body }: { body: React.ReactNode }) {
+  return (
+    <div className={s.dcQuoteCard}>
+      <div className={s.dcQuoteStrip} />
+      <div className={s.dcQuoteMark}>&ldquo;</div>
+      <p className={s.dcQuoteText}>{body}</p>
+      <div className={s.dcQuoteAttr}>
+        <div className={s.dcQuoteAv}>
+          <img src="/assets/aj-milne.jpg" alt="AJ Milne" />
+        </div>
+        <div>
+          <div className={s.dcQuoteName}>AJ Milne</div>
+          <div className={s.dcQuoteRole}>
+            Partner,{' '}
+            <a
+              className={s.dcQuoteRoleLink}
+              href={OPTIO_CAPITAL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Optio Capital
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

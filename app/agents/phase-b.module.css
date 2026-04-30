@@ -387,60 +387,151 @@
 /* ===== Team preview after the rationale ===== */
 .teamPreview {
   margin-top: 32px;
-}
-.teamHuman {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin: 18px 0 24px;
 }
-.humanNode {
-  width: 72px;
-  height: 72px;
+.teamHumanRow {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 300px;
+  margin-top: 18px;
+}
+.teamBranchSvg {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  height: 56px;
+  color: var(--mint);
+  margin: 14px 0 0;
+  flex-shrink: 0;
+}
+.teamAgentRow {
+  display: grid;
+  grid-template-columns: repeat(var(--agent-count, 3), 1fr);
+  gap: 0;
+  width: 100%;
+  max-width: 760px;
+  justify-items: center;
+  margin-top: 0;
+}
+
+/* --- Dossier card (shared styling for human + agents) --- */
+.dossierCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 220px;
+  padding: 18px 14px;
+  background: var(--tac-surface);
+  border-radius: 14px;
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.04),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.4),
+    0 4px 14px rgba(0, 0, 0, 0.4),
+    0 16px 32px -16px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+.dossierCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--mint), transparent);
+  border-radius: 0 0 2px 2px;
+  opacity: 0.65;
+}
+.dossierCardHuman {
+  background: linear-gradient(180deg, rgba(255, 122, 107, 0.05), var(--tac-surface) 60%);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.04),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 122, 107, 0.32),
+    0 4px 14px rgba(0, 0, 0, 0.4),
+    0 24px 48px -24px rgba(255, 122, 107, 0.32);
+}
+.dossierCardHuman::before {
+  background: linear-gradient(90deg, transparent, var(--coral), transparent);
+  height: 3px;
+  opacity: 0.85;
+}
+.dossierAvatar {
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
+  background: var(--tac-inset);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--mint);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 0 2px var(--mint),
+    0 0 16px rgba(105, 252, 203, 0.18);
+  margin-bottom: 12px;
+}
+.dossierAvatarHuman {
+  width: 80px;
+  height: 80px;
   background: var(--tac-button-gradient);
   color: var(--tac-button-text);
   box-shadow:
-    var(--tac-shadow-raised-soft),
-    0 0 0 2px var(--mint),
-    0 0 24px rgba(105, 252, 203, 0.28);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 0 2px var(--coral),
+    0 0 24px rgba(255, 122, 107, 0.28);
 }
-.personIconHuman {
+.dossierIcon {
+  width: 30px;
+  height: 30px;
+}
+.dossierAvatarHuman .dossierIcon {
   width: 38px;
   height: 38px;
 }
-.humanLabel {
+.dossierName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.012em;
+  line-height: 1.1;
+}
+.dossierRole {
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  color: var(--text-2);
+  font-size: 10px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: var(--mint);
+  margin-top: 6px;
+  line-height: 1.3;
 }
-.teamAgentRow {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
+.dossierCardHuman .dossierRole { color: var(--coral); }
+.dossierDesc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-2);
+  margin: 12px 0 0;
 }
-.agentSquare {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
-  background: var(--tac-inset);
-  color: var(--text-3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--tac-shadow-inset);
-  cursor: default;
-}
-.personIconAgent {
-  width: 32px;
-  height: 32px;
+
+@media (max-width: 760px) {
+  .teamAgentRow,
+  .teamBranchSvg {
+    max-width: 100%;
+  }
+  .dossierCard { max-width: 100%; padding: 12px 8px; }
+  .dossierCard::before { left: 14px; right: 14px; }
+  .dossierAvatar { width: 52px; height: 52px; }
+  .dossierAvatarHuman { width: 64px; height: 64px; }
+  .dossierIcon { width: 24px; height: 24px; }
+  .dossierAvatarHuman .dossierIcon { width: 30px; height: 30px; }
+  .dossierName { font-size: 13px; }
+  .dossierRole { font-size: 9px; letter-spacing: 0.12em; }
+  .dossierDesc { font-size: 11.5px; line-height: 1.45; margin-top: 8px; }
 }
 
 /* ===== Hiring comparison callout ===== */

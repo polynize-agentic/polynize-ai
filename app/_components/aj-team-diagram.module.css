@@ -1,13 +1,22 @@
 /* AJ team diagram — shared between the homepage testimonial section
  * and the console dashboard hero slot. Self-contained so both surfaces
- * can drop it in without inheriting styles from their parent. */
+ * can drop it in without inheriting styles from their parent.
+ *
+ * Cards are dossier-style: avatar at top, name (bold), role (mono mint),
+ * 1-2 sentence description. AJ (the human owner) carries a coral accent
+ * and a slightly larger avatar; agents carry a mint accent.
+ *
+ * Connector legs are an SVG with viewBox X=16.67/50/83.33 lining up with
+ * the 1fr/1fr/1fr column centres of `.ajTeamRow`, so the legs always land
+ * on the centre of each card regardless of container width.
+ */
 
 .ajTeam {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding: 32px 24px 8px;
+  padding: 36px 24px 28px;
   background:
     radial-gradient(circle at 50% 0%, rgba(105, 252, 203, 0.06), transparent 60%),
     var(--bg-deep, #0f0f17);
@@ -21,58 +30,103 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-3);
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   text-align: center;
 }
 
-/* --- Top human (AJ) ---------------------------------------------------- */
-.ajTeamHuman {
+/* Top row — AJ alone, centred. Constrained so the dossier card stays
+   compact even on wide screens. */
+.ajTeamHumanRow {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 280px;
+}
+/* Team leader — same constraint. */
+.ajTeamLeaderRow {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 280px;
 }
 
-/* --- Team Leader (level 2) -------------------------------------------- */
-.ajTeamLeader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* --- Specialists row (level 3, 3 nodes) -------------------------------- */
 /*
- * 3-column grid with NO gap so each column is exactly 1/3 of the row.
- * That means the column centers land precisely at 16.67%, 50%, 83.33% —
- * which is what the SVG branch above uses for its vertical legs, so the
- * lines drop straight into the centre of each agent icon at any width.
+ * Specialists row — 3-column grid with NO gap so each column is exactly
+ * 1/3 of the row. The column centres land precisely at 16.67%, 50%, 83.33%
+ * — which is what the SVG branch above uses for its vertical legs, so the
+ * lines drop straight into the centre of each agent card at any width.
  */
 .ajTeamRow {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 0;
   width: 100%;
-  max-width: 540px;
+  max-width: 760px;
   justify-items: center;
 }
 
-.ajNode {
+/* --- Dossier card -------------------------------------------------------- */
+
+.ajCard {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
   width: 100%;
-  padding: 0 4px;
+  max-width: 220px;
+  padding: 18px 16px 18px;
+  background: var(--surface, #1d1d29);
+  border-radius: 14px;
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.04),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.4),
+    0 4px 14px rgba(0, 0, 0, 0.4),
+    0 16px 32px -16px rgba(0, 0, 0, 0.4);
+  position: relative;
 }
+/* Mint accent strip at the top of every agent card. */
+.ajCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--mint, #4de8a0), transparent);
+  border-radius: 0 0 2px 2px;
+  opacity: 0.65;
+}
+/* Coral accent for the human owner, stronger ring + thicker strip. */
+.ajCardHuman {
+  background: linear-gradient(180deg, rgba(255, 122, 107, 0.05), var(--surface, #1d1d29) 60%);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.04),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 122, 107, 0.32),
+    0 4px 14px rgba(0, 0, 0, 0.4),
+    0 24px 48px -24px rgba(255, 122, 107, 0.32);
+}
+.ajCardHuman::before {
+  background: linear-gradient(90deg, transparent, var(--coral, #e87a4d), transparent);
+  height: 3px;
+  opacity: 0.85;
+}
+
+/* --- Avatar inside the card --------------------------------------------- */
+
 .ajAvatar {
   width: 84px;
   height: 84px;
   border-radius: 50%;
-  background: var(--surface, #1d1d29);
+  background: var(--bg-deep, #0f0f17);
   overflow: hidden;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 4px 14px rgba(0, 0, 0, 0.45),
-    0 0 18px rgba(105, 252, 203, 0.12);
+    0 0 0 2px var(--mint, #4de8a0),
+    0 0 18px rgba(105, 252, 203, 0.18),
+    0 4px 12px rgba(0, 0, 0, 0.45);
   flex-shrink: 0;
+  margin-bottom: 14px;
 }
 .ajAvatar img {
   width: 100%;
@@ -80,33 +134,44 @@
   object-fit: cover;
   display: block;
 }
-.ajAvatarLead {
-  width: 96px;
-  height: 96px;
+.ajAvatarHuman {
+  /* AJ photo is 25% larger than current 84px → 105px */
+  width: 105px;
+  height: 105px;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 0 0 2px var(--mint),
-    0 0 24px rgba(105, 252, 203, 0.32),
+    0 0 0 2px var(--coral, #e87a4d),
+    0 0 24px rgba(255, 122, 107, 0.28),
     0 6px 18px rgba(0, 0, 0, 0.5);
 }
-.ajNodeLabel {
+
+/* --- Card text ---------------------------------------------------------- */
+
+.ajCardName {
   font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--text);
   letter-spacing: -0.012em;
-  margin-top: 12px;
-  text-align: center;
+  line-height: 1.1;
 }
-.ajNodeSub {
+.ajCardRole {
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
   font-size: 10px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-3);
-  margin-top: 4px;
-  text-align: center;
+  color: var(--mint, #4de8a0);
+  margin-top: 6px;
   line-height: 1.3;
+}
+.ajCardHuman .ajCardRole {
+  color: var(--coral, #e87a4d);
+}
+.ajCardDesc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-2, #c7b9ac);
+  margin: 12px 0 0;
 }
 
 /* --- Connectors -------------------------------------------------------- */
@@ -116,7 +181,7 @@
   width: 2px;
   height: 28px;
   background: linear-gradient(180deg, var(--mint), rgba(105, 252, 203, 0.18));
-  margin: 12px 0;
+  margin: 16px 0 12px;
   border-radius: 2px;
   box-shadow: 0 0 6px rgba(105, 252, 203, 0.25);
   flex-shrink: 0;
@@ -129,19 +194,25 @@
 .ajBranch {
   display: block;
   width: 100%;
-  max-width: 540px;
-  height: 56px;
-  margin-top: 12px;
-  /* SVG strokes use currentColor so the diagram inherits the brand mint */
+  max-width: 760px;
+  height: 60px;
+  margin-top: 14px;
   color: var(--mint);
   flex-shrink: 0;
 }
 
-@media (max-width: 640px) {
-  .ajTeam { padding: 24px 12px 4px; }
+@media (max-width: 760px) {
+  .ajTeam { padding: 24px 12px 20px; }
+  .ajTeamRow { max-width: 100%; }
+  .ajBranch { max-width: 100%; height: 44px; }
+  .ajCard {
+    max-width: 100%;
+    padding: 14px 10px 14px;
+  }
+  .ajCard::before { left: 16px; right: 16px; }
   .ajAvatar { width: 64px; height: 64px; }
-  .ajAvatarLead { width: 76px; height: 76px; }
-  .ajBranch { height: 44px; max-width: 360px; }
-  .ajTeamRow { max-width: 360px; }
-  .ajNodeSub { font-size: 9px; }
+  .ajAvatarHuman { width: 80px; height: 80px; }
+  .ajCardName { font-size: 14px; }
+  .ajCardRole { font-size: 9px; letter-spacing: 0.12em; }
+  .ajCardDesc { font-size: 11.5px; line-height: 1.45; margin-top: 8px; }
 }

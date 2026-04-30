@@ -2,34 +2,87 @@ import s from './aj-team-diagram.module.css';
 
 /**
  * Static org-chart-style diagram of AJ Milne's agent team at Optio Capital.
- * Used on the homepage testimonial section and on the console dashboard.
+ *
+ * Used on:
+ *   - Homepage "AJ's team at Optio Capital" section (act 3 of the story)
+ *   - Console dashboard hero ("Your team")
+ *
+ * Cards are dossier-style: agent image at the top, then name (bold), role
+ * title, and a 1-2 sentence description. The human owner card (AJ) carries
+ * the coral accent so it reads as the human at the centre, agents carry the
+ * mint accent. Vertical and horizontal connectors only — no diagonals.
  *
  * The connector between the Team Leader and the three specialists is a
  * single inline SVG with `preserveAspectRatio="none"` + `vector-effect:
  * non-scaling-stroke` so the legs always land at the centre of each agent
- * icon below, at any container width. Lines are pure vertical or horizontal
- * — no diagonals.
+ * card below, at any container width.
  */
+
+type AgentNode = {
+  src: string;
+  alt: string;
+  name: string;
+  role: string;
+  description: string;
+};
+
+const TEAM_LEADER: AgentNode = {
+  src: '/assets/agents/team-leader.png',
+  alt: 'Duke, team leader',
+  name: 'Duke',
+  role: 'Team Leader',
+  description:
+    'Coordinates the deal pipeline, holds quality across the workstreams, and surfaces what needs partner judgment.',
+};
+
+const SPECIALISTS: AgentNode[] = [
+  {
+    src: '/assets/agents/investment-analyst.png',
+    alt: 'Duke, investment analyst',
+    name: 'Duke',
+    role: 'Investment Analyst',
+    description:
+      'Builds first-pass financial models and pulls comparable transactions, ready for partner review.',
+  },
+  {
+    src: '/assets/agents/research-analyst.png',
+    alt: 'Sieve, research analyst',
+    name: 'Sieve',
+    role: 'Research Analyst',
+    description:
+      'Maps market sizing, competitive landscape, and trend signals end-to-end, in a single voice.',
+  },
+  {
+    src: '/assets/agents/legal-compliance.png',
+    alt: 'Verity, legal and compliance',
+    name: 'Verity',
+    role: 'Legal & Compliance',
+    description:
+      'Reads data rooms, flags risk and clauses, and runs regulatory checks before signoff.',
+  },
+];
+
 export function AjTeamDiagram({ caption = "AJ's team at Optio Capital" }: { caption?: string }) {
   return (
     <div className={s.ajTeam} aria-label={`${caption} — agent team diagram`}>
       <div className={s.ajTeamCaption}>{caption}</div>
 
-      {/* Level 1 — AJ */}
-      <div className={s.ajTeamHuman}>
-        <TeamNode src="/assets/aj-milne.jpg" alt="AJ Milne" label="AJ Milne" sub="Partner" lead />
+      {/* Level 1 — AJ Milne, the human at the centre (coral accent) */}
+      <div className={s.ajTeamHumanRow}>
+        <HumanCard
+          src="/assets/aj-milne.jpg"
+          alt="AJ Milne"
+          name="AJ Milne"
+          role="Partner, Optio Capital"
+          description="Investment thesis, valuation, client relationships, and final calls."
+        />
       </div>
 
       <div className={s.ajVerticalConnector} aria-hidden />
 
-      {/* Level 2 — Team Leader */}
-      <div className={s.ajTeamLeader}>
-        <TeamNode
-          src="/assets/agents/team-leader.png"
-          alt="Cassia, team leader"
-          label="Cassia"
-          sub="Team Leader"
-        />
+      {/* Level 2 — Team Leader (mint accent) */}
+      <div className={s.ajTeamLeaderRow}>
+        <AgentCard {...TEAM_LEADER} />
       </div>
 
       {/* Branch from Team Leader to the 3 specialist columns. */}
@@ -37,50 +90,61 @@ export function AjTeamDiagram({ caption = "AJ's team at Optio Capital" }: { capt
 
       {/* Level 3 — three specialists */}
       <div className={s.ajTeamRow}>
-        <TeamNode
-          src="/assets/agents/investment-analyst.png"
-          alt="Beck, investment analyst"
-          label="Beck"
-          sub="Investment Analyst"
-        />
-        <TeamNode
-          src="/assets/agents/research-analyst.png"
-          alt="Sieve, research analyst"
-          label="Sieve"
-          sub="Research Analyst"
-        />
-        <TeamNode
-          src="/assets/agents/legal-compliance.png"
-          alt="Verity, legal and compliance"
-          label="Verity"
-          sub="Legal & Compliance"
-        />
+        {SPECIALISTS.map((agent) => (
+          <AgentCard key={`${agent.name}-${agent.role}`} {...agent} />
+        ))}
       </div>
     </div>
   );
 }
 
-function TeamNode({
+function HumanCard({
   src,
   alt,
-  label,
-  sub,
-  lead,
+  name,
+  role,
+  description,
 }: {
   src: string;
   alt: string;
-  label: string;
-  sub: string;
-  lead?: boolean;
+  name: string;
+  role: string;
+  description: string;
 }) {
   return (
-    <div className={s.ajNode}>
-      <div className={`${s.ajAvatar} ${lead ? s.ajAvatarLead : ''}`}>
+    <article className={`${s.ajCard} ${s.ajCardHuman}`}>
+      <div className={`${s.ajAvatar} ${s.ajAvatarHuman}`}>
         <img src={src} alt={alt} />
       </div>
-      <div className={s.ajNodeLabel}>{label}</div>
-      <div className={s.ajNodeSub}>{sub}</div>
-    </div>
+      <div className={s.ajCardName}>{name}</div>
+      <div className={s.ajCardRole}>{role}</div>
+      <p className={s.ajCardDesc}>{description}</p>
+    </article>
+  );
+}
+
+function AgentCard({
+  src,
+  alt,
+  name,
+  role,
+  description,
+}: {
+  src: string;
+  alt: string;
+  name: string;
+  role: string;
+  description: string;
+}) {
+  return (
+    <article className={s.ajCard}>
+      <div className={s.ajAvatar}>
+        <img src={src} alt={alt} />
+      </div>
+      <div className={s.ajCardName}>{name}</div>
+      <div className={s.ajCardRole}>{role}</div>
+      <p className={s.ajCardDesc}>{description}</p>
+    </article>
   );
 }
 
@@ -89,8 +153,7 @@ function TeamNode({
  * (16.67, 50, 83.33) line up with the centres of the 1fr/1fr/1fr columns
  * in `.ajTeamRow` below. preserveAspectRatio="none" stretches the SVG to
  * fill the container; vector-effect="non-scaling-stroke" keeps strokes at
- * 1.5px. The legs run from y=12 (just below the trunk) down to y=100
- * (the bottom of the SVG, which sits at the top of the agent avatars).
+ * 1.5px regardless of stretch.
  */
 function BranchSvg() {
   return (

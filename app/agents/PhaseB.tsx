@@ -210,22 +210,39 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
 
             <div className={s.teamPreview}>
               <div className={s.eyebrow}>§ the team that emerges</div>
-              <div className={s.teamHuman}>
-                <div className={s.humanNode} title={data.team.human_owner.role}>
-                  <PersonIcon className={s.personIconHuman} />
-                </div>
-                <div className={s.humanLabel}>{firstName || 'You'}</div>
+
+              {/* Human owner — coral-accent dossier card at the top */}
+              <div className={s.teamHumanRow}>
+                <article className={`${s.dossierCard} ${s.dossierCardHuman}`}>
+                  <div className={`${s.dossierAvatar} ${s.dossierAvatarHuman}`}>
+                    <PersonIcon className={s.dossierIcon} />
+                  </div>
+                  <div className={s.dossierName}>{firstName || 'You'}</div>
+                  <div className={s.dossierRole}>{data.team.human_owner.role}</div>
+                </article>
               </div>
-              <div className={s.teamAgentRow}>
+
+              {/* Branch from human → agents (vertical trunk + horizontal beam + N legs) */}
+              <TeamBranchSvg agentCount={data.team.agents.length} />
+
+              {/* Agent dossier row */}
+              <div
+                className={s.teamAgentRow}
+                style={{ ['--agent-count' as string]: data.team.agents.length }}
+              >
                 {data.team.agents.map((a) => (
-                  <div
-                    key={a.name}
-                    className={s.agentSquare}
-                    title={`${a.name} · ${a.role}`}
+                  <article
+                    key={`${a.name}-${a.role}`}
+                    className={s.dossierCard}
                     aria-label={`${a.name}, ${a.role}`}
                   >
-                    <PersonIcon className={s.personIconAgent} />
-                  </div>
+                    <div className={s.dossierAvatar}>
+                      <PersonIcon className={s.dossierIcon} />
+                    </div>
+                    <div className={s.dossierName}>{a.name}</div>
+                    <div className={s.dossierRole}>{a.role}</div>
+                    <p className={s.dossierDesc}>{a.short_desc}</p>
+                  </article>
                 ))}
               </div>
             </div>
@@ -317,6 +334,51 @@ function PersonIcon({ className }: { className?: string }) {
     >
       <circle cx="12" cy="8" r="3.5" />
       <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
+    </svg>
+  );
+}
+
+/**
+ * Connector SVG between the human card (level 1) and the row of agent
+ * dossier cards (level 2). Variable agent count: legs land at column
+ * centres for any count from 1 to 5.
+ */
+function TeamBranchSvg({ agentCount }: { agentCount: number }) {
+  const n = Math.max(1, Math.min(5, agentCount));
+  // X positions for each leg (column centres in a 1fr × n grid in a viewBox of 100)
+  const legXs = Array.from({ length: n }, (_, i) => ((i + 0.5) / n) * 100);
+  const leftX = legXs[0];
+  const rightX = legXs[legXs.length - 1];
+  return (
+    <svg
+      className={s.teamBranchSvg}
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden
+    >
+      {/* Trunk down from human */}
+      <line
+        x1={50} y1={0} x2={50} y2={12}
+        stroke="currentColor" strokeWidth={1.5}
+        vectorEffect="non-scaling-stroke" strokeLinecap="round"
+      />
+      {/* Horizontal beam from leftmost to rightmost leg */}
+      {n > 1 && (
+        <line
+          x1={leftX} y1={12} x2={rightX} y2={12}
+          stroke="currentColor" strokeWidth={1.5}
+          vectorEffect="non-scaling-stroke" strokeLinecap="round"
+        />
+      )}
+      {/* One leg per agent dropping to the top of each card */}
+      {legXs.map((x) => (
+        <line
+          key={x}
+          x1={x} y1={12} x2={x} y2={100}
+          stroke="currentColor" strokeWidth={1.5}
+          vectorEffect="non-scaling-stroke" strokeLinecap="round"
+        />
+      ))}
     </svg>
   );
 }

@@ -26,41 +26,115 @@ export function Team({ payload }: { payload: BlueprintPayload }) {
         </p>
       </div>
 
-      <div className={s.humanLead}>
-        <div className={s.eyebrow}>§ the human at the centre</div>
-        <div className={s.leadRow}>
-          <div className={s.leadAv}>
-            <div className={s.leadInitial}>{firstName[0]}</div>
-            <div className={s.leadHalo} />
+      {/* Human owner — coral-accent dossier card */}
+      <div className={s.dossierHumanRow}>
+        <article className={`${s.dossierCard} ${s.dossierCardHuman}`}>
+          <div className={`${s.dossierAvatar} ${s.dossierAvatarHuman}`}>
+            <PersonIcon className={s.dossierIcon} />
           </div>
-          <div>
-            <div className={s.leadName}>
-              {firstName} <span style={{ color: 'var(--text-3)' }}>(you)</span>
-            </div>
-            <div className={s.leadRole}>{data.team.human_owner.role}</div>
-            <p className={s.leadDesc}>
-              The team is shaped around you. You hold the strategic decisions, the high-stakes
-              calls, and any exceptions outside the standard pattern. The agents below take the
-              structured execution off your team&apos;s plate and bring you the work that needs your
-              judgment, pre-chewed.
-            </p>
+          <div className={s.dossierName}>
+            {firstName} <span style={{ color: 'var(--text-3)', fontWeight: 500 }}>(you)</span>
           </div>
-        </div>
+          <div className={s.dossierRole}>{data.team.human_owner.role}</div>
+          <p className={s.dossierDesc}>
+            The team is shaped around you. You hold the strategic decisions, the high-stakes
+            calls, and any exceptions outside the standard pattern. The agents below take the
+            structured execution off your team&apos;s plate and bring you the work that needs your
+            judgment, pre-chewed.
+          </p>
+        </article>
       </div>
 
-      <div className={s.agentGrid}>
+      {/* Connector branch between human and the agent dossier row */}
+      <TeamBranchSvg agentCount={agents.length} />
+
+      {/* Agent dossier row */}
+      <div
+        className={s.dossierAgentRow}
+        style={{ ['--agent-count' as string]: agents.length }}
+      >
         {agents.map((a, i) => (
-          <div key={`${a.name}-${i}`} className={s.agentCard}>
-            <div className={s.agentHead}>
-              <div className={s.agentNum}>A{String(i + 1).padStart(2, '0')}</div>
-              <div className={s.agentAv}>{a.name[0]}</div>
+          <article key={`${a.name}-${i}`} className={s.dossierCard}>
+            <div className={s.dossierBadge}>A{String(i + 1).padStart(2, '0')}</div>
+            <div className={s.dossierAvatar}>
+              <PersonIcon className={s.dossierIcon} />
             </div>
-            <div className={s.agentName}>{a.name}</div>
-            <div className={s.agentRole}>{a.role}</div>
-            <p className={s.agentWhat}>{a.short_desc}</p>
-          </div>
+            <div className={s.dossierName}>{a.name}</div>
+            <div className={s.dossierRole}>{a.role}</div>
+            <p className={s.dossierDesc}>{a.short_desc}</p>
+          </article>
         ))}
       </div>
     </section>
+  );
+}
+
+function PersonIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <circle cx="12" cy="8" r="3.5" />
+      <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
+    </svg>
+  );
+}
+
+function TeamBranchSvg({ agentCount }: { agentCount: number }) {
+  const n = Math.max(1, Math.min(5, agentCount));
+  const legXs = Array.from({ length: n }, (_, i) => ((i + 0.5) / n) * 100);
+  const leftX = legXs[0];
+  const rightX = legXs[legXs.length - 1];
+  return (
+    <svg
+      className={s.dossierBranch}
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden
+      role="presentation"
+    >
+      <line
+        x1={50}
+        y1={0}
+        x2={50}
+        y2={12}
+        stroke="currentColor"
+        strokeWidth={1.5}
+        vectorEffect="non-scaling-stroke"
+        strokeLinecap="round"
+      />
+      {n > 1 && (
+        <line
+          x1={leftX}
+          y1={12}
+          x2={rightX}
+          y2={12}
+          stroke="currentColor"
+          strokeWidth={1.5}
+          vectorEffect="non-scaling-stroke"
+          strokeLinecap="round"
+        />
+      )}
+      {legXs.map((x) => (
+        <line
+          key={x}
+          x1={x}
+          y1={12}
+          x2={x}
+          y2={100}
+          stroke="currentColor"
+          strokeWidth={1.5}
+          vectorEffect="non-scaling-stroke"
+          strokeLinecap="round"
+        />
+      ))}
+    </svg>
   );
 }

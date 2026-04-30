@@ -2,128 +2,137 @@ import type { Answers, CapabilityMapData } from '../types';
 
 /**
  * Hand-crafted demo answer set + capability map. Used when ?demo=1 is in the
- * URL or when the id resolves to "demo". Mirrors the Roxbury Auctions sample
- * from HEATMAP_REDESIGN_SPEC.md v3.
+ * URL or when the id resolves to "demo". Now mirrors the AJ Milne /
+ * Optio Capital story used as the homepage testimonial.
+ *
+ * Maps to CWU Shape 1 (Analysis and Judgment) — parallel research streams
+ * feeding synthesis and human judgment.
  */
 export const DEMO_ANSWERS: Partial<Answers> = {
-  name: 'Scott',
-  company: 'Roxbury Auctions',
-  business_description: 'We run a boutique auction house specialising in fine art and estate sales',
+  name: 'AJ Milne',
+  company: 'Optio Capital',
+  business_description:
+    'Boutique investment advisory managing portfolios for high-net-worth clients',
   role: 'Founder / CEO',
-  bottleneck_full: `"Our consignment intake process is entirely manual. Every item needs cataloguing, photographing, assessing for condition, priced, and listed across multiple platforms. It takes 3 people full-time and we're still falling behind."
+  bottleneck_full: `"Every investment decision needs weeks of groundwork before anyone can make a call. Each deal needs market analysis, financial modelling, legal review, and competitive assessment. Our senior analysts spend most of their time on the groundwork instead of the judgment calls that actually move the firm forward."
 
 [Follow-up: Where exactly does it break down?]
-"The main bottleneck is between intake and listing. Items sit for days waiting for photography and condition assessment. High-value items need my personal review but I'm spending time on routine items under $1,000 that shouldn't need me. The team is constantly chasing each other for status updates and consignors keep asking where their items are in the process."`,
+"It's the synthesis. Different analysts do different pieces of the work in different formats, and pulling it into a single investment thesis takes another week of partner time. By the time we make a call, the window has often closed. We need the groundwork done in parallel and presented in a single voice."`,
   ideal_outcome:
-    "We could process 3x the consignments without hiring. I'd stop doing routine assessments and focus on high-value clients and pricing strategy. Consignors would get automatic updates instead of having to chase us.",
+    "We could move on more deals without growing the team, and partners would spend their time on judgment and client relationships instead of editing analyst memos. Investment recommendations would land in days, not weeks.",
   time_waste:
-    'Data entry into the catalogue system, sending status update emails to consignors, chasing the photography team for completion, basic condition reports for items under $5,000, manually creating listings on 4 different platforms',
-  primary_risk: 'Lost revenue',
+    'Comparable transaction lookups, market sizing, financial-model first drafts, document review, regulatory and compliance verification, status updates across the deal pipeline',
+  primary_risk: 'Lost client',
   team_size: '6-15',
-  tools: ['Gmail', 'Excel', 'Google Docs'],
+  tools: ['Gmail', 'Excel', 'Google Docs', 'Notion'],
   urgency: 'This week',
-  email: 'scott@roxbury.com.au',
+  email: 'aj@optio.capital',
 };
 
 export const DEMO_CAPABILITY_MAP: CapabilityMapData = {
   interpretation:
-    "Scott, your consignment intake pipeline is running on manual coordination that doesn't need to be manual. By mapping the workflow into its component capabilities, roughly 55% of the work is structured enough for agents to handle, freeing your team to focus on the high-value assessment and client relationship work that actually drives revenue.",
+    "AJ, your investment process is shaped like analysis and judgment work, parallel research streams that feed a small set of high-stakes calls. By mapping it into capabilities, roughly 50% is structured groundwork that can run in parallel with agents, freeing your senior team for the judgment, client conversations, and final decisions that actually drive returns.",
   capabilities: [
     {
-      label: 'Consignment intake logging',
+      label: 'Initial deal sourcing and qualification',
       allocation: 'agent',
-      detail: 'Structured data entry from intake forms into the catalogue system.',
+      detail:
+        'Scans the market against your investment criteria and surfaces a ranked shortlist for partner review.',
     },
     {
-      label: 'Photography scheduling and tracking',
+      label: 'Market sizing and trend analysis',
       allocation: 'agent',
-      detail: 'Coordinates the photography queue, assigns items, tracks completion.',
+      detail:
+        'Pulls TAM, growth, and trend data from primary sources, structured for the investment memo.',
     },
     {
-      label: 'Standard condition assessment (items under $5,000)',
+      label: 'Comparable transaction research',
       allocation: 'agent',
-      detail: 'Pattern-matching against condition criteria for routine items.',
+      detail:
+        'Builds a comp set of recent transactions with multiples, structures, and outcomes.',
     },
     {
-      label: 'High-value condition assessment',
-      allocation: 'human',
-      detail: 'Requires expert judgment, provenance knowledge, and accountability.',
-    },
-    {
-      label: 'Pricing strategy and reserve setting',
-      allocation: 'human',
-      detail: 'Requires market judgment, relationship context, and risk assessment.',
-    },
-    {
-      label: 'Comparable sales research',
-      allocation: 'agent',
-      detail: 'Pulls recent auction results and market data for pricing reference.',
-    },
-    {
-      label: 'Pricing recommendations (routine items)',
+      label: 'Financial modelling first-pass',
       allocation: 'hybrid',
-      detail: 'Agent generates data-backed ranges, human approves or adjusts.',
+      detail: 'Agent builds the base model from filings; senior analyst stress-tests the assumptions.',
     },
     {
-      label: 'Consignor status communications',
+      label: 'Competitive landscape mapping',
       allocation: 'agent',
-      detail: 'Automated updates at each pipeline stage via email.',
+      detail: 'Identifies and profiles competitors, surfaces moat and exposure.',
     },
     {
-      label: 'Listing creation and multi-platform publication',
+      label: 'Legal document review and flagging',
+      allocation: 'hybrid',
+      detail: 'Agent reads the data room and flags clauses; counsel adjudicates the flags.',
+    },
+    {
+      label: 'Compliance and regulatory verification',
       allocation: 'agent',
-      detail: 'Generates listing copy from catalogue data, publishes across platforms.',
+      detail: 'Runs sanctions, regulatory, and entity checks on every counterparty.',
     },
     {
-      label: 'Client relationship management',
+      label: 'Risk assessment and synthesis',
+      allocation: 'hybrid',
+      detail: 'Agent assembles the risk register from the parallel workstreams; partner shapes it.',
+    },
+    {
+      label: 'Investment thesis and recommendation',
       allocation: 'human',
-      detail: 'Trust-based conversations about timing, expectations, and high-value negotiations.',
+      detail: 'The judgment call. Partner-led, informed by everything above.',
     },
     {
-      label: 'Intake pipeline monitoring',
-      allocation: 'agent',
-      detail: 'Real-time visibility into where every consignment sits, flags delays.',
-    },
-    {
-      label: 'Exception handling and escalation',
+      label: 'Final valuation and pricing decision',
       allocation: 'human',
-      detail: 'Items outside standard categories, disputes, unusual provenance.',
+      detail: 'Partner-only call where market judgment, relationships, and risk meet.',
+    },
+    {
+      label: 'Client-facing investment recommendations',
+      allocation: 'human',
+      detail: 'Trust-based conversations with HNW clients. Stays with you.',
+    },
+    {
+      label: 'Deal pipeline and status tracking',
+      allocation: 'agent',
+      detail: 'Real-time view of where every live deal sits across the workstreams.',
     },
   ],
-  percentages: { human: 28, hybrid: 17, agent: 55 },
+  percentages: { human: 25, hybrid: 25, agent: 50 },
   team: {
     human_owner: {
-      name: 'Scott',
-      role: 'High-value assessments, pricing strategy, client relationships, and exceptions.',
+      name: 'AJ Milne',
+      role: 'Investment thesis, valuation, client relationships, and final calls.',
     },
     agents: [
       {
-        name: 'Intake',
-        role: 'Consignment Coordinator',
+        name: 'Duke',
+        role: 'Team Leader',
         short_desc:
-          'Logs every incoming consignment, manages the photography queue, tracks pipeline status.',
+          'Coordinates the deal pipeline, holds quality across the workstreams, and surfaces what needs partner judgment.',
       },
       {
-        name: 'Scout',
-        role: 'Pricing Analyst',
-        short_desc: 'Pulls comparable sales data and generates pricing recommendations for review.',
-      },
-      {
-        name: 'Catalogue',
-        role: 'Listing Specialist',
-        short_desc: 'Creates catalogue entries and publishes listings across platforms.',
-      },
-      {
-        name: 'Pulse',
-        role: 'Operations Monitor',
+        name: 'Duke',
+        role: 'Investment Analyst',
         short_desc:
-          'Tracks the full intake pipeline, flags delays, sends consignor status updates.',
+          'Builds first-pass financial models, pulls comparable transactions, and prepares the numbers for partner review.',
+      },
+      {
+        name: 'Sieve',
+        role: 'Research Analyst',
+        short_desc:
+          'Maps market sizing, competitive landscape, and trend signals end-to-end, in a single voice.',
+      },
+      {
+        name: 'Verity',
+        role: 'Legal & Compliance',
+        short_desc:
+          'Reads data rooms, flags risk and clauses, and runs regulatory and compliance checks before signoff.',
       },
     ],
   },
   leverage_estimate: '3-5x',
   leverage_rationale:
-    "Solving this bottleneck with traditional hiring would require approximately 2 additional FTE (catalogue coordinator + listing specialist) at $55,000-$65,000 each, plus ongoing management overhead. Your agent team achieves equivalent throughput for a $10,000 build + $999/mo operation cost, compressing the intake-to-listing cycle and concentrating your team's time on the high-value assessment and client work that drives revenue.",
+    "Solving this with traditional hiring would require approximately 2 additional FTE (research analyst + junior associate) at $90,000-$120,000 each, plus partner time supervising the work. Your agent team achieves equivalent throughput for a $10,000 build + $999/mo operation cost, compressing the research-to-recommendation cycle from weeks to days and concentrating senior partner time on the judgment calls that drive returns.",
   pricing_indicative: {
     map: {
       label: 'Map',
@@ -147,11 +156,11 @@ export const DEMO_CAPABILITY_MAP: CapabilityMapData = {
   },
   hiring_comparison: {
     equivalent_fte: 2,
-    estimated_annual_cost: '110,000-130,000',
+    estimated_annual_cost: '180,000-240,000',
     currency: 'AUD',
-    note: 'Plus recruitment, onboarding, leave, and management overhead',
+    note: 'Plus recruitment, onboarding, leave, and partner supervision time',
   },
-  shape_internal: 'High-Volume Operations',
-  shape_id: 6,
+  shape_internal: 'Analysis and Judgment',
+  shape_id: 1,
   generated_by: 'rule_based',
 };

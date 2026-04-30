@@ -8,24 +8,24 @@ type Allocation = 'human' | 'hybrid' | 'agent';
 type Row = { fn: string; alloc: Allocation };
 
 const ROWS: Row[] = [
-  { fn: 'Initial consignor intake call', alloc: 'human' },
-  { fn: 'Consignment intake logging & receipt', alloc: 'agent' },
-  { fn: 'Provenance research & verification', alloc: 'agent' },
-  { fn: 'High-value condition assessment', alloc: 'human' },
-  { fn: 'Standard condition report drafting', alloc: 'hybrid' },
-  { fn: 'Photography brief & metadata', alloc: 'agent' },
-  { fn: 'Reserve price recommendation', alloc: 'hybrid' },
-  { fn: 'Final reserve sign-off', alloc: 'human' },
-  { fn: 'Client status communications', alloc: 'agent' },
-  { fn: 'Catalogue lot prep & QC', alloc: 'agent' },
+  { fn: 'Initial deal sourcing & qualification', alloc: 'agent' },
+  { fn: 'Market sizing & trend analysis', alloc: 'agent' },
+  { fn: 'Comparable transaction research', alloc: 'agent' },
+  { fn: 'Financial modelling first-pass', alloc: 'hybrid' },
+  { fn: 'Competitive landscape mapping', alloc: 'agent' },
+  { fn: 'Legal document review & flagging', alloc: 'hybrid' },
+  { fn: 'Compliance & regulatory verification', alloc: 'agent' },
+  { fn: 'Risk assessment & synthesis', alloc: 'hybrid' },
+  { fn: 'Investment thesis & recommendation', alloc: 'human' },
+  { fn: 'Final valuation & pricing decision', alloc: 'human' },
 ];
 
-const PCT = { human: 30, hybrid: 20, agent: 50 } as const;
+const PCT = { human: 20, hybrid: 30, agent: 50 } as const;
 
 const META = {
-  bottleneck: 'Consignment intake & condition reporting',
-  business: 'Premium auction house, 8 people',
-  outcome: 'Faster turnaround, no founder bottleneck on intake',
+  bottleneck: 'Investment research & due diligence',
+  business: 'Boutique investment advisory, 8 people',
+  outcome: 'Recommendations in days, partner time on judgment calls',
 };
 
 /**
