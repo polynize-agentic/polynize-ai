@@ -499,40 +499,44 @@
   letter-spacing: 0.05em;
   width: 22px;
 }
+/*
+ * Capability cell — three-layer glow recipe used everywhere capability
+ * allocation is rendered (homepage preview, Phase B live reveal, Blueprint
+ * heat map). Three states: coral (human), amber (hybrid), mint (agent).
+ *
+ * Layer 1: horizontal linear gradient that fades in/out from the centre.
+ * Layer 2: 1px solid border in the full hex.
+ * Layer 3: outer glow + inner glow (combined box-shadow).
+ *
+ * Inactive cells fall back to a near-invisible 6%-opacity hairline border
+ * with no fill, so empty rows read as scaffolding rather than positive space.
+ */
 .dcMapCell {
-  height: 30px;
-  border-radius: 8px;
-  background: var(--bg);
-  box-shadow: var(--inset-soft);
-  position: relative;
-  overflow: hidden;
+  height: 28px;
+  border: 1px solid rgba(228, 228, 239, 0.06);
+  border-radius: 3px;
+  transition: all 0.3s;
 }
-.dcMapCellOn { background: transparent; box-shadow: none; }
-.dcMapCellInner {
-  position: absolute;
-  inset: 0;
-  border-radius: 8px;
-}
-.dcMapCellOn.dcCoral .dcMapCellInner {
-  background: linear-gradient(180deg, #f29870, #e87a4d);
+.dcMapCellOn.dcCoral {
+  background: linear-gradient(90deg, transparent, rgba(232, 122, 77, 0.25), transparent);
+  border-color: #e87a4d;
   box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.25),
-    inset -1px -1px 0 rgba(0, 0, 0, 0.3),
-    0 0 14px rgba(232, 122, 77, 0.45);
+    0 0 20px rgba(232, 122, 77, 0.15),
+    inset 0 0 12px rgba(232, 122, 77, 0.08);
 }
-.dcMapCellOn.dcAmber .dcMapCellInner {
-  background: linear-gradient(180deg, #f0d57a, #e8c44d);
+.dcMapCellOn.dcAmber {
+  background: linear-gradient(90deg, transparent, rgba(232, 196, 77, 0.25), transparent);
+  border-color: #e8c44d;
   box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.3),
-    inset -1px -1px 0 rgba(0, 0, 0, 0.3),
-    0 0 14px rgba(232, 196, 77, 0.45);
+    0 0 20px rgba(232, 196, 77, 0.15),
+    inset 0 0 12px rgba(232, 196, 77, 0.08);
 }
-.dcMapCellOn.dcMint .dcMapCellInner {
-  background: linear-gradient(180deg, #7af0bc, #4de8a0);
+.dcMapCellOn.dcMint {
+  background: linear-gradient(90deg, transparent, rgba(77, 232, 160, 0.25), transparent);
+  border-color: #4de8a0;
   box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.3),
-    inset -1px -1px 0 rgba(0, 0, 0, 0.3),
-    0 0 14px rgba(77, 232, 160, 0.5);
+    0 0 20px rgba(77, 232, 160, 0.15),
+    inset 0 0 12px rgba(77, 232, 160, 0.08);
 }
 .dcMapOwner {
   text-align: right;

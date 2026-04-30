@@ -141,12 +141,39 @@
   font-size: 14px;
   color: var(--text);
 }
+/*
+ * Capability cell — three-layer glow recipe (gradient + 1px border in the
+ * full hex + outer glow + inner glow). Empty cells fall back to a 6%-opacity
+ * hairline so empty rows read as scaffolding. Identical recipe to the
+ * homepage preview and Blueprint heat map.
+ */
 .cell {
-  height: 32px;
-  border: 1px solid var(--border-soft);
-  border-radius: 2px;
-  transition: all 0.4s;
+  height: 28px;
+  border: 1px solid rgba(228, 228, 239, 0.06);
+  border-radius: 3px;
+  transition: all 0.3s;
   margin: 0 6px;
+}
+.cellHuman {
+  background: linear-gradient(90deg, transparent, rgba(232, 122, 77, 0.25), transparent);
+  border-color: #e87a4d;
+  box-shadow:
+    0 0 20px rgba(232, 122, 77, 0.15),
+    inset 0 0 12px rgba(232, 122, 77, 0.08);
+}
+.cellHybrid {
+  background: linear-gradient(90deg, transparent, rgba(232, 196, 77, 0.25), transparent);
+  border-color: #e8c44d;
+  box-shadow:
+    0 0 20px rgba(232, 196, 77, 0.15),
+    inset 0 0 12px rgba(232, 196, 77, 0.08);
+}
+.cellAgent {
+  background: linear-gradient(90deg, transparent, rgba(77, 232, 160, 0.25), transparent);
+  border-color: #4de8a0;
+  box-shadow:
+    0 0 20px rgba(77, 232, 160, 0.15),
+    inset 0 0 12px rgba(77, 232, 160, 0.08);
 }
 
 .summary {

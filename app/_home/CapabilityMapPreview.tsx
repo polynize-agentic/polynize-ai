@@ -148,9 +148,7 @@ export function CapabilityMapPreview() {
 function Cell({ active, tone }: { active: boolean; tone: 'coral' | 'amber' | 'mint' }) {
   const toneClass = tone === 'coral' ? s.dcCoral : tone === 'amber' ? s.dcAmber : s.dcMint;
   return (
-    <div className={`${s.dcMapCell} ${active ? `${s.dcMapCellOn} ${toneClass}` : ''}`}>
-      {active && <div className={s.dcMapCellInner} />}
-    </div>
+    <div className={`${s.dcMapCell} ${active ? `${s.dcMapCellOn} ${toneClass}` : ''}`} />
   );
 }
 

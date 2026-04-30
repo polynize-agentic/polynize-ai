@@ -340,11 +340,39 @@
     text-align: left;
   }
 }
+/*
+ * Capability cell — three-layer glow recipe (gradient + 1px border in the
+ * full hex + outer glow + inner glow). Empty cells fall back to a 6%-opacity
+ * hairline so empty rows read as scaffolding. Identical recipe to the
+ * homepage preview and Phase B reveal.
+ */
 .gridCell {
   height: 28px;
-  border: 1px solid;
-  border-radius: 2px;
+  border: 1px solid rgba(228, 228, 239, 0.06);
+  border-radius: 3px;
   margin: 0 4px;
+  transition: all 0.3s;
+}
+.gridCellHuman {
+  background: linear-gradient(90deg, transparent, rgba(232, 122, 77, 0.25), transparent);
+  border-color: #e87a4d;
+  box-shadow:
+    0 0 20px rgba(232, 122, 77, 0.15),
+    inset 0 0 12px rgba(232, 122, 77, 0.08);
+}
+.gridCellHybrid {
+  background: linear-gradient(90deg, transparent, rgba(232, 196, 77, 0.25), transparent);
+  border-color: #e8c44d;
+  box-shadow:
+    0 0 20px rgba(232, 196, 77, 0.15),
+    inset 0 0 12px rgba(232, 196, 77, 0.08);
+}
+.gridCellAgent {
+  background: linear-gradient(90deg, transparent, rgba(77, 232, 160, 0.25), transparent);
+  border-color: #4de8a0;
+  box-shadow:
+    0 0 20px rgba(77, 232, 160, 0.15),
+    inset 0 0 12px rgba(77, 232, 160, 0.08);
 }
 
 .side {

@@ -19,12 +19,6 @@ const REVEAL_INTERVAL_MS = 220;
 const DONE_DELAY_MS = 600;
 const NUDGE_DELAY_MS = 3800;
 
-const ALLOC_COLOR: Record<'human' | 'hybrid' | 'agent', string> = {
-  human: 'var(--coral)',
-  hybrid: 'var(--amber)',
-  agent: 'var(--mint)',
-};
-
 export function PhaseB({ answers, preloaded, onReady }: Props) {
   const firstName = (answers.name ?? '').trim().split(/\s+/)[0] ?? '';
   const [data, setData] = useState<CapabilityMapData | null>(preloaded ?? null);
@@ -167,22 +161,14 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
                 </div>
                 {(['human', 'hybrid', 'agent'] as const).map((c) => {
                   const active = cap.allocation === c && on;
-                  const col = ALLOC_COLOR[c];
+                  const toneClass =
+                    c === 'human' ? s.cellHuman : c === 'hybrid' ? s.cellHybrid : s.cellAgent;
                   return (
                     <div
                       key={c}
-                      className={s.cell}
+                      className={`${s.cell} ${active ? toneClass : ''}`}
                       role="cell"
                       aria-hidden="true"
-                      style={{
-                        background: active
-                          ? `linear-gradient(90deg, transparent, ${rgbaFromVar(c, 0.19)}, transparent)`
-                          : 'transparent',
-                        borderColor: active ? col : 'var(--border-soft)',
-                        boxShadow: active
-                          ? `0 0 32px ${rgbaFromVar(c, 0.4)}, inset 0 0 20px ${rgbaFromVar(c, 0.13)}`
-                          : 'none',
-                      }}
                     />
                   );
                 })}
@@ -383,8 +369,3 @@ function TeamBranchSvg({ agentCount }: { agentCount: number }) {
   );
 }
 
-function rgbaFromVar(alloc: 'human' | 'hybrid' | 'agent', alpha: number): string {
-  const rgb =
-    alloc === 'human' ? '255, 122, 107' : alloc === 'hybrid' ? '240, 184, 107' : '105, 252, 203';
-  return `rgba(${rgb}, ${alpha})`;
-}

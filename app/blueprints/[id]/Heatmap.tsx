@@ -1,6 +1,6 @@
 import type { BlueprintPayload } from '@/lib/blueprint/load';
 import s from './blueprint.module.css';
-import { ALLOC_COLOR, firstNameOf, rgba } from './util';
+import { firstNameOf } from './util';
 
 export function Heatmap({ payload }: { payload: BlueprintPayload }) {
   const { answers, data } = payload;
@@ -56,22 +56,14 @@ export function Heatmap({ payload }: { payload: BlueprintPayload }) {
             </div>
             {(['human', 'hybrid', 'agent'] as const).map((c) => {
               const on = cap.allocation === c;
-              const col = ALLOC_COLOR[c];
+              const toneClass =
+                c === 'human' ? s.gridCellHuman : c === 'hybrid' ? s.gridCellHybrid : s.gridCellAgent;
               return (
                 <div
                   key={c}
-                  className={s.gridCell}
+                  className={`${s.gridCell} ${on ? toneClass : ''}`}
                   role="cell"
                   aria-hidden="true"
-                  style={{
-                    background: on
-                      ? `linear-gradient(90deg, transparent, ${rgba(c, 0.19)}, transparent)`
-                      : 'transparent',
-                    borderColor: on ? col : 'var(--border-soft)',
-                    boxShadow: on
-                      ? `0 0 24px ${rgba(c, 0.33)}, inset 0 0 14px ${rgba(c, 0.13)}`
-                      : 'none',
-                  }}
                 />
               );
             })}
