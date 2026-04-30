@@ -105,7 +105,7 @@ export const DEMO_CAPABILITY_MAP: CapabilityMapData = {
     },
     agents: [
       {
-        name: 'Duke',
+        name: 'Flow',
         role: 'Team Leader',
         short_desc:
           'Coordinates the deal pipeline, holds quality across the workstreams, and surfaces what needs partner judgment.',
@@ -117,7 +117,7 @@ export const DEMO_CAPABILITY_MAP: CapabilityMapData = {
           'Builds first-pass financial models, pulls comparable transactions, and prepares the numbers for partner review.',
       },
       {
-        name: 'Sieve',
+        name: 'Bec',
         role: 'Research Analyst',
         short_desc:
           'Maps market sizing, competitive landscape, and trend signals end-to-end, in a single voice.',

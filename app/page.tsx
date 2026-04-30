@@ -144,13 +144,12 @@ function DirCMapHero() {
       <div className={s.dcSectionHead}>
         <div className={s.dcSectionEyebrow}>The capability map</div>
         <h2 className={s.dcH2}>
-          See your bottleneck,
+          Map your business
           <br />
-          <span className={s.dcMintEmph}>colour&#8209;coded.</span>
+          <span className={s.dcMintEmph}>bottlenecks.</span>
         </h2>
         <p className={s.dcSectionLede}>
-          Every row is a real capability inside the work that&apos;s choking you. Coral stays
-          human. Amber becomes hybrid. Mint becomes fully agent&#8209;executable. One map. No
+          Every row is a real capability inside the work that&apos;s choking you. One map. No
           ambiguity about who does what.
         </p>
       </div>
@@ -198,7 +197,7 @@ function DirCAjQuoteProblem() {
           <>
             Every investment decision needed weeks of groundwork before anyone could make a call.
             We needed a team around us, we just didn&apos;t know what that looked like, until we
-            met the Polynize team.
+            met Polynize.
           </>
         }
       />
@@ -248,8 +247,8 @@ function DirCAjQuoteResult() {
       <AjQuoteCard
         body={
           <>
-            The first day we worked with our agent team was the best day of work we&apos;d had in
-            nine months.
+            The first day I worked with our agent team was the best day of work I had in nine
+            months.
           </>
         }
       />

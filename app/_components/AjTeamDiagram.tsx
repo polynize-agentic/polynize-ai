@@ -28,8 +28,8 @@ type AgentNode = {
 
 const TEAM_LEADER: AgentNode = {
   src: '/assets/agents/team-leader.png',
-  alt: 'Duke, team leader',
-  name: 'Duke',
+  alt: 'Flow, team leader',
+  name: 'Flow',
   role: 'Team Leader',
   description:
     'Coordinates the deal pipeline, holds quality across the workstreams, and surfaces what needs partner judgment.',
@@ -46,8 +46,8 @@ const SPECIALISTS: AgentNode[] = [
   },
   {
     src: '/assets/agents/research-analyst.png',
-    alt: 'Sieve, research analyst',
-    name: 'Sieve',
+    alt: 'Bec, research analyst',
+    name: 'Bec',
     role: 'Research Analyst',
     description:
       'Maps market sizing, competitive landscape, and trend signals end-to-end, in a single voice.',

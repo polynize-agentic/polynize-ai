@@ -67,6 +67,13 @@ export function CapabilityMapPreview() {
       <div className={s.dcMapFrame}>
         <div className={s.dcMapStrip} />
 
+        <div className={s.dcMapIdent}>
+          <div className={s.dcMapIdentAv}>
+            <img src="/assets/aj-milne.jpg" alt="AJ Milne" />
+          </div>
+          <div className={s.dcMapIdentText}>AJ&apos;s team capability map.</div>
+        </div>
+
         <div className={s.dcMapMeta}>
           <div>
             <div className={s.dcMapMetaK}>Bottleneck</div>
