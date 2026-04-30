@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { ensureSession } from '@/lib/session';
 import { supabaseService } from '@/lib/supabase';
 import { PRICING_VERSION } from '@/lib/pricing';
-import { notifyRichie, type RichiePayload } from '@/lib/richie-webhook';
+import { notifyScout, type ScoutPayload } from '@/lib/scout-webhook';
 import type { Answers, CapabilityMapData } from '@/lib/types';
 
 export const runtime = 'nodejs';
@@ -16,7 +16,7 @@ export const runtime = 'nodejs';
  * twice for the same session refreshes the snapshot rather than
  * creating a duplicate.
  *
- * After the row is written, fires a fire-and-forget webhook to Richie
+ * After the row is written, fires a fire-and-forget webhook to Scout
  * (the agent who owns the actual email send). The visitor does not wait
  * for that dispatch — they get the blueprint id back immediately and
  * navigate to /blueprints/<id>.
@@ -70,10 +70,10 @@ export async function POST(req: Request) {
 
     await sb.from('sessions').update({ phase: 'DONE' }).eq('id', sessionId);
 
-    // Fire-and-forget the Richie webhook so the visitor doesn't wait on it.
+    // Fire-and-forget the Scout webhook so the visitor doesn't wait on it.
     // The dispatch + email_log write happens in the background; failures
     // are logged but never block the blueprint URL response.
-    void dispatchToRichie(req, blueprint.id, blueprint.created_at as string, ans.answers as Partial<Answers>, hm.data as CapabilityMapData, sessionId);
+    void dispatchToScout(req, blueprint.id, blueprint.created_at as string, ans.answers as Partial<Answers>, hm.data as CapabilityMapData, sessionId);
 
     return NextResponse.json({ ok: true, id: blueprint.id });
   } catch (e) {
@@ -82,7 +82,7 @@ export async function POST(req: Request) {
   }
 }
 
-async function dispatchToRichie(
+async function dispatchToScout(
   req: Request,
   blueprintId: string,
   createdAt: string,
@@ -92,14 +92,14 @@ async function dispatchToRichie(
 ): Promise<void> {
   const email = answers.email?.trim();
   if (!email) {
-    console.warn(`[richie-webhook] no email captured on session ${sessionId}, skipping dispatch`);
+    console.warn(`[scout-webhook] no email captured on session ${sessionId}, skipping dispatch`);
     return;
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || originFromRequest(req);
   const blueprintUrl = `${baseUrl}/blueprints/${blueprintId}`;
 
-  const payload: RichiePayload = {
+  const payload: ScoutPayload = {
     to: email,
     name: (answers.name ?? '').trim().split(/\s+/)[0] || 'there',
     company: (answers.company ?? '').trim(),
@@ -110,16 +110,16 @@ async function dispatchToRichie(
     generated_at: createdAt,
   };
 
-  const result = await notifyRichie(payload);
+  const result = await notifyScout(payload);
 
   // Audit-trail every attempt to email_log so we can reconcile outcomes
-  // later without depending on Richie's logs.
+  // later without depending on Scout's logs.
   try {
     const sb = supabaseService();
     await sb.from('email_log').insert({
       session_id: sessionId,
       email,
-      template: 'richie_webhook',
+      template: 'scout_webhook',
       status: result.status,
       resend_id: null,
     });
@@ -129,7 +129,7 @@ async function dispatchToRichie(
 }
 
 /**
- * Pull a one-line summary of the bottleneck for Richie's email body.
+ * Pull a one-line summary of the bottleneck for Scout's email body.
  * Prefers the LLM's interpretation (always present); falls back to the
  * raw user input if needed.
  */
