@@ -132,10 +132,17 @@
   opacity: 0;
   transform: translateY(8px);
   transition: all 0.5s;
+  position: relative;
+  border-radius: 8px;
 }
 .rowLit {
   opacity: 1;
   transform: none;
+  cursor: pointer;
+}
+.rowLit:hover,
+.rowActive {
+  background: rgba(244, 236, 228, 0.025);
 }
 .fn {
   font-size: 14px;
@@ -234,104 +241,9 @@
   color: var(--text);
 }
 
-/* Floating chat nudge — raised pill */
-.nudge {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--tac-surface);
-  color: var(--text);
-  border: none;
-  padding: 14px 22px 14px 14px;
-  border-radius: 999px;
-  box-shadow:
-    0 1px 0 var(--tac-edge-light) inset,
-    0 -1px 0 var(--tac-edge-dark) inset,
-    8px 8px 22px rgba(0, 0, 0, 0.55),
-    14px 14px 36px rgba(0, 0, 0, 0.3),
-    0 0 0 0 rgba(105, 252, 203, 0.6);
-  cursor: pointer;
-  font-family: var(--font-inter), 'Inter', sans-serif;
-  animation:
-    nudgeIn 0.5s both,
-    nudgePulse 2s 0.6s infinite;
-  text-align: left;
-  transition: transform var(--tac-transition);
-}
-.nudge:hover {
-  transform: translate(-1px, -2px);
-}
-.nudgeAv {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--tac-inset);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  flex-shrink: 0;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
-    2px 2px 4px rgba(0, 0, 0, 0.45);
-}
-.nudgeAv img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.nudgeBody {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.nudgeFrom {
-  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: var(--mint);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.nudgeMsg {
-  font-size: 14px;
-  color: var(--text);
-  font-weight: 500;
-}
-@keyframes nudgeIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes nudgePulse {
-  0% {
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.6),
-      0 0 0 0 rgba(105, 252, 203, 0.55);
-  }
-  70% {
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.6),
-      0 0 0 22px rgba(105, 252, 203, 0);
-  }
-  100% {
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.6),
-      0 0 0 0 rgba(105, 252, 203, 0);
-  }
-}
 @media (max-width: 640px) {
   .phaseB {
-    padding: 32px 20px 160px;
+    padding: 32px 20px 80px;
   }
   .colHead,
   .row {
@@ -345,26 +257,12 @@
     height: 24px;
     margin: 0 2px;
   }
-  .teamHead {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .teamAgents {
-    justify-content: flex-start;
-  }
-  .nudge {
-    right: 16px;
-    bottom: 16px;
-    left: 16px;
-    justify-content: flex-start;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .scanLine,
-  .nudge,
-  .summary {
+  .summary,
+  .tooltip {
     animation: none;
   }
   .row {
@@ -561,56 +459,200 @@
   .dossierDesc { font-size: 11.5px; line-height: 1.45; margin-top: 8px; }
 }
 
-/* ===== Hiring comparison callout ===== */
-.hiringCallout {
+/* ===== Pricing footnote (replaces the old vs-hiring callout) ===== */
+.pricingFootnote {
+  margin-top: 36px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-soft);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-3);
+  letter-spacing: 0.01em;
+  text-align: center;
+  font-style: italic;
+}
+.pricingFootnote strong {
+  color: var(--text-2);
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* ===== Two CTAs at the bottom ===== */
+.ctas {
   margin-top: 32px;
-  padding: 24px;
-  background: var(--tac-surface);
-  border-radius: 18px;
-  box-shadow: var(--tac-shadow-raised);
-}
-.hiringRow {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 24px;
-  align-items: center;
-  margin-top: 12px;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
 }
-.hiringHire,
-.hiringAgent {
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  border: 0;
+  white-space: nowrap;
+}
+.ctaPrimary {
+  background: linear-gradient(180deg, #7fffd4 0%, #69fccb 50%, #4de0ad 100%);
+  color: #0a0a0f;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+    0 6px 16px -4px rgba(0, 0, 0, 0.45),
+    0 0 18px rgba(105, 252, 203, 0.22);
+}
+.ctaPrimary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 12px 28px -6px rgba(0, 0, 0, 0.5),
+    0 0 28px rgba(105, 252, 203, 0.32);
+}
+.ctaArr {
+  display: inline-block;
+  transition: transform 0.2s;
+}
+.ctaPrimary:hover .ctaArr {
+  transform: translateX(3px);
+}
+.ctaSecondary {
+  background: var(--tac-surface);
+  color: var(--text);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.05),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.35),
+    4px 6px 14px rgba(0, 0, 0, 0.4),
+    8px 12px 24px rgba(0, 0, 0, 0.3);
+}
+.ctaSecondary:hover {
+  transform: translateY(-1px);
+  background: var(--tac-surface-2);
+}
+.ctaDisabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Wrapper around the share CTA — holds the lede above the button. */
+.ctaShareWrap {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
+  align-items: stretch;
 }
-.hiringDivider {
-  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.2em;
+.ctaShareLede {
+  font-size: 13px;
+  line-height: 1.5;
   color: var(--text-3);
-  text-transform: uppercase;
+  margin: 0;
   text-align: center;
 }
-.hiringFte {
+
+/* ===== Start over link, low-emphasis below the CTAs ===== */
+.startOverWrap {
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+}
+.startOverLink {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--text-3);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--border-soft);
+  padding-bottom: 2px;
+  cursor: pointer;
+  transition: color var(--tac-transition), border-color var(--tac-transition);
+}
+.startOverLink:hover {
+  color: var(--mint);
+  border-bottom-color: var(--mint);
+}
+
+/* ===== Capability-row tooltip ===== */
+.tooltip {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(100% + 6px);
+  z-index: 30;
+  background: var(--tac-surface);
+  border-radius: 12px;
+  padding: 14px 16px 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 12px 28px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(244, 236, 228, 0.04);
+  animation: tooltipIn 120ms ease-out both;
+  pointer-events: none;
+}
+.tooltipBadge {
+  display: inline-block;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.tooltipBadge_human {
+  color: #e87a4d;
+  background: rgba(232, 122, 77, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(232, 122, 77, 0.32);
+}
+.tooltipBadge_hybrid {
+  color: #e8c44d;
+  background: rgba(232, 196, 77, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(232, 196, 77, 0.32);
+}
+.tooltipBadge_agent {
+  color: #4de8a0;
+  background: rgba(77, 232, 160, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(77, 232, 160, 0.32);
+}
+.tooltipLabel {
   font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  font-size: 22px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text);
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+  line-height: 1.25;
 }
-.hiringCost {
-  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
-  font-size: 14px;
-  color: var(--mint);
+.tooltipDetail {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-2);
+  margin: 0 0 6px;
 }
-.hiringHire .hiringCost { color: var(--coral); }
-.hiringNote {
+.tooltipWhy {
   font-size: 12px;
+  line-height: 1.5;
   color: var(--text-3);
-  line-height: 1.45;
+  margin: 0;
+  font-style: italic;
+}
+@keyframes tooltipIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 640px) {
-  .leverageRow,
-  .hiringRow {
+  .leverageRow {
     grid-template-columns: 1fr;
   }
   .leverageBadge {
@@ -619,15 +661,8 @@
     border-right: none;
     border-bottom: 1px solid var(--border-soft);
   }
-  .hiringDivider {
-    text-align: left;
-  }
-  .agentSquare {
-    width: 56px;
-    height: 56px;
-  }
-  .personIconAgent {
-    width: 28px;
-    height: 28px;
+  .ctas {
+    grid-template-columns: 1fr;
+    gap: 18px;
   }
 }

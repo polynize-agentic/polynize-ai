@@ -30,18 +30,6 @@ export function persistCapabilityMap(data: CapabilityMapData): void {
   void silentPost('/api/session/capability-map', { data });
 }
 
-export function persistMessage(
-  role: 'user' | 'assistant' | 'system',
-  content: string,
-  agentPersona?: string
-): void {
-  void silentPost('/api/session/messages', {
-    role,
-    content,
-    agent_persona: agentPersona,
-  });
-}
-
 export async function createBlueprint(): Promise<{ id: string } | { error: string }> {
   try {
     const res = await fetch('/api/blueprints', {
@@ -58,4 +46,36 @@ export async function createBlueprint(): Promise<{ id: string } | { error: strin
   } catch (e) {
     return { error: (e as Error).message };
   }
+}
+
+/**
+ * Awaitable end-of-Phase-B chain: persists the capability map server-side,
+ * then upserts the blueprint row, then returns the blueprint id (or an
+ * error). Caller awaits this so it can render the share/CTA buttons with
+ * the resulting URL.
+ *
+ * /api/blueprints reads from the capability_maps table, so the persist call
+ * must complete BEFORE we hit the create endpoint — that's why this is a
+ * single awaitable function instead of two fire-and-forgets.
+ */
+export async function completeBlueprintFlow(
+  data: CapabilityMapData
+): Promise<{ id: string } | { error: string }> {
+  // 1. Persist the capability map (awaited).
+  try {
+    const res = await fetch('/api/session/capability-map', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data }),
+      credentials: 'same-origin',
+    });
+    if (!res.ok) {
+      return { error: `capability-map persist failed: HTTP ${res.status}` };
+    }
+  } catch (e) {
+    return { error: `capability-map persist threw: ${(e as Error).message}` };
+  }
+
+  // 2. Create the blueprint (this also fires the Scout webhook server-side).
+  return createBlueprint();
 }

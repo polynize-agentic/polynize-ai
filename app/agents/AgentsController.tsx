@@ -4,9 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Answers, CapabilityMapData, SessionState } from '@/lib/types';
 import { PhaseA } from './PhaseA';
 import { PhaseB } from './PhaseB';
-import { PhaseC, type ChatMessage } from './PhaseC';
 import { track, emailDomain } from '@/lib/analytics';
-import { persistAnswers, persistCapabilityMap } from '@/lib/persist-client';
+import { persistAnswers } from '@/lib/persist-client';
 import s from './phase-a.module.css';
 
 const STORAGE_KEY = 'polynize_agents_state_v3';
@@ -16,17 +15,27 @@ type Persisted = {
   answers: Partial<Answers>;
   step: number;
   data?: CapabilityMapData;
-  messages?: ChatMessage[];
 };
 
 const INITIAL: Persisted = { phase: 'A', answers: {}, step: 0 };
 
+/**
+ * Two-phase flow.
+ *
+ *   A: 10 questions, email captured at Q09.
+ *   B: capability map generates via LLM, persists to capability_maps,
+ *      auto-creates the blueprint row, fires the Scout webhook, and
+ *      shows the visitor their map with two CTAs (book a call / share).
+ *
+ * No Phase C chat step. The "send my blueprint" button is gone — the
+ * blueprint is created automatically once the LLM data lands so we
+ * never lose visitors who would otherwise drop off mid-Phase-B.
+ */
 export function AgentsController() {
   const [state, setState] = useState<Persisted>(INITIAL);
   const [hydrated, setHydrated] = useState(false);
   const [resumePromptDismissed, setResumePromptDismissed] = useState(false);
 
-  // Hydrate from localStorage + bootstrap server session on first mount.
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -37,7 +46,6 @@ export function AgentsController() {
           answers: parsed.answers ?? {},
           step: parsed.step ?? 0,
           data: parsed.data,
-          messages: parsed.messages,
         });
       }
     } catch {
@@ -55,7 +63,7 @@ export function AgentsController() {
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
-      /* quota or private mode, ignore */
+      /* ignore */
     }
   }, [state, hydrated]);
 
@@ -76,26 +84,10 @@ export function AgentsController() {
     setState((prev) => ({ ...prev, answers, phase: 'B' }));
   }, []);
 
-  const handlePhaseBReady = useCallback((data: CapabilityMapData) => {
-    track('phase_b_complete', {
-      shape_id: data.shape_internal,
-      agent_count: data.team.agents.length,
-      capability_count: data.capabilities.length,
-      pct_human: data.percentages.human,
-      pct_hybrid: data.percentages.hybrid,
-      pct_agent: data.percentages.agent,
-      generated_by: data.generated_by ?? 'llm',
-    });
-    persistCapabilityMap(data);
-    setState((prev) => ({ ...prev, data, phase: 'C' }));
-  }, []);
-
-  const handleMessagesChange = useCallback((messages: ChatMessage[]) => {
-    setState((prev) => ({ ...prev, messages }));
-  }, []);
-
-  const handleBackToHeatMap = useCallback(() => {
-    setState((prev) => ({ ...prev, phase: 'B' }));
+  // Once Phase B has finished generating + persisting + creating the blueprint,
+  // it sends the data up so we can stash it for the resume guard on next visit.
+  const handlePhaseBData = useCallback((data: CapabilityMapData) => {
+    setState((prev) => ({ ...prev, data, phase: 'DONE' }));
   }, []);
 
   const reset = useCallback(() => {
@@ -119,8 +111,8 @@ export function AgentsController() {
   }
 
   // Resume guard: someone landed on /agents but already finished a flow.
-  // Surface explicit options before dropping them back into Phase C.
-  const hasCompletedSession = state.phase === 'C' && Boolean(state.data);
+  // Surface explicit options before re-rendering Phase B with their map.
+  const hasCompletedSession = (state.phase === 'B' || state.phase === 'DONE') && Boolean(state.data);
   if (hasCompletedSession && !resumePromptDismissed) {
     return <ResumePrompt onView={resumeExisting} onReset={reset} />;
   }
@@ -136,48 +128,14 @@ export function AgentsController() {
     );
   }
 
-  if (state.phase === 'B') {
-    return <PhaseB answers={state.answers} preloaded={state.data} onReady={handlePhaseBReady} />;
-  }
-
-  if (state.phase === 'C' && state.data) {
-    return (
-      <PhaseC
-        answers={state.answers}
-        data={state.data}
-        initialMessages={state.messages}
-        onMessagesChange={handleMessagesChange}
-        onBack={handleBackToHeatMap}
-      />
-    );
-  }
-
-  // DONE state placeholder.
+  // Phase B (also covers DONE state — same surface, just preloaded data so
+  // we don't re-fire the LLM call or the blueprint creation).
   return (
-    <div style={{ padding: '4rem 2rem', maxWidth: 720, margin: '0 auto' }}>
-      <p style={{ fontFamily: 'var(--font-jetbrains-mono)', color: 'var(--mint)', fontSize: 12, letterSpacing: '0.15em' }}>
-        PHASE {state.phase} · scaffold
-      </p>
-      <h1 style={{ fontFamily: 'var(--font-space-grotesk)', fontSize: 36, lineHeight: 1.1, marginTop: 24 }}>
-        Flow complete.
-      </h1>
-      <button
-        type="button"
-        onClick={reset}
-        style={{
-          marginTop: 32,
-          background: 'transparent',
-          border: '1px solid var(--border)',
-          color: 'var(--text-2)',
-          padding: '10px 18px',
-          fontFamily: 'var(--font-jetbrains-mono)',
-          fontSize: 13,
-          cursor: 'pointer',
-        }}
-      >
-        reset_session
-      </button>
-    </div>
+    <PhaseB
+      answers={state.answers}
+      preloaded={state.data}
+      onDataReady={handlePhaseBData}
+    />
   );
 }
 

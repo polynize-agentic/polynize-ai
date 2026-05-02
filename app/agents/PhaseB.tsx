@@ -1,15 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Answers, CapabilityMapData } from '@/lib/types';
 import { deriveCapabilityMapFallback } from '@/lib/agents/derive-capability-map-fallback';
+import { completeBlueprintFlow } from '@/lib/persist-client';
+import { track } from '@/lib/analytics';
+import { ResetLink } from '@/app/_components/ResetLink';
 import s from './phase-b.module.css';
+
+const BOOKING_URL = 'https://calendly.com/marrscoiro/meeting30';
 
 type Props = {
   answers: Partial<Answers>;
-  /** Pre-loaded data (e.g. from localStorage). When set, Phase B skips the API call. */
+  /** Pre-loaded data (resume from localStorage) — skips LLM call + auto-create. */
   preloaded?: CapabilityMapData;
-  onReady: (data: CapabilityMapData) => void;
+  /** Bubbles the data up to the controller for resume + persistence. */
+  onDataReady: (data: CapabilityMapData) => void;
 };
 
 type Stage = 'loading' | 'intro' | 'reveal' | 'done';
@@ -17,16 +23,17 @@ type Stage = 'loading' | 'intro' | 'reveal' | 'done';
 const INTRO_MS = 1400;
 const REVEAL_INTERVAL_MS = 220;
 const DONE_DELAY_MS = 600;
-const NUDGE_DELAY_MS = 3800;
 
-export function PhaseB({ answers, preloaded, onReady }: Props) {
+export function PhaseB({ answers, preloaded, onDataReady }: Props) {
   const firstName = (answers.name ?? '').trim().split(/\s+/)[0] ?? '';
   const [data, setData] = useState<CapabilityMapData | null>(preloaded ?? null);
-  const [stage, setStage] = useState<Stage>(preloaded ? 'intro' : 'loading');
-  const [revealIdx, setRevealIdx] = useState(-1);
-  const [showNudge, setShowNudge] = useState(false);
+  const [stage, setStage] = useState<Stage>(preloaded ? 'done' : 'loading');
+  const [revealIdx, setRevealIdx] = useState<number>(preloaded ? -2 : -1);
+  const [blueprintId, setBlueprintId] = useState<string | null>(null);
+  const [activeTip, setActiveTip] = useState<number | null>(null);
+  const blueprintFiredRef = useRef(false);
 
-  // Fetch the capability map once.
+  // 1. Fetch the capability map (skipped when preloaded).
   useEffect(() => {
     if (data) return;
     const controller = new AbortController();
@@ -56,14 +63,47 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
     return () => controller.abort();
   }, [answers, data]);
 
-  // intro → reveal
+  // 2. Auto-create the blueprint as soon as data is available.
+  // Runs in parallel with the reveal animation so the CTAs are populated
+  // by the time the user reaches the done state. Idempotent: the
+  // /api/blueprints upsert + Scout dedupe handle re-fires safely.
+  useEffect(() => {
+    if (!data || blueprintFiredRef.current) return;
+    blueprintFiredRef.current = true;
+    onDataReady(data);
+
+    // Skip the auto-create when data was preloaded (means the blueprint
+    // was already created on an earlier visit). The visitor can still
+    // share via the mailto, we just rebuild the URL from cached state.
+    if (preloaded) {
+      // We don't have the blueprint id in preloaded state; re-hit the
+      // create endpoint to get it (cheap upsert, no Scout re-fire thanks
+      // to server-side dedupe).
+      void completeBlueprintFlow(data).then((res) => {
+        if ('id' in res) setBlueprintId(res.id);
+      });
+      return;
+    }
+
+    void (async () => {
+      const result = await completeBlueprintFlow(data);
+      if ('id' in result) {
+        track('blueprint_created', { id: result.id, shape_id: data.shape_internal });
+        setBlueprintId(result.id);
+      } else {
+        console.warn('[phase-b] blueprint creation failed:', result.error);
+      }
+    })();
+  }, [data, preloaded, onDataReady]);
+
+  // 3. intro → reveal
   useEffect(() => {
     if (stage !== 'intro') return;
     const t = setTimeout(() => setStage('reveal'), INTRO_MS);
     return () => clearTimeout(t);
   }, [stage]);
 
-  // Reveal one capability at a time.
+  // 4. Reveal one capability at a time, then → done
   useEffect(() => {
     if (stage !== 'reveal' || !data) return;
     setRevealIdx(-1);
@@ -78,15 +118,6 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
     }, REVEAL_INTERVAL_MS);
     return () => clearInterval(iv);
   }, [stage, data]);
-
-  // Nudge after the done state.
-  useEffect(() => {
-    if (stage !== 'done') return;
-    const t = setTimeout(() => setShowNudge(true), NUDGE_DELAY_MS);
-    return () => clearTimeout(t);
-  }, [stage]);
-
-  const firstAgent = data?.team.agents[0] ?? null;
 
   if (stage === 'loading' || !data) {
     return (
@@ -120,6 +151,10 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
     );
   }
 
+  // Capability rows that have been revealed get the lit cell + tooltip behaviour.
+  // When we're in 'done' (or preloaded), reveal everything.
+  const allRevealed = stage === 'done' || preloaded;
+
   return (
     <div className={s.phaseB}>
       <div className={s.main}>
@@ -146,14 +181,18 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
             </div>
           </div>
           {data.capabilities.map((cap, i) => {
-            const on = i <= revealIdx;
+            const on = allRevealed || i <= revealIdx;
+            const tipOpen = activeTip === i;
             return (
               <div
                 key={i}
-                className={`${s.row} ${on ? s.rowLit : ''}`}
+                className={`${s.row} ${on ? s.rowLit : ''} ${tipOpen ? s.rowActive : ''}`}
                 style={{ transitionDelay: `${i * 40}ms` }}
                 role="row"
                 aria-label={`${cap.label}: allocated to ${cap.allocation}`}
+                onMouseEnter={on ? () => setActiveTip(i) : undefined}
+                onMouseLeave={on ? () => setActiveTip(null) : undefined}
+                onClick={on ? () => setActiveTip((cur) => (cur === i ? null : i)) : undefined}
               >
                 <div className={s.fn}>
                   <div>{cap.label}</div>
@@ -172,6 +211,13 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
                     />
                   );
                 })}
+                {tipOpen && (
+                  <CapabilityTooltip
+                    label={cap.label}
+                    allocation={cap.allocation}
+                    detail={cap.detail}
+                  />
+                )}
               </div>
             );
           })}
@@ -197,21 +243,18 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
             <div className={s.teamPreview}>
               <div className={s.eyebrow}>§ the team that emerges</div>
 
-              {/* Human owner — coral-accent dossier card at the top */}
               <div className={s.teamHumanRow}>
                 <article className={`${s.dossierCard} ${s.dossierCardHuman}`}>
                   <div className={`${s.dossierAvatar} ${s.dossierAvatarHuman}`}>
-                    <PersonIcon className={s.dossierIcon} />
+                    <HumanIcon className={s.dossierIcon} />
                   </div>
                   <div className={s.dossierName}>{firstName || 'You'}</div>
                   <div className={s.dossierRole}>{data.team.human_owner.role}</div>
                 </article>
               </div>
 
-              {/* Branch from human → agents (vertical trunk + horizontal beam + N legs) */}
               <TeamBranchSvg agentCount={data.team.agents.length} />
 
-              {/* Agent dossier row */}
               <div
                 className={s.teamAgentRow}
                 style={{ ['--agent-count' as string]: data.team.agents.length }}
@@ -223,7 +266,7 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
                     aria-label={`${a.name}, ${a.role}`}
                   >
                     <div className={s.dossierAvatar}>
-                      <PersonIcon className={s.dossierIcon} />
+                      <BotIcon className={s.dossierIcon} />
                     </div>
                     <div className={s.dossierName}>{a.name}</div>
                     <div className={s.dossierRole}>{a.role}</div>
@@ -233,51 +276,51 @@ export function PhaseB({ answers, preloaded, onReady }: Props) {
               </div>
             </div>
 
-            <div className={s.hiringCallout}>
-              <div className={s.eyebrow}>§ vs hiring</div>
-              <div className={s.hiringRow}>
-                <div className={s.hiringHire}>
-                  <div className={s.hiringFte}>~{data.hiring_comparison.equivalent_fte} FTE</div>
-                  <div className={s.hiringCost}>
-                    ${data.hiring_comparison.estimated_annual_cost} {data.hiring_comparison.currency}
-                    /year
-                  </div>
-                  <div className={s.hiringNote}>{data.hiring_comparison.note}</div>
-                </div>
-                <div className={s.hiringDivider}>vs</div>
-                <div className={s.hiringAgent}>
-                  <div className={s.hiringFte}>This team</div>
-                  <div className={s.hiringCost}>from $5,000 to build + $399/mo</div>
-                  <div className={s.hiringNote}>
-                    Build, train, deploy your team. Ongoing operation and tuning.
-                  </div>
-                </div>
-              </div>
+            <div className={s.pricingFootnote}>
+              Indicative pricing: starting from <strong>$5,000 AUD</strong> +{' '}
+              <strong>$399/mo per agent</strong>
+            </div>
+
+            <div className={s.ctas}>
+              <a
+                href={BOOKING_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${s.cta} ${s.ctaPrimary}`}
+                onClick={() =>
+                  track('booking_click', { surface: 'phase_b_cta' })
+                }
+              >
+                Book a call with Marrs <span className={s.ctaArr}>→</span>
+              </a>
+
+              <ShareCta
+                blueprintId={blueprintId}
+                onClick={() =>
+                  track('cta_click', {
+                    surface: 'phase_b_cta',
+                    label: 'send_this_to_someone',
+                  })
+                }
+              />
+            </div>
+
+            <div className={s.startOverWrap}>
+              <ResetLink
+                className={s.startOverLink}
+                eventProps={{ surface: 'phase_b_done', label: 'start_over' }}
+              >
+                + map another bottleneck
+              </ResetLink>
             </div>
           </div>
         )}
       </div>
-
-      {showNudge && firstAgent && (
-        <button type="button" className={s.nudge} onClick={() => onReady(data)}>
-          <span className={s.nudgeAv} aria-hidden>
-            <img src="/assets/agents/nudge.png" alt="" />
-          </span>
-          <div className={s.nudgeBody}>
-            <div className={s.nudgeFrom}>
-              {firstAgent.name} · {firstAgent.role.split(' ')[0]}
-            </div>
-            <div className={s.nudgeMsg}>
-              {firstName
-                ? `${firstName}, your team is ready, chat with us →`
-                : 'Your team is ready, chat with us →'}
-            </div>
-          </div>
-        </button>
-      )}
     </div>
   );
 }
+
+/* ---------- Sub-components ---------- */
 
 function Pct({ label, v, color }: { label: string; v: number; color: string }) {
   const [w, setW] = useState(0);
@@ -306,32 +349,118 @@ function Pct({ label, v, color }: { label: string; v: number; color: string }) {
   );
 }
 
-function PersonIcon({ className }: { className?: string }) {
+function CapabilityTooltip({
+  label,
+  allocation,
+  detail,
+}: {
+  label: string;
+  allocation: 'human' | 'hybrid' | 'agent';
+  detail: string;
+}) {
+  const why =
+    allocation === 'human'
+      ? 'Human-critical: requires trust, judgment, or accountability that an agent cannot carry.'
+      : allocation === 'hybrid'
+        ? 'Hybrid: an agent does the groundwork, you review and steer the substance.'
+        : 'Agent-executable: structured and repeatable enough for an agent to run end-to-end.';
   return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="8" r="3.5" />
-      <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
+    <div className={s.tooltip} role="tooltip">
+      <div className={`${s.tooltipBadge} ${s[`tooltipBadge_${allocation}`]}`}>
+        {allocation}
+      </div>
+      <div className={s.tooltipLabel}>{label}</div>
+      <p className={s.tooltipDetail}>{detail}</p>
+      <p className={s.tooltipWhy}>{why}</p>
+    </div>
+  );
+}
+
+function ShareCta({
+  blueprintId,
+  onClick,
+}: {
+  blueprintId: string | null;
+  onClick: () => void;
+}) {
+  // Build the mailto on the fly. Falls back to /agents itself if the
+  // blueprint hasn't been created yet (rare race — usually it's ready
+  // by the time the user reaches the CTAs).
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    onClick();
+    if (!blueprintId) return; // let the disabled state stand; href is '#'
+    const blueprintUrl = `${window.location.origin}/blueprints/${blueprintId}`;
+    const subject = 'Check out this capability map I just created';
+    const body = [
+      'Hey,',
+      '',
+      'I just mapped a business bottleneck on polynize.ai and got back a really interesting capability map showing which parts of the work should stay human and which could be handled by agents.',
+      '',
+      `Take a look: ${blueprintUrl}`,
+      '',
+      'You can create your own at polynize.ai/agents',
+      '',
+      'Worth a look.',
+    ].join('\n');
+    e.preventDefault();
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  const ready = Boolean(blueprintId);
+  return (
+    <div className={s.ctaShareWrap}>
+      <p className={s.ctaShareLede}>
+        Your capability map has been sent to your email. Want to share it with someone else?
+      </p>
+      <a
+        href={ready ? '#' : '#'}
+        className={`${s.cta} ${s.ctaSecondary} ${ready ? '' : s.ctaDisabled}`}
+        onClick={handleClick}
+        aria-disabled={!ready}
+      >
+        Send this to someone
+      </a>
+    </div>
+  );
+}
+
+/* ---------- Icons ---------- */
+
+function HumanIcon({ className }: { className?: string }) {
+  // Solid filled person silhouette: head + shoulders.
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 12a4.5 4.5 0 100-9 4.5 4.5 0 000 9z" />
+      <path d="M3.5 21.25c0-4.4 3.8-7.75 8.5-7.75s8.5 3.35 8.5 7.75a.75.75 0 01-.75.75H4.25a.75.75 0 01-.75-.75z" />
     </svg>
   );
 }
 
-/**
- * Connector SVG between the human card (level 1) and the row of agent
- * dossier cards (level 2). Variable agent count: legs land at column
- * centres for any count from 1 to 5.
- */
+function BotIcon({ className }: { className?: string }) {
+  // Solid filled bot: rounded head with antenna, eyes, mouth bar.
+  // Eyes/mouth are punched out via even-odd fill so the icon reads on
+  // any background.
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      fillRule="evenodd"
+      clipRule="evenodd"
+      aria-hidden="true"
+    >
+      {/* Antenna */}
+      <path d="M12 2.5a.75.75 0 01.75.75V5h-1.5V3.25A.75.75 0 0112 2.5zM12 4.75a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z" />
+      {/* Head with cut-out eyes + mouth */}
+      <path d="M5.5 8.5A2.5 2.5 0 018 6h8a2.5 2.5 0 012.5 2.5v8.75A2.75 2.75 0 0115.75 20h-7.5A2.75 2.75 0 015.5 17.25V8.5zM9 11a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm6 0a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm-6 5.25a.75.75 0 010-1.5h6a.75.75 0 010 1.5H9z" />
+      {/* Side ears */}
+      <path d="M3.75 11.5a.75.75 0 01.75-.75H5v4H4.5a.75.75 0 01-.75-.75v-2.5zM19 10.75h.5a.75.75 0 01.75.75v2.5a.75.75 0 01-.75.75H19v-4z" />
+    </svg>
+  );
+}
+
 function TeamBranchSvg({ agentCount }: { agentCount: number }) {
   const n = Math.max(1, Math.min(5, agentCount));
-  // X positions for each leg (column centres in a 1fr × n grid in a viewBox of 100)
   const legXs = Array.from({ length: n }, (_, i) => ((i + 0.5) / n) * 100);
   const leftX = legXs[0];
   const rightX = legXs[legXs.length - 1];
@@ -342,13 +471,11 @@ function TeamBranchSvg({ agentCount }: { agentCount: number }) {
       preserveAspectRatio="none"
       aria-hidden
     >
-      {/* Trunk down from human */}
       <line
         x1={50} y1={0} x2={50} y2={12}
         stroke="currentColor" strokeWidth={1.5}
         vectorEffect="non-scaling-stroke" strokeLinecap="round"
       />
-      {/* Horizontal beam from leftmost to rightmost leg */}
       {n > 1 && (
         <line
           x1={leftX} y1={12} x2={rightX} y2={12}
@@ -356,7 +483,6 @@ function TeamBranchSvg({ agentCount }: { agentCount: number }) {
           vectorEffect="non-scaling-stroke" strokeLinecap="round"
         />
       )}
-      {/* One leg per agent dropping to the top of each card */}
       {legXs.map((x) => (
         <line
           key={x}
@@ -368,4 +494,3 @@ function TeamBranchSvg({ agentCount }: { agentCount: number }) {
     </svg>
   );
 }
-

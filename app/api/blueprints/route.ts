@@ -96,6 +96,32 @@ async function dispatchToScout(
     return;
   }
 
+  // Dedupe: now that Phase B auto-creates the blueprint on every visit
+  // (including page reloads), /api/blueprints can fire multiple times for
+  // the same session. Don't ping Scout twice — if email_log already has a
+  // 'sent_to_scout' or 'scout_unavailable' row for this session, treat the
+  // dispatch as already-attempted.
+  const sb = supabaseService();
+  try {
+    const { data: prior } = await sb
+      .from('email_log')
+      .select('status')
+      .eq('session_id', sessionId)
+      .eq('template', 'scout_webhook')
+      .in('status', ['sent_to_scout', 'scout_unavailable'])
+      .limit(1);
+    if (prior && prior.length > 0) {
+      console.log(
+        `[scout-webhook] dispatch already recorded for session ${sessionId} (${prior[0].status}), skipping`
+      );
+      return;
+    }
+  } catch (e) {
+    // If the dedupe query fails for any reason, fall through and dispatch.
+    // Better to occasionally double-fire than to silently skip every send.
+    console.warn('[scout-webhook] dedupe query failed, dispatching anyway:', e);
+  }
+
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || originFromRequest(req);
   const blueprintUrl = `${baseUrl}/blueprints/${blueprintId}`;
 
@@ -112,10 +138,8 @@ async function dispatchToScout(
 
   const result = await notifyScout(payload);
 
-  // Audit-trail every attempt to email_log so we can reconcile outcomes
-  // later without depending on Scout's logs.
+  // Audit-trail every attempt to email_log.
   try {
-    const sb = supabaseService();
     await sb.from('email_log').insert({
       session_id: sessionId,
       email,
