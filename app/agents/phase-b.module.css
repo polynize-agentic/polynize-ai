@@ -538,11 +538,6 @@
   transform: translateY(-1px);
   background: var(--tac-surface-2);
 }
-.ctaDisabled {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
 /* Wrapper around the share CTA — holds the lede above the button. */
 .ctaShareWrap {
   display: flex;
@@ -580,34 +575,40 @@
   border-bottom-color: var(--mint);
 }
 
-/* ===== Capability-row tooltip ===== */
+/* ===== Capability-row tooltip =====
+ * Sits directly above the allocated cell (one of the 1fr columns), not
+ * the full row. Width + left position arrive as inline custom properties
+ * (--tip-left, --tip-width) keyed off the allocation, so a "human" tip
+ * sits over the human cell and so on. Mobile reverts to row-width since
+ * the cells get too narrow to read against.
+ */
 .tooltip {
   position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: calc(100% + 6px);
+  left: var(--tip-left, 12px);
+  width: var(--tip-width, calc(100% - 24px));
+  bottom: calc(100% + 8px);
   z-index: 30;
   background: var(--tac-surface);
-  border-radius: 12px;
-  padding: 14px 16px 14px;
+  border-radius: 10px;
+  padding: 10px 12px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
     inset 0 -1px 0 rgba(0, 0, 0, 0.4),
-    0 12px 28px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(244, 236, 228, 0.04);
+    0 10px 22px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(244, 236, 228, 0.05);
   animation: tooltipIn 120ms ease-out both;
   pointer-events: none;
 }
 .tooltipBadge {
   display: inline-block;
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
-  font-size: 9px;
+  font-size: 8.5px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 4px;
-  margin-bottom: 8px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-bottom: 6px;
 }
 .tooltipBadge_human {
   color: #e87a4d;
@@ -626,22 +627,22 @@
 }
 .tooltipLabel {
   font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  font-size: 15px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.01em;
-  margin-bottom: 8px;
+  letter-spacing: -0.005em;
+  margin-bottom: 5px;
   line-height: 1.25;
 }
 .tooltipDetail {
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 11.5px;
+  line-height: 1.45;
   color: var(--text-2);
-  margin: 0 0 6px;
+  margin: 0 0 5px;
 }
 .tooltipWhy {
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 10.5px;
+  line-height: 1.45;
   color: var(--text-3);
   margin: 0;
   font-style: italic;
@@ -664,5 +665,11 @@
   .ctas {
     grid-template-columns: 1fr;
     gap: 18px;
+  }
+  /* On mobile, cells are too narrow to anchor a useful tooltip against —
+   * stretch back to row width so the copy is still readable. */
+  .tooltip {
+    left: 6px;
+    width: calc(100% - 12px);
   }
 }

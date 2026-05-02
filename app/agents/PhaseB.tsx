@@ -358,6 +358,17 @@ function CapabilityTooltip({
   allocation: 'human' | 'hybrid' | 'agent';
   detail: string;
 }) {
+  // Sit the tooltip directly above the allocated cell (not the whole row).
+  // The row is grid-template-columns: 2fr 1fr 1fr 1fr with 12px gaps, so
+  // 1fr = (100% - 36px) / 5 = 20% - 7.2px. The 2fr label column ends at
+  // (40% - 14.4px), then a 12px gap, then each 1fr cell with 12px gaps.
+  const left =
+    allocation === 'human'
+      ? 'calc(40% - 2.4px)'
+      : allocation === 'hybrid'
+        ? 'calc(60% + 2.4px)'
+        : 'calc(80% + 7.2px)';
+
   const why =
     allocation === 'human'
       ? 'Human-critical: requires trust, judgment, or accountability that an agent cannot carry.'
@@ -365,7 +376,16 @@ function CapabilityTooltip({
         ? 'Hybrid: an agent does the groundwork, you review and steer the substance.'
         : 'Agent-executable: structured and repeatable enough for an agent to run end-to-end.';
   return (
-    <div className={s.tooltip} role="tooltip">
+    <div
+      className={s.tooltip}
+      role="tooltip"
+      style={
+        {
+          '--tip-left': left,
+          '--tip-width': 'calc(20% - 7.2px)',
+        } as React.CSSProperties
+      }
+    >
       <div className={`${s.tooltipBadge} ${s[`tooltipBadge_${allocation}`]}`}>
         {allocation}
       </div>
@@ -383,40 +403,41 @@ function ShareCta({
   blueprintId: string | null;
   onClick: () => void;
 }) {
-  // Build the mailto on the fly. Falls back to /agents itself if the
-  // blueprint hasn't been created yet (rare race — usually it's ready
-  // by the time the user reaches the CTAs).
+  // Always-active mailto. The button doesn't gate on blueprintId because:
+  //   1. If the blueprint id has landed, we share /blueprints/<id>.
+  //   2. If it hasn't (slow network, just-finished reveal), we share the
+  //      /agents page so the recipient can run it themselves. Either way
+  //      the click does something useful — never a dead button.
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
     onClick();
-    if (!blueprintId) return; // let the disabled state stand; href is '#'
-    const blueprintUrl = `${window.location.origin}/blueprints/${blueprintId}`;
+    const url = blueprintId
+      ? `${window.location.origin}/blueprints/${blueprintId}`
+      : `${window.location.origin}/agents`;
     const subject = 'Check out this capability map I just created';
     const body = [
       'Hey,',
       '',
       'I just mapped a business bottleneck on polynize.ai and got back a really interesting capability map showing which parts of the work should stay human and which could be handled by agents.',
       '',
-      `Take a look: ${blueprintUrl}`,
+      `Take a look: ${url}`,
       '',
       'You can create your own at polynize.ai/agents',
       '',
       'Worth a look.',
     ].join('\n');
-    e.preventDefault();
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
-  const ready = Boolean(blueprintId);
   return (
     <div className={s.ctaShareWrap}>
       <p className={s.ctaShareLede}>
         Your capability map has been sent to your email. Want to share it with someone else?
       </p>
       <a
-        href={ready ? '#' : '#'}
-        className={`${s.cta} ${s.ctaSecondary} ${ready ? '' : s.ctaDisabled}`}
+        href="#"
+        className={`${s.cta} ${s.ctaSecondary}`}
         onClick={handleClick}
-        aria-disabled={!ready}
       >
         Send this to someone
       </a>
