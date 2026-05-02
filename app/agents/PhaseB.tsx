@@ -482,9 +482,21 @@ function BotIcon({ className }: { className?: string }) {
 
 function TeamBranchSvg({ agentCount }: { agentCount: number }) {
   const n = Math.max(1, Math.min(5, agentCount));
-  const legXs = Array.from({ length: n }, (_, i) => ((i + 0.5) / n) * 100);
+  // Gap-aware leg X positions. The agent row uses repeat(n, 1fr) with a
+  // 24px gap inside a 760px max-width container — that's ~3.16% per gap.
+  // Without this, the legs drift off-centre when the cards spread apart.
+  const gapPct = (24 / 760) * 100;
+  const totalGapPct = (n - 1) * gapPct;
+  const cellW = (100 - totalGapPct) / n;
+  const legXs = Array.from(
+    { length: n },
+    (_, i) => i * (cellW + gapPct) + cellW / 2
+  );
   const leftX = legXs[0];
   const rightX = legXs[legXs.length - 1];
+  // Push the branch junction lower (y=32 instead of y=12) so the vertical
+  // line coming out of Tim's card is visibly longer.
+  const branchY = 32;
   return (
     <svg
       className={s.teamBranchSvg}
@@ -493,13 +505,13 @@ function TeamBranchSvg({ agentCount }: { agentCount: number }) {
       aria-hidden
     >
       <line
-        x1={50} y1={0} x2={50} y2={12}
+        x1={50} y1={0} x2={50} y2={branchY}
         stroke="currentColor" strokeWidth={1.5}
         vectorEffect="non-scaling-stroke" strokeLinecap="round"
       />
       {n > 1 && (
         <line
-          x1={leftX} y1={12} x2={rightX} y2={12}
+          x1={leftX} y1={branchY} x2={rightX} y2={branchY}
           stroke="currentColor" strokeWidth={1.5}
           vectorEffect="non-scaling-stroke" strokeLinecap="round"
         />
@@ -507,7 +519,7 @@ function TeamBranchSvg({ agentCount }: { agentCount: number }) {
       {legXs.map((x) => (
         <line
           key={x}
-          x1={x} y1={12} x2={x} y2={100}
+          x1={x} y1={branchY} x2={x} y2={100}
           stroke="currentColor" strokeWidth={1.5}
           vectorEffect="non-scaling-stroke" strokeLinecap="round"
         />

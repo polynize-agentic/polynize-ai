@@ -327,15 +327,15 @@
   display: block;
   width: 100%;
   max-width: 760px;
-  height: 56px;
+  height: 96px;
   color: var(--mint);
-  margin: 14px 0 0;
+  margin: 18px 0 0;
   flex-shrink: 0;
 }
 .teamAgentRow {
   display: grid;
   grid-template-columns: repeat(var(--agent-count, 3), 1fr);
-  gap: 0;
+  gap: 24px;
   width: 100%;
   max-width: 760px;
   justify-items: center;
@@ -448,6 +448,8 @@
   .teamBranchSvg {
     max-width: 100%;
   }
+  .teamAgentRow { gap: 12px; }
+  .teamBranchSvg { height: 72px; }
   .dossierCard { max-width: 100%; padding: 12px 8px; }
   .dossierCard::before { left: 14px; right: 14px; }
   .dossierAvatar { width: 52px; height: 52px; }
