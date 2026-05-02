@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { waitUntil } from '@vercel/functions';
 import { ensureSession } from '@/lib/session';
 import { supabaseService } from '@/lib/supabase';
 import { PRICING_VERSION } from '@/lib/pricing';
@@ -70,10 +71,21 @@ export async function POST(req: Request) {
 
     await sb.from('sessions').update({ phase: 'DONE' }).eq('id', sessionId);
 
-    // Fire-and-forget the Scout webhook so the visitor doesn't wait on it.
-    // The dispatch + email_log write happens in the background; failures
-    // are logged but never block the blueprint URL response.
-    void dispatchToScout(req, blueprint.id, blueprint.created_at as string, ans.answers as Partial<Answers>, hm.data as CapabilityMapData, sessionId);
+    // Hand the Scout dispatch + email_log write to Vercel's waitUntil so
+    // the runtime keeps the function instance alive long enough to finish
+    // the work even after we've shipped the response. Plain `void promise()`
+    // gets reaped on Vercel's serverless lifecycle the moment the response
+    // is flushed, which was silently dropping every Scout dispatch.
+    waitUntil(
+      dispatchToScout(
+        req,
+        blueprint.id,
+        blueprint.created_at as string,
+        ans.answers as Partial<Answers>,
+        hm.data as CapabilityMapData,
+        sessionId
+      )
+    );
 
     return NextResponse.json({ ok: true, id: blueprint.id });
   } catch (e) {
