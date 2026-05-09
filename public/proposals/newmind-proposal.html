@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polynize × Newkind, Marketing & Conference Operations Unit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #FF6FB5;
+    --pink-soft: #FFD6EB;
+    --pink-deep: #E84F9C;
+    --bg: #f6f1e7;
+    --bg-2: #efe6d3;
+    --shell: #fffaf0;
+    --highlight: #f3e7c7;
+    --ink: #0a0a0a;
+    --ink-soft: #2a2a2a;
+    --ink-mute: #6a6356;
+    --rule: #d9cdb4;
+    --olive: #4a5d3a;
+    --olive-deep: #2f3d24;
+    --ochre: #c87f37;
+    --terracotta: #b04e2c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Barlow', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(180,140,80,0.04) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(74,93,58,0.04) 0%, transparent 50%);
+    mix-blend-mode: multiply;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 48px; position: relative; z-index: 2; }
+  .display, h1, h2, h3 {
+    font-family: 'Archivo Black', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    font-weight: 900;
+  }
+  p { font-family: 'Barlow', sans-serif; font-size: 16.5px; line-height: 1.65; color: var(--ink-soft); margin-bottom: 16px; font-weight: 400; }
+  p strong { color: var(--ink); font-weight: 700; }
+  .topbar {
+    border-bottom: 1px solid var(--rule);
+    padding: 22px 0;
+    font-size: 13px;
+    color: var(--ink-mute);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .topbar-row { display: flex; justify-content: space-between; align-items: center; }
+  .topbar .brand { color: var(--ink); font-weight: 700; }
+  .topbar .meta { display: flex; gap: 28px; }
+  .topbar .pink-tag { background: var(--pink); color: white; padding: 4px 10px; font-weight: 700; }
+  .hero { padding: 100px 0 90px; border-bottom: 1px solid var(--rule); position: relative; }
+  .eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .eyebrow .swatch { width: 28px; height: 14px; background: var(--pink); display: inline-block; }
+  h1.display {
+    font-size: clamp(56px, 9.5vw, 132px);
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+    max-width: 12ch;
+  }
+  h1.display .pink-block {
+    background: var(--pink); color: white; padding: 0 0.18em;
+    display: inline-block; line-height: 0.95; margin: 0.05em 0;
+    transform: skew(-2deg);
+  }
+  .lede {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400; font-size: 22px; line-height: 1.45;
+    color: var(--ink-soft); max-width: 60ch; margin-bottom: 56px;
+  }
+  .lede strong { color: var(--ink); font-weight: 700; }
+  .hero-meta {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+    padding-top: 36px; border-top: 2px solid var(--ink);
+  }
+  .hero-meta dt {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-mute); margin-bottom: 8px;
+  }
+  .hero-meta dd {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 18px; color: var(--ink); text-transform: uppercase;
+    letter-spacing: -0.005em;
+  }
+  section { padding: 96px 0; border-bottom: 1px solid var(--rule); position: relative; }
+  .section-no {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 13px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--pink-deep);
+    margin-bottom: 16px; display: inline-flex; align-items: center; gap: 10px;
+  }
+  .section-no::before { content: ""; width: 18px; height: 3px; background: var(--pink); }
+  h2 {
+    font-size: clamp(40px, 5.5vw, 72px); line-height: 0.95;
+    letter-spacing: -0.015em; color: var(--ink); margin-bottom: 24px; max-width: 18ch;
+  }
+  h2 .pink-block {
+    background: var(--pink); color: white; padding: 0 0.15em;
+    display: inline-block; line-height: 0.95; transform: skew(-2deg);
+  }
+  h2 .pink-underline {
+    background-image: linear-gradient(180deg, transparent 60%, var(--pink) 60%, var(--pink) 92%, transparent 92%);
+    padding: 0 0.04em;
+  }
+  .section-intro {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400; font-size: 19px; line-height: 1.55;
+    color: var(--ink-soft); max-width: 62ch; margin-bottom: 56px;
+  }
+  .section-intro strong { color: var(--ink); font-weight: 700; }
+
+  /* QUOTES */
+  .quote-block {
+    background: var(--shell); border-left: 4px solid var(--pink);
+    padding: 32px 40px; margin: 28px 0;
+    font-family: 'Barlow', sans-serif;
+    font-size: 21px; line-height: 1.45; color: var(--ink);
+    font-weight: 500; font-style: italic;
+  }
+  .quote-block .attr {
+    display: block; margin-top: 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-style: normal; font-size: 13px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-mute); font-weight: 600;
+  }
+
+  /* CAPABILITY POSITIONING */
+  .position-frame {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border: 2px solid var(--ink); background: var(--shell); margin-top: 40px;
+  }
+  .position-cell { padding: 36px 40px; border-right: 2px solid var(--ink); }
+  .position-cell:last-child { border-right: none; }
+  .position-cell .label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--pink-deep); margin-bottom: 14px;
+  }
+  .position-cell .value {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 32px; text-transform: uppercase; color: var(--ink);
+    line-height: 1; letter-spacing: -0.01em; margin-bottom: 14px;
+  }
+  .position-cell .desc { font-size: 15px; color: var(--ink-soft); line-height: 1.55; }
+
+  /* ORG CHART */
+  .org-chart { background: var(--shell); border: 2px solid var(--ink); padding: 56px 40px; margin: 48px 0; }
+  .org-node { border: 2px solid var(--ink); padding: 22px 24px; background: white; position: relative; }
+  .org-node.director { background: var(--ink); color: white; width: 320px; margin: 0 auto; }
+  .org-node.lead { background: var(--pink); color: white; width: 320px; margin: 0 auto; border-color: var(--pink-deep); }
+  .org-node .icon { width: 40px; height: 40px; margin-bottom: 12px; color: currentColor; }
+  .org-node .role-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; margin-bottom: 6px; opacity: 0.8;
+  }
+  .org-node .org-name {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 28px; line-height: 0.95; text-transform: uppercase;
+    letter-spacing: -0.015em; margin-bottom: 8px;
+  }
+  .org-node .org-desc { font-family: 'Barlow', sans-serif; font-size: 13px; line-height: 1.45; opacity: 0.9; }
+  .org-connector { width: 3px; background: var(--ink); margin: 0 auto; }
+  .org-connector.short { height: 32px; }
+  .org-connector.medium { height: 32px; background: var(--pink); }
+  .org-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .org-row .org-node.report { background: white; width: 100%; }
+  .org-row-stems { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .org-row-stems > div { height: 32px; position: relative; }
+  .org-row-stems > div::before {
+    content: ""; position: absolute; top: 0; left: 50%;
+    width: 3px; height: 100%; background: var(--ink); transform: translateX(-50%);
+  }
+  .org-node.report .org-name { font-size: 22px; color: var(--ink); }
+  .org-node.report .role-tag { color: var(--pink-deep); }
+  .org-node.report .org-desc { color: var(--ink-soft); }
+  .org-caption {
+    font-family: 'Barlow', sans-serif; font-style: italic;
+    font-size: 14px; color: var(--ink-mute); text-align: center;
+    margin-top: 32px; padding-top: 24px; border-top: 1px dashed var(--rule);
+  }
+
+  /* CWU COMPARE */
+  .cwu-compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: stretch; margin: 40px 0; }
+  .cwu-side { padding: 28px 28px; }
+  .cwu-side.conventional { background: var(--bg-2); border: 2px dashed var(--ink-mute); }
+  .cwu-side.transformed { background: var(--shell); border: 2px solid var(--pink); }
+  .cwu-side h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--ink-mute); margin-bottom: 16px;
+  }
+  .cwu-side.transformed h4 { color: var(--pink-deep); }
+  .cwu-side .roles { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+  .cwu-side .role-pill {
+    background: rgba(106,99,86,0.1); padding: 6px 10px; font-size: 11px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--ink-soft);
+  }
+  .cwu-side.transformed .role-pill { background: var(--pink); color: white; }
+  .cwu-side.transformed .role-pill.director { background: var(--ink); color: white; }
+  .cwu-side ul { list-style: none; font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+  .cwu-side ul li::before { content: "·"; color: var(--pink-deep); margin-right: 8px; font-weight: 700; }
+  .cwu-arrow { font-family: 'Archivo Black', sans-serif; font-size: 48px; color: var(--pink); line-height: 1; align-self: center; }
+
+  /* CHARTS */
+  .chart-wrap { background: var(--shell); border: 2px solid var(--ink); padding: 48px 40px; margin: 40px 0; }
+  .chart-wrap svg { width: 100%; height: auto; max-height: 460px; }
+  .chart-caption {
+    font-family: 'Barlow', sans-serif; font-style: italic;
+    font-size: 15px; color: var(--ink-mute); text-align: center;
+    margin-top: 24px; line-height: 1.5;
+  }
+
+  /* TECHNICAL STACK */
+  .stack-wrap { background: var(--shell); border: 2px solid var(--ink); padding: 48px 40px; margin: 40px 0; }
+  .stack-wrap .stack-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--ink-mute);
+    margin-bottom: 32px; text-align: center;
+  }
+  .stack-grid { display: grid; grid-template-columns: 1fr 220px; gap: 32px; align-items: stretch; }
+  .stack-layers { display: flex; flex-direction: column; gap: 0; }
+  .stack-layer {
+    border: 2px solid var(--ink); padding: 18px 24px;
+    display: flex; align-items: center; gap: 20px;
+    position: relative; border-bottom: none;
+  }
+  .stack-layer:last-child { border-bottom: 2px solid var(--ink); }
+  .stack-layer .layer-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--ink-mute);
+    width: 110px; flex-shrink: 0;
+  }
+  .stack-layer .layer-content { flex: 1; display: flex; flex-direction: column; }
+  .stack-layer .layer-name {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 22px; line-height: 1; text-transform: uppercase;
+    letter-spacing: -0.01em; margin-bottom: 4px;
+  }
+  .stack-layer .layer-desc { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+  .stack-layer.skills { background: white; border-top-width: 4px; border-top-color: var(--pink); }
+  .stack-layer.skills .layer-name { color: var(--ink); }
+  .stack-layer.cognition { background: var(--pink); color: white; border-color: var(--pink-deep); }
+  .stack-layer.cognition .layer-label { color: rgba(255,255,255,0.85); }
+  .stack-layer.cognition .layer-name { color: white; }
+  .stack-layer.cognition .layer-desc { color: rgba(255,255,255,0.9); }
+  .stack-layer.orchestration { background: var(--olive); color: white; border-color: var(--olive-deep); }
+  .stack-layer.orchestration .layer-label { color: rgba(255,255,255,0.85); }
+  .stack-layer.orchestration .layer-name { color: white; }
+  .stack-layer.orchestration .layer-desc { color: rgba(255,255,255,0.9); }
+  .stack-layer.infrastructure { background: var(--ink); color: white; }
+  .stack-layer.infrastructure .layer-label { color: rgba(255,255,255,0.6); }
+  .stack-layer.infrastructure .layer-name { color: white; }
+  .stack-layer.infrastructure .layer-desc { color: rgba(255,255,255,0.75); }
+  .stack-layer .layer-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 4px 10px;
+    background: rgba(0,0,0,0.1); color: currentColor;
+  }
+  .stack-layer.cognition .layer-tag { background: rgba(255,255,255,0.2); }
+  .stack-layer.orchestration .layer-tag { background: rgba(255,255,255,0.2); }
+  .stack-layer.infrastructure .layer-tag { background: rgba(255,255,255,0.15); }
+  .stack-side {
+    border: 2px solid var(--ink); padding: 24px 22px; background: white;
+    display: flex; flex-direction: column; justify-content: center; position: relative;
+  }
+  .stack-side::before {
+    content: ""; position: absolute; left: -32px; top: 50%;
+    width: 32px; height: 2px; background: var(--ink); transform: translateY(-50%);
+  }
+  .stack-side::after {
+    content: ""; position: absolute; left: -38px; top: 50%;
+    width: 0; height: 0;
+    border-top: 6px solid transparent; border-bottom: 6px solid transparent;
+    border-right: 8px solid var(--ink); transform: translateY(-50%);
+  }
+  .stack-side .side-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--pink-deep); margin-bottom: 8px;
+  }
+  .stack-side .side-name {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 22px; line-height: 1; text-transform: uppercase;
+    letter-spacing: -0.01em; margin-bottom: 10px; color: var(--ink);
+  }
+  .stack-side .side-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+  .stack-side .side-pulse { margin-top: 12px; display: flex; gap: 4px; align-items: center; }
+  .stack-side .side-pulse span {
+    width: 6px; height: 6px; background: var(--pink); border-radius: 50%;
+    animation: pulse-dot 1.6s infinite ease-in-out;
+  }
+  .stack-side .side-pulse span:nth-child(2) { animation-delay: 0.2s; }
+  .stack-side .side-pulse span:nth-child(3) { animation-delay: 0.4s; }
+  .stack-side .pulse-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--pink-deep); margin-left: 8px;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 0.3; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  .stack-caption {
+    font-family: 'Barlow', sans-serif; font-style: italic;
+    font-size: 14px; color: var(--ink-mute); text-align: center;
+    margin-top: 28px; padding-top: 20px; border-top: 1px dashed var(--rule);
+    line-height: 1.5;
+  }
+
+  /* PHASES */
+  .phase-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+  .phase-card {
+    background: var(--shell); border: 2px solid var(--ink);
+    padding: 36px 30px 32px; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .phase-card.model::before, .phase-card.build::before, .phase-card.maintain::before {
+    content: ""; position: absolute; top: -2px; left: -2px; right: -2px; height: 8px;
+  }
+  .phase-card.model::before { background: var(--pink); }
+  .phase-card.build::before { background: var(--ink); }
+  .phase-card.maintain::before { background: var(--olive); }
+  .phase-card .stage {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--ink-mute);
+    margin-bottom: 8px; margin-top: 8px;
+  }
+  .phase-card h3 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 56px; color: var(--ink); margin-bottom: 4px;
+    line-height: 0.92; text-transform: uppercase; letter-spacing: -0.02em;
+  }
+  .phase-card .duration {
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px; color: var(--ink-mute); font-style: italic;
+    margin-bottom: 24px; padding-bottom: 18px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .phase-card p { font-size: 14.5px; margin-bottom: 14px; }
+  .phase-card ul { list-style: none; font-size: 13.5px; margin: 16px 0 24px; }
+  .phase-card ul li {
+    padding: 6px 0; padding-left: 22px; position: relative;
+    color: var(--ink-soft); line-height: 1.5;
+  }
+  .phase-card ul li::before {
+    content: "✓"; position: absolute; left: 0; color: var(--pink-deep); font-weight: 900;
+  }
+  .phase-price { margin-top: auto; padding-top: 20px; border-top: 2px solid var(--ink); }
+  .phase-price .figure {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 38px; color: var(--ink); line-height: 1; letter-spacing: -0.02em;
+  }
+  .phase-price .figure .small { font-size: 16px; color: var(--ink-mute); margin-left: 2px; }
+  .phase-price .unit {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 600; color: var(--ink-mute);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px;
+  }
+  .phase-card .stretch-note {
+    font-size: 13px; font-style: italic; color: var(--pink-deep);
+    font-family: 'Barlow', sans-serif; margin-top: 10px; font-weight: 500;
+  }
+  .phase-card .price-note {
+    font-size: 12.5px; color: var(--ink-mute);
+    font-family: 'Barlow', sans-serif; margin-top: 8px; line-height: 1.5;
+  }
+
+  /* STATUS QUO BLOCK */
+  .investment {
+    background: var(--ink); color: var(--shell);
+    padding: 64px 56px; margin: 48px 0 0; position: relative;
+  }
+  .investment::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0;
+    height: 8px; background: var(--pink);
+  }
+  .investment .label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--pink); margin-bottom: 22px;
+  }
+  .investment h3 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(28px, 3.5vw, 44px); line-height: 1;
+    margin-bottom: 32px; color: var(--shell);
+    text-transform: uppercase; letter-spacing: -0.01em; max-width: 22ch;
+  }
+  .invest-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0;
+    margin-top: 32px; border-top: 1px solid rgba(255,111,181,0.3);
+  }
+  .invest-cell { padding: 28px 24px 0 0; border-right: 1px solid rgba(255,111,181,0.2); }
+  .invest-cell:last-child { border-right: none; padding-right: 0; }
+  .invest-cell:not(:first-child) { padding-left: 24px; }
+  .invest-cell .l {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--pink-soft); margin-bottom: 10px;
+  }
+  .invest-cell .v {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 32px; color: var(--shell); margin-bottom: 6px;
+    line-height: 1; letter-spacing: -0.01em;
+  }
+  .invest-cell .d { font-size: 13.5px; color: rgba(255,255,255,0.7); line-height: 1.5; }
+  .invest-divider { margin: 32px 0; height: 1px; background: rgba(255,111,181,0.3); }
+  .total-row { display: flex; justify-content: space-between; align-items: baseline; padding-top: 18px; gap: 24px; }
+  .total-row .lbl {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: rgba(255,255,255,0.7); max-width: 50ch;
+  }
+  .total-row .amt {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 56px; color: var(--pink); letter-spacing: -0.02em; line-height: 1;
+  }
+
+  /* NOTE */
+  .note {
+    background: var(--pink-soft); border-left: 4px solid var(--pink);
+    padding: 24px 32px; margin: 32px 0;
+    font-size: 15.5px; color: var(--ink); line-height: 1.6;
+  }
+  .note .h {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--pink-deep);
+    margin-bottom: 8px; display: block;
+  }
+  .note strong { font-weight: 700; }
+
+  /* OPEN QUESTIONS */
+  .open-questions { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; margin-top: 32px; }
+  .oq { padding: 22px 0; border-top: 1px solid var(--rule); }
+  .oq .q {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 17px; color: var(--ink); margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: -0.005em; line-height: 1.15;
+  }
+  .oq .a { font-size: 14px; color: var(--ink-soft); line-height: 1.55; }
+
+  /* COMMITMENT NEXT STEP */
+  .commit-section {
+    background: var(--ink); color: var(--shell);
+    padding: 80px 56px; position: relative; overflow: hidden;
+  }
+  .commit-section::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0;
+    height: 8px; background: var(--pink);
+  }
+  .commit-section .section-no { color: var(--pink); }
+  .commit-section h2 { color: var(--shell); max-width: 22ch; }
+  .commit-section h2 .pink-block { background: var(--pink); color: white; }
+  .commit-section .lead-copy {
+    color: rgba(255,255,255,0.85); font-size: 19px;
+    max-width: 62ch; margin-bottom: 40px; line-height: 1.55;
+  }
+  .commit-section .lead-copy strong { color: white; font-weight: 700; }
+  .commit-card {
+    display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;
+    background: rgba(255,255,255,0.05); border: 2px solid var(--pink);
+    padding: 36px 40px; margin-bottom: 32px;
+  }
+  .commit-card .ck-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--pink); margin-bottom: 10px;
+  }
+  .commit-card .ck-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 32px; color: white; text-transform: uppercase;
+    letter-spacing: -0.01em; line-height: 1; margin-bottom: 14px;
+  }
+  .commit-card .ck-desc { font-size: 15px; color: rgba(255,255,255,0.8); line-height: 1.55; max-width: 60ch; }
+  .commit-card .ck-price { text-align: right; }
+  .commit-card .ck-price .figure {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 56px; color: var(--pink); line-height: 1; letter-spacing: -0.02em;
+  }
+  .commit-card .ck-price .unit {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7);
+    letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6px;
+  }
+  .commit-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 18px 28px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; text-decoration: none;
+    transition: all 0.2s ease; border: 2px solid transparent;
+  }
+  .btn.primary { background: var(--pink); color: white; border-color: var(--pink); }
+  .btn.primary:hover { background: white; color: var(--ink); border-color: white; }
+  .btn.ghost { background: transparent; color: var(--shell); border-color: rgba(255,255,255,0.4); }
+  .btn.ghost:hover { border-color: var(--pink); color: var(--pink); }
+
+  footer {
+    padding: 40px 0;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-mute);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 24px; }
+    .hero { padding: 60px 0 50px; }
+    .hero-meta { grid-template-columns: 1fr 1fr; gap: 24px; }
+    section { padding: 60px 0; }
+    .position-frame { grid-template-columns: 1fr; }
+    .position-cell { border-right: none; border-bottom: 2px solid var(--ink); }
+    .position-cell:last-child { border-bottom: none; }
+    .org-node.director, .org-node.lead { width: 100%; }
+    .org-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .org-row-stems { grid-template-columns: 1fr 1fr; }
+    .cwu-compare { grid-template-columns: 1fr; gap: 16px; }
+    .cwu-arrow { transform: rotate(90deg); margin: 0 auto; }
+    .stack-grid { grid-template-columns: 1fr; gap: 24px; }
+    .stack-side::before, .stack-side::after { display: none; }
+    .stack-layer { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .stack-layer .layer-label { width: auto; }
+    .phase-grid { grid-template-columns: 1fr; }
+    .invest-grid { grid-template-columns: 1fr; }
+    .invest-cell { border-right: none; border-bottom: 1px solid rgba(255,111,181,0.2); padding: 22px 0; }
+    .invest-cell:last-child { border-bottom: none; }
+    .invest-cell:not(:first-child) { padding-left: 0; }
+    .open-questions { grid-template-columns: 1fr; }
+    .commit-section { padding: 50px 24px; }
+    .commit-card { grid-template-columns: 1fr; padding: 28px; gap: 24px; }
+    .commit-card .ck-price { text-align: left; }
+    .investment { padding: 40px 28px; }
+    .org-chart { padding: 32px 20px; }
+    .chart-wrap { padding: 28px 20px; }
+    .stack-wrap { padding: 28px 20px; }
+    .total-row { flex-direction: column; align-items: flex-start; }
+  }
+
+  @media print {
+    body { background: white; }
+    .topbar, .commit-section { page-break-inside: avoid; }
+    section { padding: 40px 0; }
+  }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .hero .eyebrow, h1.display, .lede, .hero-meta { animation: fadeUp 0.7s ease-out backwards; }
+  h1.display { animation-delay: 0.1s; }
+  .lede { animation-delay: 0.2s; }
+  .hero-meta { animation-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-row">
+    <div class="brand">POLYNIZE × NEWKIND</div>
+    <div class="meta">
+      <span>v1.3 · MAY 2026</span>
+      <span class="pink-tag">CONFIDENTIAL</span>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="wrap">
+<section class="hero" style="border-bottom: 1px solid var(--rule); padding: 100px 0 90px;">
+  <div class="eyebrow"><span class="swatch"></span> A PROPOSAL FOR ERFAN DALIRI · FOUNDING DIRECTOR, NEWKIND</div>
+  <h1 class="display">A&nbsp;Marketing<br>&amp;&nbsp;Ops&nbsp;Unit<br>For <span class="pink-block">Newkind&nbsp;2026</span></h1>
+  <p class="lede">A fully capable, accountable, AI-enabled team that handles the marketing, content, and inquiry work the conference has been starving for. <strong>You stay in the room with the community. The team handles everything around it.</strong></p>
+  <dl class="hero-meta">
+    <div><dt>Prepared for</dt><dd>Erfan Daliri</dd></div>
+    <div><dt>Engagement</dt><dd>Newkind Marketing Unit</dd></div>
+    <div><dt>Positioning</dt><dd>Capability Add</dd></div>
+    <div><dt>Target</dt><dd>400+ Tickets</dd></div>
+  </dl>
+</section>
+</div>
+
+<!-- 01 WHAT WE HEARD -->
+<div class="wrap">
+<section>
+  <div class="section-no">01 · What we heard</div>
+  <h2>Five months out. <span class="pink-underline">Plenty of substance</span>, not enough hands.</h2>
+  <p class="section-intro">From our conversation on May 4th, paraphrased back so we know we're solving the right problem before proposing how to solve it.</p>
+
+  <div class="quote-block">
+    "I get a few hundred people every year and I need 400 to break even. Facebook is dead. Instagram plateaued at 6,000. LinkedIn personal works but the conference one is mediocre. We've never used TikTok. I've got hundreds of hours of unedited video sitting on hard drives that never makes it to post-production."
+    <span class="attr">Erfan, on the bottleneck</span>
+  </div>
+
+  <p>The substance is there. Eight years of programming, an established community of 1,200 on the mailing list, an olive grove venue, deep editorial range across climate justice, First Nations sovereignty, gender equality, and post-growth economics. What's missing is a function that consistently <strong>turns that substance into outreach</strong>, across the right channels, at the cadence the calendar demands, in your voice rather than a generic one.</p>
+
+  <p>You also drew a hard line we want to honour. <strong>Client-facing work at Kind Enterprises stays untouched.</strong> Anti-racism training, government clients, federal departments: none of that is in scope for this engagement. Our work begins and ends inside the Newkind conference brand.</p>
+
+  <div class="quote-block">
+    "I couldn't possibly ever allow an agent to respond to an email to a state or federal government client on my behalf. It'll be the end of my business. That's not what I'm looking to do."
+    <span class="attr">Erfan, on the boundary</span>
+  </div>
+</section>
+</div>
+
+<!-- 02 CAPABILITY POSITIONING -->
+<div class="wrap">
+<section>
+  <div class="section-no">02 · Capability positioning</div>
+  <h2>You are <span class="pink-block">adding</span> a&nbsp;capability, not replacing one.</h2>
+  <p class="section-intro">Newkind doesn't have a marketing team today. There's no incumbent to displace, no team to make redundant. The cost benchmark for this engagement is what it would cost to <strong>hire the team you'd otherwise have to build</strong>, not what you're spending today (which is your own evenings).</p>
+
+  <div class="position-frame">
+    <div class="position-cell">
+      <div class="label">The Capability We're Adding</div>
+      <div class="value">Marketing &amp; Conference Ops</div>
+      <div class="desc">A function that doesn't exist yet inside Newkind: scaled marketing, content production from your archive, multi-channel social, and inquiry handling for the inbox. Built around your direction, not replacing it.</div>
+    </div>
+    <div class="position-cell">
+      <div class="label">Shape Of The Work</div>
+      <div class="value">Pipeline + Creative Direction</div>
+      <div class="desc">A compound unit. One side moves audiences from awareness through newsletter to ticket purchase. The other generates the content (cuts, posts, captions, blog) that feeds it, with you as creative director.</div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- 03 THE UNIT -->
+<div class="wrap">
+<section>
+  <div class="section-no">03 · The unit we're proposing</div>
+  <h2>One human at the centre. <span class="pink-block">One team lead.</span> Three specialists.</h2>
+  <p class="section-intro">You direct. <strong>Scout</strong> is your team manager, the one agent you talk to most, who briefs the rest, holds the calendar, and reports back on what's working. Beneath Scout sit the four specialists who do the actual work across content, video, analytics, and inbox.</p>
+
+  <div class="org-chart">
+
+    <div class="org-node director">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 21v-1a8 8 0 0 1 16 0v1"/>
+      </svg>
+      <div class="role-tag" style="color: var(--pink);">DIRECTOR · CREATIVE LEAD</div>
+      <div class="org-name">Erfan</div>
+      <div class="org-desc">Sets direction, voice, and what's on-brand. Approves outputs in the review queue. Holds the trust the audience comes for.</div>
+    </div>
+
+    <div class="org-connector medium"></div>
+
+    <div class="org-node lead">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M3 7h18M3 12h18M3 17h12"/>
+        <circle cx="20" cy="17" r="2"/>
+      </svg>
+      <div class="role-tag" style="color: white; opacity: 0.85;">TEAM MANAGER · MARKETING LEAD</div>
+      <div class="org-name">Scout</div>
+      <div class="org-desc">The agent you talk to most. Briefs the team, holds the editorial calendar, reports weekly on what's working. Your single point of contact into the unit.</div>
+    </div>
+
+    <div class="org-connector short"></div>
+
+    <div class="org-row-stems">
+      <div></div><div></div><div></div><div></div>
+    </div>
+
+    <div class="org-row">
+      <div class="org-node report">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--pink-deep);">
+          <path d="M3 12l3-7 4 4 4-8 4 11 3-3"/>
+          <path d="M3 19h18"/>
+        </svg>
+        <div class="role-tag">SOCIAL CONTENT</div>
+        <div class="org-name">Echo</div>
+        <div class="org-desc">Drafts per-channel copy for Instagram, LinkedIn, TikTok in the Newkind voice. Nothing auto-publishes; everything goes through review.</div>
+      </div>
+
+      <div class="org-node report">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--pink-deep);">
+          <rect x="2" y="6" width="14" height="12" rx="1"/>
+          <path d="M16 10l6-3v10l-6-3z"/>
+        </svg>
+        <div class="role-tag">VIDEO PIPELINE</div>
+        <div class="org-name">Atlas</div>
+        <div class="org-desc">Ingests your archive, transcribes, tags clips. Returns candidate cuts on brief, no auto-publishing. Phase 1 only; programmatic generation is later.</div>
+      </div>
+
+      <div class="org-node report">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--pink-deep);">
+          <path d="M3 18v-6M9 18v-12M15 18v-9M21 18v-4"/>
+          <path d="M3 21h18"/>
+        </svg>
+        <div class="role-tag">ANALYTICS</div>
+        <div class="org-name">Pulse</div>
+        <div class="org-desc">Tracks engagement, ticket sales pace, and which themes the audience responds to. Surfaces a weekly digest so direction calls are based on signal.</div>
+      </div>
+
+      <div class="org-node report">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--pink-deep);">
+          <rect x="3" y="5" width="18" height="14" rx="1"/>
+          <path d="M3 7l9 6 9-6"/>
+        </svg>
+        <div class="role-tag">INBOX &amp; LIST</div>
+        <div class="org-name">Warden</div>
+        <div class="org-desc">Drafts (never sends) responses to inquiries on the conference inbox. Owns the mailing list: segmentation, tagging, list hygiene, re-engagement.</div>
+      </div>
+    </div>
+
+    <div class="org-caption">
+      Five agents. One human. <strong style="color: var(--ink);">Scout</strong> is your single point of contact; Echo, Atlas, Pulse, and Warden report to Scout.
+    </div>
+  </div>
+
+  <p style="margin-top: 28px;">Each agent ships with its own <strong>cognitive model</strong>, a written specification of what it will and won't do, the voice it speaks in, and the topics it must escalate rather than handle itself. This is the layer most agent builds skip, and it's the layer that prevents the "AI-sounding" copy and out-of-scope behaviour you're rightly worried about.</p>
+
+  <div class="cwu-compare">
+    <div class="cwu-side conventional">
+      <h4>Conventional Alternative</h4>
+      <div class="roles">
+        <span class="role-pill">MKT MANAGER</span>
+        <span class="role-pill">CONTENT PRODUCER</span>
+        <span class="role-pill">SOCIAL COORD</span>
+        <span class="role-pill">VIDEO EDITOR</span>
+        <span class="role-pill">COMMUNITY MGR</span>
+      </div>
+      <ul>
+        <li>5 FTE, loaded cost A$150 to $180k / year</li>
+        <li>3 to 6 month ramp time before output starts</li>
+        <li>Coordination overhead falls on you</li>
+        <li>Slow learning across channels</li>
+      </ul>
+    </div>
+    <div class="cwu-arrow">→</div>
+    <div class="cwu-side transformed">
+      <h4>Newkind Marketing Unit</h4>
+      <div class="roles">
+        <span class="role-pill director">ERFAN</span>
+        <span class="role-pill">SCOUT · LEAD</span>
+        <span class="role-pill">ECHO</span>
+        <span class="role-pill">ATLAS</span>
+        <span class="role-pill">PULSE</span>
+        <span class="role-pill">WARDEN</span>
+      </div>
+      <ul>
+        <li>One human, one lead agent, four specialists</li>
+        <li>Live in 30 to 45 days</li>
+        <li>Continuous, learns weekly from your feedback</li>
+        <li>Cognitive models, your voice protected</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- 04 HOW IT OPERATES -->
+<div class="wrap">
+<section>
+  <div class="section-no">04 · How it operates</div>
+  <h2>You direct Scout. <span class="pink-block">Scout briefs the team.</span><br>You curate. They publish.</h2>
+  <p class="section-intro">This is a Creative Direction shape. Agents do not generate-and-publish autonomously, that's the model that gets people in trouble. <strong>Scout coordinates the team. Output flows up to you for review. You curate. Then it goes out.</strong> Every loop teaches the unit what "good" sounds like in your voice.</p>
+
+  <div class="chart-wrap">
+    <svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg">
+
+      <g transform="translate(360, 30)">
+        <rect x="0" y="0" width="180" height="60" fill="#0a0a0a"/>
+        <text x="90" y="28" text-anchor="middle" fill="#ffffff" font-family="'Archivo Black', sans-serif" font-size="18" letter-spacing="-0.5">ERFAN</text>
+        <text x="90" y="48" text-anchor="middle" fill="#FF6FB5" font-family="'Barlow Condensed', sans-serif" font-weight="700" font-size="10" letter-spacing="2">DIRECTOR · CREATIVE</text>
+      </g>
+
+      <line x1="450" y1="90" x2="450" y2="125" stroke="#FF6FB5" stroke-width="2.5"/>
+      <text x="465" y="115" fill="#E84F9C" font-family="'Barlow Condensed', sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">DIRECTION</text>
+
+      <g transform="translate(360, 125)">
+        <rect x="0" y="0" width="180" height="60" fill="#FF6FB5" stroke="#E84F9C" stroke-width="1.5"/>
+        <text x="90" y="28" text-anchor="middle" fill="#ffffff" font-family="'Archivo Black', sans-serif" font-size="18" letter-spacing="-0.5">SCOUT</text>
+        <text x="90" y="48" text-anchor="middle" fill="#ffffff" font-family="'Barlow Condensed', sans-serif" font-weight="700" font-size="10" letter-spacing="2">TEAM MANAGER · LEAD</text>
+      </g>
+
+      <line x1="450" y1="185" x2="450" y2="215" stroke="#0a0a0a" stroke-width="2"/>
+      <text x="465" y="206" fill="#0a0a0a" font-family="'Barlow Condensed', sans-serif" font-size="10" font-weight="700" letter-spacing="1.5">BRIEFS</text>
+
+      <line x1="120" y1="215" x2="780" y2="215" stroke="#0a0a0a" stroke-width="2"/>
+
+      <line x1="170" y1="215" x2="170" y2="240" stroke="#0a0a0a" stroke-width="2"/>
+      <line x1="365" y1="215" x2="365" y2="240" stroke="#0a0a0a" stroke-width="2"/>
+      <line x1="540" y1="215" x2="540" y2="240" stroke="#0a0a0a" stroke-width="2"/>
+      <line x1="730" y1="215" x2="730" y2="240" stroke="#0a0a0a" stroke-width="2"/>
+
+      <g transform="translate(110, 240)"><rect width="120" height="48" fill="#fffaf0" stroke="#0a0a0a" stroke-width="1.5"/><text x="60" y="22" text-anchor="middle" font-family="'Archivo Black', sans-serif" font-size="14" fill="#0a0a0a">ECHO</text><text x="60" y="38" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="600" font-size="9" fill="#6a6356" letter-spacing="1">SOCIAL CONTENT</text></g>
+      <g transform="translate(305, 240)"><rect width="120" height="48" fill="#fffaf0" stroke="#0a0a0a" stroke-width="1.5"/><text x="60" y="22" text-anchor="middle" font-family="'Archivo Black', sans-serif" font-size="14" fill="#0a0a0a">ATLAS</text><text x="60" y="38" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="600" font-size="9" fill="#6a6356" letter-spacing="1">VIDEO PIPELINE</text></g>
+      <g transform="translate(480, 240)"><rect width="120" height="48" fill="#fffaf0" stroke="#0a0a0a" stroke-width="1.5"/><text x="60" y="22" text-anchor="middle" font-family="'Archivo Black', sans-serif" font-size="14" fill="#0a0a0a">PULSE</text><text x="60" y="38" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="600" font-size="9" fill="#6a6356" letter-spacing="1">ANALYTICS</text></g>
+      <g transform="translate(670, 240)"><rect width="120" height="48" fill="#fffaf0" stroke="#0a0a0a" stroke-width="1.5"/><text x="60" y="22" text-anchor="middle" font-family="'Archivo Black', sans-serif" font-size="14" fill="#0a0a0a">WARDEN</text><text x="60" y="38" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="600" font-size="9" fill="#6a6356" letter-spacing="1">INBOX &amp; LIST</text></g>
+
+      <line x1="170" y1="288" x2="170" y2="320" stroke="#FF6FB5" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line x1="365" y1="288" x2="365" y2="320" stroke="#FF6FB5" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line x1="540" y1="288" x2="540" y2="320" stroke="#FF6FB5" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line x1="730" y1="288" x2="730" y2="320" stroke="#FF6FB5" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+      <text x="450" y="313" text-anchor="middle" fill="#E84F9C" font-family="'Barlow Condensed', sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">OUTPUT</text>
+
+      <g transform="translate(330, 320)">
+        <rect x="0" y="0" width="240" height="50" fill="#FF6FB5" stroke="#0a0a0a" stroke-width="1.5"/>
+        <text x="120" y="22" text-anchor="middle" fill="#ffffff" font-family="'Archivo Black', sans-serif" font-size="16" letter-spacing="-0.3">REVIEW QUEUE</text>
+        <text x="120" y="40" text-anchor="middle" fill="#ffffff" font-family="'Barlow Condensed', sans-serif" font-weight="600" font-size="10" letter-spacing="1.5" opacity="0.9">POSTS · CUTS · DRAFTS · DIGEST</text>
+      </g>
+
+      <line x1="330" y1="345" x2="280" y2="345" stroke="#0a0a0a" stroke-width="1.5"/>
+      <line x1="280" y1="345" x2="280" y2="60" stroke="#0a0a0a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line x1="280" y1="60" x2="360" y2="60" stroke="#0a0a0a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <polygon points="357,57 365,60 357,63" fill="#0a0a0a"/>
+      <text x="220" y="200" fill="#0a0a0a" font-family="'Barlow Condensed', sans-serif" font-size="10" font-weight="700" letter-spacing="1.5" transform="rotate(-90 220 200)">CURATE</text>
+
+      <line x1="450" y1="370" x2="450" y2="410" stroke="#0a0a0a" stroke-width="2.5"/>
+      <polygon points="446,407 450,415 454,407" fill="#0a0a0a"/>
+
+      <g transform="translate(330, 415)">
+        <rect x="0" y="0" width="240" height="38" fill="#0a0a0a"/>
+        <text x="120" y="24" text-anchor="middle" fill="#FF6FB5" font-family="'Archivo Black', sans-serif" font-size="14" letter-spacing="-0.3">PUBLISH · LIVE</text>
+      </g>
+
+    </svg>
+    <div class="chart-caption">Erfan briefs Scout. Scout coordinates the four specialists. Output lands in the review queue. You curate. Then it publishes.</div>
+  </div>
+
+  <!-- TECHNICAL STACK -->
+  <h3 style="font-size: 28px; margin-top: 64px; margin-bottom: 16px; color: var(--ink);">The technical stack underneath.</h3>
+  <p style="font-size: 16.5px; max-width: 62ch; margin-bottom: 24px;">For transparency, this is the stack the unit runs on. Each layer does one thing. We own the layer that nobody else is yet doing properly: cognition.</p>
+
+  <div class="stack-wrap">
+    <div class="stack-title">↑ &nbsp; Layered Stack &nbsp; · &nbsp; Each Layer Sits On The One Below &nbsp; ↓</div>
+
+    <div class="stack-grid">
+      <div class="stack-layers">
+        <div class="stack-layer skills">
+          <div class="layer-label">04 · Skills</div>
+          <div class="layer-content">
+            <div class="layer-name">Skills Layer</div>
+            <div class="layer-desc">The connectors that let agents act in the world: Instagram, LinkedIn, TikTok, YouTube, Mailchimp, Squarespace, Gmail. Permission-scoped per agent.</div>
+          </div>
+          <div class="layer-tag">CONNECTORS</div>
+        </div>
+
+        <div class="stack-layer cognition">
+          <div class="layer-label">03 · Cognition</div>
+          <div class="layer-content">
+            <div class="layer-name">Polynize Cognition</div>
+            <div class="layer-desc">Each agent's cognitive model. Voice, judgement, what to do, what to escalate, what never to touch. The layer most builds skip.</div>
+          </div>
+          <div class="layer-tag">POLYNIZE IP</div>
+        </div>
+
+        <div class="stack-layer orchestration">
+          <div class="layer-label">02 · Orchestration</div>
+          <div class="layer-content">
+            <div class="layer-name">Hermes Agent</div>
+            <div class="layer-desc">Runs the agents, handles inter-agent comms, swaps inference models, manages the review queue, learns from your feedback.</div>
+          </div>
+          <div class="layer-tag">RUNTIME</div>
+        </div>
+
+        <div class="stack-layer infrastructure">
+          <div class="layer-label">01 · Infrastructure</div>
+          <div class="layer-content">
+            <div class="layer-name">AWS Lightsail</div>
+            <div class="layer-desc">Sydney region, fully encrypted, your data never leaves Australian sovereign infrastructure. Static IP, daily snapshots, monitored 24/7.</div>
+          </div>
+          <div class="layer-tag">AU REGION</div>
+        </div>
+      </div>
+
+      <div class="stack-side">
+        <div class="side-tag">Knowledge Graph</div>
+        <div class="side-name">Neo4j</div>
+        <div class="side-desc">Connects every transcript, post, panel, and theme into a graph the agents can traverse. Grows dynamically as the team works, the same layer you mentioned in our call.</div>
+        <div class="side-pulse">
+          <span></span><span></span><span></span>
+          <span class="pulse-label">GROWS WITH USE</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack-caption">All layers are managed for you in the Maintain phase. You see Slack and the review queue. The rest stays under the hood.</div>
+  </div>
+
+  <div class="note">
+    <span class="h">Cognitive Guardrail</span>
+    Each agent ships with its own <strong>cognitive model</strong>, a written specification of what it will and won't do, the voice it speaks in, and the topics it must escalate to you rather than handle itself. This is the layer most agent builds skip, and it's the layer that prevents the "AI-sounding" copy and out-of-scope behaviour you're rightly worried about. We'll walk through a live example of one of these in our next call.
+  </div>
+</section>
+</div>
+
+<!-- 05 THE TRANSFORMATION -->
+<div class="wrap">
+<section>
+  <div class="section-no">05 · The transformation</div>
+  <h2>A&nbsp;work&nbsp;unit <span class="pink-block">that&nbsp;compounds</span>.</h2>
+  <p class="section-intro">The point of building a unit (rather than just a tool) is that it gets better with time. The conference is the first decision horizon, but the value continues compounding into Years 2 and 3, as the agents accumulate context, learn what works, and produce outputs you couldn't have produced alone.</p>
+
+  <div class="chart-wrap">
+    <svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Legend (top, well clear of axis title) -->
+      <g transform="translate(80, 18)">
+        <rect x="0" y="2" width="20" height="8" fill="#FF6FB5"/>
+        <text x="26" y="11" font-family="'Barlow Condensed', sans-serif" font-weight="700" font-size="11" fill="#E84F9C" letter-spacing="1.5">WITH POLYNIZE</text>
+        <line x1="180" y1="6" x2="200" y2="6" stroke="#b04e2c" stroke-width="2.5"/>
+        <text x="206" y="11" font-family="'Barlow Condensed', sans-serif" font-weight="700" font-size="11" fill="#b04e2c" letter-spacing="1.5">CURRENT PATH</text>
+      </g>
+
+      <text x="80" y="50" font-family="'Barlow Condensed', sans-serif" font-weight="700" font-size="11" fill="#0a0a0a" letter-spacing="1.5">PRODUCTIVE OUTPUT · TICKETS, REACH, ENGAGEMENT, BRAND COMPOUNDING</text>
+
+      <line x1="80" y1="60" x2="80" y2="350" stroke="#0a0a0a" stroke-width="1"/>
+      <line x1="80" y1="350" x2="860" y2="350" stroke="#0a0a0a" stroke-width="1"/>
+
+      <text x="80" y="375" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="600" font-size="10" fill="#6a6356" letter-spacing="1">TODAY</text>
+      <text x="220" y="375" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="600" font-size="10" fill="#6a6356" letter-spacing="1">+5 MONTHS</text>
+      <text x="220" y="390" text-anchor="middle" font-family="'Archivo Black', sans-serif" font-size="10" fill="#FF6FB5" letter-spacing="0.5">CONFERENCE 2026</text>
+      <text x="420" y="375" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="600" font-size="10" fill="#6a6356" letter-spacing="1">YEAR 2</text>
+      <text x="420" y="390" text-anchor="middle" font-family="'Archivo Black', sans-serif" font-size="10" fill="#FF6FB5" letter-spacing="0.5">CONFERENCE 2027</text>
+      <text x="620" y="375" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="600" font-size="10" fill="#6a6356" letter-spacing="1">YEAR 3</text>
+      <text x="620" y="390" text-anchor="middle" font-family="'Archivo Black', sans-serif" font-size="10" fill="#FF6FB5" letter-spacing="0.5">CONFERENCE 2028</text>
+      <text x="820" y="375" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="600" font-size="10" fill="#6a6356" letter-spacing="1">YEAR 4+</text>
+      <text x="820" y="390" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="600" font-size="9" fill="#6a6356" letter-spacing="1" font-style="italic">community brand</text>
+
+      <line x1="220" y1="346" x2="220" y2="354" stroke="#FF6FB5" stroke-width="2"/>
+      <line x1="420" y1="346" x2="420" y2="354" stroke="#FF6FB5" stroke-width="2"/>
+      <line x1="620" y1="346" x2="620" y2="354" stroke="#FF6FB5" stroke-width="2"/>
+
+      <line x1="220" y1="60" x2="220" y2="350" stroke="#FF6FB5" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>
+      <line x1="420" y1="60" x2="420" y2="350" stroke="#FF6FB5" stroke-width="1" stroke-dasharray="3 3" opacity="0.3"/>
+      <line x1="620" y1="60" x2="620" y2="350" stroke="#FF6FB5" stroke-width="1" stroke-dasharray="3 3" opacity="0.25"/>
+
+      <!-- Current path: stays flat, drifts slightly -->
+      <path d="M 80 320 Q 220 315, 320 318 T 620 322 T 820 325" fill="none" stroke="#b04e2c" stroke-width="2.5"/>
+      <circle cx="80" cy="320" r="5" fill="#b04e2c"/>
+      <circle cx="220" cy="315" r="5" fill="#b04e2c"/>
+      <circle cx="420" cy="319" r="5" fill="#b04e2c"/>
+      <circle cx="620" cy="322" r="5" fill="#b04e2c"/>
+      <circle cx="820" cy="325" r="5" fill="#b04e2c"/>
+
+      <!-- Polynize path: dip, then exponential compounding through years -->
+      <path d="M 80 320
+               Q 130 332, 160 318
+               Q 200 250, 220 200
+               Q 290 165, 360 130
+               Q 400 110, 420 100
+               Q 510 80, 580 60
+               Q 600 53, 620 48
+               Q 700 30, 780 22
+               Q 810 18, 820 16"
+            fill="none" stroke="#FF6FB5" stroke-width="3"/>
+
+      <circle cx="80" cy="320" r="5" fill="#FF6FB5"/>
+      <circle cx="160" cy="318" r="4" fill="#FF6FB5"/>
+      <circle cx="220" cy="200" r="6" fill="#FF6FB5" stroke="#0a0a0a" stroke-width="1.5"/>
+      <circle cx="420" cy="100" r="6" fill="#FF6FB5" stroke="#0a0a0a" stroke-width="1.5"/>
+      <circle cx="620" cy="48" r="6" fill="#FF6FB5" stroke="#0a0a0a" stroke-width="1.5"/>
+      <circle cx="820" cy="16" r="7" fill="#E84F9C" stroke="#0a0a0a" stroke-width="2"/>
+
+      <text x="135" y="345" font-family="'Barlow', sans-serif" font-size="10" font-style="italic" fill="#6a6356">build dip</text>
+
+      <text x="240" y="195" font-family="'Archivo Black', sans-serif" font-size="11" fill="#E84F9C">400 to 500</text>
+      <text x="240" y="208" font-family="'Barlow Condensed', sans-serif" font-weight="700" font-size="9" fill="#E84F9C" letter-spacing="1">BREAK-EVEN</text>
+
+      <text x="440" y="95" font-family="'Archivo Black', sans-serif" font-size="11" fill="#E84F9C">600 to 800</text>
+      <text x="440" y="108" font-family="'Barlow Condensed', sans-serif" font-weight="700" font-size="9" fill="#E84F9C" letter-spacing="1">PROFITABLE</text>
+
+      <text x="500" y="200" font-family="'Barlow', sans-serif" font-size="11" font-style="italic" fill="#E84F9C" font-weight="500">archive activated</text>
+      <text x="500" y="216" font-family="'Barlow', sans-serif" font-size="11" font-style="italic" fill="#E84F9C" font-weight="500">brand compounding</text>
+
+      <text x="640" y="44" font-family="'Archivo Black', sans-serif" font-size="11" fill="#E84F9C">1000+</text>
+      <text x="640" y="57" font-family="'Barlow Condensed', sans-serif" font-weight="700" font-size="9" fill="#E84F9C" letter-spacing="1">SCALED COMMUNITY</text>
+
+      <text x="240" y="312" font-family="'Barlow', sans-serif" font-size="11" font-style="italic" fill="#b04e2c">~150 to 250</text>
+      <text x="440" y="316" font-family="'Barlow', sans-serif" font-size="11" font-style="italic" fill="#b04e2c">drifting</text>
+      <text x="640" y="319" font-family="'Barlow', sans-serif" font-size="11" font-style="italic" fill="#b04e2c">community fades</text>
+
+    </svg>
+    <div class="chart-caption">Year 1 buys break-even. Year 2 puts the conference into profit. By Year 3 the unit is producing assets, content, and audience growth at a level you couldn't reach with hired hands. The curve doesn't flatten, it accelerates.</div>
+  </div>
+
+  <p style="margin-top: 24px;">The scenario above is illustrative, not promised. Ticket sales depend on programme strength, weather, news cycles, none of which Polynize controls. What we <em>do</em> control is whether the marketing function is <strong>actually running</strong> in the months leading up to the event, instead of waiting for evenings you don't have. And whether the work done in Year 1 keeps producing in Year 2 and Year 3.</p>
+</section>
+</div>
+
+<!-- 06 STATUS QUO -->
+<div class="wrap">
+<section>
+  <div class="section-no">06 · The status quo</div>
+  <h2>Here's what this would <span class="pink-underline">cost you otherwise</span>.</h2>
+  <p class="section-intro">The benchmark isn't what you've spent on marketing in past years (close to nothing). It's the team you'd hire if you were doing this properly. We want to set this number first, so the commercial structure on the next page has something honest to anchor against.</p>
+
+  <div class="investment">
+    <div class="label">Conventional Alternative · the team you'd otherwise hire</div>
+    <h3>5 FTE Conference Marketing Team To Do What This Unit Will Do.</h3>
+
+    <div class="invest-grid">
+      <div class="invest-cell">
+        <div class="l">Marketing Manager</div>
+        <div class="v">A$80 to $100k</div>
+        <div class="d">Senior, capable of strategy and execution</div>
+      </div>
+      <div class="invest-cell">
+        <div class="l">Content + Social</div>
+        <div class="v">A$55 to $70k</div>
+        <div class="d">Posts daily, manages calendars</div>
+      </div>
+      <div class="invest-cell">
+        <div class="l">Video Editor (PT)</div>
+        <div class="v">A$30 to $45k</div>
+        <div class="d">Cuts shorts from archive, post-production</div>
+      </div>
+    </div>
+
+    <div class="invest-divider"></div>
+
+    <div class="total-row">
+      <div class="lbl">Annualised baseline · loaded with super, tools, recruitment, ramp time</div>
+      <div class="amt">A$180k</div>
+    </div>
+
+    <p style="color: rgba(255,255,255,0.85); margin-top: 32px; font-size: 17px; line-height: 1.5; font-weight: 400; max-width: 60ch;">
+      That's the figure to keep in mind. A team like this, hired conventionally, takes <strong style="color: var(--pink);">3 to 6 months to ramp before output starts</strong>, and the conference is five months away. The unit we're proposing on the next page runs at a fraction of that cost, live in 30 to 45 days.
+    </p>
+  </div>
+</section>
+</div>
+
+<!-- 07 COMMERCIAL -->
+<div class="wrap">
+<section>
+  <div class="section-no">07 · Commercial structure</div>
+  <h2>Three phases. <span class="pink-block">Each one stretches</span> as long or short as you need.</h2>
+  <p class="section-intro">We've moved from <em>Map / Build / Maintain</em> to <strong>Model / Build / Maintain</strong>. The first phase is no longer just diagnostic, it produces a working cognitive model of how the team will think, decide, and stay on-brand. <strong>The Model phase determines the shape of Build and Maintain</strong>, which is why their figures are ranges, not fixed numbers.</p>
+
+  <div class="phase-grid">
+    <div class="phase-card model">
+      <div class="stage">PHASE 01</div>
+      <h3>Model</h3>
+      <div class="duration">flexible · typically 1 to 3 weeks</div>
+      <p>We sit down together (you, Sophie, and us) and produce the cognitive modelling that will drive the agents. Voice, brand, what's on-message vs off, the editorial range, the inquiry types Warden should and shouldn't answer.</p>
+      <ul>
+        <li>Brand &amp; voice document (human + agent readable)</li>
+        <li>Cognitive model for each of the five agents</li>
+        <li>Confirmed scope on video pipeline (Atlas)</li>
+        <li>Confirmed scope on Squarespace blog API</li>
+        <li>Confirmed escalation &amp; review-queue rules</li>
+        <li>Sized scope for Build and Maintain phases</li>
+      </ul>
+      <div class="phase-price">
+        <div class="figure">A$2,000</div>
+        <div class="unit">One-Time · GST Inclusive</div>
+        <div class="stretch-note">Stretch as long as needed. Locked outcome.</div>
+      </div>
+    </div>
+
+    <div class="phase-card build">
+      <div class="stage">PHASE 02</div>
+      <h3>Build</h3>
+      <div class="duration">flexible · typically 4 to 8 weeks</div>
+      <p>The unit gets built, trained, sandbox-tested, and connected to the channels. Atlas tackles the video pipeline carefully, scoped from the Model phase. We sequence the build in stages so something useful is running every two weeks, not waiting for a single big-bang launch.</p>
+      <ul>
+        <li>Five agents on Polynize infrastructure (AWS Sydney)</li>
+        <li>Slack workspace as your team's command surface</li>
+        <li>Channel connections: IG, LinkedIn, TikTok, YouTube, Mailchimp, Squarespace</li>
+        <li>Atlas Phase 1: archive ingestion, transcription, brief-to-clip</li>
+        <li>Cognitive guardrails + alert thresholds</li>
+        <li>Two weeks of supervised co-running before handover</li>
+      </ul>
+      <div class="phase-price">
+        <div class="figure">A$10k<span class="small"> to A$25k</span></div>
+        <div class="unit">Spectrum · Sized After Modelling</div>
+        <div class="price-note">The Model phase determines exactly what we need to build. Payable in monthly instalments as we build out, stage by stage.</div>
+      </div>
+    </div>
+
+    <div class="phase-card maintain">
+      <div class="stage">PHASE 03</div>
+      <h3>Maintain</h3>
+      <div class="duration">recurring · month-to-month</div>
+      <p>The team is yours. We keep it healthy: infrastructure, model upgrades, cognitive tuning based on what's actually working in the wild, troubleshooting, monthly review. As the conference approaches, we tune harder. After it's done, you can pause or scale down.</p>
+      <ul>
+        <li>AWS infrastructure &amp; uptime</li>
+        <li>Inference costs (Kimi K2.6 / equivalent)</li>
+        <li>Monthly cognitive tuning based on Pulse signals</li>
+        <li>Quarterly review with Erfan + Sophie</li>
+        <li>Direct line for issues during peak conference run-up</li>
+        <li>Pause or scale-down available month-to-month</li>
+      </ul>
+      <div class="phase-price">
+        <div class="figure">A$399<span class="small"> to A$999/mo</span></div>
+        <div class="unit">Scales With Team Size</div>
+        <div class="price-note">Maintenance scales with the size of the team built. The exact monthly figure is set after the Model phase, alongside Build.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top: 40px;">
+    <span class="h">A note on video</span>
+    Video editing is the trickiest part of this build. We've seen it ourselves: the gap between "AI can edit video" and "AI can edit video <strong>for a brand that requires nuance</strong>" is wide. Atlas Phase 1 keeps the scope to what we know works reliably: <strong>ingest, transcribe, tag, retrieve clips on brief.</strong> Programmatic video assembly, cross-format adaptation, and the AI-NAS auto-publishing pipeline are flagged as <strong>Phase 2 (post-conference).</strong> We'd rather under-promise here and earn the trust to build more later.
+  </div>
+</section>
+</div>
+
+<!-- 08 WHAT WE DON'T KNOW YET -->
+<div class="wrap">
+<section>
+  <div class="section-no">08 · What we don't know yet</div>
+  <h2>The questions <span class="pink-underline">we'll answer in modelling</span>.</h2>
+  <p class="section-intro">Things we'll lock down in the Model phase or before. We'd rather flag them now than discover them mid-build.</p>
+
+  <div class="open-questions">
+    <div class="oq">
+      <div class="q">Squarespace API capability for blog publishing</div>
+      <div class="a">Looks possible from initial check, to be confirmed during Model phase before being committed to the build.</div>
+    </div>
+    <div class="oq">
+      <div class="q">Mailchimp replacement, if any</div>
+      <div class="a">You mentioned wanting to leave Mailchimp ($120/mo). Options exist (Buttondown, ConvertKit, self-hosted). To be costed in Model phase.</div>
+    </div>
+    <div class="oq">
+      <div class="q">Volume of usable archive footage</div>
+      <div class="a">"Hundreds of hours" needs an inventory pass. We'll spend a small block of Model time understanding what's actually there before scoping Atlas.</div>
+    </div>
+    <div class="oq">
+      <div class="q">TikTok account setup &amp; first content sequence</div>
+      <div class="a">No existing account. Setup, voice testing, and the first three weeks of content sequencing are part of Build, not Model.</div>
+    </div>
+    <div class="oq">
+      <div class="q">Sophie's involvement in modelling</div>
+      <div class="a">Sophie is pedantic about brand consistency (rightly). We'd recommend she's in the Model phase brand and voice session.</div>
+    </div>
+    <div class="oq">
+      <div class="q">Air-gapped home system (Phase 2)</div>
+      <div class="a">Out of scope for this engagement. Worth revisiting late in 2026 once the Mac Studio refresh ships and the conference cycle is behind you.</div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- 09 NEXT STEP, COMMIT TO MODELLING -->
+<div class="wrap">
+<section style="border-bottom: none; padding-bottom: 0;">
+  <div class="commit-section">
+    <div class="section-no">09 · Next step</div>
+    <h2>Lock in <span class="pink-block">the modelling phase</span>.</h2>
+    <p class="lead-copy">The next logical step isn't to commit to the whole engagement. It's to commit to <strong>understanding the problem properly</strong>. The Model phase is where we sit down with you and Sophie, map the cognitive territory, and produce the working model that determines exactly what gets built and what it costs. <strong>It's a complete artefact in its own right</strong>, useful to you whether or not you proceed to Build with us.</p>
+
+    <div class="commit-card">
+      <div>
+        <div class="ck-tag">PHASE 01 · MODEL</div>
+        <div class="ck-title">Lock In The Modelling</div>
+        <div class="ck-desc">A brand and voice document, a cognitive model for each of the five agents, sized scope for Build and Maintain, confirmed scope on the video pipeline and Squarespace integration. Yours to keep, regardless of what happens next.</div>
+      </div>
+      <div class="ck-price">
+        <div class="figure">A$2,000</div>
+        <div class="unit">One-Time · GST Inclusive</div>
+      </div>
+    </div>
+
+    <p class="lead-copy" style="margin-top: 24px; margin-bottom: 28px; max-width: 64ch;">Take a few days. Read this with Sophie. Mark up anything that doesn't sit right. Then let's chat next week, walk through it together, and if it lands, we kick off Model the week after that.</p>
+
+    <div class="commit-row">
+      <a class="btn primary" href="https://calendly.com/marrscoiro/meeting30">Book a time next week →</a>
+      <a class="btn ghost" href="mailto:marrs@polynize.io">Email Marrs directly</a>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="wrap">
+<footer>
+  <div>POLYNIZE · COGNITIVE ENGINEERING &amp; AGENT DEPLOYMENT</div>
+  <div>PREPARED FOR ERFAN DALIRI · NEWKIND 2026 · V1.3</div>
+</footer>
+</div>
+
+</body>
+</html>
