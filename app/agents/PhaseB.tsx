@@ -277,8 +277,8 @@ export function PhaseB({ answers, preloaded, onDataReady }: Props) {
             </div>
 
             <div className={s.pricingFootnote}>
-              Indicative pricing: starting from <strong>$5,000 AUD</strong> +{' '}
-              <strong>$399/mo per agent</strong>
+              Indicative pricing: starting from <strong>$5K AUD</strong> +{' '}
+              <strong>$399/mo</strong>
             </div>
 
             <div className={s.ctas}>
