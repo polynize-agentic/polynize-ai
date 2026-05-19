@@ -382,11 +382,13 @@ function HowIcon({ kind }: { kind: 'map' | 'model' | 'build' | 'operate' }) {
       </svg>
     );
   }
-  // operate (clock)
+  // operate (rocket)
   return (
     <svg {...props}>
-      <circle cx="14" cy="14" r="9" />
-      <path d="M14 8v6l4 2" />
+      <path d="M14 3c3 3 4 9 4 14h-8c0-5 1-11 4-14z" />
+      <circle cx="14" cy="10" r="2.2" />
+      <path d="M10 14 6 20l4-1.5M18 14l4 6-4-1.5" />
+      <path d="M14 20v4" />
     </svg>
   );
 }
