@@ -195,9 +195,10 @@ function DirCAjQuoteProblem() {
       <AjQuoteCard
         body={
           <>
-            Every investment decision needed weeks of groundwork before anyone could make a call.
-            We needed a team around us, we just didn&apos;t know what that looked like, until we
-            met Polynize.
+            Every investment decision demanded weeks of groundwork before capital deployment was
+            even on the table. We knew AI could enhance our diligence and execution, we just
+            lacked a clear model for implementation. Polynize turned that ambition into a working
+            team.
           </>
         }
       />
