@@ -149,10 +149,10 @@
   color: var(--text);
 }
 /*
- * Capability cell — three-layer glow recipe (gradient + 1px border in the
- * full hex + outer glow + inner glow). Empty cells fall back to a 6%-opacity
- * hairline so empty rows read as scaffolding. Identical recipe to the
- * homepage preview and Blueprint heat map.
+ * Capability cell — solid fill + 1px border in the full hex + outer glow +
+ * inner glow. Empty cells fall back to a 6%-opacity hairline so empty rows
+ * read as scaffolding. Identical recipe to the homepage preview and Blueprint
+ * heat map.
  */
 .cell {
   height: 28px;
@@ -162,21 +162,21 @@
   margin: 0 6px;
 }
 .cellHuman {
-  background: linear-gradient(90deg, transparent, rgba(232, 122, 77, 0.25), transparent);
+  background: rgba(232, 122, 77, 0.6);
   border-color: #e87a4d;
   box-shadow:
     0 0 20px rgba(232, 122, 77, 0.15),
     inset 0 0 12px rgba(232, 122, 77, 0.08);
 }
 .cellHybrid {
-  background: linear-gradient(90deg, transparent, rgba(232, 196, 77, 0.25), transparent);
+  background: rgba(232, 196, 77, 0.6);
   border-color: #e8c44d;
   box-shadow:
     0 0 20px rgba(232, 196, 77, 0.15),
     inset 0 0 12px rgba(232, 196, 77, 0.08);
 }
 .cellAgent {
-  background: linear-gradient(90deg, transparent, rgba(77, 232, 160, 0.25), transparent);
+  background: rgba(77, 232, 160, 0.6);
   border-color: #4de8a0;
   box-shadow:
     0 0 20px rgba(77, 232, 160, 0.15),

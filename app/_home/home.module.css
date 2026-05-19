@@ -504,7 +504,7 @@
  * allocation is rendered (homepage preview, Phase B live reveal, Blueprint
  * heat map). Three states: coral (human), amber (hybrid), mint (agent).
  *
- * Layer 1: horizontal linear gradient that fades in/out from the centre.
+ * Layer 1: solid fill in the brand colour.
  * Layer 2: 1px solid border in the full hex.
  * Layer 3: outer glow + inner glow (combined box-shadow).
  *
@@ -518,21 +518,21 @@
   transition: all 0.3s;
 }
 .dcMapCellOn.dcCoral {
-  background: linear-gradient(90deg, transparent, rgba(232, 122, 77, 0.25), transparent);
+  background: rgba(232, 122, 77, 0.6);
   border-color: #e87a4d;
   box-shadow:
     0 0 20px rgba(232, 122, 77, 0.15),
     inset 0 0 12px rgba(232, 122, 77, 0.08);
 }
 .dcMapCellOn.dcAmber {
-  background: linear-gradient(90deg, transparent, rgba(232, 196, 77, 0.25), transparent);
+  background: rgba(232, 196, 77, 0.6);
   border-color: #e8c44d;
   box-shadow:
     0 0 20px rgba(232, 196, 77, 0.15),
     inset 0 0 12px rgba(232, 196, 77, 0.08);
 }
 .dcMapCellOn.dcMint {
-  background: linear-gradient(90deg, transparent, rgba(77, 232, 160, 0.25), transparent);
+  background: rgba(77, 232, 160, 0.6);
   border-color: #4de8a0;
   box-shadow:
     0 0 20px rgba(77, 232, 160, 0.15),
