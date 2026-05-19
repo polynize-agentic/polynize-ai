@@ -7,9 +7,6 @@ import { TrackedLink } from './_components/TrackedLink';
 const BOOKING_URL = 'https://calendly.com/marrscoiro/meeting30';
 const POLYNIZE_IO = 'https://polynize.io';
 const YOUTUBE_CHANNEL = 'https://www.youtube.com/@polynize.agentic';
-const SPOTIFY_URL = 'https://open.spotify.com/show/polynize';
-const APPLE_PODCASTS_URL = 'https://podcasts.apple.com/au/podcast/polynize';
-const RSS_URL = '/podcast.rss';
 const LINKEDIN_URL = 'https://www.linkedin.com/company/polynize';
 const INSTAGRAM_URL = 'https://www.instagram.com/polynize.ai';
 
@@ -299,12 +296,18 @@ const HOW_STEPS = [
   },
   {
     n: '02',
-    t: 'Transform',
+    t: 'Model',
+    icon: 'model' as const,
+    d: 'We model the cognition each capability needs and build a comprehensive cognitive model of the work. That model gets installed into your agents.',
+  },
+  {
+    n: '03',
+    t: 'Build',
     icon: 'build' as const,
     d: 'We design and engineer the agent team. Connectors, handoffs, human touchpoints. First agent live in 48 hours, on average.',
   },
   {
-    n: '03',
+    n: '04',
     t: 'Operate',
     icon: 'operate' as const,
     d: 'We run the team alongside you and tune it as the work shifts. You stay the accountable human at the centre. We carry the rest.',
@@ -323,7 +326,7 @@ function DirCHow() {
         </h2>
       </div>
 
-      <div className={`${s.dcHowGrid} ${s.dcHowGrid3}`}>
+      <div className={s.dcHowGrid}>
         {HOW_STEPS.map((step) => (
           <div key={step.n} className={s.dcHowCard}>
             <div className={s.dcHowNum}>{step.n}</div>
@@ -339,7 +342,7 @@ function DirCHow() {
   );
 }
 
-function HowIcon({ kind }: { kind: 'map' | 'build' | 'operate' }) {
+function HowIcon({ kind }: { kind: 'map' | 'model' | 'build' | 'operate' }) {
   const props = {
     width: 28,
     height: 28,
@@ -359,13 +362,23 @@ function HowIcon({ kind }: { kind: 'map' | 'build' | 'operate' }) {
       </svg>
     );
   }
-  if (kind === 'build') {
+  if (kind === 'model') {
     return (
       <svg {...props}>
-        <path d="M5 23l6-6" />
-        <path d="M11 17l4 4 8-8-4-4z" />
-        <path d="M15 13l4 4" />
-        <circle cx="6.5" cy="21.5" r="1.5" />
+        <circle cx="14" cy="6" r="2.6" />
+        <circle cx="6" cy="21" r="2.6" />
+        <circle cx="22" cy="21" r="2.6" />
+        <path d="M12.3 8.1 7.7 18.9M15.7 8.1l4.6 10.8M8.6 21h10.8" />
+      </svg>
+    );
+  }
+  if (kind === 'build') {
+    // Hard hat — brim, dome, centre ridge.
+    return (
+      <svg {...props}>
+        <path d="M3.5 19h21" />
+        <path d="M7 19a7 10 0 0 1 14 0" />
+        <path d="M14 9v10" />
       </svg>
     );
   }
@@ -439,19 +452,6 @@ function DirCPodcast() {
           </TrackedLink>
         </div>
       </div>
-
-      <div className={s.dcPodPlatforms}>
-        <a href={YOUTUBE_CHANNEL} target="_blank" rel="noopener noreferrer">
-          YouTube ↗
-        </a>
-        <a href={SPOTIFY_URL} target="_blank" rel="noopener noreferrer">
-          Spotify ↗
-        </a>
-        <a href={APPLE_PODCASTS_URL} target="_blank" rel="noopener noreferrer">
-          Apple Podcasts ↗
-        </a>
-        <a href={RSS_URL}>RSS ↗</a>
-      </div>
     </section>
   );
 }
@@ -476,13 +476,13 @@ function DirCFinal() {
         <div className={s.dcFinalStrip} />
         <div className={s.dcSectionEyebrow}>Ready when you are</div>
         <h2 className={s.dcFinalTitle}>
-          Your bottleneck
+          Map your bottleneck
           <br />
-          won&apos;t map itself.
+          in 5 minutes.
         </h2>
         <p className={s.dcFinalLede}>
-          Forty minutes with us. A capability map of the one thing slowing you down. A team you
-          could actually run.
+          Once you see your bottleneck mapped this way, you can&apos;t unsee it. Five minutes will
+          show you something you&apos;ve never seen before.
         </p>
         <div className={s.dcCtaRow} style={{ justifyContent: 'center' }}>
           <TrackedLink

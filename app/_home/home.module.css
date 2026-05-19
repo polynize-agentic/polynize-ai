@@ -907,27 +907,6 @@
   align-self: flex-start;
   text-decoration: none;
 }
-.dcPodPlatforms {
-  display: flex;
-  gap: 28px;
-  margin-top: 36px;
-  padding-top: 28px;
-  border-top: 1px solid var(--hairline);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-2);
-  flex-wrap: wrap;
-}
-.dcPodPlatforms a {
-  color: inherit;
-  text-decoration: none;
-  transition: color 0.15s;
-}
-.dcPodPlatforms a:hover {
-  color: var(--mint);
-}
-
 /* ===== Final CTA ===== */
 .dcFinal {
   max-width: 1240px;
