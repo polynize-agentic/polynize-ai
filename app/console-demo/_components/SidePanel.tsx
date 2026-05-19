@@ -1,5 +1,5 @@
-import type { Project, Task } from '@/lib/console/types';
-import { AGENT_BY_ID, HUMAN_BY_ID } from '@/lib/console/seed';
+import type { Project, Task } from '@/lib/console-demo/types';
+import { AGENT_BY_ID, HUMAN_BY_ID } from '@/lib/console-demo/seed';
 import { AgentAvatar } from './Avatar';
 import { AutonomyDial } from './AutonomyDial';
 import p from './projects.module.css';

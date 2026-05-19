@@ -1,8 +1,8 @@
 'use client';
 
 import { DndContext, useDroppable, closestCorners, type DragEndEvent } from '@dnd-kit/core';
-import type { Task, TaskStatus } from '@/lib/console/types';
-import { TASK_STATUSES } from '@/lib/console/constants';
+import type { Task, TaskStatus } from '@/lib/console-demo/types';
+import { TASK_STATUSES } from '@/lib/console-demo/constants';
 import { TaskCard } from './TaskCard';
 import p from './projects.module.css';
 

@@ -1,4 +1,4 @@
-import type { Project, Task, TaskStatus, AutonomyLevel, ApexPlan as ApexPlanT } from '@/lib/console/types';
+import type { Project, Task, TaskStatus, AutonomyLevel, ApexPlan as ApexPlanT } from '@/lib/console-demo/types';
 import { ApexPlan } from './ApexPlan';
 import { TaskBoard } from './TaskBoard';
 import { SidePanel } from './SidePanel';

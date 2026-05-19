@@ -1,4 +1,4 @@
-import type { Tweaks } from '@/lib/console/types';
+import type { Tweaks } from '@/lib/console-demo/types';
 import { SettingsIcon, XIcon } from './Icons';
 import s from '../console.module.css';
 

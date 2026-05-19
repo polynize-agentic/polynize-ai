@@ -1,0 +1,187 @@
+.eyebrow {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--text-3);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.titleAccent {
+  color: var(--mint);
+}
+
+/* ===== Gate ===== */
+.gateRoot {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 20px;
+}
+.gateCard {
+  width: 100%;
+  max-width: 480px;
+  padding: 36px 36px 32px;
+  background: var(--tac-surface);
+  border-radius: 18px;
+  box-shadow: var(--tac-shadow-raised);
+  display: flex;
+  flex-direction: column;
+}
+.gateTitle {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: clamp(30px, 4.5vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0 0 14px;
+}
+.gateLede {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--text-2);
+  margin: 0 0 24px;
+}
+.gateInput {
+  appearance: none;
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--tac-inset);
+  border: 0;
+  border-radius: 10px;
+  box-shadow: var(--tac-shadow-inset);
+  color: var(--text);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  outline: none;
+  transition: box-shadow var(--tac-transition);
+}
+.gateInput::placeholder {
+  color: var(--text-3);
+}
+.gateInput:focus-visible {
+  box-shadow:
+    var(--tac-shadow-inset),
+    0 0 0 2px rgba(105, 252, 203, 0.5);
+}
+.gateInput[aria-invalid='true'] {
+  box-shadow:
+    var(--tac-shadow-inset),
+    0 0 0 1.5px rgba(255, 122, 107, 0.6);
+}
+.gateError {
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--coral);
+  letter-spacing: 0.005em;
+}
+.gateNote {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--mint);
+  line-height: 1.5;
+}
+.gateButton {
+  margin-top: 18px;
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  background: var(--mint);
+  color: #0a1521;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 14.5px;
+  padding: 13px 18px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  letter-spacing: 0.01em;
+  transition: transform var(--tac-transition), box-shadow var(--tac-transition);
+}
+.gateButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(105, 252, 203, 0.25);
+}
+.btnArr {
+  display: inline-block;
+  transition: transform var(--tac-transition);
+}
+.gateButton:hover .btnArr {
+  transform: translateX(2px);
+}
+
+/* ===== Authenticated shell ===== */
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.topNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--tac-divider, rgba(255, 255, 255, 0.06));
+  background: var(--tac-surface);
+}
+.userBlock {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.userEmail {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--text-2);
+  letter-spacing: 0.02em;
+}
+.signOutBtn {
+  appearance: none;
+  border: 1px solid var(--tac-divider, rgba(255, 255, 255, 0.08));
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 12.5px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color var(--tac-transition), border-color var(--tac-transition);
+}
+.signOutBtn:hover {
+  color: var(--text);
+  border-color: var(--text-3);
+}
+.main {
+  flex: 1;
+  padding: 48px 28px;
+}
+
+/* ===== Placeholder page ===== */
+.placeholder {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.placeholderTitle {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+.placeholderEmail {
+  font-size: 14.5px;
+  color: var(--text-2);
+  margin: 0;
+}
+.placeholderNote {
+  font-size: 14.5px;
+  color: var(--text-3);
+  line-height: 1.55;
+  margin: 0 0 24px;
+}

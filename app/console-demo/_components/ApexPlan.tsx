@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import type { ApexPlan as ApexPlanT } from '@/lib/console/types';
+import type { ApexPlan as ApexPlanT } from '@/lib/console-demo/types';
 import p from './projects.module.css';
 
 type Props = {

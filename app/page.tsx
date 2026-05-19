@@ -536,7 +536,7 @@ function DirCFooter() {
             links={[
               ['polynize.io', POLYNIZE_IO, true],
               ['Brand', '/brand', false],
-              ['Console', '/console', false],
+              ['Console', '/console-demo', false],
             ]}
           />
           <FootCol

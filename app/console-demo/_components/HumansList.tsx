@@ -1,4 +1,4 @@
-import type { Human } from '@/lib/console/types';
+import type { Human } from '@/lib/console-demo/types';
 import { HumanAvatar } from './Avatar';
 import s from '../console.module.css';
 import a from './agents.module.css';

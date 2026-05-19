@@ -1,4 +1,4 @@
-import type { Agent, Task } from '@/lib/console/types';
+import type { Agent, Task } from '@/lib/console-demo/types';
 import { AgentAvatar } from './Avatar';
 import s from '../console.module.css';
 import a from './agents.module.css';

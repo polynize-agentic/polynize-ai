@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import type { Agent, Human } from '@/lib/console/types';
+import type { Agent, Human } from '@/lib/console-demo/types';
 import s from '../console.module.css';
 
 type Size = 'sm' | 'md' | 'lg' | 'xl' | 'xxl';

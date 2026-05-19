@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { Agent, AutonomyLevel, Project, Task } from '@/lib/console/types';
-import { AGENTS, AGENT_BY_ID } from '@/lib/console/seed';
+import type { Agent, AutonomyLevel, Project, Task } from '@/lib/console-demo/types';
+import { AGENTS, AGENT_BY_ID } from '@/lib/console-demo/seed';
 import { AutonomyDial } from './AutonomyDial';
 import { AgentAvatar } from './Avatar';
 import { XIcon } from './Icons';

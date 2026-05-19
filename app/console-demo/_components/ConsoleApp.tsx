@@ -8,8 +8,8 @@ import type {
   Tab,
   TaskStatus,
   Tweaks,
-} from '@/lib/console/types';
-import { DEFAULT_TWEAKS } from '@/lib/console/constants';
+} from '@/lib/console-demo/types';
+import { DEFAULT_TWEAKS } from '@/lib/console-demo/constants';
 import {
   AGENTS,
   AGENT_BY_ID,
@@ -17,9 +17,9 @@ import {
   PROJECTS,
   SEED_ACTIVITY,
   TASKS,
-} from '@/lib/console/seed';
-import { loadPersisted, savePersisted, clearPersisted, SEED_STATE } from '@/lib/console/persist';
-import { simulationTick } from '@/lib/console/simulation';
+} from '@/lib/console-demo/seed';
+import { loadPersisted, savePersisted, clearPersisted, SEED_STATE } from '@/lib/console-demo/persist';
+import { simulationTick } from '@/lib/console-demo/simulation';
 import { Shell } from './Shell';
 import { TweaksPanel } from './TweaksPanel';
 import { Dashboard } from './Dashboard';

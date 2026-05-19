@@ -1,8 +1,8 @@
 'use client';
 
 import { useDraggable } from '@dnd-kit/core';
-import type { Task } from '@/lib/console/types';
-import { AGENT_BY_ID } from '@/lib/console/seed';
+import type { Task } from '@/lib/console-demo/types';
+import { AGENT_BY_ID } from '@/lib/console-demo/seed';
 import { AgentAvatar } from './Avatar';
 import { CheckIcon, XIcon, SparkleIcon } from './Icons';
 import p from './projects.module.css';

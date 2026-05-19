@@ -1,8 +1,8 @@
 import Image from 'next/image';
-import type { Tab } from '@/lib/console/types';
+import type { Tab } from '@/lib/console-demo/types';
 import { BellIcon, MoonIcon, SunIcon } from './Icons';
 import { HumanAvatar } from './Avatar';
-import { HUMAN_BY_ID } from '@/lib/console/seed';
+import { HUMAN_BY_ID } from '@/lib/console-demo/seed';
 import s from '../console.module.css';
 
 const TABS: { key: Tab; label: string }[] = [

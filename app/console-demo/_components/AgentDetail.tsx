@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import type { Agent, Task } from '@/lib/console/types';
-import { PROJECT_BY_ID } from '@/lib/console/seed';
+import type { Agent, Task } from '@/lib/console-demo/types';
+import { PROJECT_BY_ID } from '@/lib/console-demo/seed';
 import { AgentAvatar } from './Avatar';
 import { XIcon } from './Icons';
 import a from './agents.module.css';

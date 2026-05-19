@@ -1,13 +1,24 @@
-import type { Metadata } from 'next';
-import { ConsoleApp } from './_components/ConsoleApp';
+import { getCurrentUserEmail } from '@/lib/console-auth';
+import { signOutAction } from './_actions';
+import s from './_components/sign-in-gate.module.css';
 
-export const metadata: Metadata = {
-  title: 'Agent Team Console · polynize.ai',
-  description:
-    'A lifelike demo of the Polynize Agent Team Console. Multi-agent workspace for a mid-sized law firm.',
-  robots: { index: false, follow: false },
-};
+export default async function ConsolePage() {
+  const email = await getCurrentUserEmail();
 
-export default function ConsolePage() {
-  return <ConsoleApp />;
+  return (
+    <div className={s.placeholder}>
+      <h1 className={s.placeholderTitle}>Welcome to PAM Console</h1>
+      <p className={s.placeholderEmail}>
+        Signed in as <strong>{email}</strong>
+      </p>
+      <p className={s.placeholderNote}>
+        Coming soon: master client index, per-client Blueprint dashboards.
+      </p>
+      <form action={signOutAction}>
+        <button type="submit" className={s.gateButton}>
+          Sign out <span className={s.btnArr}>→</span>
+        </button>
+      </form>
+    </div>
+  );
 }

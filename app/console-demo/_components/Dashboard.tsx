@@ -1,7 +1,7 @@
-import type { ActivityItem, Agent, ActivityKind, Project, Task } from '@/lib/console/types';
-import { AGENT_BY_ID, PROJECT_BY_ID } from '@/lib/console/seed';
+import type { ActivityItem, Agent, ActivityKind, Project, Task } from '@/lib/console-demo/types';
+import { AGENT_BY_ID, PROJECT_BY_ID } from '@/lib/console-demo/seed';
 import { AgentAvatar, HumanAvatar } from './Avatar';
-import { HUMAN_BY_ID } from '@/lib/console/seed';
+import { HUMAN_BY_ID } from '@/lib/console-demo/seed';
 import { PlusIcon } from './Icons';
 import { AjTeamDiagram } from '@/app/_components/AjTeamDiagram';
 import s from '../console.module.css';

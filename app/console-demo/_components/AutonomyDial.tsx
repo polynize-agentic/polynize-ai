@@ -1,5 +1,5 @@
-import type { AutonomyLevel } from '@/lib/console/types';
-import { AUTONOMY_LEVELS } from '@/lib/console/seed';
+import type { AutonomyLevel } from '@/lib/console-demo/types';
+import { AUTONOMY_LEVELS } from '@/lib/console-demo/seed';
 import p from './projects.module.css';
 
 type Props = {
