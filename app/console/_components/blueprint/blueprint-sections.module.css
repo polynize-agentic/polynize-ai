@@ -1,0 +1,616 @@
+/* ============================================================
+   Tokens — scoped via :global to the Tactile body. The page-level
+   .container in blueprint.module.css also sets these; declared here
+   so CSS modules in this file can reference them via var().
+   ============================================================ */
+
+/* ============================================================
+   ReadinessStrip
+   ============================================================ */
+.readinessStrip {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 0;
+  background: var(--bp-surface);
+  border-radius: 18px;
+  padding: 24px 28px;
+  box-shadow: var(--tac-shadow-raised);
+  margin-bottom: 48px;
+}
+
+.readinessCell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 24px;
+  position: relative;
+}
+
+.readinessCell + .readinessCell {
+  box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.4),
+    inset 2px 0 0 rgba(255, 255, 255, 0.025);
+}
+
+.readinessCellWide {
+  padding-left: 4px;
+}
+
+.cellLabel {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bp-text-3);
+}
+
+.cellValue {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--bp-text);
+  line-height: 1.1;
+}
+
+.cellSub {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--bp-text-2);
+  letter-spacing: 0.04em;
+}
+
+.readinessBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.readinessRingWrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.readinessRing {
+  display: block;
+}
+
+.readinessPercent {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--bp-mint);
+}
+
+.readinessSubtext {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--bp-text-2);
+  letter-spacing: 0.02em;
+}
+
+/* ============================================================
+   CapabilityMapUnit
+   ============================================================ */
+.capMapUnit {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.capGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.capGroupTitle {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--bp-text);
+}
+
+.capTable {
+  background: var(--bp-surface);
+  border-radius: 14px;
+  box-shadow: var(--tac-shadow-raised);
+  overflow: hidden;
+}
+
+.capRow {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 68px 68px 68px 180px;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 20px;
+  font-size: 13.5px;
+  color: var(--bp-text-2);
+}
+
+.capRow + .capRow {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.capRowHead {
+  background: rgba(0, 0, 0, 0.18);
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.capRowHead .capRowId,
+.capRowHead .capRowName,
+.capCellHead,
+.capRowOwnerHead {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-3);
+}
+
+.capRowId {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--bp-text-3);
+  letter-spacing: 0.04em;
+}
+
+.capRowName {
+  color: var(--bp-text);
+  line-height: 1.45;
+}
+
+.capCell,
+.capCellHead {
+  width: 56px;
+  height: 22px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+
+.capCellHead {
+  height: 14px;
+  width: auto;
+  border-radius: 0;
+  justify-content: center;
+}
+
+.capCell {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 1px 1px 2px rgba(0, 0, 0, 0.3);
+  color: transparent;
+}
+
+.capCellHuman {
+  background: rgba(255, 143, 163, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 143, 163, 0.55);
+  color: var(--bp-coral);
+}
+
+.capCellHybrid {
+  background: rgba(255, 196, 107, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 196, 107, 0.55);
+  color: var(--bp-amber);
+}
+
+.capCellAgent {
+  background: rgba(105, 252, 203, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(105, 252, 203, 0.55);
+  color: var(--bp-mint);
+}
+
+.capRowOwner,
+.capRowOwnerHead {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--bp-text-2);
+}
+
+.capRowOwnerNamed {
+  color: var(--bp-electric);
+}
+
+/* ============================================================
+   CapabilityMapAgent
+   ============================================================ */
+.capMapAgentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 18px;
+}
+
+.agentCard {
+  background: var(--bp-surface);
+  border-radius: 14px;
+  box-shadow: var(--tac-shadow-raised);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+}
+
+.agentCard::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 18px;
+  bottom: 18px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+}
+
+.agentCardAgent::before {
+  background: var(--bp-mint);
+  box-shadow: 0 0 14px rgba(105, 252, 203, 0.35);
+}
+
+.agentCardHuman::before {
+  background: var(--bp-electric);
+  box-shadow: 0 0 14px rgba(165, 193, 236, 0.35);
+}
+
+.agentCardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.agentCardName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--bp-text);
+}
+
+.agentCardAgent .agentCardName {
+  color: var(--bp-mint);
+}
+
+.agentCardHuman .agentCardName {
+  color: var(--bp-electric);
+}
+
+.agentCardRole {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--bp-text-3);
+  letter-spacing: 0.02em;
+}
+
+.agentCardDescription {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--bp-text-2);
+  margin: 0;
+}
+
+.agentCardList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.agentCardCap,
+.agentCardBoundary {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--bp-text-2);
+  padding-left: 14px;
+  position: relative;
+}
+
+.agentCardCap::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--bp-text-3);
+}
+
+.agentCardBoundary {
+  margin-top: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 6px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--bp-text-3);
+  letter-spacing: 0.01em;
+}
+
+/* ============================================================
+   GapRegister
+   ============================================================ */
+.gapRegister {
+  background: var(--bp-surface);
+  border-radius: 14px;
+  box-shadow: var(--tac-shadow-raised);
+  padding: 18px 24px 22px;
+}
+
+.gapTable {
+  display: flex;
+  flex-direction: column;
+}
+
+.gapRow {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1.8fr) 140px 180px 110px;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 0;
+  font-size: 13px;
+  color: var(--bp-text-2);
+}
+
+.gapRow + .gapRow {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.gapRowHead {
+  padding-top: 10px;
+  padding-bottom: 14px;
+}
+
+.gapRowHead .gapId,
+.gapRowHead .gapQuestion,
+.gapRowHead .gapOwner,
+.gapRowHead .gapBlocks,
+.gapRowHead .gapStatus {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-3);
+}
+
+.gapId {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--bp-text-3);
+}
+
+.gapQuestion {
+  color: var(--bp-text);
+  line-height: 1.45;
+}
+
+.gapOwner,
+.gapBlocks {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--bp-text-2);
+  letter-spacing: 0.02em;
+}
+
+.gapStatus {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.statusPill {
+  display: inline-block;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.statusOpen {
+  background: rgba(255, 196, 107, 0.12);
+  color: var(--bp-amber);
+  box-shadow: inset 0 0 0 1px rgba(255, 196, 107, 0.4);
+}
+
+.statusAnswered {
+  background: rgba(105, 252, 203, 0.12);
+  color: var(--bp-mint);
+  box-shadow: inset 0 0 0 1px rgba(105, 252, 203, 0.4);
+}
+
+.statusClosed {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--bp-text-3);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.gapFooter {
+  margin-top: 14px;
+  padding-top: 14px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--bp-text-2);
+  letter-spacing: 0.02em;
+}
+
+.gapFooter strong {
+  color: var(--bp-text);
+}
+
+/* ============================================================
+   TeamOrg
+   ============================================================ */
+.teamOrg {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.teamHumanPanel {
+  background: var(--bp-surface);
+  border-radius: 14px;
+  box-shadow: var(--tac-shadow-raised);
+  padding: 22px 26px;
+  position: relative;
+}
+
+.teamHumanPanel::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 18px;
+  bottom: 18px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--bp-coral);
+  box-shadow: 0 0 14px rgba(255, 143, 163, 0.35);
+}
+
+.teamHumanLabel {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bp-text-3);
+  margin-bottom: 8px;
+}
+
+.teamHumanName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+  color: var(--bp-coral);
+}
+
+.teamHumanRole {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--bp-text-3);
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+}
+
+.teamHumanDescription {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--bp-text-2);
+  margin: 0;
+}
+
+.teamChart {
+  background: var(--bp-inset);
+  box-shadow: var(--tac-shadow-inset);
+  border-radius: 12px;
+  padding: 22px 26px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--bp-mint);
+  white-space: pre;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.teamAgentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.teamAgentCard {
+  background: var(--bp-surface);
+  border-radius: 12px;
+  box-shadow: var(--tac-shadow-raised);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.teamAgentCard::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--bp-mint);
+  box-shadow: 0 0 12px rgba(105, 252, 203, 0.3);
+}
+
+.teamAgentName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--bp-mint);
+}
+
+.teamAgentRole {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--bp-text-3);
+  letter-spacing: 0.02em;
+}
+
+.teamAgentDescription {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--bp-text-2);
+  margin: 0;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 760px) {
+  .readinessStrip {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .readinessCell + .readinessCell {
+    box-shadow: none;
+  }
+
+  .capRow {
+    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-areas:
+      'id name'
+      'cells cells'
+      'owner owner';
+  }
+
+  .capRow > .capCell:nth-of-type(3),
+  .capRow > .capCell:nth-of-type(4),
+  .capRow > .capCell:nth-of-type(5) {
+    grid-area: auto;
+  }
+
+  .gapRow {
+    grid-template-columns: 30px minmax(0, 1fr) 100px;
+    grid-template-areas:
+      'id question status'
+      '. owner owner'
+      '. blocks blocks';
+  }
+}

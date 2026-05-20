@@ -1,20 +1,46 @@
+/* ============================================================
+   Blueprint page — Tactile theme tokens scoped here.
+   v2 mockup palette (cooler greys + bright coral/amber/electric)
+   layered on top of the existing --tac-* substrate from tactile.css.
+   ============================================================ */
 .container {
-  max-width: 960px;
+  /* Surface tokens (override --tac-* values for this subtree) */
+  --bp-bg: #161620;
+  --bp-surface: #1c1c2a;
+  --bp-surface-emphasised: #232342;
+  --bp-inset: #0f0f17;
+
+  /* Palette */
+  --bp-mint: #69fccb;
+  --bp-coral: #ff8fa3;
+  --bp-amber: #ffc46b;
+  --bp-electric: #a5c1ec;
+
+  /* Type tones */
+  --bp-text: rgba(245, 245, 247, 1);
+  --bp-text-2: #9090a8;
+  --bp-text-3: #5a5a72;
+
+  max-width: 1080px;
   margin: 0 auto;
   padding-bottom: 96px;
+  color: var(--bp-text);
 }
 
+/* ============================================================
+   Page header
+   ============================================================ */
 .header {
-  margin-bottom: 36px;
+  margin-bottom: 28px;
 }
 
 .eyebrow {
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
   font-size: 11px;
-  letter-spacing: 0.2em;
-  color: var(--text-3);
+  letter-spacing: 0.22em;
+  color: var(--bp-text-3);
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .title {
@@ -24,200 +50,226 @@
   letter-spacing: -0.03em;
   line-height: 1.05;
   margin: 0 0 16px;
-  color: var(--text);
+  color: var(--bp-text);
 }
 
 .backLink {
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
   font-size: 12.5px;
-  color: var(--text-3);
+  color: var(--bp-text-3);
   text-decoration: none;
   letter-spacing: 0.02em;
-  transition: color var(--tac-transition);
+  transition: color 120ms ease-out;
 }
 
 .backLink:hover {
-  color: var(--text-2);
+  color: var(--bp-text-2);
 }
 
-.intro {
-  margin-bottom: 48px;
-  font-size: 15.5px;
-  line-height: 1.65;
-  color: var(--text-2);
-}
-
+/* ============================================================
+   Section shell — wraps every section consistently
+   ============================================================ */
 .section {
-  margin-bottom: 64px;
+  margin-top: 56px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.sectionNumber {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--bp-mint);
 }
 
 .sectionTitle {
   font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  margin: 0 0 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--tac-divider, rgba(255, 255, 255, 0.06));
-  color: var(--text);
+  margin: 0;
+  color: var(--bp-text);
 }
 
 .sectionBody {
   font-size: 14.5px;
   line-height: 1.65;
-  color: var(--text-2);
+  color: var(--bp-text-2);
+}
+
+/* ============================================================
+   Markdown-rendered sections — Tactile panel wrapping
+   ============================================================ */
+.markdownPanel {
+  background: var(--bp-surface);
+  border-radius: 14px;
+  box-shadow: var(--tac-shadow-raised);
+  padding: 24px 28px;
+}
+
+.intro {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--bp-text-2);
+  margin-bottom: 36px;
 }
 
 /* Markdown elements rendered by react-markdown */
-
-.sectionBody h3,
+.markdownPanel h3,
 .intro h3 {
   font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  font-size: 17.5px;
+  font-size: 16.5px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  margin: 28px 0 12px;
-  color: var(--text);
+  margin: 24px 0 10px;
+  color: var(--bp-text);
 }
 
-.sectionBody h4,
+.markdownPanel h4,
 .intro h4 {
   font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  margin: 20px 0 8px;
-  color: var(--text);
+  margin: 18px 0 6px;
+  color: var(--bp-text);
 }
 
-.sectionBody p,
+.markdownPanel p,
 .intro p {
-  margin: 0 0 14px;
+  margin: 0 0 12px;
 }
 
-.sectionBody strong,
+.markdownPanel strong,
 .intro strong {
-  color: var(--text);
+  color: var(--bp-text);
 }
 
-.sectionBody em,
+.markdownPanel em,
 .intro em {
-  color: var(--text-2);
+  color: var(--bp-text-2);
 }
 
-.sectionBody ul,
-.sectionBody ol,
+.markdownPanel ul,
+.markdownPanel ol,
 .intro ul,
 .intro ol {
   margin: 0 0 14px;
   padding-left: 22px;
 }
 
-.sectionBody li,
+.markdownPanel li,
 .intro li {
   margin-bottom: 6px;
 }
 
-.sectionBody blockquote,
+.markdownPanel blockquote,
 .intro blockquote {
-  margin: 18px 0;
+  margin: 16px 0;
   padding: 8px 16px;
-  border-left: 3px solid var(--mint);
+  border-left: 3px solid var(--bp-mint);
   font-style: italic;
-  color: var(--text-3);
+  color: var(--bp-text-2);
 }
 
-.sectionBody blockquote p,
+.markdownPanel blockquote p,
 .intro blockquote p {
   margin: 0;
 }
 
-.sectionBody code,
+.markdownPanel code,
 .intro code {
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
   font-size: 12.5px;
-  background: var(--tac-inset);
+  background: var(--bp-inset);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
   padding: 1px 6px;
   border-radius: 4px;
-  color: var(--text);
+  color: var(--bp-text);
 }
 
-.sectionBody pre,
+.markdownPanel pre,
 .intro pre {
-  background: var(--tac-inset);
+  background: var(--bp-inset);
   padding: 18px 20px;
   border-radius: 10px;
   overflow-x: auto;
-  margin: 18px 0;
+  margin: 16px 0;
   box-shadow: var(--tac-shadow-inset);
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
   font-size: 12px;
   line-height: 1.55;
-  color: var(--text);
+  color: var(--bp-mint);
 }
 
-.sectionBody pre code,
+.markdownPanel pre code,
 .intro pre code {
   background: transparent;
+  box-shadow: none;
   padding: 0;
   font-size: inherit;
   color: inherit;
 }
 
-/* Tables (GFM) */
-.sectionBody table,
+.markdownPanel table,
 .intro table {
   width: 100%;
   border-collapse: collapse;
-  margin: 20px 0;
-  font-size: 13.5px;
+  margin: 16px 0;
+  font-size: 13px;
 }
 
-.sectionBody th,
-.sectionBody td,
+.markdownPanel th,
+.markdownPanel td,
 .intro th,
 .intro td {
   padding: 10px 12px;
-  border: 1px solid var(--tac-divider, rgba(255, 255, 255, 0.08));
   text-align: left;
   vertical-align: top;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.04);
 }
 
-.sectionBody th,
+.markdownPanel th,
 .intro th {
-  background: rgba(255, 255, 255, 0.025);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-3);
   font-weight: 600;
-  color: var(--text);
-  letter-spacing: 0.01em;
 }
 
-.sectionBody tr:nth-child(even) td,
-.intro tr:nth-child(even) td {
-  background: rgba(255, 255, 255, 0.012);
-}
-
-.sectionBody hr,
+.markdownPanel hr,
 .intro hr {
   border: 0;
-  border-top: 1px solid var(--tac-divider, rgba(255, 255, 255, 0.06));
-  margin: 36px 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  margin: 28px 0;
+  height: 1px;
 }
 
-.sectionBody a,
+.markdownPanel a,
 .intro a {
-  color: var(--mint);
+  color: var(--bp-mint);
   text-decoration: none;
   border-bottom: 1px solid rgba(105, 252, 203, 0.3);
 }
 
-.sectionBody a:hover,
+.markdownPanel a:hover,
 .intro a:hover {
-  border-bottom-color: var(--mint);
+  border-bottom-color: var(--bp-mint);
 }
 
+/* ============================================================
+   Empty state
+   ============================================================ */
 .emptyState {
   font-size: 14.5px;
-  color: var(--text-3);
-  background: var(--tac-surface);
+  color: var(--bp-text-3);
+  background: var(--bp-surface);
   padding: 32px;
   border-radius: 12px;
   text-align: center;
@@ -228,8 +280,8 @@
 .emptyState code {
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
   font-size: 13px;
-  background: var(--tac-inset);
+  background: var(--bp-inset);
   padding: 2px 7px;
   border-radius: 6px;
-  color: var(--text-2);
+  color: var(--bp-text-2);
 }
