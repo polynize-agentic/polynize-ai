@@ -71,3 +71,29 @@ export async function readClientFile(slug: string, path: string): Promise<string
 
   return Buffer.from(data.content, 'base64').toString('utf-8');
 }
+
+export async function readClientFileLastCommit(
+  slug: string,
+  path: string
+): Promise<Date | null> {
+  try {
+    const octokit = await getInstallationOctokit();
+    const response = await octokit.rest.repos.listCommits({
+      owner: ORG,
+      repo: slug,
+      path,
+      per_page: 1,
+    });
+    if (response.data.length === 0) return null;
+    const first = response.data[0];
+    const dateStr = first.commit.committer?.date ?? first.commit.author?.date;
+    if (!dateStr) return null;
+    return new Date(dateStr);
+  } catch (err) {
+    console.error(
+      `[github-client] readClientFileLastCommit failed for ${ORG}/${slug}/${path}`,
+      err
+    );
+    return null;
+  }
+}
