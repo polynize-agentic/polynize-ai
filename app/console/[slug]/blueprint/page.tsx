@@ -12,6 +12,7 @@ import {
   parseGapRegister,
   parseTeamOrg,
   extractBlueprintVersion,
+  identifyTeamRoles,
   type BlueprintSection,
   type GapRegisterParsed,
   type TeamOrgParsed,
@@ -153,7 +154,8 @@ export default async function BlueprintPage({
     : null;
 
   const agentCount = teamParsed
-    ? teamParsed.agents.filter((a) => !/\(?human\)?/i.test(a.role)).length
+    ? identifyTeamRoles(teamParsed).children.length +
+      (identifyTeamRoles(teamParsed).spoc ? 1 : 0)
     : 0;
 
   const blueprintVersion =
@@ -178,10 +180,10 @@ export default async function BlueprintPage({
       )}
 
       <ReadinessStrip
-        gapsTotal={gapParsed?.rows.length ?? 0}
+        blueprint={parsed}
         gapsOpen={gapParsed?.openCount ?? 0}
         gapsBlocking={gapParsed?.blockingCount ?? 0}
-        phase={config?.engagement?.phase ?? '—'}
+        phase={config?.engagement?.phase ?? ''}
         subPhase={config?.engagement?.sub_phase ?? ''}
         gateNext={config?.engagement?.gate_next ?? ''}
         agentCount={agentCount}

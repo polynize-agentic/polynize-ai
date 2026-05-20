@@ -131,13 +131,13 @@
   grid-template-columns: 48px minmax(0, 1fr) 68px 68px 68px 180px;
   gap: 16px;
   align-items: center;
-  padding: 12px 20px;
+  padding: 16px 20px;
   font-size: 13.5px;
   color: var(--bp-text-2);
 }
 
 .capRow + .capRow {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .capRowHead {
@@ -360,13 +360,13 @@
   grid-template-columns: 40px minmax(0, 1.8fr) 140px 180px 110px;
   gap: 16px;
   align-items: center;
-  padding: 12px 0;
+  padding: 16px 0;
   font-size: 13px;
   color: var(--bp-text-2);
 }
 
 .gapRow + .gapRow {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .gapRowHead {
@@ -514,18 +514,144 @@
   margin: 0;
 }
 
-.teamChart {
-  background: var(--bp-inset);
-  box-shadow: var(--tac-shadow-inset);
+/* ============================================================
+   Structured org chart (replaces the ASCII <pre>)
+   ============================================================ */
+.orgChart {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.orgConnectorVertical {
+  width: 1px;
+  height: 24px;
+  background: rgba(105, 252, 203, 0.4);
+  margin: 0 auto;
+}
+
+.orgConnectorVerticalShort {
+  width: 1px;
+  height: 16px;
+  background: rgba(105, 252, 203, 0.4);
+  margin: 0 auto;
+}
+
+.orgSpocRow {
+  display: flex;
+  justify-content: center;
+}
+
+.orgSpocCard {
+  background: var(--bp-surface);
+  box-shadow: var(--tac-shadow-emphasised);
   border-radius: 12px;
-  padding: 22px 26px;
-  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
-  font-size: 12px;
-  line-height: 1.55;
-  color: var(--bp-mint);
-  white-space: pre;
-  overflow-x: auto;
+  padding: 16px 20px;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+}
+
+.orgSpocCard::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--bp-mint);
+  box-shadow: 0 0 14px rgba(105, 252, 203, 0.35);
+}
+
+.orgSpocName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   margin: 0;
+  color: var(--bp-mint);
+}
+
+.orgSpocRole {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--bp-text-3);
+}
+
+.orgChildrenWrap {
+  position: relative;
+  padding-top: 16px;
+}
+
+.orgHorizontalConnector {
+  position: absolute;
+  top: 0;
+  left: calc(100% / (var(--children-count, 1) * 2));
+  right: calc(100% / (var(--children-count, 1) * 2));
+  height: 1px;
+  background: rgba(105, 252, 203, 0.4);
+}
+
+.orgChildrenRow {
+  display: grid;
+  grid-template-columns: repeat(var(--children-count, 1), 1fr);
+  gap: 16px;
+}
+
+.orgChildCard {
+  background: var(--bp-surface);
+  box-shadow: var(--tac-shadow-raised);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  min-height: 84px;
+}
+
+.orgChildCard::before {
+  /* short vertical stub up to the horizontal connector */
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 16px;
+  background: rgba(105, 252, 203, 0.4);
+}
+
+.orgChildName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--bp-mint);
+}
+
+.orgChildRole {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--bp-text-3);
+}
+
+/* The human panel sits at the top of the chart — keeps existing class but
+   ensures top margin = 0 inside the chart container. */
+.orgChart .teamHumanPanel {
+  margin-bottom: 0;
+}
+
+/* Spacing between the org chart and the agent detail grid below */
+.teamOrg > .orgChart + .teamAgentGrid {
+  margin-top: 32px;
 }
 
 .teamAgentGrid {

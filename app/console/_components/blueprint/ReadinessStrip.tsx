@@ -1,7 +1,8 @@
+import { computeReadiness, type ParsedBlueprint } from '@/app/console/_lib/parse-blueprint';
 import s from './blueprint-sections.module.css';
 
 type Props = {
-  gapsTotal: number;
+  blueprint: ParsedBlueprint;
   gapsOpen: number;
   gapsBlocking: number;
   phase: string;
@@ -13,10 +14,12 @@ type Props = {
 };
 
 export function ReadinessStrip(props: Props) {
-  const completionPercent =
-    props.gapsTotal > 0
-      ? Math.round(((props.gapsTotal - props.gapsOpen) / props.gapsTotal) * 100)
-      : 0;
+  const completionPercent = computeReadiness({
+    blueprint: props.blueprint,
+    phase: props.phase,
+    subPhase: props.subPhase,
+    blockingGapsCount: props.gapsBlocking,
+  });
 
   // Ring geometry
   const size = 80;
