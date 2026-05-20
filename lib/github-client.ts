@@ -97,3 +97,120 @@ export async function readClientFileLastCommit(
     return null;
   }
 }
+
+// ============================================================
+// Write helpers — require Contents: Read & write on the App
+// ============================================================
+
+export type CommitResult = { sha: string; url: string };
+
+function errorHasStatus(err: unknown): err is { status: number } {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'status' in err &&
+    typeof (err as { status: unknown }).status === 'number'
+  );
+}
+
+async function fetchCurrentSha(
+  slug: string,
+  path: string
+): Promise<string | null> {
+  const octokit = await getInstallationOctokit();
+  try {
+    const response = await octokit.rest.repos.getContent({
+      owner: ORG,
+      repo: slug,
+      path,
+    });
+    const data = response.data;
+    if (Array.isArray(data)) {
+      throw new Error(
+        `Path "${path}" in repo "${ORG}/${slug}" is a directory, not a file`
+      );
+    }
+    if (data.type !== 'file') {
+      throw new Error(
+        `Path "${path}" in repo "${ORG}/${slug}" is not a file (type: ${data.type})`
+      );
+    }
+    return data.sha;
+  } catch (err) {
+    if (errorHasStatus(err) && err.status === 404) {
+      return null;
+    }
+    throw err;
+  }
+}
+
+export async function writeClientFile(
+  slug: string,
+  path: string,
+  content: string,
+  commitMessage: string,
+  author?: { name: string; email: string }
+): Promise<CommitResult> {
+  const octokit = await getInstallationOctokit();
+
+  const currentSha = await fetchCurrentSha(slug, path);
+  const contentBase64 = Buffer.from(content, 'utf-8').toString('base64');
+
+  try {
+    const response = await octokit.rest.repos.createOrUpdateFileContents({
+      owner: ORG,
+      repo: slug,
+      path,
+      message: commitMessage,
+      content: contentBase64,
+      ...(currentSha ? { sha: currentSha } : {}),
+      ...(author ? { author, committer: author } : {}),
+    });
+
+    const commit = response.data.commit;
+    if (!commit?.sha) {
+      throw new Error(
+        `createOrUpdateFileContents returned no commit sha for ${ORG}/${slug}/${path}`
+      );
+    }
+    return { sha: commit.sha, url: commit.html_url ?? '' };
+  } catch (err) {
+    if (errorHasStatus(err) && (err.status === 409 || err.status === 422)) {
+      throw new Error(
+        `Conflict writing ${ORG}/${slug}/${path}: file changed since read (HTTP ${err.status}). Retry with a fresh read.`
+      );
+    }
+    throw err;
+  }
+}
+
+export async function deleteClientFile(
+  slug: string,
+  path: string,
+  commitMessage: string
+): Promise<{ sha: string }> {
+  const octokit = await getInstallationOctokit();
+
+  const currentSha = await fetchCurrentSha(slug, path);
+  if (!currentSha) {
+    throw new Error(
+      `Cannot delete ${ORG}/${slug}/${path}: file does not exist`
+    );
+  }
+
+  const response = await octokit.rest.repos.deleteFile({
+    owner: ORG,
+    repo: slug,
+    path,
+    message: commitMessage,
+    sha: currentSha,
+  });
+
+  const commit = response.data.commit;
+  if (!commit?.sha) {
+    throw new Error(
+      `deleteFile returned no commit sha for ${ORG}/${slug}/${path}`
+    );
+  }
+  return { sha: commit.sha };
+}
