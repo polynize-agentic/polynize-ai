@@ -2,8 +2,13 @@ import { cookies } from 'next/headers';
 import { COOKIE_NAME, verifySessionToken } from '@/lib/console-auth';
 import { verifyAgentApiKey } from '@/lib/agent-auth';
 
+export type ActorIdentity = {
+  id: string; // email (cookie path) or agent name (bearer path)
+  source: 'Console UI' | 'Agent';
+};
+
 type AuthResult =
-  | { ok: true }
+  | { ok: true; actor: ActorIdentity }
   | { ok: false; status: number; error: string };
 
 export async function requireConsoleAuth(request: Request): Promise<AuthResult> {
@@ -14,7 +19,7 @@ export async function requireConsoleAuth(request: Request): Promise<AuthResult> 
     if (token) {
       const email = await verifySessionToken(token);
       if (email) {
-        return { ok: true };
+        return { ok: true, actor: { id: email, source: 'Console UI' } };
       }
     }
   } catch {
@@ -23,7 +28,11 @@ export async function requireConsoleAuth(request: Request): Promise<AuthResult> 
 
   // Agent bearer-token path.
   if (verifyAgentApiKey(request)) {
-    return { ok: true };
+    const agentName = request.headers.get('x-agent-name')?.trim();
+    return {
+      ok: true,
+      actor: { id: agentName || 'agent', source: 'Agent' },
+    };
   }
 
   // Don't leak which auth method failed.

@@ -109,6 +109,7 @@ export type GapRegisterRow = {
   owner: string;
   blocks: string;
   status: string;
+  notes?: string;
 };
 
 export type GapRegisterParsed = {
@@ -128,7 +129,7 @@ export type TeamOrgParsed = {
   asciiChart: string | null;
 };
 
-function parseRow(line: string): string[] {
+export function parseRow(line: string): string[] {
   return line
     .trim()
     .replace(/^\||\|\s*$/g, '')
@@ -136,13 +137,13 @@ function parseRow(line: string): string[] {
     .map((c) => c.trim());
 }
 
-function isSeparator(line: string): boolean {
+export function isSeparator(line: string): boolean {
   return /^\|[\s\-:|]+\|?\s*$/.test(line.trim());
 }
 
-type ParsedTable = { headers: string[]; rows: string[][] };
+export type ParsedTable = { headers: string[]; rows: string[][] };
 
-function parseMarkdownTable(text: string): ParsedTable | null {
+export function parseMarkdownTable(text: string): ParsedTable | null {
   const lines = text
     .split('\n')
     .map((l) => l.trim())
@@ -235,6 +236,7 @@ export function parseGapRegister(content: string): GapRegisterParsed | null {
     owner: cells[2] ?? '',
     blocks: cells[3] ?? '',
     status: (cells[4] ?? '').toLowerCase(),
+    notes: cells[5] ?? '',
   }));
 
   // Footer line: "**Status:** 11 gaps open · 5 blocking sign-off."
