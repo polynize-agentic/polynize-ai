@@ -22,6 +22,7 @@ import { CapabilityMapUnit } from '@/app/console/_components/blueprint/Capabilit
 import { CapabilityMapAgent } from '@/app/console/_components/blueprint/CapabilityMapAgent';
 import { GapRegister } from '@/app/console/_components/blueprint/GapRegister';
 import { TeamOrg } from '@/app/console/_components/blueprint/TeamOrg';
+import { RefreshButton } from './RefreshButton';
 import s from './blueprint.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -77,7 +78,7 @@ function SectionShell({
   );
 }
 
-function renderSection(section: BlueprintSection): React.ReactNode {
+function renderSection(section: BlueprintSection, slug: string): React.ReactNode {
   switch (section.id) {
     case 'capability-map-unit': {
       const data = parseCapabilityMapUnit(section.content);
@@ -96,7 +97,7 @@ function renderSection(section: BlueprintSection): React.ReactNode {
     }
     case 'gap-register': {
       const data = parseGapRegister(section.content);
-      if (data) return <GapRegister data={data} />;
+      if (data) return <GapRegister data={data} slug={slug} />;
       return <MarkdownPanel content={section.content} />;
     }
     default:
@@ -166,9 +167,12 @@ export default async function BlueprintPage({
       <header className={s.header}>
         <div className={s.eyebrow}>POLYNIZE PAM CONSOLE · CLIENT BLUEPRINT</div>
         <h1 className={s.title}>{parsed.preamble.title}</h1>
-        <Link href="/console" className={s.backLink}>
-          ← All clients
-        </Link>
+        <div className={s.headerActions}>
+          <Link href="/console" className={s.backLink}>
+            ← All clients
+          </Link>
+          <RefreshButton slug={slug} />
+        </div>
       </header>
 
       {parsed.preamble.intro && (
@@ -193,7 +197,7 @@ export default async function BlueprintPage({
 
       {parsed.sections.map((section) => (
         <SectionShell key={section.id} section={section}>
-          {renderSection(section)}
+          {renderSection(section, slug)}
         </SectionShell>
       ))}
     </div>

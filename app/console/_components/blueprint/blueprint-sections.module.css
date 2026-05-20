@@ -408,6 +408,7 @@
 .gapStatus {
   display: flex;
   justify-content: flex-start;
+  position: relative;
 }
 
 .statusPill {
@@ -418,6 +419,201 @@
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 999px;
+}
+
+.statusPillButton {
+  border: none;
+  cursor: pointer;
+  transition: transform 120ms ease-out, filter 120ms ease-out;
+}
+
+.statusPillButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.statusPillButton:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.statusDropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  background: var(--bp-surface);
+  border-radius: 10px;
+  box-shadow: var(--tac-shadow-raised);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.statusOption {
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  background: transparent;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-radius: 7px;
+  transition: background 120ms ease-out, transform 120ms ease-out;
+}
+
+.statusOption:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateX(2px);
+}
+
+.statusOptionCurrent {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   Gap notes UI
+   ============================================================ */
+.gapRowGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.gapNotesRow {
+  padding: 0 0 14px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.notesAddLink {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--bp-text-3);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: color 120ms ease-out, background 120ms ease-out;
+}
+
+.notesAddLink:hover {
+  color: var(--bp-mint);
+  background: rgba(105, 252, 203, 0.04);
+}
+
+.notesDisplay {
+  align-self: flex-start;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--bp-text-2);
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 120ms ease-out;
+}
+
+.notesDisplay:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.notesLabel {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-mint);
+  flex-shrink: 0;
+}
+
+.notesText {
+  color: var(--bp-text-2);
+}
+
+.notesEditor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 560px;
+}
+
+.notesTextarea {
+  background: var(--bp-inset);
+  box-shadow: var(--tac-shadow-inset);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--bp-text);
+  resize: vertical;
+  outline: none;
+  transition: box-shadow 120ms ease-out;
+}
+
+.notesTextarea:focus-visible {
+  box-shadow:
+    var(--tac-shadow-inset),
+    0 0 0 2px rgba(105, 252, 203, 0.4);
+}
+
+.notesActions {
+  display: flex;
+  gap: 8px;
+}
+
+.notesSaveBtn,
+.notesCancelBtn {
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: filter 120ms ease-out, transform 120ms ease-out;
+}
+
+.notesSaveBtn {
+  background: var(--bp-mint);
+  color: #0a1521;
+}
+
+.notesSaveBtn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.notesCancelBtn {
+  background: transparent;
+  color: var(--bp-text-3);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.notesCancelBtn:hover {
+  color: var(--bp-text-2);
+}
+
+.notesError {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--bp-coral);
+  padding: 4px 6px;
 }
 
 .statusOpen {
