@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import type {
   GapRegisterParsed,
@@ -30,6 +30,17 @@ export function GapRegister({ data, slug }: Props) {
   const [notesDraft, setNotesDraft] = useState<string>('');
   const [savingId, setSavingId] = useState<string | null>(null);
   const [errorByGap, setErrorByGap] = useState<Record<string, string>>({});
+
+  // Sync local rows with the server prop on every parent re-render.
+  // This is what makes the Refresh button (and any out-of-band edits made
+  // by Mike, curl, or another tab) show up on the page. Without this,
+  // useState initializes once from data.rows and never re-syncs.
+  // Optimistic updates aren't clobbered because they happen synchronously
+  // before any parent re-render, so data.rows reference is unchanged
+  // during the optimistic window.
+  useEffect(() => {
+    setRows(data.rows);
+  }, [data.rows]);
 
   const openCount = rows.filter((r) => r.status.toLowerCase() === 'open').length;
   const blockingCount = data.blockingCount;
