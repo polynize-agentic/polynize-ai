@@ -25,6 +25,54 @@
   margin: 0 auto;
   padding-bottom: 96px;
   color: var(--bp-text);
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   Blueprint crosshatch background
+   Old-school construction-blueprint feel: faint mint diagonal
+   crosshatch over a wider orthogonal drafting grid. Sits as a
+   fixed overlay above the body's warm-navy + corner-glow bg,
+   below all content. pointer-events: none so it never intercepts
+   clicks. Layout's topNav (z-index: 20) sits above it.
+   ============================================================ */
+.bgPattern {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    /* Primary diagonal crosshatch — 24px pitch */
+    repeating-linear-gradient(
+      45deg,
+      transparent 0,
+      transparent 23px,
+      rgba(105, 252, 203, 0.055) 23px,
+      rgba(105, 252, 203, 0.055) 24px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0,
+      transparent 23px,
+      rgba(105, 252, 203, 0.055) 23px,
+      rgba(105, 252, 203, 0.055) 24px
+    ),
+    /* Major orthogonal drafting grid — 80px pitch */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 79px,
+      rgba(105, 252, 203, 0.035) 79px,
+      rgba(105, 252, 203, 0.035) 80px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 79px,
+      rgba(105, 252, 203, 0.035) 79px,
+      rgba(105, 252, 203, 0.035) 80px
+    );
 }
 
 /* ============================================================

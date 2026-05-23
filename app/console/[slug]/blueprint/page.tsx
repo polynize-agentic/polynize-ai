@@ -134,22 +134,25 @@ export default async function BlueprintPage({
   if (markdownResult === null) {
     const clientName = config?.client?.name ?? slug;
     return (
-      <div className={s.container}>
-        <header className={s.header}>
-          <div className={s.eyebrow}>POLYNIZE PAM CONSOLE · CLIENT BLUEPRINT</div>
-          <h1 className={s.title}>{clientName}</h1>
-          {isTeamUser && (
-            <Link href="/console" className={s.backLink}>
-              ← All clients
-            </Link>
-          )}
-        </header>
-        <p className={s.emptyState}>
-          Blueprint not yet populated. Add content to{' '}
-          <code>modelling/blueprint.md</code> in the client repo to populate this
-          dashboard.
-        </p>
-      </div>
+      <>
+        <div className={s.bgPattern} aria-hidden />
+        <div className={s.container}>
+          <header className={s.header}>
+            <div className={s.eyebrow}>POLYNIZE PAM CONSOLE · CLIENT BLUEPRINT</div>
+            <h1 className={s.title}>{clientName}</h1>
+            {isTeamUser && (
+              <Link href="/console" className={s.backLink}>
+                ← All clients
+              </Link>
+            )}
+          </header>
+          <p className={s.emptyState}>
+            Blueprint not yet populated. Add content to{' '}
+            <code>modelling/blueprint.md</code> in the client repo to populate this
+            dashboard.
+          </p>
+        </div>
+      </>
     );
   }
 
@@ -175,47 +178,50 @@ export default async function BlueprintPage({
     extractBlueprintVersion(parsed.preamble.intro) ?? 'v0.1';
 
   return (
-    <div className={s.container}>
-      <header className={s.header}>
-        <div className={s.eyebrow}>POLYNIZE PAM CONSOLE · CLIENT BLUEPRINT</div>
-        <h1 className={s.title}>{parsed.preamble.title}</h1>
-        <div className={s.headerActions}>
-          {isTeamUser ? (
-            <Link href="/console" className={s.backLink}>
-              ← All clients
-            </Link>
-          ) : (
-            <span aria-hidden />
-          )}
-          <RefreshButton slug={slug} />
-        </div>
-      </header>
+    <>
+      <div className={s.bgPattern} aria-hidden />
+      <div className={s.container}>
+        <header className={s.header}>
+          <div className={s.eyebrow}>POLYNIZE PAM CONSOLE · CLIENT BLUEPRINT</div>
+          <h1 className={s.title}>{parsed.preamble.title}</h1>
+          <div className={s.headerActions}>
+            {isTeamUser ? (
+              <Link href="/console" className={s.backLink}>
+                ← All clients
+              </Link>
+            ) : (
+              <span aria-hidden />
+            )}
+            <RefreshButton slug={slug} />
+          </div>
+        </header>
 
-      {parsed.preamble.intro && (
-        <div className={s.intro}>
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {parsed.preamble.intro}
-          </ReactMarkdown>
-        </div>
-      )}
+        {parsed.preamble.intro && (
+          <div className={s.intro}>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {parsed.preamble.intro}
+            </ReactMarkdown>
+          </div>
+        )}
 
-      <ReadinessStrip
-        blueprint={parsed}
-        gapsOpen={gapParsed?.openCount ?? 0}
-        gapsBlocking={gapParsed?.blockingCount ?? 0}
-        phase={config?.engagement?.phase ?? ''}
-        subPhase={config?.engagement?.sub_phase ?? ''}
-        gateNext={config?.engagement?.gate_next ?? ''}
-        agentCount={agentCount}
-        unitCount={1}
-        blueprintVersion={blueprintVersion}
-      />
+        <ReadinessStrip
+          blueprint={parsed}
+          gapsOpen={gapParsed?.openCount ?? 0}
+          gapsBlocking={gapParsed?.blockingCount ?? 0}
+          phase={config?.engagement?.phase ?? ''}
+          subPhase={config?.engagement?.sub_phase ?? ''}
+          gateNext={config?.engagement?.gate_next ?? ''}
+          agentCount={agentCount}
+          unitCount={1}
+          blueprintVersion={blueprintVersion}
+        />
 
-      {parsed.sections.map((section) => (
-        <SectionShell key={section.id} section={section}>
-          {renderSection(section, slug)}
-        </SectionShell>
-      ))}
-    </div>
+        {parsed.sections.map((section) => (
+          <SectionShell key={section.id} section={section}>
+            {renderSection(section, slug)}
+          </SectionShell>
+        ))}
+      </div>
+    </>
   );
 }
