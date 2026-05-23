@@ -2,6 +2,39 @@
   max-width: 1100px;
   margin: 0 auto;
   padding-bottom: 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   Blueprint drafting-grid background — matches the per-client
+   Blueprint page. Faint mint orthogonal grid at 80px pitch,
+   fixed-position overlay above the body's warm-navy + corner-glow
+   bg, below all content. pointer-events: none so it never
+   intercepts clicks. Layout's topNav (z-index: 20) sits above it.
+   ============================================================ */
+.bgPattern {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    /* Horizontal lines — 80px pitch */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 79px,
+      rgba(105, 252, 203, 0.055) 79px,
+      rgba(105, 252, 203, 0.055) 80px
+    ),
+    /* Vertical lines — 80px pitch */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 79px,
+      rgba(105, 252, 203, 0.055) 79px,
+      rgba(105, 252, 203, 0.055) 80px
+    );
 }
 
 .header {
