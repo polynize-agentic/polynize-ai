@@ -3,6 +3,7 @@ import {
   COOKIE_MAX_AGE_DAYS,
   COOKIE_NAME,
   createSessionToken,
+  resolveUserScope,
   verifyMagicLinkToken,
 } from '@/lib/console-auth';
 
@@ -35,8 +36,26 @@ export async function GET(request: Request) {
     return redirectWithError(request.url);
   }
 
-  const sessionToken = await createSessionToken(email);
-  const response = NextResponse.redirect(new URL('/console', request.url));
+  // Resolve scope at verify time — the magic-link token only proves the
+  // email; whether it's a team email or a client email is determined now,
+  // against the current env. If the email was removed from both lists
+  // between request and click, deny.
+  const scope = resolveUserScope(email);
+  if (!scope) {
+    return redirectWithError(request.url);
+  }
+
+  const sessionToken = await createSessionToken({ email, scope });
+
+  // Redirect destination:
+  //   team   → /console (master client index)
+  //   client → /console/{slug}/blueprint (their blueprint, direct)
+  const destination =
+    scope.type === 'client'
+      ? `/console/${scope.slug}/blueprint`
+      : '/console';
+
+  const response = NextResponse.redirect(new URL(destination, request.url));
   response.cookies.set({
     name: COOKIE_NAME,
     value: sessionToken,

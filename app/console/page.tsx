@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation';
+import { getCurrentUser } from '@/lib/console-auth';
 import { loadClientCardData } from './_lib/load-clients';
 import { ClientCard } from './_components/ClientCard';
 import s from './_components/client-card.module.css';
@@ -5,6 +7,14 @@ import s from './_components/client-card.module.css';
 export const dynamic = 'force-dynamic';
 
 export default async function ConsolePage() {
+  const user = await getCurrentUser();
+
+  // Client-scoped users land directly on their own Blueprint.
+  // The layout's auth gate already handles the !user case (renders SignInGate).
+  if (user && user.scope.type === 'client') {
+    redirect(`/console/${user.scope.slug}/blueprint`);
+  }
+
   const clients = await loadClientCardData();
   const allFailed = clients.length > 0 && clients.every((c) => c.error);
   const empty = clients.length === 0 || allFailed;

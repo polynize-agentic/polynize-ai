@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { CONSOLE_CLIENTS } from '@/app/console/_config/clients';
 import { readClientFile, writeClientFile } from '@/lib/github-client';
-import { requireConsoleAuth } from '@/lib/console-api-auth';
+import { authorizeClientAccess, requireConsoleAuth } from '@/lib/console-api-auth';
 import { createGapInBlueprint } from '@/app/console/_lib/mutate-blueprint';
 
 export const dynamic = 'force-dynamic';
@@ -28,6 +28,9 @@ export async function POST(
 
   const { slug } = await params;
   if (!(CONSOLE_CLIENTS as readonly string[]).includes(slug)) {
+    return NextResponse.json({ error: 'Client not found' }, { status: 404 });
+  }
+  if (!authorizeClientAccess(auth.scope, slug)) {
     return NextResponse.json({ error: 'Client not found' }, { status: 404 });
   }
 

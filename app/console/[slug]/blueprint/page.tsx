@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CONSOLE_CLIENTS } from '@/app/console/_config/clients';
 import { readClientFile } from '@/lib/github-client';
+import { getCurrentUser, userHasClientAccess } from '@/lib/console-auth';
 import {
   parseBlueprint,
   parseCapabilityMapUnit,
@@ -116,10 +117,19 @@ export default async function BlueprintPage({
     notFound();
   }
 
+  // Authz: client-scoped users can only see their own slug.
+  // 404 (not 403) to avoid hinting other clients exist.
+  const user = await getCurrentUser();
+  if (user && !userHasClientAccess(user, slug)) {
+    notFound();
+  }
+
   const [config, markdownResult] = await Promise.all([
     loadClientConfig(slug),
     readClientFile(slug, 'modelling/blueprint.md').catch(() => null),
   ]);
+
+  const isTeamUser = user?.scope.type === 'team';
 
   if (markdownResult === null) {
     const clientName = config?.client?.name ?? slug;
@@ -128,9 +138,11 @@ export default async function BlueprintPage({
         <header className={s.header}>
           <div className={s.eyebrow}>POLYNIZE PAM CONSOLE · CLIENT BLUEPRINT</div>
           <h1 className={s.title}>{clientName}</h1>
-          <Link href="/console" className={s.backLink}>
-            ← All clients
-          </Link>
+          {isTeamUser && (
+            <Link href="/console" className={s.backLink}>
+              ← All clients
+            </Link>
+          )}
         </header>
         <p className={s.emptyState}>
           Blueprint not yet populated. Add content to{' '}
@@ -168,9 +180,13 @@ export default async function BlueprintPage({
         <div className={s.eyebrow}>POLYNIZE PAM CONSOLE · CLIENT BLUEPRINT</div>
         <h1 className={s.title}>{parsed.preamble.title}</h1>
         <div className={s.headerActions}>
-          <Link href="/console" className={s.backLink}>
-            ← All clients
-          </Link>
+          {isTeamUser ? (
+            <Link href="/console" className={s.backLink}>
+              ← All clients
+            </Link>
+          ) : (
+            <span aria-hidden />
+          )}
           <RefreshButton slug={slug} />
         </div>
       </header>

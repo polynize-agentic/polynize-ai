@@ -12,7 +12,7 @@ import {
   identifyTeamRoles,
   extractBlueprintVersion,
 } from '@/app/console/_lib/parse-blueprint';
-import { requireConsoleAuth } from '@/lib/console-api-auth';
+import { authorizeClientAccess, requireConsoleAuth } from '@/lib/console-api-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,6 +40,9 @@ export async function GET(
 
   const { slug } = await params;
   if (!(CONSOLE_CLIENTS as readonly string[]).includes(slug)) {
+    return NextResponse.json({ error: 'Client not found' }, { status: 404 });
+  }
+  if (!authorizeClientAccess(auth.scope, slug)) {
     return NextResponse.json({ error: 'Client not found' }, { status: 404 });
   }
 

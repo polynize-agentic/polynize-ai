@@ -10,6 +10,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
-  const clients = await loadClientCardData();
+  const all = await loadClientCardData();
+  // Client-scoped users see only their own card.
+  const scope = auth.scope;
+  const clients =
+    scope.type === 'client'
+      ? all.filter((c) => c.slug === scope.slug)
+      : all;
   return NextResponse.json({ clients });
 }
