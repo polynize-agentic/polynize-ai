@@ -10,7 +10,12 @@ import { stripEmDashes } from '@/lib/em-dash';
 import type { CapabilityMapV05 } from '@/lib/types';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+// 300s ceiling per Vercel's current default (was 60s, hardcoded too low for
+// DeepSeek V4 Pro generating the v0.5 envelope; two retry attempts on a
+// 16k-token output could blow past 60s and surface as a "function timeout"
+// connection abort on the client). Bumped 2026-05-26 during Step 7A.3
+// triage of "mapping your bottleneck" hangs in production.
+export const maxDuration = 300;
 
 const AnswersSchema = z.object({
   name: z.string(),
@@ -61,8 +66,12 @@ export async function POST(req: Request) {
   let lastError = 'unknown';
 
   for (let attempt = 1; attempt <= 2; attempt++) {
+    // Declared outside try so the catch block can log it if parseJsonLoose
+    // throws on a malformed/truncated LLM response. The raw text is the only
+    // way to diagnose schema mismatches without prod log streaming.
+    let raw: string | null = null;
     try {
-      const raw = await complete({
+      raw = await complete({
         system: CAPABILITY_MAP_SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userMessage }],
         // v0.5 output is 3-4x the size of legacy; allow generous headroom.
@@ -76,6 +85,12 @@ export async function POST(req: Request) {
         lastError = `schema validation failed: ${validation.error}`;
         console.error(
           `[capability-map.generate] attempt ${attempt} VALIDATION FAILED: ${validation.error}`
+        );
+        // Log the truncated raw response so we can see exactly what the model
+        // emitted that the schema rejected. Server-side only; never returned
+        // to the client.
+        console.error(
+          `[capability-map.generate] attempt ${attempt} raw response (first 2000 chars): ${raw.slice(0, 2000)}`
         );
         continue;
       }
@@ -93,6 +108,14 @@ export async function POST(req: Request) {
       console.error(
         `[capability-map.generate] attempt ${attempt} THREW: ${lastError}`
       );
+      // If the LLM call returned but JSON parsing threw, raw is populated and
+      // worth logging — that's the case where DeepSeek emitted something that
+      // didn't have a parseable JSON object inside (truncation, wrong format).
+      if (raw) {
+        console.error(
+          `[capability-map.generate] attempt ${attempt} raw response (first 2000 chars): ${raw.slice(0, 2000)}`
+        );
+      }
     }
   }
 
