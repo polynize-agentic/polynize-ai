@@ -11,6 +11,7 @@ import {
   parseCapabilityMapUnit,
   parseCapabilityMapAgent,
   parseGapRegister,
+  parseInfrastructure,
   parseTeamOrg,
   extractBlueprintVersion,
   identifyTeamRoles,
@@ -22,6 +23,7 @@ import { ReadinessStrip } from '@/app/console/_components/blueprint/ReadinessStr
 import { CapabilityMapUnit } from '@/app/console/_components/blueprint/CapabilityMapUnit';
 import { CapabilityMapAgent } from '@/app/console/_components/blueprint/CapabilityMapAgent';
 import { GapRegister } from '@/app/console/_components/blueprint/GapRegister';
+import { Infrastructure } from '@/app/console/_components/blueprint/Infrastructure';
 import { TeamOrg } from '@/app/console/_components/blueprint/TeamOrg';
 import { RefreshButton } from './RefreshButton';
 import s from './blueprint.module.css';
@@ -99,6 +101,15 @@ function renderSection(section: BlueprintSection, slug: string): React.ReactNode
     case 'gap-register': {
       const data = parseGapRegister(section.content);
       if (data) return <GapRegister data={data} slug={slug} />;
+      return <MarkdownPanel content={section.content} />;
+    }
+    case 'infrastructure': {
+      const data = parseInfrastructure(section.content);
+      // legacy format → falls back to plain markdown rendering so old
+      // Blueprints don't break before the migration lands.
+      if (data && (data.polynize || data.client)) {
+        return <Infrastructure data={data} />;
+      }
       return <MarkdownPanel content={section.content} />;
     }
     default:

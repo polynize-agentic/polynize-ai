@@ -251,6 +251,116 @@ export function parseGapRegister(content: string): GapRegisterParsed | null {
   return { rows, openCount, blockingCount };
 }
 
+// ============================================================
+// Infrastructure section — split into Polynize / Client subsections
+// (Step 7A.2). Looks for `### Polynize Infrastructure` and
+// `### Client Infrastructure` H3 headings inside the section.
+// Tolerant of casing and extra whitespace. If neither heading is
+// present, returns the whole content under `legacy` so old-format
+// Blueprints still render via the markdown fallback.
+// ============================================================
+
+export type InfrastructureSubsection = {
+  description?: string;
+  content: string;
+};
+
+export type InfrastructureParsed = {
+  polynize?: InfrastructureSubsection;
+  client?: InfrastructureSubsection;
+  legacy?: string;
+};
+
+const POLYNIZE_H3 = /^###\s+polynize\s+infrastructure\s*$/i;
+const CLIENT_H3 = /^###\s+client\s+infrastructure\s*$/i;
+const ANY_H3 = /^###\s+/;
+const ITALIC_LINE = /^\*([^*]+)\*\s*$/;
+
+/**
+ * Pull the first italic line (treated as the descriptive paragraph) off
+ * the front of a subsection's body, returning { description, rest }.
+ * Skips blank lines between the H3 and the first non-blank line.
+ */
+function splitDescription(body: string): {
+  description?: string;
+  content: string;
+} {
+  const lines = body.split('\n');
+  let i = 0;
+  // skip blank lines after the H3
+  while (i < lines.length && lines[i].trim() === '') i++;
+  if (i < lines.length) {
+    const m = lines[i].match(ITALIC_LINE);
+    if (m) {
+      const description = m[1].trim();
+      const rest = lines
+        .slice(i + 1)
+        .join('\n')
+        .replace(/^\n+/, '');
+      return { description, content: rest.trim() };
+    }
+  }
+  return { content: body.trim() };
+}
+
+export function parseInfrastructure(
+  content: string
+): InfrastructureParsed | null {
+  if (!content.trim()) return null;
+  const lines = content.split('\n');
+
+  let polynizeStart = -1;
+  let clientStart = -1;
+  for (let i = 0; i < lines.length; i++) {
+    if (polynizeStart < 0 && POLYNIZE_H3.test(lines[i])) {
+      polynizeStart = i;
+      continue;
+    }
+    if (clientStart < 0 && CLIENT_H3.test(lines[i])) {
+      clientStart = i;
+    }
+  }
+
+  // No subheadings found → legacy format. Pass through unchanged so the
+  // markdown fallback renders it as-is.
+  if (polynizeStart < 0 && clientStart < 0) {
+    return { legacy: content.trim() };
+  }
+
+  /**
+   * Find the line index that ends the subsection starting at `headingIdx`.
+   * Stops at: the other named H3 if it comes after this one, OR the next
+   * H3 of any kind (defensive — guards against future subheadings being
+   * added), OR EOF.
+   */
+  const endOfSubsection = (headingIdx: number, otherIdx: number): number => {
+    const stops: number[] = [];
+    if (otherIdx > headingIdx) stops.push(otherIdx);
+    for (let i = headingIdx + 1; i < lines.length; i++) {
+      if (ANY_H3.test(lines[i])) {
+        stops.push(i);
+        break;
+      }
+    }
+    return stops.length > 0 ? Math.min(...stops) : lines.length;
+  };
+
+  const out: InfrastructureParsed = {};
+
+  if (polynizeStart >= 0) {
+    const end = endOfSubsection(polynizeStart, clientStart);
+    const body = lines.slice(polynizeStart + 1, end).join('\n');
+    out.polynize = splitDescription(body);
+  }
+  if (clientStart >= 0) {
+    const end = endOfSubsection(clientStart, polynizeStart);
+    const body = lines.slice(clientStart + 1, end).join('\n');
+    out.client = splitDescription(body);
+  }
+
+  return out;
+}
+
 export function parseTeamOrg(content: string): TeamOrgParsed | null {
   // Extract first triple-backtick code block as the ASCII chart, if any.
   const codeFenceMatch = content.match(/```(?:\w*)?\n([\s\S]*?)```/);

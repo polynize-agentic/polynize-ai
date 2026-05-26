@@ -7,6 +7,7 @@ import {
   parseCapabilityMapUnit,
   parseCapabilityMapAgent,
   parseGapRegister,
+  parseInfrastructure,
   parseTeamOrg,
   computeReadiness,
   identifyTeamRoles,
@@ -70,6 +71,12 @@ export async function GET(
       ),
       team: parseTeamOrg(findSection('team')?.content ?? ''),
       gapRegister: parseGapRegister(findSection('gap-register')?.content ?? ''),
+      // Step 7A.2: Infrastructure section now exposes the Polynize / Client
+      // subsection split. `legacy` is set instead when the H3 subheadings
+      // are not present, preserving forward-compat for unmigrated Blueprints.
+      infrastructure: parseInfrastructure(
+        findSection('infrastructure')?.content ?? ''
+      ),
     };
 
     // Gap counts: use the parser's footer-derived values for consistency with
