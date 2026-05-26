@@ -74,6 +74,7 @@
 }
 
 .card {
+  position: relative;
   display: block;
   text-decoration: none;
   color: inherit;
@@ -85,6 +86,51 @@
     transform var(--tac-transition),
     box-shadow var(--tac-transition),
     background var(--tac-transition);
+}
+
+/* ============================================================
+   RAG status dot — top-right corner, 12px circle.
+   Reuses Tactile edge highlights/shadows (inset top-light,
+   inset bottom-dark) plus a tinted outer halo per level. The
+   halo is a reduced version of --tac-shadow-raised's outer
+   layers, recoloured to match the rag accent.
+   ============================================================ */
+.statusDot {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  pointer-events: auto;  /* still receive title-tooltip hover */
+  z-index: 2;
+}
+
+.status_red {
+  background: var(--coral);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.35) inset,
+    0 0 10px rgba(255, 122, 107, 0.55),
+    2px 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.status_amber {
+  background: var(--amber);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.35) inset,
+    0 0 10px rgba(240, 184, 107, 0.55),
+    2px 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.status_green {
+  background: var(--mint);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.35) inset,
+    0 0 10px rgba(105, 252, 203, 0.5),
+    2px 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 .card:hover {
@@ -106,6 +152,8 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0;
+  /* Reserve space for the RAG dot so long names don't run under it. */
+  padding-right: 22px;
   color: var(--text);
 }
 

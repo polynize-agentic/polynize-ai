@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ClientCardData } from '../_lib/load-clients';
+import type { ClientCardData, ClientStatus } from '../_lib/load-clients';
 import s from './client-card.module.css';
 
 function relativeTime(date: Date): string {
@@ -16,12 +16,42 @@ function relativeTime(date: Date): string {
   return `${Math.floor(months / 12)}y ago`;
 }
 
+/**
+ * Compose the dot's hover tooltip: rag level, the human reason (if any),
+ * and who set it / when (if recorded). Falls back to a bare label like
+ * "Status: green" when no reason has been written.
+ */
+function statusTooltip(status: ClientStatus): string {
+  const label = `Status: ${status.rag}`;
+  const parts: string[] = [];
+  if (status.reason) parts.push(status.reason);
+  if (status.setBy || status.setAt) {
+    const byPart = status.setBy ? `Set by ${status.setBy}` : 'Set';
+    const atPart = status.setAt ? ` at ${status.setAt}` : '';
+    parts.push(`${byPart}${atPart}`);
+  }
+  return parts.length > 0 ? `${label}. ${parts.join(' · ')}` : label;
+}
+
+function StatusDot({ status }: { status: ClientStatus }) {
+  const cls = `${s.statusDot} ${s[`status_${status.rag}`]}`;
+  return (
+    <span
+      className={cls}
+      role="img"
+      aria-label={statusTooltip(status)}
+      title={statusTooltip(status)}
+    />
+  );
+}
+
 export function ClientCard({ data }: { data: ClientCardData }) {
   const href = `/console/${data.slug}/blueprint`;
 
   if (data.error) {
     return (
       <Link href={href} className={s.card}>
+        <StatusDot status={data.status} />
         <div className={s.cardInner}>
           <h2 className={s.name}>{data.name}</h2>
           <span className={s.errorBadge}>data unavailable</span>
@@ -38,6 +68,7 @@ export function ClientCard({ data }: { data: ClientCardData }) {
 
   return (
     <Link href={href} className={s.card}>
+      <StatusDot status={data.status} />
       <div className={s.cardInner}>
         <h2 className={s.name}>{data.name}</h2>
         {(data.leadHuman || data.leadEmail) && (
