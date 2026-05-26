@@ -19,10 +19,10 @@ const AnswersSchema = z.object({
   role: z.string(),
   bottleneck_full: z.string(),
   ideal_outcome: z.string(),
-  time_waste: z.string(),
-  primary_risk: z.string(),
+  work_shape: z.string(),
+  volume: z.string(),
   team_size: z.string(),
-  tools: z.array(z.string()),
+  context: z.string().optional().default(''),
   urgency: z.string(),
   email: z.string().optional(),
 });

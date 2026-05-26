@@ -1,6 +1,10 @@
 /**
- * Phase A question set, redesigned for the bottleneck-focused capability map.
- * Spec: HEATMAP_REDESIGN_SPEC.md v3.
+ * Phase A question set.
+ *
+ * Updated 2026-05-21 per Cap Matrix v0.5 spec — three swaps:
+ *   Q05 time_waste → work_shape (who's involved + triggers)
+ *   Q06 primary_risk → volume (single-select bucket)
+ *   Q08 tools → context (open text, optional)
  *
  * 10 numbered screens (Q00 through Q09); Q03 is conversational with up to two
  * follow-up probes; Q09 combines urgency + email on a single screen. All
@@ -25,6 +29,8 @@ export type Question = {
   options?: string[];
   /** Used by the urgency_email combined screen. */
   emailLabel?: string;
+  /** Optional — when true, the question can be skipped without entering text. */
+  optional?: boolean;
 };
 
 export const ROLE_OPTIONS = [
@@ -37,27 +43,12 @@ export const ROLE_OPTIONS = [
 
 export const TEAM_SIZES = ['Just me', '2-5', '6-15', '16-50', '50+'];
 
-export const RISK_OPTIONS = [
-  'Lost revenue',
-  'Lost client',
-  'Wasted time',
-  'Reputation damage',
-  'Compliance risk',
-  'Quality drops',
-];
-
-export const TOOL_OPTIONS = [
-  'Gmail',
-  'Slack',
-  'Telegram',
-  'WhatsApp',
-  'Notion',
-  'Google Docs',
-  'Excel',
-  'Figma',
-  'Xero',
-  'Salesforce',
-  'Other',
+export const VOLUME_OPTIONS = [
+  'Hundreds of touches a day',
+  'Dozens a day',
+  'A few a day',
+  'Weekly cadence',
+  'Less than that',
 ];
 
 export const URGENCY_OPTIONS = ['This week', 'Within the month', 'Just exploring'];
@@ -105,19 +96,20 @@ export const QUESTIONS: Question[] = [
     tag: 'Q04 · ideal outcome',
   },
   {
-    id: 'time_waste',
+    id: 'work_shape',
     type: 'textarea',
-    label: "What's eating your team's time that honestly shouldn't need them?",
+    label:
+      "Walk us through the work for a moment. When this bottleneck happens, who's involved and what triggers it?",
     placeholder:
-      'e.g. Data entry, chasing status updates, basic categorisation, sending routine emails to clients',
-    tag: 'Q05 · time waste',
+      'e.g. Every consignment inquiry hits the inbox. Lacy and Gwen tag-team initial replies. Scott reviews anything borderline. Triggers roughly daily, heavier around auction weeks.',
+    tag: 'Q05 · work shape',
   },
   {
-    id: 'primary_risk',
+    id: 'volume',
     type: 'single',
-    label: 'When this bottleneck causes a failure, what hurts most?',
-    options: RISK_OPTIONS,
-    tag: 'Q06 · stakes',
+    label: 'Roughly how much of this is happening?',
+    options: VOLUME_OPTIONS,
+    tag: 'Q06 · volume',
   },
   {
     id: 'team_size',
@@ -127,11 +119,15 @@ export const QUESTIONS: Question[] = [
     tag: 'Q07 · team size',
   },
   {
-    id: 'tools',
-    type: 'multi',
-    label: 'What tools does your team live in?',
-    options: TOOL_OPTIONS,
-    tag: 'Q08 · tools',
+    id: 'context',
+    type: 'textarea',
+    label:
+      'Anything we should know about how your team works? Tools you live in, anything unusual about the setup.',
+    sub: 'Optional. Skip if nothing comes to mind.',
+    placeholder:
+      "e.g. Everything runs through Zendesk. Scott isn't on Slack. We've tried adding triage staff before and it didn't stick.",
+    tag: 'Q08 · context',
+    optional: true,
   },
   {
     id: 'urgency',

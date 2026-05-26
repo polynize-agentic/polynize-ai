@@ -20,11 +20,12 @@ export const DEMO_ANSWERS: Partial<Answers> = {
 "It's the synthesis. Different analysts do different pieces of the work in different formats, and pulling it into a single investment thesis takes another week of partner time. By the time we make a call, the window has often closed. We need the groundwork done in parallel and presented in a single voice."`,
   ideal_outcome:
     "We could move on more deals without growing the team, and partners would spend their time on judgment and client relationships instead of editing analyst memos. Investment recommendations would land in days, not weeks.",
-  time_waste:
-    'Comparable transaction lookups, market sizing, financial-model first drafts, document review, regulatory and compliance verification, status updates across the deal pipeline',
-  primary_risk: 'Lost client',
+  work_shape:
+    'Every deal opportunity hits the analyst pod. Two or three analysts run the groundwork pieces in parallel (market sizing, comparable transactions, financial modelling). Partners take it from there once the memo lands. Triggers off any inbound deal flow, plus our weekly pipeline review.',
+  volume: 'A few a day',
   team_size: '6-15',
-  tools: ['Gmail', 'Excel', 'Google Docs', 'Notion'],
+  context:
+    'Team lives in Gmail, Excel, Google Docs, and Notion. Partners review every analyst memo before client send. Have tried hiring junior analysts before; turnover ate the leverage gains.',
   urgency: 'This week',
   email: 'aj@optio.capital',
 };

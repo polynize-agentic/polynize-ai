@@ -19,10 +19,10 @@ const BLANK: Partial<Answers> = {
   role: '',
   bottleneck_full: '',
   ideal_outcome: '',
-  time_waste: '',
-  primary_risk: '',
+  work_shape: '',
+  volume: '',
   team_size: '',
-  tools: [],
+  context: '',
   urgency: '',
   email: '',
 };

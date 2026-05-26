@@ -87,10 +87,10 @@ export function buildCapabilityMapUserMessage(answers: Partial<Answers>): string
     role: answers.role ?? '',
     bottleneck_full: (answers.bottleneck_full ?? '').trim(),
     ideal_outcome: (answers.ideal_outcome ?? '').trim(),
-    time_waste: (answers.time_waste ?? '').trim(),
-    primary_risk: answers.primary_risk ?? '',
+    work_shape: (answers.work_shape ?? '').trim(),
+    volume: answers.volume ?? '',
     team_size: answers.team_size ?? '',
-    tools: answers.tools ?? [],
+    context: (answers.context ?? '').trim(),
     urgency: answers.urgency ?? '',
   };
   return JSON.stringify(payload, null, 2);

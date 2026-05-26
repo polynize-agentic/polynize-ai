@@ -18,8 +18,8 @@ export function buildAgentSystemPrompt(
   const business = answers.business_description ?? '';
   const bottleneck = answers.bottleneck_full ?? '';
   const ideal = answers.ideal_outcome ?? '';
-  const timeWaste = answers.time_waste ?? '';
-  const tools = (answers.tools ?? []).join(', ') || 'not specified';
+  const workShape = answers.work_shape ?? '';
+  const context = answers.context ?? 'not specified';
 
   const capabilities = data.capabilities
     .map((c) => `  - ${c.label} (${c.allocation}): ${c.detail}`)
@@ -38,8 +38,8 @@ export function buildAgentSystemPrompt(
     bottleneck,
     ``,
     `What they want changed if this works: "${ideal}".`,
-    `What's eating their team's time: "${timeWaste}".`,
-    `Tools in use: ${tools}.`,
+    `How the work runs: "${workShape}".`,
+    `Other context: ${context}.`,
     ``,
     `Your team has mapped the work into these capabilities:`,
     capabilities,

@@ -2,7 +2,11 @@ export type Allocation = 'human' | 'hybrid' | 'agent';
 
 /**
  * Phase A answer set, redesigned for the bottleneck-focused capability map.
- * Spec: HEATMAP_REDESIGN_SPEC.md v3 (capability map flow).
+ *
+ * Updated 2026-05-21 per Cap Matrix v0.5 spec (Landmark 6.1):
+ *   time_waste → work_shape    (who's involved + triggers)
+ *   primary_risk → volume      (single-select bucket)
+ *   tools (string[]) → context (open text, optional)
  *
  * `bottleneck_full` accumulates the user's initial answer plus any follow-up
  * exchanges from the conversational probe pattern.
@@ -14,10 +18,10 @@ export type Answers = {
   role: string;
   bottleneck_full: string;
   ideal_outcome: string;
-  time_waste: string;
-  primary_risk: string;
+  work_shape: string;
+  volume: string;
   team_size: string;
-  tools: string[];
+  context: string;
   urgency: string;
   email?: string;
 };
