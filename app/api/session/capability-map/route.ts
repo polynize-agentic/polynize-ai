@@ -11,21 +11,22 @@ const PercentagesSchema = z.object({
   agent: z.number(),
 });
 
+/**
+ * Permissive body schema. Accepts both legacy CapabilityMapData and Cap Matrix
+ * v0.5 (CapabilityMapV05) shapes. We only mandate the fields needed for
+ * indexing (shape_internal + percentages); the full payload is stored verbatim
+ * in the `data` jsonb column. Schema validation against the v0.5 contract
+ * happens server-side in /api/capability-map/generate before we get here.
+ */
 const BodySchema = z.object({
   data: z
     .object({
-      interpretation: z.string(),
-      capabilities: z.array(
-        z.object({ label: z.string(), allocation: z.string(), detail: z.string() })
-      ),
-      percentages: PercentagesSchema,
-      team: z.object({}).passthrough(),
-      leverage_estimate: z.string(),
-      leverage_rationale: z.string(),
-      pricing_indicative: z.object({}).passthrough(),
-      hiring_comparison: z.object({}).passthrough(),
+      stage: z.string().optional(),
       shape_internal: z.string(),
-      shape_id: z.number(),
+      // Legacy shape has percentages at the root; v0.5 nests them under
+      // allocation_summary. We accept either and extract the right one below.
+      percentages: PercentagesSchema.optional(),
+      allocation_summary: z.object({ percentages: PercentagesSchema }).passthrough().optional(),
       generated_by: z.enum(['llm', 'rule_based']).optional(),
     })
     .passthrough(),
@@ -33,7 +34,8 @@ const BodySchema = z.object({
 
 /**
  * Upsert the capability map for this session. Stores the full payload
- * in the `data` jsonb column.
+ * in the `data` jsonb column. shape_internal and percentages are also
+ * lifted into their own columns for indexing/querying.
  */
 export async function POST(req: Request) {
   if (!process.env.SUPABASE_URL) {
@@ -43,19 +45,25 @@ export async function POST(req: Request) {
   let body: z.infer<typeof BodySchema>;
   try {
     body = BodySchema.parse(await req.json());
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
   const sessionId = await ensureSession();
   const sb = supabaseService();
 
+  // Extract percentages from whichever shape we got.
+  const percentages =
+    body.data.percentages ??
+    body.data.allocation_summary?.percentages ??
+    { human: 0, hybrid: 0, agent: 0 };
+
   try {
     const upsertRes = await sb.from('capability_maps').upsert(
       {
         session_id: sessionId,
         shape_internal: body.data.shape_internal,
-        percentages: body.data.percentages,
+        percentages,
         data: body.data,
         generated_by: body.data.generated_by ?? 'llm',
       },

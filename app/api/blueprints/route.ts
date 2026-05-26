@@ -4,7 +4,8 @@ import { ensureSession } from '@/lib/session';
 import { supabaseService } from '@/lib/supabase';
 import { PRICING_VERSION } from '@/lib/pricing';
 import { notifyScout, type ScoutPayload } from '@/lib/scout-webhook';
-import type { Answers, CapabilityMapData } from '@/lib/types';
+import type { Answers, CapabilityMapData, CapabilityMapV05 } from '@/lib/types';
+import { isV05, v05ToLegacy } from '@/lib/agents/v05-adapter';
 
 export const runtime = 'nodejs';
 
@@ -76,13 +77,22 @@ export async function POST(req: Request) {
     // the work even after we've shipped the response. Plain `void promise()`
     // gets reaped on Vercel's serverless lifecycle the moment the response
     // is flushed, which was silently dropping every Scout dispatch.
+    // hm.data may be either legacy CapabilityMapData or v0.5 CapabilityMapV05.
+    // Adapt down to legacy so the Scout payload construction below works
+    // uniformly. The full v0.5 stays in storage; only the webhook payload
+    // is the legacy view.
+    const rawMap = hm.data as CapabilityMapData | CapabilityMapV05;
+    const legacyMap: CapabilityMapData = isV05(rawMap)
+      ? v05ToLegacy(rawMap)
+      : (rawMap as CapabilityMapData);
+
     waitUntil(
       dispatchToScout(
         req,
         blueprint.id,
         blueprint.created_at as string,
         ans.answers as Partial<Answers>,
-        hm.data as CapabilityMapData,
+        legacyMap,
         sessionId
       )
     );

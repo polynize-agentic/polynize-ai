@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { Answers, CapabilityMapData } from '@/lib/types';
-import { deriveCapabilityMapFallback } from '@/lib/agents/derive-capability-map-fallback';
+import type { Answers, CapabilityMapData, CapabilityMapV05 } from '@/lib/types';
+import { v05ToLegacy } from '@/lib/agents/v05-adapter';
 import { completeBlueprintFlow } from '@/lib/persist-client';
 import { track } from '@/lib/analytics';
 import { ResetLink } from '@/app/_components/ResetLink';
@@ -13,12 +13,12 @@ const BOOKING_URL = 'https://calendly.com/marrscoiro/meeting30';
 type Props = {
   answers: Partial<Answers>;
   /** Pre-loaded data (resume from localStorage) — skips LLM call + auto-create. */
-  preloaded?: CapabilityMapData;
-  /** Bubbles the data up to the controller for resume + persistence. */
-  onDataReady: (data: CapabilityMapData) => void;
+  preloaded?: CapabilityMapV05;
+  /** Bubbles the v0.5 data up to the controller for resume + persistence. */
+  onDataReady: (data: CapabilityMapV05) => void;
 };
 
-type Stage = 'loading' | 'intro' | 'reveal' | 'done';
+type Stage = 'loading' | 'intro' | 'reveal' | 'done' | 'error';
 
 const INTRO_MS = 1400;
 const REVEAL_INTERVAL_MS = 220;
@@ -26,16 +26,21 @@ const DONE_DELAY_MS = 600;
 
 export function PhaseB({ answers, preloaded, onDataReady }: Props) {
   const firstName = (answers.name ?? '').trim().split(/\s+/)[0] ?? '';
-  const [data, setData] = useState<CapabilityMapData | null>(preloaded ?? null);
+  const [v05, setV05] = useState<CapabilityMapV05 | null>(preloaded ?? null);
   const [stage, setStage] = useState<Stage>(preloaded ? 'done' : 'loading');
   const [revealIdx, setRevealIdx] = useState<number>(preloaded ? -2 : -1);
   const [blueprintId, setBlueprintId] = useState<string | null>(null);
   const [activeTip, setActiveTip] = useState<number | null>(null);
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const blueprintFiredRef = useRef(false);
+
+  // Legacy-shape view derived from v0.5 — drives the existing reveal animation
+  // and renderer. The full v0.5 data is still passed up to persistence.
+  const data: CapabilityMapData | null = v05 ? v05ToLegacy(v05) : null;
 
   // 1. Fetch the capability map (skipped when preloaded).
   useEffect(() => {
-    if (data) return;
+    if (v05) return;
     const controller = new AbortController();
     (async () => {
       try {
@@ -45,56 +50,59 @@ export function PhaseB({ answers, preloaded, onDataReady }: Props) {
           body: JSON.stringify({ answers }),
           signal: controller.signal,
         });
-        const body = (await res.json()) as { ok: boolean; data?: CapabilityMapData };
+        const body = (await res.json()) as {
+          ok: boolean;
+          data?: CapabilityMapV05;
+          error?: string;
+          detail?: string;
+        };
         if (controller.signal.aborted) return;
         if (body.ok && body.data) {
-          setData(body.data);
+          setV05(body.data);
           setStage('intro');
         } else {
-          setData(deriveCapabilityMapFallback(answers));
-          setStage('intro');
+          console.error('[phase-b] capability map generation failed:', body);
+          setErrorDetail(body.detail ?? body.error ?? 'Unknown error');
+          setStage('error');
+          track('phase_b_error', {
+            reason: body.error ?? 'unknown',
+          });
         }
-      } catch {
+      } catch (e) {
         if (controller.signal.aborted) return;
-        setData(deriveCapabilityMapFallback(answers));
-        setStage('intro');
+        const msg = e instanceof Error ? e.message : 'Network error';
+        console.error('[phase-b] capability map fetch threw:', msg);
+        setErrorDetail(msg);
+        setStage('error');
+        track('phase_b_error', { reason: 'network' });
       }
     })();
     return () => controller.abort();
-  }, [answers, data]);
+  }, [answers, v05]);
 
   // 2. Auto-create the blueprint as soon as data is available.
-  // Runs in parallel with the reveal animation so the CTAs are populated
-  // by the time the user reaches the done state. Idempotent: the
-  // /api/blueprints upsert + Scout dedupe handle re-fires safely.
   useEffect(() => {
-    if (!data || blueprintFiredRef.current) return;
+    if (!v05 || !data || blueprintFiredRef.current) return;
     blueprintFiredRef.current = true;
-    onDataReady(data);
+    onDataReady(v05);
 
-    // Skip the auto-create when data was preloaded (means the blueprint
-    // was already created on an earlier visit). The visitor can still
-    // share via the mailto, we just rebuild the URL from cached state.
     if (preloaded) {
-      // We don't have the blueprint id in preloaded state; re-hit the
-      // create endpoint to get it (cheap upsert, no Scout re-fire thanks
-      // to server-side dedupe).
-      void completeBlueprintFlow(data).then((res) => {
+      void completeBlueprintFlow(v05).then((res) => {
         if ('id' in res) setBlueprintId(res.id);
       });
       return;
     }
 
     void (async () => {
-      const result = await completeBlueprintFlow(data);
+      const result = await completeBlueprintFlow(v05);
       if ('id' in result) {
-        track('blueprint_created', { id: result.id, shape_id: data.shape_internal });
+        track('blueprint_created', { id: result.id, shape_id: v05.shape_internal });
         setBlueprintId(result.id);
       } else {
         console.warn('[phase-b] blueprint creation failed:', result.error);
       }
     })();
-  }, [data, preloaded, onDataReady]);
+  }, [v05, data, preloaded, onDataReady]);
 
   // 3. intro → reveal
   useEffect(() => {
@@ -118,6 +126,107 @@ export function PhaseB({ answers, preloaded, onDataReady }: Props) {
     }, REVEAL_INTERVAL_MS);
     return () => clearInterval(iv);
   }, [stage, data]);
+
+  // Error state — LLM call failed after retry, or network blew up.
+  if (stage === 'error') {
+    return (
+      <div className={s.phaseB}>
+        <div className={s.intro}>
+          <div className={s.tag} style={{ color: 'var(--coral)' }}>
+            capability_map / failed
+          </div>
+          <h2
+            className={s.title}
+            style={{ fontSize: 28, marginTop: 24, marginBottom: 16, textAlign: 'center' }}
+          >
+            {firstName ? `${firstName}, w` : 'W'}e couldn&apos;t generate your map.
+          </h2>
+          <p
+            className={s.stat}
+            style={{
+              fontSize: 14.5,
+              lineHeight: 1.6,
+              maxWidth: 480,
+              textAlign: 'center',
+              marginInline: 'auto',
+              marginBottom: 28,
+            }}
+          >
+            Sometimes the model gets stuck. Try again, or book a call with Marrs
+            and he&apos;ll walk you through the mapping live.
+          </p>
+          <div
+            style={{
+              display: 'flex',
+              gap: 12,
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              marginBottom: 16,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setErrorDetail(null);
+                setV05(null);
+                setStage('loading');
+                track('cta_click', {
+                  surface: 'phase_b_error',
+                  label: 'try_again',
+                });
+              }}
+              style={{
+                padding: '14px 22px',
+                border: '1px solid var(--border-soft)',
+                borderRadius: 12,
+                background: 'transparent',
+                color: 'inherit',
+                cursor: 'pointer',
+                fontSize: 14,
+              }}
+            >
+              Try again
+            </button>
+            <a
+              href={BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${s.cta} ${s.ctaPrimary}`}
+              onClick={() =>
+                track('booking_click', { surface: 'phase_b_error' })
+              }
+              style={{ textDecoration: 'none' }}
+            >
+              Book a call with Marrs <span className={s.ctaArr}>→</span>
+            </a>
+          </div>
+          {errorDetail && (
+            <details
+              style={{
+                fontSize: 11,
+                color: 'var(--text-3)',
+                fontFamily: 'monospace',
+                maxWidth: 480,
+                marginInline: 'auto',
+                textAlign: 'left',
+              }}
+            >
+              <summary style={{ cursor: 'pointer' }}>technical detail</summary>
+              <pre
+                style={{
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                  marginTop: 8,
+                }}
+              >
+                {errorDetail}
+              </pre>
+            </details>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   if (stage === 'loading' || !data) {
     return (
@@ -151,8 +260,6 @@ export function PhaseB({ answers, preloaded, onDataReady }: Props) {
     );
   }
 
-  // Capability rows that have been revealed get the lit cell + tooltip behaviour.
-  // When we're in 'done' (or preloaded), reveal everything.
   const allRevealed = stage === 'done' || preloaded;
 
   return (
@@ -358,10 +465,6 @@ function CapabilityTooltip({
   allocation: 'human' | 'hybrid' | 'agent';
   detail: string;
 }) {
-  // Sit the tooltip directly above the allocated cell (not the whole row).
-  // The row is grid-template-columns: 2fr 1fr 1fr 1fr with 12px gaps, so
-  // 1fr = (100% - 36px) / 5 = 20% - 7.2px. The 2fr label column ends at
-  // (40% - 14.4px), then a 12px gap, then each 1fr cell with 12px gaps.
   const left =
     allocation === 'human'
       ? 'calc(40% - 2.4px)'
@@ -403,11 +506,6 @@ function ShareCta({
   blueprintId: string | null;
   onClick: () => void;
 }) {
-  // Always-active mailto. The button doesn't gate on blueprintId because:
-  //   1. If the blueprint id has landed, we share /blueprints/<id>.
-  //   2. If it hasn't (slow network, just-finished reveal), we share the
-  //      /agents page so the recipient can run it themselves. Either way
-  //      the click does something useful — never a dead button.
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     onClick();
@@ -448,7 +546,6 @@ function ShareCta({
 /* ---------- Icons ---------- */
 
 function HumanIcon({ className }: { className?: string }) {
-  // Solid filled person silhouette: head + shoulders.
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M12 12a4.5 4.5 0 100-9 4.5 4.5 0 000 9z" />
@@ -458,9 +555,6 @@ function HumanIcon({ className }: { className?: string }) {
 }
 
 function BotIcon({ className }: { className?: string }) {
-  // Solid filled bot: rounded head with antenna, eyes, mouth bar.
-  // Eyes/mouth are punched out via even-odd fill so the icon reads on
-  // any background.
   return (
     <svg
       className={className}
@@ -470,11 +564,8 @@ function BotIcon({ className }: { className?: string }) {
       clipRule="evenodd"
       aria-hidden="true"
     >
-      {/* Antenna */}
       <path d="M12 2.5a.75.75 0 01.75.75V5h-1.5V3.25A.75.75 0 0112 2.5zM12 4.75a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z" />
-      {/* Head with cut-out eyes + mouth */}
       <path d="M5.5 8.5A2.5 2.5 0 018 6h8a2.5 2.5 0 012.5 2.5v8.75A2.75 2.75 0 0115.75 20h-7.5A2.75 2.75 0 015.5 17.25V8.5zM9 11a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm6 0a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm-6 5.25a.75.75 0 010-1.5h6a.75.75 0 010 1.5H9z" />
-      {/* Side ears */}
       <path d="M3.75 11.5a.75.75 0 01.75-.75H5v4H4.5a.75.75 0 01-.75-.75v-2.5zM19 10.75h.5a.75.75 0 01.75.75v2.5a.75.75 0 01-.75.75H19v-4z" />
     </svg>
   );
@@ -482,9 +573,6 @@ function BotIcon({ className }: { className?: string }) {
 
 function TeamBranchSvg({ agentCount }: { agentCount: number }) {
   const n = Math.max(1, Math.min(5, agentCount));
-  // Gap-aware leg X positions. The agent row uses repeat(n, 1fr) with a
-  // 24px gap inside a 760px max-width container — that's ~3.16% per gap.
-  // Without this, the legs drift off-centre when the cards spread apart.
   const gapPct = (24 / 760) * 100;
   const totalGapPct = (n - 1) * gapPct;
   const cellW = (100 - totalGapPct) / n;
@@ -494,8 +582,6 @@ function TeamBranchSvg({ agentCount }: { agentCount: number }) {
   );
   const leftX = legXs[0];
   const rightX = legXs[legXs.length - 1];
-  // Push the branch junction lower (y=32 instead of y=12) so the vertical
-  // line coming out of Tim's card is visibly longer.
   const branchY = 32;
   return (
     <svg

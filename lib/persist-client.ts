@@ -6,7 +6,7 @@
  * The httpOnly session cookie is attached automatically by fetch.
  */
 
-import type { Answers, CapabilityMapData } from './types';
+import type { Answers, CapabilityMapV05 } from './types';
 
 async function silentPost(path: string, body: unknown): Promise<void> {
   try {
@@ -26,7 +26,7 @@ export function persistAnswers(answers: Partial<Answers>, completed: boolean): v
   void silentPost('/api/session/answers', { answers, completed });
 }
 
-export function persistCapabilityMap(data: CapabilityMapData): void {
+export function persistCapabilityMap(data: CapabilityMapV05): void {
   void silentPost('/api/session/capability-map', { data });
 }
 
@@ -59,7 +59,7 @@ export async function createBlueprint(): Promise<{ id: string } | { error: strin
  * single awaitable function instead of two fire-and-forgets.
  */
 export async function completeBlueprintFlow(
-  data: CapabilityMapData
+  data: CapabilityMapV05
 ): Promise<{ id: string } | { error: string }> {
   // 1. Persist the capability map (awaited).
   try {

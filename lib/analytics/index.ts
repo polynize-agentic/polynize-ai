@@ -17,6 +17,8 @@ export type AnalyticsEvent =
   | 'phase_a_complete'
   /** Phase B reveal complete. props: { shape_id, percentages } */
   | 'phase_b_complete'
+  /** Phase B LLM generation failed after retry. props: { reason } */
+  | 'phase_b_error'
   /** Phase C message sent. props: { agent_id, message_count } */
   | 'phase_c_message'
   /** Phase C agent switch. props: { from_agent, to_agent } */

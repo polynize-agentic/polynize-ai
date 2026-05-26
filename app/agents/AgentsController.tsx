@@ -1,20 +1,26 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { Answers, CapabilityMapData, SessionState } from '@/lib/types';
+import type { Answers, CapabilityMapV05, SessionState } from '@/lib/types';
+import { isV05 } from '@/lib/agents/v05-adapter';
 import { PhaseA } from './PhaseA';
 import { PhaseB } from './PhaseB';
 import { track, emailDomain } from '@/lib/analytics';
 import { persistAnswers } from '@/lib/persist-client';
 import s from './phase-a.module.css';
 
-const STORAGE_KEY = 'polynize_agents_state_v3';
+// Bumped to v4 because the persisted `data` shape changed (legacy
+// CapabilityMapData → CapabilityMapV05) with the Cap Matrix v0.5 redesign.
+// Visitors with stored v3 data start fresh, which is fine — the shape isn't
+// compatible and there are very few production sessions to date.
+const STORAGE_KEY = 'polynize_agents_state_v4';
+const LEGACY_STORAGE_KEY = 'polynize_agents_state_v3';
 
 type Persisted = {
   phase: SessionState['phase'];
   answers: Partial<Answers>;
   step: number;
-  data?: CapabilityMapData;
+  data?: CapabilityMapV05;
 };
 
 const INITIAL: Persisted = { phase: 'A', answers: {}, step: 0 };
@@ -41,13 +47,19 @@ export function AgentsController() {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as Partial<Persisted>;
+        // Guard against stale `data` of the wrong shape (e.g. legacy maps
+        // saved before the v0.5 redesign). Drop it if the stage marker is
+        // missing — PhaseB will regenerate fresh.
+        const safeData = isV05(parsed.data) ? parsed.data : undefined;
         setState({
-          phase: parsed.phase ?? 'A',
+          phase: safeData ? (parsed.phase ?? 'A') : 'A',
           answers: parsed.answers ?? {},
           step: parsed.step ?? 0,
-          data: parsed.data,
+          data: safeData,
         });
       }
+      // One-time cleanup of the old localStorage slot.
+      window.localStorage.removeItem(LEGACY_STORAGE_KEY);
     } catch {
       /* ignore corrupted state */
     }
@@ -85,8 +97,8 @@ export function AgentsController() {
   }, []);
 
   // Once Phase B has finished generating + persisting + creating the blueprint,
-  // it sends the data up so we can stash it for the resume guard on next visit.
-  const handlePhaseBData = useCallback((data: CapabilityMapData) => {
+  // it sends the v0.5 data up so we can stash it for the resume guard on next visit.
+  const handlePhaseBData = useCallback((data: CapabilityMapV05) => {
     setState((prev) => ({ ...prev, data, phase: 'DONE' }));
   }, []);
 
