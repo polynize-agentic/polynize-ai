@@ -50,24 +50,64 @@ export function PhaseB({ answers, preloaded, onDataReady }: Props) {
           body: JSON.stringify({ answers }),
           signal: controller.signal,
         });
-        const body = (await res.json()) as {
-          ok: boolean;
-          data?: CapabilityMapV05;
-          error?: string;
-          detail?: string;
-        };
-        if (controller.signal.aborted) return;
-        if (body.ok && body.data) {
-          setV05(body.data);
-          setStage('intro');
-        } else {
-          console.error('[phase-b] capability map generation failed:', body);
-          setErrorDetail(body.detail ?? body.error ?? 'Unknown error');
-          setStage('error');
-          track('phase_b_error', {
-            reason: body.error ?? 'unknown',
-          });
+
+        // Read the body as text first so we can distinguish between:
+        //  - server returned structured { ok, error, detail } JSON
+        //  - server returned non-JSON (Vercel's HTML 504/500 gateway page,
+        //    or any upstream error that bypassed our route handler)
+        // The previous code called res.json() unconditionally, which threw
+        // "Unexpected token 'A'..." on Vercel's "An error occurred..." 504
+        // body and surfaced as a cryptic React crash instead of the friendly
+        // error UI. See Step 7A.3 triage.
+        const rawText = await res.text();
+        let parsed:
+          | {
+              ok: boolean;
+              data?: CapabilityMapV05;
+              error?: string;
+              detail?: string;
+            }
+          | null = null;
+        try {
+          parsed = JSON.parse(rawText);
+        } catch {
+          parsed = null;
         }
+
+        if (controller.signal.aborted) return;
+
+        if (parsed && parsed.ok && parsed.data) {
+          setV05(parsed.data);
+          setStage('intro');
+          return;
+        }
+
+        // Failure path. If we have structured JSON, use its error/detail.
+        // Otherwise synthesize a message from the HTTP status + body preview,
+        // so the technical-detail disclosure shows something actionable.
+        let reason: string;
+        let detail: string;
+        if (parsed) {
+          reason = parsed.error ?? 'unknown';
+          detail = parsed.detail ?? parsed.error ?? 'Unknown error';
+          console.error('[phase-b] capability map generation failed:', parsed);
+        } else if (res.status === 504) {
+          reason = 'gateway_timeout';
+          detail =
+            'The generation took longer than the function budget allows. The model is likely overloaded; try again in a moment.';
+          console.error(
+            `[phase-b] capability map fetch got 504, body preview: ${rawText.slice(0, 200)}`
+          );
+        } else {
+          reason = `http_${res.status}`;
+          detail = `Server returned HTTP ${res.status}: ${rawText.slice(0, 200)}`;
+          console.error(
+            `[phase-b] capability map fetch got non-JSON ${res.status}, body preview: ${rawText.slice(0, 200)}`
+          );
+        }
+        setErrorDetail(detail);
+        setStage('error');
+        track('phase_b_error', { reason });
       } catch (e) {
         if (controller.signal.aborted) return;
         const msg = e instanceof Error ? e.message : 'Network error';

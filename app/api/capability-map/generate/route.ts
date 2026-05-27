@@ -74,8 +74,13 @@ export async function POST(req: Request) {
       raw = await complete({
         system: CAPABILITY_MAP_SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userMessage }],
-        // v0.5 output is 3-4x the size of legacy; allow generous headroom.
-        maxTokens: 16000,
+        // Empirical sizing: a complete v0.5 envelope with 10-13 capability
+        // rows lands around 4000-6000 tokens. 8000 gives comfortable headroom
+        // without paying for tokens we never use. Was 16000, which on slow
+        // models (DeepSeek V3 Pro etc) pushed generation past the 300s
+        // Vercel function ceiling and surfaced as 504 Gateway Timeout. See
+        // Step 7A.3 triage.
+        maxTokens: 8000,
         temperature: attempt === 1 ? 0.6 : 0.3,
       });
 
