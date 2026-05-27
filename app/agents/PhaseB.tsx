@@ -24,6 +24,24 @@ const INTRO_MS = 1400;
 const REVEAL_INTERVAL_MS = 220;
 const DONE_DELAY_MS = 600;
 
+/**
+ * Loading-state phase messages. Cycle through these while waiting on the
+ * capability-map LLM call (~50s typical with Gemini 3.5 Flash). Each entry's
+ * `from` is "show this message after N ms have elapsed since loading started".
+ * The last "finalizing" message is the safety net for slow generations; if
+ * we ever cross 90s we hold on it. Copy is lowercase to match the existing
+ * loading-state aesthetic ("mapping your bottleneck", "this takes a few
+ * seconds"). No em-dashes per CLAUDE.md §3.
+ */
+const LOADING_MESSAGES: { from: number; text: string }[] = [
+  { from: 0,     text: 'identifying capabilities from your bottleneck' },
+  { from: 10000, text: 'clustering work into phases' },
+  { from: 22000, text: 'allocating tasks: human, hybrid, or agent' },
+  { from: 34000, text: 'designing your agent team' },
+  { from: 46000, text: 'calculating leverage estimate' },
+  { from: 60000, text: 'finalizing your map' },
+];
+
 export function PhaseB({ answers, preloaded, onDataReady }: Props) {
   const firstName = (answers.name ?? '').trim().split(/\s+/)[0] ?? '';
   const [v05, setV05] = useState<CapabilityMapV05 | null>(preloaded ?? null);
@@ -32,6 +50,9 @@ export function PhaseB({ answers, preloaded, onDataReady }: Props) {
   const [blueprintId, setBlueprintId] = useState<string | null>(null);
   const [activeTip, setActiveTip] = useState<number | null>(null);
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState<string>(
+    LOADING_MESSAGES[0].text
+  );
   const blueprintFiredRef = useRef(false);
 
   // Legacy-shape view derived from v0.5 — drives the existing reveal animation
@@ -143,6 +164,21 @@ export function PhaseB({ answers, preloaded, onDataReady }: Props) {
       }
     })();
   }, [v05, data, preloaded, onDataReady]);
+
+  // 3a. Cycle loading-state messages while we wait on the LLM call. The
+  // generation takes ~50s with Gemini 3.5 Flash, so a static "this takes a
+  // few seconds" doesn't survive the actual wait. Each LOADING_MESSAGES entry
+  // schedules a setTimeout that swaps the displayed text at its `from` time.
+  // On retry (Try again button → stage = 'loading' again) the effect re-runs
+  // and resets to the first message.
+  useEffect(() => {
+    if (stage !== 'loading') return;
+    setLoadingMessage(LOADING_MESSAGES[0].text);
+    const timers = LOADING_MESSAGES.slice(1).map((msg) =>
+      setTimeout(() => setLoadingMessage(msg.text), msg.from)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, [stage]);
 
   // 3. intro → reveal
   useEffect(() => {
@@ -278,7 +314,11 @@ export function PhaseB({ answers, preloaded, onDataReady }: Props) {
             <div className={`${s.scanLine} ${s.scanLineD2}`} />
             <div className={`${s.scanLine} ${s.scanLineD3}`} />
           </div>
-          <div className={s.stat}>this takes a few seconds</div>
+          {/* key={loadingMessage} forces React to remount this node on every
+              message change so the CSS fade-in animation on .stat replays. */}
+          <div key={loadingMessage} className={s.stat}>
+            {loadingMessage}
+          </div>
         </div>
       </div>
     );

@@ -62,6 +62,22 @@
   display: flex;
   gap: 14px;
   align-items: center;
+  /* Gentle fade-in on mount. Triggers each time the loading-state message
+     cycles to a new phase (key prop change in PhaseB.tsx forces remount).
+     Also runs once on the intro-state "N capabilities identified" stat —
+     same animation, looks consistent across both contexts. */
+  animation: statFadeIn 400ms ease-out;
+}
+
+@keyframes statFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .statValue {
   color: var(--mint);
