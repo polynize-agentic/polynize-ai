@@ -239,28 +239,74 @@ Return valid JSON only, no markdown, no preamble. The renderer parses the respon
       "notes": "<one short sentence on the launch posture>"
     },
     "map_reflection": {
-      "scope_uncertainty": [],
-      "cross_cutting_candidates": [],
-      "decisions_deferred": []
+      "scope_uncertainty": [
+        { "topic": "<short topic>", "question": "<the question to ask Marrs in the modeling call>" }
+      ],
+      "cross_cutting_candidates": [
+        { "item": "<thing that spans rows>", "reading": "interface", "question": "<which row owns it?>" }
+      ],
+      "decisions_deferred": [
+        { "topic": "<topic>", "reason": "<why it can't be decided yet from website intake>" }
+      ]
     },
-    "excluded_capabilities": [],
+    "excluded_capabilities": [
+      { "name": "<capability name>", "reason": "<why it's out of scope for this bottleneck>" }
+    ],
     "delta_summary": {
       "mode": "COLD_START",
-      "rows_added": ["01", "02", ...],
+      "rows_added": ["01", "02"],
       "rows_modified": [],
       "rows_promoted": [],
       "rows_removed": [],
       "narrative": "Initial map from website intake."
     },
-    "team": { /* human_owner + agents per spec */ },
-    "leverage_estimate": "...",
-    "leverage_rationale": "...",
-    "pricing_indicative": { /* hardcoded baselines, exact values */ },
-    "hiring_comparison": { /* per spec */ },
+    "team": {
+      "human_owner": { "name": "<prospect's first name or 'You'>", "role": "<one sentence>" },
+      "agents": [
+        { "name": "<single word>", "role": "<role title>", "short_desc": "<one sentence>" }
+      ]
+    },
+    "leverage_estimate": "2-4x",
+    "leverage_rationale": "<one paragraph including a hiring comparison>",
+    "pricing_indicative": {
+      "map": {
+        "label": "Map",
+        "from": 5000,
+        "currency": "AUD",
+        "description": "<one sentence on what Map covers for this bottleneck>"
+      },
+      "transform": {
+        "label": "Transform",
+        "from": 10000,
+        "currency": "AUD",
+        "description": "<one sentence on what Transform covers for this bottleneck>"
+      },
+      "operate": {
+        "label": "Operate",
+        "from": 999,
+        "currency": "AUD",
+        "period": "month",
+        "description": "<one sentence on what Operate covers for this bottleneck>"
+      }
+    },
+    "hiring_comparison": {
+      "equivalent_fte": <number>,
+      "estimated_annual_cost": "<low-high range, e.g. '110,000-130,000'>",
+      "currency": "AUD",
+      "note": "Plus recruitment, onboarding, leave, and management overhead"
+    },
     "shape_internal": "<one of the 8 shape names>",
     "shape_id": <integer 1-8>
   }
 }
+
+Field-shape rules that often get wrong:
+- "edge_cases" inside each capability row is an array of PLAIN STRINGS, not objects. Example: ["Multi-claimant kit", "Reissued PCGS request"]. Max 5 items, each <= 200 chars.
+- "map_reflection.scope_uncertainty" / "cross_cutting_candidates" / "decisions_deferred" are arrays of OBJECTS with the exact shapes shown above. Never plain strings.
+- "excluded_capabilities" is an array of {name, reason} objects. Never plain strings.
+- "pricing_indicative" must use the exact nested {map, transform, operate} structure with the literal values shown (5000, 10000, 999, "AUD"). Description fields are short, bottleneck-specific.
+- "evidence" inside each capability row uses source_id from this exact set only: "q01_business", "q03_bottleneck", "q04_outcome", "q05_work_shape", "q06_volume", "q08_context".
+- "work_shape.type" inside each capability row must match one of these exact strings (or start with "Other: "): "Classification + routing", "Drafting + approval", "Calculation against rules", "Pattern detection + escalation", "Decision support", "Monitoring + alerting", "Data lookup + assembly", "Multi-turn conversation".
 
 ---
 
