@@ -176,12 +176,25 @@ export async function POST(req: Request) {
       }ms: ${lastError}`
     );
     // If the LLM call returned but JSON parsing threw, raw is populated and
-    // worth logging — that's the case where the model emitted something that
-    // didn't have a parseable JSON object inside (truncation, wrong format).
+    // worth logging. For parse failures with a position (e.g. "at position
+    // 20345"), show 500 chars around that position rather than the start of
+    // the response — the start is almost always fine and the break is usually
+    // at the tail.
     if (raw) {
-      console.error(
-        `[capability-map.generate] raw response (first 2000 chars): ${raw.slice(0, 2000)}`
-      );
+      const posMatch = lastError.match(/at position (\d+)/);
+      if (posMatch) {
+        const pos = Number(posMatch[1]);
+        const from = Math.max(0, pos - 500);
+        const to = Math.min(raw.length, pos + 500);
+        console.error(
+          `[capability-map.generate] raw response around error position ${pos} ` +
+            `(chars ${from}..${to} of ${raw.length}): ${raw.slice(from, to)}`
+        );
+      } else {
+        console.error(
+          `[capability-map.generate] raw response (first 2000 chars): ${raw.slice(0, 2000)}`
+        );
+      }
     }
   }
 

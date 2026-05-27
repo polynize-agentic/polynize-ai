@@ -43,6 +43,14 @@ export async function completeWithOpenRouter(args: CompleteArgs): Promise<string
         model,
         max_tokens: args.maxTokens ?? 1000,
         temperature: args.temperature ?? 0.7,
+        // OpenAI-standard JSON mode. Passed through by OpenRouter to upstream
+        // providers (Gemini, OpenAI, DeepSeek, Anthropic) that support it.
+        // Structurally guarantees the model's output is parseable JSON —
+        // closes off the "valid JSON until line 493 then dropped a comma"
+        // class of bugs that Gemini 3.5 Flash was producing on the v0.5
+        // envelope. Providers that ignore this parameter degrade silently
+        // to plain text output (same behavior as before this flag existed).
+        response_format: { type: 'json_object' },
         messages: [
           { role: 'system', content: args.system },
           ...args.messages,
@@ -75,14 +83,28 @@ export async function completeWithOpenRouter(args: CompleteArgs): Promise<string
   }
 
   const data = (await res.json()) as {
-    choices?: { message?: { content?: string } }[];
+    choices?: {
+      message?: { content?: string };
+      finish_reason?: string;
+    }[];
   };
   const content = data.choices?.[0]?.message?.content;
+  const finishReason = data.choices?.[0]?.finish_reason ?? 'unknown';
   if (!content) throw new Error('OpenRouter returned no content');
   console.log(
     `[openrouter] body parsed after ${Date.now() - startedAt}ms total, content length=${
       content.length
-    }`
+    }, finish_reason=${finishReason}`
   );
+  // finish_reason: "stop" = clean completion; "length" = hit max_tokens
+  // (truncated; bump maxTokens or tighten prompt); other values usually
+  // indicate filtering or tool calls (neither expected here).
+  if (finishReason === 'length') {
+    console.warn(
+      `[openrouter] WARNING: response was truncated by max_tokens cap. ` +
+        `Consider raising max_tokens (currently ${args.maxTokens ?? 1000}) or ` +
+        `tightening the prompt to produce shorter output.`
+    );
+  }
   return content;
 }
