@@ -52,10 +52,14 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
 
   if (!parsed.success) {
     setFlash('console_signin_error', 'invalid_email');
-    // Bust any cached /console response so the redirect target reads our
-    // freshly-set flash cookie. Belt + braces with the layout's
-    // force-dynamic export.
-    revalidatePath('/console');
+    // Bust the router cache for both the page AND the layout. The 'layout'
+    // scope is critical: when the user is unauthenticated, the layout
+    // short-circuits to <SignInGate /> without rendering the page at all,
+    // so a page-scope revalidate (the default) leaves the cached layout
+    // RSC intact and the post-redirect render shows stale state. Verified
+    // empirically: hard-refresh worked, normal redirect-follow didn't —
+    // exactly the symptom of router-cached layout RSC.
+    revalidatePath('/console', 'layout');
     redirect('/console');
   }
 
@@ -98,10 +102,8 @@ If you did not request this, you can safely ignore this email.`,
     setFlash('console_signin_email', raw);
   }
 
-  // Bust any cached /console response so the redirect target reads our
-  // freshly-set flash cookies. Belt + braces with the layout's force-dynamic
-  // export.
-  revalidatePath('/console');
+  // Bust the layout-level cache (see same call above for full reasoning).
+  revalidatePath('/console', 'layout');
   redirect('/console');
 }
 
@@ -114,7 +116,7 @@ export async function resetSignInAction(): Promise<void> {
   jar.delete('console_signin_submitted');
   jar.delete('console_signin_email');
   jar.delete('console_signin_error');
-  revalidatePath('/console');
+  revalidatePath('/console', 'layout');
   redirect('/console');
 }
 
