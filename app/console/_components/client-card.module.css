@@ -73,6 +73,13 @@
   gap: 18px;
 }
 
+/* Wraps the Link + status dot button + editor popover so the dot can sit
+   as a sibling of the Link (not a child), avoiding click bubbling that
+   would trigger navigation when the user just wants to edit the status. */
+.cardWrap {
+  position: relative;
+}
+
 .card {
   position: relative;
   display: block;
@@ -245,4 +252,279 @@
   padding: 2px 7px;
   border-radius: 6px;
   color: var(--text-2);
+}
+
+/* ============================================================
+   RAG status editor (Step 7A.3) — inline popover anchored to
+   the card's top-right corner. Mounted as a sibling of the
+   Link so its clicks don't navigate. The backdrop is a
+   transparent invisible button that fills the viewport and
+   closes the popover when clicked outside.
+   ============================================================ */
+
+/* Promote the plain status dot into an interactive button when editable. */
+.statusDotButton {
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  /* Slight hover/focus halo for affordance without changing the dot's
+     own color. Re-uses the existing colored halo on focus. */
+  transition: transform var(--tac-transition);
+}
+
+.statusDotButton:hover,
+.statusDotButton:focus-visible {
+  transform: scale(1.15);
+  outline: none;
+}
+
+.statusDotButton:focus-visible {
+  /* Ring matches the dot's own color via currentColor — but the dot uses
+     `background`, not `color`. Use a separate ring colored by global
+     focus accent (mint) so it's visible regardless of dot variant. */
+  box-shadow:
+    0 0 0 2px var(--bg, #161620),
+    0 0 0 4px rgba(105, 252, 203, 0.55);
+}
+
+/* Invisible backdrop that catches clicks outside the popover. Sits below
+   the popover but above everything else on the page. */
+.editorBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: default;
+  /* Hide the native button outline since the backdrop should be invisible. */
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* The popover itself. Anchored to the card's top-right via the cardWrap's
+   relative positioning. Width is fixed (260px) so it sits comfortably
+   beside the dot without depending on card content. Pulled down ~12px
+   below the dot so it doesn't cover the heading. */
+.editor {
+  position: absolute;
+  top: 32px;
+  right: 8px;
+  width: 280px;
+  z-index: 60;
+  background: var(--tac-surface);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 0 var(--tac-edge-light) inset,
+    0 -1px 0 var(--tac-edge-dark) inset,
+    -4px -4px 10px var(--tac-rim),
+    8px 8px 24px rgba(0, 0, 0, 0.5),
+    16px 16px 48px rgba(0, 0, 0, 0.35);
+  padding: 16px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.editorHeader {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.editorOptions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.editorOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: var(--tac-inset, #0f0f17);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 10px 6px;
+  cursor: pointer;
+  color: var(--text-2);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  transition:
+    border-color var(--tac-transition),
+    background var(--tac-transition),
+    color var(--tac-transition);
+}
+
+.editorOption:hover:not(:disabled),
+.editorOption:focus-visible {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+}
+
+.editorOption:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.editorOptionActive {
+  border-color: rgba(255, 255, 255, 0.22);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.editorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.editorOptionLabel {
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.editorReasonLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.editorReasonLabelText {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.editorReason {
+  background: var(--tac-inset, #0f0f17);
+  box-shadow:
+    2px 2px 5px rgba(0, 0, 0, 0.45) inset,
+    -1px -1px 3px var(--tac-rim) inset;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 72px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.editorReason:focus-visible {
+  outline: none;
+  box-shadow:
+    2px 2px 5px rgba(0, 0, 0, 0.45) inset,
+    -1px -1px 3px var(--tac-rim) inset,
+    0 0 0 1.5px rgba(105, 252, 203, 0.45);
+}
+
+.editorReason::placeholder {
+  color: var(--text-3);
+}
+
+.editorReason:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.editorError {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--coral);
+  background: rgba(255, 122, 107, 0.08);
+  padding: 8px 10px;
+  border-radius: 6px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.editorActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+.editorButtonCancel,
+.editorButtonSave {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    background var(--tac-transition),
+    color var(--tac-transition),
+    border-color var(--tac-transition),
+    box-shadow var(--tac-transition);
+}
+
+.editorButtonCancel {
+  background: transparent;
+  color: var(--text-2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.editorButtonCancel:hover:not(:disabled),
+.editorButtonCancel:focus-visible {
+  outline: none;
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.editorButtonSave {
+  background: var(--tac-button-gradient, linear-gradient(180deg, #7fffd2, #3fc99a));
+  color: var(--tac-button-text, #0a1a14);
+  border-color: transparent;
+  font-weight: 700;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    -2px -2px 5px rgba(255, 255, 255, 0.08),
+    3px 3px 8px rgba(0, 0, 0, 0.45),
+    0 0 14px rgba(105, 252, 203, 0.28);
+}
+
+.editorButtonSave:hover:not(:disabled),
+.editorButtonSave:focus-visible {
+  outline: none;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    -2px -2px 5px rgba(255, 255, 255, 0.1),
+    3px 3px 10px rgba(0, 0, 0, 0.5),
+    0 0 18px rgba(105, 252, 203, 0.4);
+}
+
+.editorButtonSave:disabled,
+.editorButtonCancel:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+/* On screens narrower than the popover width, keep it inside the viewport
+   by anchoring left instead of right + clamping width. */
+@media (max-width: 380px) {
+  .editor {
+    left: 8px;
+    right: 8px;
+    width: auto;
+  }
 }

@@ -634,6 +634,35 @@
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
+/* Read-only counterpart to .statusPill — used when canEdit=false (client
+   scope, Step 7A.3). Defined AFTER the color classes so the cascade strips
+   the pill's bg/padding/box-shadow back to plain text. The `color` from
+   .statusOpen/.statusAnswered/.statusClosed survives, keeping red/amber/
+   green semantic meaning intact without the pill chrome. */
+.statusStatic {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Read-only counterpart to .notesDisplay — used when canEdit=false. Same
+   visual layout as the editable notes display but renders as a plain div,
+   no hover affordance, no button semantics. */
+.notesStatic {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 2px 0;
+  color: var(--bp-text-2);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .gapFooter {
   margin-top: 14px;
   padding-top: 14px;

@@ -81,7 +81,11 @@ function SectionShell({
   );
 }
 
-function renderSection(section: BlueprintSection, slug: string): React.ReactNode {
+function renderSection(
+  section: BlueprintSection,
+  slug: string,
+  canEdit: boolean
+): React.ReactNode {
   switch (section.id) {
     case 'capability-map-unit': {
       const data = parseCapabilityMapUnit(section.content);
@@ -100,7 +104,7 @@ function renderSection(section: BlueprintSection, slug: string): React.ReactNode
     }
     case 'gap-register': {
       const data = parseGapRegister(section.content);
-      if (data) return <GapRegister data={data} slug={slug} />;
+      if (data) return <GapRegister data={data} slug={slug} canEdit={canEdit} />;
       return <MarkdownPanel content={section.content} />;
     }
     case 'infrastructure': {
@@ -203,7 +207,12 @@ export default async function BlueprintPage({
             ) : (
               <span aria-hidden />
             )}
-            <RefreshButton slug={slug} />
+            {/* Refresh is a team-only mutation (calls /api/.../refresh which
+                requires team scope as of Step 7A.3). Client-scoped users
+                already get fresh data on every navigation via dynamic =
+                'force-dynamic', so hiding the button doesn't degrade their
+                read experience. */}
+            {isTeamUser && <RefreshButton slug={slug} />}
           </div>
         </header>
 
@@ -229,7 +238,7 @@ export default async function BlueprintPage({
 
         {parsed.sections.map((section) => (
           <SectionShell key={section.id} section={section}>
-            {renderSection(section, slug)}
+            {renderSection(section, slug, isTeamUser)}
           </SectionShell>
         ))}
       </div>

@@ -8,7 +8,18 @@ import type {
 } from '@/app/console/_lib/parse-blueprint';
 import s from './blueprint-sections.module.css';
 
-type Props = { data: GapRegisterParsed; slug: string };
+type Props = {
+  data: GapRegisterParsed;
+  slug: string;
+  /**
+   * Step 7A.3: when false, render the table read-only — status as plain
+   * text (no pill button / dropdown), notes as static text (no inline
+   * editor or "+ Add note" affordance). Set false for client-scoped users
+   * who can READ their Blueprint but cannot mutate it. Defense in depth
+   * alongside the API's requireTeamScope check.
+   */
+  canEdit: boolean;
+};
 
 type StatusOption = 'open' | 'answered' | 'closed';
 const STATUS_OPTIONS: StatusOption[] = ['open', 'answered', 'closed'];
@@ -20,7 +31,7 @@ function statusClass(status: string): string {
   return s.statusOpen;
 }
 
-export function GapRegister({ data, slug }: Props) {
+export function GapRegister({ data, slug, canEdit }: Props) {
   const router = useRouter();
   const [, startTransition] = useTransition();
 
@@ -122,88 +133,116 @@ export function GapRegister({ data, slug }: Props) {
               <div className={s.gapOwner}>{row.owner}</div>
               <div className={s.gapBlocks}>{row.blocks}</div>
               <div className={s.gapStatus}>
-                <button
-                  type="button"
-                  className={`${s.statusPill} ${statusClass(row.status)} ${s.statusPillButton}`}
-                  onClick={() =>
-                    setStatusOpenFor((prev) => (prev === row.id ? null : row.id))
-                  }
-                  disabled={savingId === row.id}
-                  aria-haspopup="menu"
-                  aria-expanded={statusOpenFor === row.id}
-                >
-                  {row.status || 'open'}
-                </button>
-                {statusOpenFor === row.id && (
-                  <div className={s.statusDropdown} role="menu">
-                    {STATUS_OPTIONS.map((opt) => (
-                      <button
-                        key={opt}
-                        type="button"
-                        role="menuitem"
-                        className={`${s.statusOption} ${statusClass(opt)} ${
-                          opt === row.status ? s.statusOptionCurrent : ''
-                        }`}
-                        onClick={() => {
-                          setStatusOpenFor(null);
-                          if (opt !== row.status) updateGap(row.id, { status: opt });
-                        }}
-                      >
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
+                {canEdit ? (
+                  <>
+                    <button
+                      type="button"
+                      className={`${s.statusPill} ${statusClass(row.status)} ${s.statusPillButton}`}
+                      onClick={() =>
+                        setStatusOpenFor((prev) =>
+                          prev === row.id ? null : row.id
+                        )
+                      }
+                      disabled={savingId === row.id}
+                      aria-haspopup="menu"
+                      aria-expanded={statusOpenFor === row.id}
+                    >
+                      {row.status || 'open'}
+                    </button>
+                    {statusOpenFor === row.id && (
+                      <div className={s.statusDropdown} role="menu">
+                        {STATUS_OPTIONS.map((opt) => (
+                          <button
+                            key={opt}
+                            type="button"
+                            role="menuitem"
+                            className={`${s.statusOption} ${statusClass(opt)} ${
+                              opt === row.status ? s.statusOptionCurrent : ''
+                            }`}
+                            onClick={() => {
+                              setStatusOpenFor(null);
+                              if (opt !== row.status)
+                                updateGap(row.id, { status: opt });
+                            }}
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  // Read-only: plain text, not a pill. Different enough from
+                  // the editable variant that there's no implicit affordance
+                  // suggesting click.
+                  <span
+                    className={`${s.statusStatic} ${statusClass(row.status)}`}
+                  >
+                    {row.status || 'open'}
+                  </span>
                 )}
               </div>
             </div>
 
             <div className={s.gapNotesRow}>
-              {notesEditingFor === row.id ? (
-                <div className={s.notesEditor}>
-                  <textarea
-                    className={s.notesTextarea}
-                    value={notesDraft}
-                    onChange={(e) => setNotesDraft(e.target.value)}
-                    rows={2}
-                    placeholder="e.g., Confirmed on call 20 May."
-                    autoFocus
-                  />
-                  <div className={s.notesActions}>
-                    <button
-                      type="button"
-                      className={s.notesSaveBtn}
-                      onClick={() => commitNotes(row)}
-                    >
-                      Save
-                    </button>
-                    <button
-                      type="button"
-                      className={s.notesCancelBtn}
-                      onClick={() => setNotesEditingFor(null)}
-                    >
-                      Cancel
-                    </button>
+              {canEdit ? (
+                notesEditingFor === row.id ? (
+                  <div className={s.notesEditor}>
+                    <textarea
+                      className={s.notesTextarea}
+                      value={notesDraft}
+                      onChange={(e) => setNotesDraft(e.target.value)}
+                      rows={2}
+                      placeholder="e.g., Confirmed on call 20 May."
+                      autoFocus
+                    />
+                    <div className={s.notesActions}>
+                      <button
+                        type="button"
+                        className={s.notesSaveBtn}
+                        onClick={() => commitNotes(row)}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        className={s.notesCancelBtn}
+                        onClick={() => setNotesEditingFor(null)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ) : row.notes ? (
-                <button
-                  type="button"
-                  className={s.notesDisplay}
-                  onClick={() => openNotesEditor(row)}
-                >
-                  <span className={s.notesLabel}>Note</span>
-                  <span className={s.notesText}>{row.notes}</span>
-                </button>
+                ) : row.notes ? (
+                  <button
+                    type="button"
+                    className={s.notesDisplay}
+                    onClick={() => openNotesEditor(row)}
+                  >
+                    <span className={s.notesLabel}>Note</span>
+                    <span className={s.notesText}>{row.notes}</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className={s.notesAddLink}
+                    onClick={() => openNotesEditor(row)}
+                  >
+                    + Add note
+                  </button>
+                )
               ) : (
-                <button
-                  type="button"
-                  className={s.notesAddLink}
-                  onClick={() => openNotesEditor(row)}
-                >
-                  + Add note
-                </button>
+                // Read-only: show existing notes as static text, omit
+                // the "+ Add note" affordance entirely. No errors to
+                // display either — no writes happen on this path.
+                row.notes && (
+                  <div className={s.notesStatic}>
+                    <span className={s.notesLabel}>Note</span>
+                    <span className={s.notesText}>{row.notes}</span>
+                  </div>
+                )
               )}
-              {errorByGap[row.id] && (
+              {canEdit && errorByGap[row.id] && (
                 <div className={s.notesError} role="alert">
                   {errorByGap[row.id]}
                 </div>

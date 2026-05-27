@@ -2,7 +2,11 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { CONSOLE_CLIENTS } from '@/app/console/_config/clients';
 import { readClientFile, writeClientFile } from '@/lib/github-client';
-import { authorizeClientAccess, requireConsoleAuth } from '@/lib/console-api-auth';
+import {
+  authorizeClientAccess,
+  requireConsoleAuth,
+  requireTeamScope,
+} from '@/lib/console-api-auth';
 import { createGapInBlueprint } from '@/app/console/_lib/mutate-blueprint';
 
 export const dynamic = 'force-dynamic';
@@ -24,6 +28,13 @@ export async function POST(
   const auth = await requireConsoleAuth(request);
   if (!auth.ok) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+  const teamGate = requireTeamScope(auth);
+  if (!teamGate.ok) {
+    return NextResponse.json(
+      { error: teamGate.error },
+      { status: teamGate.status }
+    );
   }
 
   const { slug } = await params;

@@ -63,3 +63,27 @@ export function authorizeClientAccess(
   if (scope.type === 'team') return true;
   return scope.slug === slug;
 }
+
+type TeamScopeResult = { ok: true } | { ok: false; status: number; error: string };
+
+/**
+ * Gate writes on team-scoped actors only. Step 7A.3 architectural principle:
+ * client-scoped users (CONSOLE_CLIENT_EMAILS magic-link recipients) can read
+ * their Blueprint fully but cannot mutate anything. Bearer-token agents are
+ * always granted team scope by requireConsoleAuth, so this gate also lets
+ * them through.
+ *
+ * Returns 403 (not 404) for client-scoped denials. The actor has already
+ * proven they're authenticated and authorized to READ this resource; we're
+ * not hiding the resource's existence from them, just refusing the write.
+ */
+export function requireTeamScope(auth: {
+  scope: UserScope;
+}): TeamScopeResult {
+  if (auth.scope.type === 'team') return { ok: true };
+  return {
+    ok: false,
+    status: 403,
+    error: 'Forbidden: write operations require Polynize team scope',
+  };
+}

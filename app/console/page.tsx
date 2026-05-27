@@ -18,6 +18,13 @@ export default async function ConsolePage() {
   const clients = await loadClientCardData();
   const allFailed = clients.length > 0 && clients.every((c) => c.error);
   const empty = clients.length === 0 || allFailed;
+  // Pass the signed-in user's email to each ClientCard so the inline RAG
+  // editor (Step 7A.3) knows who to stamp on rag_set_by. Only team-scoped
+  // users can write; for everyone else (incl. unauthenticated, though the
+  // layout's auth gate handles that case) we pass null so the editor never
+  // mounts. Defense-in-depth alongside the API's requireTeamScope check.
+  const actorEmail =
+    user?.scope.type === 'team' ? user.email : null;
 
   return (
     <>
@@ -38,7 +45,7 @@ export default async function ConsolePage() {
         ) : (
           <div className={s.grid}>
             {clients.map((c) => (
-              <ClientCard key={c.slug} data={c} />
+              <ClientCard key={c.slug} data={c} actorEmail={actorEmail} />
             ))}
           </div>
         )}
