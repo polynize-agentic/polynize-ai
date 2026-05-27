@@ -5,7 +5,7 @@ import { signOutAction } from './_actions';
 import s from './_components/sign-in-gate.module.css';
 
 export const metadata: Metadata = {
-  title: 'Polynize PAM Console',
+  title: 'Polynize Agentic Management Console',
   robots: { index: false, follow: false },
 };
 
@@ -23,7 +23,7 @@ export default async function ConsoleLayout({
   return (
     <div className={s.shell}>
       <nav className={s.topNav}>
-        <div className={s.eyebrow}>§ polynize · pam console</div>
+        <div className={s.eyebrow}>§ polynize agentic management console</div>
         <div className={s.userBlock}>
           <span className={s.userEmail}>{email}</span>
           <form action={signOutAction}>

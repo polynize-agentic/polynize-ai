@@ -10,9 +10,9 @@ export async function SignInGate() {
   return (
     <main className={s.gateRoot}>
       <form action={requestMagicLinkAction} className={s.gateCard}>
-        <div className={s.eyebrow}>§ polynize · pam console</div>
+        <div className={s.eyebrow}>§ polynize agentic management console</div>
         <h1 className={s.gateTitle}>
-          Polynize PAM Console<span className={s.titleAccent}>.</span>
+          Polynize Agentic Management Console (PAM)<span className={s.titleAccent}>.</span>
         </h1>
         <p className={s.gateLede}>
           Sign in with your @polynize.io email to continue.

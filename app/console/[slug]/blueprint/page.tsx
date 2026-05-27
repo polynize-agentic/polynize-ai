@@ -153,7 +153,7 @@ export default async function BlueprintPage({
         <div className={s.bgPattern} aria-hidden />
         <div className={s.container}>
           <header className={s.header}>
-            <div className={s.eyebrow}>POLYNIZE PAM CONSOLE · CLIENT BLUEPRINT</div>
+            <div className={s.eyebrow}>POLYNIZE AGENTIC MANAGEMENT CONSOLE · CLIENT BLUEPRINT</div>
             <h1 className={s.title}>{clientName}</h1>
             {isTeamUser && (
               <Link href="/console" className={s.backLink}>
@@ -197,7 +197,7 @@ export default async function BlueprintPage({
       <div className={s.bgPattern} aria-hidden />
       <div className={s.container}>
         <header className={s.header}>
-          <div className={s.eyebrow}>POLYNIZE PAM CONSOLE · CLIENT BLUEPRINT</div>
+          <div className={s.eyebrow}>POLYNIZE AGENTIC MANAGEMENT CONSOLE · CLIENT BLUEPRINT</div>
           <h1 className={s.title}>{parsed.preamble.title}</h1>
           <div className={s.headerActions}>
             {isTeamUser ? (

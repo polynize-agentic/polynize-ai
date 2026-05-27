@@ -27,12 +27,12 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
 
       await sendEmail({
         to: raw,
-        subject: 'Sign in to Polynize PAM Console',
-        html: `<p>Click the link below to sign in to the Polynize PAM Console:</p>
-<p><a href="${link}">Sign in to PAM Console</a></p>
+        subject: 'Sign in to Polynize Agentic Management Console',
+        html: `<p>Click the link below to sign in to the Polynize Agentic Management Console (PAM):</p>
+<p><a href="${link}">Sign in to Polynize Agentic Management Console</a></p>
 <p>This link expires in 15 minutes.</p>
 <p>If you did not request this, you can safely ignore this email.</p>`,
-        text: `Sign in to the Polynize PAM Console:
+        text: `Sign in to the Polynize Agentic Management Console (PAM):
 
 ${link}
 

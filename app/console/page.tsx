@@ -31,7 +31,7 @@ export default async function ConsolePage() {
       <div className={s.bgPattern} aria-hidden />
       <div className={s.dashboard}>
         <div className={s.header}>
-          <div className={s.eyebrow}>polynize pam console</div>
+          <div className={s.eyebrow}>polynize agentic management console</div>
           <h1 className={s.title}>Client Blueprints</h1>
           <p className={s.lede}>
             Active engagements across all phases. Click through to view each client&apos;s Blueprint.
