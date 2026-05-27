@@ -9,6 +9,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// Force request-time rendering for every route under /console. The layout
+// reads cookies (via getCurrentUserEmail) to choose between SignInGate and
+// the authenticated shell, AND SignInGate itself reads three flash cookies
+// to switch between sign-in form and confirmation card. Without an explicit
+// dynamic boundary on the LAYOUT (not just the page), Vercel's edge cache
+// could hold the prior response across the post-action redirect — which
+// surfaced as "cookies set, but read returns undefined" in the Step 7A.6
+// confirmation-card-not-appearing bug.
+export const dynamic = 'force-dynamic';
+
 export default async function ConsoleLayout({
   children,
 }: {

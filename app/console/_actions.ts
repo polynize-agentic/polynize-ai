@@ -1,6 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import {
@@ -51,6 +52,10 @@ export async function requestMagicLinkAction(formData: FormData): Promise<void> 
 
   if (!parsed.success) {
     setFlash('console_signin_error', 'invalid_email');
+    // Bust any cached /console response so the redirect target reads our
+    // freshly-set flash cookie. Belt + braces with the layout's
+    // force-dynamic export.
+    revalidatePath('/console');
     redirect('/console');
   }
 
@@ -93,6 +98,10 @@ If you did not request this, you can safely ignore this email.`,
     setFlash('console_signin_email', raw);
   }
 
+  // Bust any cached /console response so the redirect target reads our
+  // freshly-set flash cookies. Belt + braces with the layout's force-dynamic
+  // export.
+  revalidatePath('/console');
   redirect('/console');
 }
 
@@ -105,6 +114,7 @@ export async function resetSignInAction(): Promise<void> {
   jar.delete('console_signin_submitted');
   jar.delete('console_signin_email');
   jar.delete('console_signin_error');
+  revalidatePath('/console');
   redirect('/console');
 }
 
