@@ -125,10 +125,15 @@ export async function POST(req: Request) {
       complete({
         system: CAPABILITY_MAP_SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userMessage }],
-        // Empirical sizing: a complete v0.5 envelope with 10-13 capability
-        // rows lands around 4000-6000 tokens. 8000 gives comfortable
-        // headroom without paying for tokens we never use.
-        maxTokens: 8000,
+        // Sized for Gemini Flash / similar fast models. Prod logs (Step 7A.3)
+        // show the natural v0.5 envelope landing 18-25K chars; at JSON's ~2.3
+        // chars/token density that's ~8-11K tokens. 16K gives generous
+        // headroom so we never truncate mid-property. The earlier 8000 cap
+        // (set when DeepSeek V4 Pro was the bottleneck) was hitting
+        // finish_reason=length and silently corrupting the JSON output.
+        // Cost impact at Gemini Flash pricing: ~$0.006 per generation worst
+        // case, negligible.
+        maxTokens: 16000,
         temperature: 0.5,
       }),
       HARD_ATTEMPT_TIMEOUT_MS,
