@@ -5,12 +5,12 @@ const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 /**
  * Hard ceiling on a single OpenRouter call enforced via fetch's AbortController
  * signal. Sized to fire BEFORE the route-level Promise.race deadline
- * (HARD_ATTEMPT_TIMEOUT_MS = 110s in capability-map/generate/route.ts) so the
+ * (HARD_ATTEMPT_TIMEOUT_MS = 250s in capability-map/generate/route.ts) so the
  * AbortController gets first chance at clean fetch teardown. If the signal
  * fails to terminate the request (intermittent undici behavior on Vercel),
  * the route's Promise.race is the backstop. Tunable via OPENROUTER_TIMEOUT_MS.
  */
-const DEFAULT_TIMEOUT_MS = 100_000;
+const DEFAULT_TIMEOUT_MS = 240_000;
 
 export async function completeWithOpenRouter(args: CompleteArgs): Promise<string> {
   const apiKey = process.env.OPENROUTER_API_KEY;

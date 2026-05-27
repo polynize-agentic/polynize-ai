@@ -23,10 +23,17 @@ export const maxDuration = 300;
  * safety net for the case where fetch's signal fails to terminate the in-flight
  * request (intermittent on Vercel/undici with long upstream connections).
  *
- * Sized so two attempts fit comfortably under maxDuration=300s with headroom
- * for parsing, validation, and the structured-error response.
+ * Production logs (Step 7A.3 triage) showed deepseek/deepseek-v4-pro taking
+ * ~180s to generate a 4k-char v0.5 envelope. To survive slow models we use
+ * a single generous-deadline attempt rather than two tight attempts: the
+ * old two-attempt loop (110s × 2) was guaranteed to fail by arithmetic on
+ * any model taking >110s for a single generation. Single attempt at 250s
+ * leaves ~50s headroom under maxDuration=300s for parse/validate/respond.
+ *
+ * Trade-off accepted: no auto-retry on schema-validation failure. The user
+ * gets a clean "Try again" button instead — same UX, manual retry.
  */
-const HARD_ATTEMPT_TIMEOUT_MS = 110_000;
+const HARD_ATTEMPT_TIMEOUT_MS = 250_000;
 
 /**
  * Race a promise against a fixed deadline. If the deadline fires first, throw
@@ -101,85 +108,87 @@ export async function POST(req: Request) {
 
   let lastError = 'unknown';
 
-  for (let attempt = 1; attempt <= 2; attempt++) {
-    // Declared outside try so the catch block can log it if parseJsonLoose
-    // throws on a malformed/truncated LLM response. The raw text is the only
-    // way to diagnose schema mismatches without prod log streaming.
-    let raw: string | null = null;
-    const attemptStartedAt = Date.now();
-    try {
-      // Belt + braces over the AbortController inside completeWithOpenRouter:
-      // if fetch's signal fails to terminate the in-flight request (known
-      // intermittent undici/Vercel behavior on long-running upstream
-      // connections), Promise.race forces the route handler to proceed past
-      // this await within HARD_ATTEMPT_TIMEOUT_MS regardless. The orphaned
-      // fetch may keep consuming compute briefly but the function returns to
-      // the user with a structured 502 instead of FUNCTION_INVOCATION_TIMEOUT.
-      raw = await withTimeout(
-        complete({
-          system: CAPABILITY_MAP_SYSTEM_PROMPT,
-          messages: [{ role: 'user', content: userMessage }],
-          // Empirical sizing: a complete v0.5 envelope with 10-13 capability
-          // rows lands around 4000-6000 tokens. 8000 gives comfortable
-          // headroom without paying for tokens we never use.
-          maxTokens: 8000,
-          temperature: attempt === 1 ? 0.6 : 0.3,
-        }),
-        HARD_ATTEMPT_TIMEOUT_MS,
-        `attempt ${attempt} LLM call`
-      );
-      console.log(
-        `[capability-map.generate] attempt ${attempt} LLM call returned in ${
-          Date.now() - attemptStartedAt
-        }ms, raw length ${raw.length}`
-      );
+  // Single attempt. Two-attempt retry was abandoned in Step 7A.3 when prod
+  // logs showed deepseek/deepseek-v4-pro taking ~180s per generation. Two
+  // tight attempts couldn't fit under maxDuration=300s; single generous
+  // attempt gives slow models a real chance to finish. UX trade-off: no auto-
+  // retry on validation failure, user clicks "Try again" instead.
+  let raw: string | null = null;
+  const attemptStartedAt = Date.now();
+  try {
+    // Belt + braces over the AbortController inside completeWithOpenRouter:
+    // if fetch's signal fails to terminate the in-flight request (known
+    // intermittent undici/Vercel behavior on long-running upstream
+    // connections), Promise.race forces the route handler to proceed past
+    // this await within HARD_ATTEMPT_TIMEOUT_MS regardless.
+    raw = await withTimeout(
+      complete({
+        system: CAPABILITY_MAP_SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: userMessage }],
+        // Empirical sizing: a complete v0.5 envelope with 10-13 capability
+        // rows lands around 4000-6000 tokens. 8000 gives comfortable
+        // headroom without paying for tokens we never use.
+        maxTokens: 8000,
+        temperature: 0.5,
+      }),
+      HARD_ATTEMPT_TIMEOUT_MS,
+      'LLM call'
+    );
+    const llmMs = Date.now() - attemptStartedAt;
+    console.log(
+      `[capability-map.generate] LLM call returned in ${llmMs}ms, raw length ${raw.length} (${
+        raw.length > 0 ? Math.round((raw.length / llmMs) * 1000) : 0
+      } chars/sec)`
+    );
 
-      const json = parseJsonLoose(raw);
-      const validation = validateCapabilityMapV05(json);
-      if (!validation.ok) {
-        lastError = `schema validation failed: ${validation.error}`;
-        console.error(
-          `[capability-map.generate] attempt ${attempt} VALIDATION FAILED: ${validation.error}`
-        );
-        // Log the truncated raw response so we can see exactly what the model
-        // emitted that the schema rejected. Server-side only; never returned
-        // to the client.
-        console.error(
-          `[capability-map.generate] attempt ${attempt} raw response (first 2000 chars): ${raw.slice(0, 2000)}`
-        );
-        continue;
-      }
-
+    const json = parseJsonLoose(raw);
+    const validation = validateCapabilityMapV05(json);
+    if (!validation.ok) {
+      lastError = `schema validation failed: ${validation.error}`;
+      console.error(
+        `[capability-map.generate] VALIDATION FAILED: ${validation.error}`
+      );
+      // Log the truncated raw response so we can see exactly what the model
+      // emitted that the schema rejected. Server-side only; never returned
+      // to the client.
+      console.error(
+        `[capability-map.generate] raw response (first 2000 chars): ${raw.slice(0, 2000)}`
+      );
+    } else {
       // Strip em-dashes from every string field in the response, recursively.
       // Belt-and-braces over the system-prompt instruction.
-      const cleaned = stripEmDashesRecursively(validation.data) as CapabilityMapV05;
+      const cleaned = stripEmDashesRecursively(
+        validation.data
+      ) as CapabilityMapV05;
 
       console.log(
-        `[capability-map.generate] attempt ${attempt} OK, returning v0.5 map`
+        `[capability-map.generate] OK, returning v0.5 map (total ${
+          Date.now() - routeStartedAt
+        }ms)`
       );
       return NextResponse.json({ ok: true, data: cleaned });
-    } catch (e) {
-      lastError = e instanceof Error ? e.message : String(e);
+    }
+  } catch (e) {
+    lastError = e instanceof Error ? e.message : String(e);
+    console.error(
+      `[capability-map.generate] THREW after ${
+        Date.now() - attemptStartedAt
+      }ms: ${lastError}`
+    );
+    // If the LLM call returned but JSON parsing threw, raw is populated and
+    // worth logging — that's the case where the model emitted something that
+    // didn't have a parseable JSON object inside (truncation, wrong format).
+    if (raw) {
       console.error(
-        `[capability-map.generate] attempt ${attempt} THREW after ${
-          Date.now() - attemptStartedAt
-        }ms: ${lastError}`
+        `[capability-map.generate] raw response (first 2000 chars): ${raw.slice(0, 2000)}`
       );
-      // If the LLM call returned but JSON parsing threw, raw is populated and
-      // worth logging — that's the case where DeepSeek emitted something that
-      // didn't have a parseable JSON object inside (truncation, wrong format).
-      if (raw) {
-        console.error(
-          `[capability-map.generate] attempt ${attempt} raw response (first 2000 chars): ${raw.slice(0, 2000)}`
-        );
-      }
     }
   }
 
   console.error(
-    `[capability-map.generate] both attempts failed after ${
+    `[capability-map.generate] failed after ${
       Date.now() - routeStartedAt
-    }ms total, returning structured error: ${lastError}`
+    }ms, returning structured error: ${lastError}`
   );
   return NextResponse.json(
     {
