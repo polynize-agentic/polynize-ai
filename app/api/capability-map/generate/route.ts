@@ -17,6 +17,41 @@ export const runtime = 'nodejs';
 // triage of "mapping your bottleneck" hangs in production.
 export const maxDuration = 300;
 
+/**
+ * Hard cap per LLM attempt enforced by Promise.race in the route handler. Sits
+ * ABOVE the per-call AbortController timeout in lib/llm/openrouter.ts as a
+ * safety net for the case where fetch's signal fails to terminate the in-flight
+ * request (intermittent on Vercel/undici with long upstream connections).
+ *
+ * Sized so two attempts fit comfortably under maxDuration=300s with headroom
+ * for parsing, validation, and the structured-error response.
+ */
+const HARD_ATTEMPT_TIMEOUT_MS = 110_000;
+
+/**
+ * Race a promise against a fixed deadline. If the deadline fires first, throw
+ * a clear error. The underlying promise may still resolve later but the caller
+ * has moved on by then.
+ */
+async function withTimeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  label: string
+): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`${label} exceeded ${ms}ms deadline`)),
+      ms
+    );
+  });
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } finally {
+    if (timer !== null) clearTimeout(timer);
+  }
+}
+
 const AnswersSchema = z.object({
   name: z.string(),
   company: z.string().optional().default(''),
@@ -59,6 +94,7 @@ export async function POST(req: Request) {
   const userMessage = buildCapabilityMapUserMessage(body.answers);
   const provider = process.env.LLM_PROVIDER ?? 'kimi';
   const model = modelForProvider(provider);
+  const routeStartedAt = Date.now();
   console.log(
     `[capability-map.generate] starting v0.5, provider=${provider} model=${model}`
   );
@@ -70,19 +106,33 @@ export async function POST(req: Request) {
     // throws on a malformed/truncated LLM response. The raw text is the only
     // way to diagnose schema mismatches without prod log streaming.
     let raw: string | null = null;
+    const attemptStartedAt = Date.now();
     try {
-      raw = await complete({
-        system: CAPABILITY_MAP_SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: userMessage }],
-        // Empirical sizing: a complete v0.5 envelope with 10-13 capability
-        // rows lands around 4000-6000 tokens. 8000 gives comfortable headroom
-        // without paying for tokens we never use. Was 16000, which on slow
-        // models (DeepSeek V3 Pro etc) pushed generation past the 300s
-        // Vercel function ceiling and surfaced as 504 Gateway Timeout. See
-        // Step 7A.3 triage.
-        maxTokens: 8000,
-        temperature: attempt === 1 ? 0.6 : 0.3,
-      });
+      // Belt + braces over the AbortController inside completeWithOpenRouter:
+      // if fetch's signal fails to terminate the in-flight request (known
+      // intermittent undici/Vercel behavior on long-running upstream
+      // connections), Promise.race forces the route handler to proceed past
+      // this await within HARD_ATTEMPT_TIMEOUT_MS regardless. The orphaned
+      // fetch may keep consuming compute briefly but the function returns to
+      // the user with a structured 502 instead of FUNCTION_INVOCATION_TIMEOUT.
+      raw = await withTimeout(
+        complete({
+          system: CAPABILITY_MAP_SYSTEM_PROMPT,
+          messages: [{ role: 'user', content: userMessage }],
+          // Empirical sizing: a complete v0.5 envelope with 10-13 capability
+          // rows lands around 4000-6000 tokens. 8000 gives comfortable
+          // headroom without paying for tokens we never use.
+          maxTokens: 8000,
+          temperature: attempt === 1 ? 0.6 : 0.3,
+        }),
+        HARD_ATTEMPT_TIMEOUT_MS,
+        `attempt ${attempt} LLM call`
+      );
+      console.log(
+        `[capability-map.generate] attempt ${attempt} LLM call returned in ${
+          Date.now() - attemptStartedAt
+        }ms, raw length ${raw.length}`
+      );
 
       const json = parseJsonLoose(raw);
       const validation = validateCapabilityMapV05(json);
@@ -111,7 +161,9 @@ export async function POST(req: Request) {
     } catch (e) {
       lastError = e instanceof Error ? e.message : String(e);
       console.error(
-        `[capability-map.generate] attempt ${attempt} THREW: ${lastError}`
+        `[capability-map.generate] attempt ${attempt} THREW after ${
+          Date.now() - attemptStartedAt
+        }ms: ${lastError}`
       );
       // If the LLM call returned but JSON parsing threw, raw is populated and
       // worth logging — that's the case where DeepSeek emitted something that
@@ -125,7 +177,9 @@ export async function POST(req: Request) {
   }
 
   console.error(
-    '[capability-map.generate] both attempts failed, returning structured error'
+    `[capability-map.generate] both attempts failed after ${
+      Date.now() - routeStartedAt
+    }ms total, returning structured error: ${lastError}`
   );
   return NextResponse.json(
     {
