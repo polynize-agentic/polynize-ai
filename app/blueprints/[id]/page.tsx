@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { loadBlueprint } from '@/lib/blueprint/load';
+import { DraftingGrid } from '@/app/_components/DraftingGrid';
 import { TopBar } from './TopBar';
 import { Cover } from './Cover';
 import { Heatmap } from './Heatmap';
@@ -30,14 +31,17 @@ export default async function BlueprintPage({
   if (!payload) notFound();
 
   return (
-    <div className={s.body}>
-      <TopBar docRef={payload.docRef} />
-      <Cover payload={payload} />
-      <Heatmap payload={payload} />
-      <Team payload={payload} />
-      <Day payload={payload} />
-      <Pricing payload={payload} />
-      <FinalCTA payload={payload} />
-    </div>
+    <>
+      <DraftingGrid />
+      <div className={s.body}>
+        <TopBar docRef={payload.docRef} />
+        <Cover payload={payload} />
+        <Heatmap payload={payload} />
+        <Team payload={payload} />
+        <Day payload={payload} />
+        <Pricing payload={payload} />
+        <FinalCTA payload={payload} />
+      </div>
+    </>
   );
 }

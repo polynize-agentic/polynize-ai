@@ -44,14 +44,22 @@
     12px 16px 32px rgba(0, 0, 0, 0.6),
     28px 38px 80px rgba(0, 0, 0, 0.55);
 
+  /* Corner glow gradients stay, but the opaque var(--bg) base is removed
+     so the DraftingGrid below shows through. body's background (also
+     var(--bg)) provides the substrate; the grid sits between body and
+     .dirC; the gradients overlay everything. */
   background:
     radial-gradient(circle at 12% 8%, rgba(240, 225, 182, 0.045), transparent 45%),
-    radial-gradient(circle at 88% 92%, rgba(105, 252, 203, 0.04), transparent 50%),
-    var(--bg);
+    radial-gradient(circle at 88% 92%, rgba(105, 252, 203, 0.04), transparent 50%);
   color: var(--text);
   font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
   position: relative;
   isolation: isolate;
+  /* z-index: 1 puts the homepage wrapper above the DraftingGrid background
+     (which is fixed at z-index: 0). Without this explicit z-index, the
+     wrapper would default to auto, and the grid's explicit 0 would beat
+     auto in the stacking order — grid would visibly cover the content. */
+  z-index: 1;
   min-height: 100vh;
   overflow-x: hidden;
 }

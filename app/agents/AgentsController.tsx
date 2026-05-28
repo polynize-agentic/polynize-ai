@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Answers, CapabilityMapV05, SessionState } from '@/lib/types';
 import { isV05 } from '@/lib/agents/v05-adapter';
+import { DraftingGrid } from '@/app/_components/DraftingGrid';
 import { PhaseA } from './PhaseA';
 import { PhaseB } from './PhaseB';
 import { track, emailDomain } from '@/lib/analytics';
@@ -125,12 +126,16 @@ export function AgentsController() {
   // Resume guard: someone landed on /agents but already finished a flow.
   // Surface explicit options before re-rendering Phase B with their map.
   const hasCompletedSession = (state.phase === 'B' || state.phase === 'DONE') && Boolean(state.data);
-  if (hasCompletedSession && !resumePromptDismissed) {
-    return <ResumePrompt onView={resumeExisting} onReset={reset} />;
-  }
 
-  if (state.phase === 'A') {
-    return (
+  // Pick the active surface, then wrap it once with the DraftingGrid so the
+  // blueprint crosshatch background sits behind every /agents render
+  // (resume prompt, Phase A form, Phase B reveal) for visual consistency
+  // with the homepage and /blueprints/[id].
+  let content: React.ReactNode;
+  if (hasCompletedSession && !resumePromptDismissed) {
+    content = <ResumePrompt onView={resumeExisting} onReset={reset} />;
+  } else if (state.phase === 'A') {
+    content = (
       <PhaseA
         initial={state.answers}
         initialStep={state.step}
@@ -138,16 +143,23 @@ export function AgentsController() {
         onComplete={handlePhaseAComplete}
       />
     );
+  } else {
+    // Phase B (also covers DONE state — same surface, just preloaded data so
+    // we don't re-fire the LLM call or the blueprint creation).
+    content = (
+      <PhaseB
+        answers={state.answers}
+        preloaded={state.data}
+        onDataReady={handlePhaseBData}
+      />
+    );
   }
 
-  // Phase B (also covers DONE state — same surface, just preloaded data so
-  // we don't re-fire the LLM call or the blueprint creation).
   return (
-    <PhaseB
-      answers={state.answers}
-      preloaded={state.data}
-      onDataReady={handlePhaseBData}
-    />
+    <>
+      <DraftingGrid />
+      {content}
+    </>
   );
 }
 

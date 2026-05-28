@@ -2,6 +2,7 @@ import Link from 'next/link';
 import s from './_home/home.module.css';
 import { CapabilityMapPreview } from './_home/CapabilityMapPreview';
 import { AjTeamDiagram } from './_components/AjTeamDiagram';
+import { DraftingGrid } from './_components/DraftingGrid';
 import { TrackedLink } from './_components/TrackedLink';
 
 const BOOKING_URL = 'https://calendly.com/marrscoiro/meeting30';
@@ -22,23 +23,26 @@ const INSTAGRAM_URL = 'https://www.instagram.com/polynize.ai';
  */
 export default function HomePage() {
   return (
-    <div className={s.dirC}>
-      <DirCNav />
-      <DirCHero />
-      {/* Act 1 — the problem (AJ quote moved up to right after the hero) */}
-      <DirCAjQuoteProblem />
-      {/* Act 2 — we mapped the business */}
-      <DirCMapHero />
-      {/* Act 3 — the team that emerges */}
-      <DirCAjTeam />
-      {/* Act 4 — the result */}
-      <DirCAjQuoteResult />
-      {/* How we work and the rest of the page continue from here */}
-      <DirCHow />
-      <DirCPodcast />
-      <DirCFinal />
-      <DirCFooter />
-    </div>
+    <>
+      <DraftingGrid />
+      <div className={s.dirC}>
+        <DirCNav />
+        <DirCHero />
+        {/* Act 1 — the problem (AJ quote moved up to right after the hero) */}
+        <DirCAjQuoteProblem />
+        {/* Act 2 — we mapped the business */}
+        <DirCMapHero />
+        {/* Act 3 — the team that emerges */}
+        <DirCAjTeam />
+        {/* Act 4 — the result */}
+        <DirCAjQuoteResult />
+        {/* How we work and the rest of the page continue from here */}
+        <DirCHow />
+        <DirCPodcast />
+        <DirCFinal />
+        <DirCFooter />
+      </div>
+    </>
   );
 }
 

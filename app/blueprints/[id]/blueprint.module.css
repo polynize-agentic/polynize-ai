@@ -2,10 +2,14 @@
  * design_handoff/designs/blueprints/blueprint.css */
 
 .body {
-  background: var(--bg);
+  /* Background removed so the DraftingGrid behind shows through. body's
+     bg (also var(--bg)) provides the substrate; this wrapper sits above
+     the fixed grid at z-index 1. */
   color: var(--text);
   font-family: var(--font-inter), 'Inter', sans-serif;
   line-height: 1.55;
+  position: relative;
+  z-index: 1;
 }
 
 .top {

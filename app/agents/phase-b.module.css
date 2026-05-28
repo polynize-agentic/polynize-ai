@@ -1,10 +1,13 @@
 .phaseB {
   min-height: 100vh;
-  background: var(--bg);
+  /* Background removed so the DraftingGrid behind shows through. body's
+     bg (also var(--bg)) provides the substrate; this wrapper sits above
+     the fixed grid at z-index 1. */
   color: var(--text);
   padding: 88px 48px 180px;
   font-family: var(--font-inter), 'Inter', sans-serif;
   position: relative;
+  z-index: 1;
 }
 
 .intro {

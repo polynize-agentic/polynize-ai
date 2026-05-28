@@ -1,0 +1,33 @@
+/* Blueprint drafting grid — faint mint orthogonal lines at 80px pitch.
+   Identical to the pattern in:
+     - app/console/_components/client-card.module.css (.bgPattern)
+     - app/console/[slug]/blueprint/blueprint.module.css (.bgPattern)
+   Kept in sync visually so the depth language is consistent across every
+   capability-map surface and the PAM Console.
+
+   Fixed position so it covers the viewport. z-index 0 puts it below
+   positioned content (which should have z-index >= 1 on its wrapper).
+   pointer-events: none so it never intercepts clicks anywhere. */
+.grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    /* Horizontal lines — 80px pitch */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 79px,
+      rgba(105, 252, 203, 0.055) 79px,
+      rgba(105, 252, 203, 0.055) 80px
+    ),
+    /* Vertical lines — 80px pitch */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 79px,
+      rgba(105, 252, 203, 0.055) 79px,
+      rgba(105, 252, 203, 0.055) 80px
+    );
+}

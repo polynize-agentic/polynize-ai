@@ -3,9 +3,13 @@
   display: flex;
   flex-direction: column;
   padding: 72px 24px 24px;
-  background: var(--bg);
+  /* Background removed so the DraftingGrid behind shows through. body's
+     bg (also var(--bg)) provides the substrate; this wrapper sits above
+     the fixed grid at z-index 1. */
   color: var(--text);
   font-family: var(--font-inter), 'Inter', sans-serif;
+  position: relative;
+  z-index: 1;
 }
 
 .progress {
