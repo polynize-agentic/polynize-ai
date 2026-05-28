@@ -64,17 +64,11 @@
   overflow-x: hidden;
 }
 
-/* Felt/brushed-metal noise overlay */
-.dirC::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.55;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.96 0 0 0 0 0.93 0 0 0 0 0.89 0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  mix-blend-mode: overlay;
-}
+/* Felt-noise brushed-metal overlay removed 2026-05-28. It was the previous
+   direction's primary texture; with the blueprint crosshatch now serving as
+   the brand texture across all surfaces, the felt-noise was competing for
+   visibility (its mix-blend-mode: overlay grain broke up the crosshatch's
+   line perception). Replaced by the DraftingGrid component in app/page.tsx. */
 .dirC > * {
   position: relative;
   z-index: 1;
