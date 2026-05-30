@@ -28,7 +28,43 @@ export type { ParsedCapabilityMapV05 } from '../agents/capability-map-schema-v05
 
 // A friendly alias so call sites can use `CapabilityMapV05` directly.
 import type { ParsedCapabilityMapV05 } from '../agents/capability-map-schema-v05';
+import { CapabilityMapV05EnvelopeSchema as _EnvelopeSchema } from '../agents/capability-map-schema-v05';
 export type CapabilityMapV05 = ParsedCapabilityMapV05;
+
+/**
+ * Normalise a stored capability-map blob into the canonical v0.5 envelope
+ * `{ capability_map: {...} }`.
+ *
+ * Supabase stores the map in `blueprints.data.data`. Empirically that is the
+ * BARE v0.5 map (with `stage: "MAP_V0_5"` at the top level), NOT the
+ * enveloped form. Older rows store the LEGACY flat shape (no `stage`). This
+ * reconciles all three inputs so consumers (the lookup endpoint, the seed
+ * flow) get one shape:
+ *   - already `{ capability_map }`  → validated and returned
+ *   - bare v0.5 (`stage` at top)    → wrapped, validated, returned
+ *   - legacy / anything else        → null (not seedable as a 2.0 Blueprint)
+ */
+export function normalizeToV05Envelope(
+  data: unknown
+): { capability_map: ParsedCapabilityMapV05 } | null {
+  if (!data || typeof data !== 'object') return null;
+  const obj = data as Record<string, unknown>;
+
+  // Already enveloped?
+  if (obj.capability_map && typeof obj.capability_map === 'object') {
+    const parsed = _EnvelopeSchema.safeParse(obj);
+    return parsed.success ? parsed.data : null;
+  }
+
+  // Bare v0.5 (stage at the top level)?
+  if (obj.stage === 'MAP_V0_5') {
+    const parsed = _EnvelopeSchema.safeParse({ capability_map: obj });
+    return parsed.success ? parsed.data : null;
+  }
+
+  // Legacy flat shape or unknown — there is no v0.5 envelope to produce.
+  return null;
+}
 
 // ============================================================
 // Schema version (legacy vs Stage 2)

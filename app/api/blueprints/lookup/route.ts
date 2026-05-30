@@ -18,6 +18,7 @@
 import { NextResponse } from 'next/server';
 import { timingSafeEqual } from 'node:crypto';
 import { supabaseService } from '@/lib/supabase';
+import { normalizeToV05Envelope } from '@/lib/blueprint/schema-v2';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -124,13 +125,30 @@ export async function GET(req: Request) {
     );
   }
 
-  // The Supabase row stores `data: { answers: {...}, data: <envelope> }`.
-  // The envelope is the v0.5 `{capability_map: {...}}` form when fresh,
-  // or the legacy flat shape for older rows. The Console seed flow knows
-  // how to handle both, but we surface the canonical envelope path here.
+  // The Supabase row stores `data: { answers: {...}, data: <map> }`, where
+  // `data.data` is the BARE v0.5 map (stage at top) for fresh rows, or the
+  // legacy flat shape for older rows. Normalise to the canonical envelope
+  // `{ capability_map: {...} }` so the seed flow gets one consistent shape.
+  const v05Envelope = normalizeToV05Envelope(snap.data);
+  if (!v05Envelope) {
+    // The matched row is a legacy intake (pre-v0.5). There is no v0.5
+    // envelope to seed a 2.0 Blueprint from. 422 with a clear reason so
+    // the seed flow can surface it rather than failing opaquely.
+    return NextResponse.json(
+      {
+        error:
+          'The matched blueprint is a legacy (pre-v0.5) capability map; it cannot seed a 2.0 Lead Blueprint.',
+        uuid: chosen.id,
+        generatedAt: chosen.created_at as string,
+        schema: 'legacy',
+      },
+      { status: 422 }
+    );
+  }
+
   return NextResponse.json({
     uuid: chosen.id,
-    v05Envelope: snap.data,
+    v05Envelope,
     answers: snap.answers ?? {},
     generatedAt: chosen.created_at as string,
   });

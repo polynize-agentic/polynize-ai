@@ -47,7 +47,10 @@ import {
   requireConsoleAuth,
   requireTeamScope,
 } from '@/lib/console-api-auth';
-import { CapabilityMapV05EnvelopeSchema } from '@/lib/blueprint/schema-v2';
+import {
+  CapabilityMapV05EnvelopeSchema,
+  normalizeToV05Envelope,
+} from '@/lib/blueprint/schema-v2';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -195,18 +198,25 @@ export async function POST(
     envelope = lookupBody.v05Envelope;
   }
 
-  // Validate envelope against the canonical v0.5 schema.
-  const envelopeParsed = CapabilityMapV05EnvelopeSchema.safeParse(envelope);
-  if (!envelopeParsed.success) {
+  // Normalise then validate. The lookup already normalises, but inline
+  // callers may pass either the bare v0.5 map (stage at top) or the
+  // enveloped form — normalizeToV05Envelope reconciles both. Returns null
+  // for legacy / unseedable shapes.
+  const normalized = normalizeToV05Envelope(envelope);
+  if (!normalized) {
+    const envelopeParsed = CapabilityMapV05EnvelopeSchema.safeParse(envelope);
     return NextResponse.json(
       {
-        error: 'Envelope failed v0.5 validation',
-        detail: envelopeParsed.error.issues.slice(0, 3),
+        error:
+          'Envelope is not a v0.5 capability map (legacy or malformed); cannot seed a 2.0 Lead.',
+        detail: envelopeParsed.success
+          ? 'unknown shape'
+          : envelopeParsed.error.issues.slice(0, 3),
       },
       { status: 422 }
     );
   }
-  const validEnvelope = envelopeParsed.data;
+  const validEnvelope = normalized;
 
   // Ensure the repo exists (try to create if not).
   let repoCreated = false;
