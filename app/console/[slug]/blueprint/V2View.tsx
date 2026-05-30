@@ -21,7 +21,7 @@
 import Link from 'next/link';
 import { loadBlueprintV2 } from '@/lib/blueprint/load-v2';
 import { RefreshButton } from './RefreshButton';
-import { CapabilityMap } from './_components/v2/CapabilityMap';
+import { CapabilityMapInteractive } from './_components/v2/CapabilityMapInteractive';
 import { BenchmarkingAnalysis } from './_components/v2/BenchmarkingAnalysis';
 import { UpliftPlan } from './_components/v2/UpliftPlan';
 import { NextSteps } from './_components/v2/NextSteps';
@@ -117,7 +117,11 @@ export async function V2BlueprintView({
         )}
 
         <SectionShell number="04" title="Capability map" id="capability-map">
-          <CapabilityMap map={capabilityMap} />
+          <CapabilityMapInteractive
+            map={capabilityMap}
+            engagementModel={engagementModel}
+            workPlanRegistry={config?.work_plan_registry ?? []}
+          />
         </SectionShell>
 
         <SectionShell
