@@ -135,6 +135,17 @@ aaf8f4f feat(api): add blueprint lookup endpoint for PAM Console seed flow
 
 ---
 
+## After Landmark 17 (the build plan's "If you finish early")
+
+With time to spare, I took item 2 (test coverage) and deliberately skipped items 1 and 3:
+
+- **Added** `lib/blueprint/__tests__/derive-and-export.test.ts` (27 assertions over `deriveGapRegister`, `deriveProgressPct`, `recomputeDerived`, `displayAllocation`, and the export assembler) plus `npm run test:blueprint` to run it alongside the schema fixtures. No new dependency. (`72cd950`)
+- **Skipped — timeline drag-to-reschedule (item 1):** high-risk to build without a browser to verify the drag interaction, and the spec sanctions shipping form editing. It stays the documented top fast-follow; the data model already supports it.
+- **Skipped — visual polish (item 3):** no rendered output to judge against from this environment.
+- **Not started — other-engagement migration + Ben cognition:** out of scope, needs your input (per the build plan).
+
+---
+
 ## First moves in the morning
 
 1. Open `pam.polynize.ai/console/roxburys/blueprint` — confirm the 2.0 Blueprint renders (heatmap, benchmarking, uplift, next steps, gap register, Roxy work plan, timeline). Review the hand-authored Roxbury substance (Assumption 3).
