@@ -1,33 +1,50 @@
 /**
  * Stage 2 (schema_version: 2.0) Blueprint renderer.
  *
- * This is the new renderer for engagements migrated to the two-layer
- * Blueprint architecture (Engagement section + Work Plan section).
+ * Renders the two-layer Blueprint as a single page, sections top to
+ * bottom (spec §9.2):
+ *   1. Engagement summary       (blueprint.md, future)
+ *   2. Team                     (future)
+ *   3. Infrastructure           (future)
+ *   4. Capability Map           (L6 — this landmark)
+ *   5. Benchmarking Analysis    (L7)
+ *   6. Uplift Plan              (L7)
+ *   7. Next Steps               (L7)
+ *   8. Gap Register             (L9)
+ *   9. Work Plan(s)             (L10)
+ *  10. Project Timeline         (L11)
  *
- * Landmark 3 ships this as a STUB that confirms the schema-version
- * branch fires and loads the v2 object. Subsequent landmarks fill in
- * the actual section renderers:
- *
- *   L6  Capability Map (heatmap)
- *   L7  Benchmarking + Uplift + Next Steps
- *   L8  Capability modal
- *   L9  Gap Register (derived)
- *   L10 Work Plan section + sprint stepper
- *   L11 Project timeline (Gantt)
- *   L11.5 Context export button
- *   L12 (no change here)
- *   L13 Editing UIs
- *
- * Existing legacy Blueprints (Newkind, reMYnd, EverStock, Roxbury's
- * pre-migration) keep using LegacyBlueprintView via page.tsx's
- * schema-version branch. This component only renders when
- * blueprint_schema_version === '2.0'.
+ * This component only renders when blueprint_schema_version === '2.0'.
+ * Legacy engagements use LegacyBlueprintView.
  */
 
 import Link from 'next/link';
-import { loadBlueprintV2, displayAllocation } from '@/lib/blueprint/load-v2';
+import { loadBlueprintV2 } from '@/lib/blueprint/load-v2';
 import { RefreshButton } from './RefreshButton';
+import { CapabilityMap } from './_components/v2/CapabilityMap';
 import s from './blueprint.module.css';
+
+function SectionShell({
+  number,
+  title,
+  id,
+  children,
+}: {
+  number: string;
+  title: string;
+  id: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section id={id} className={s.section}>
+      <div className={s.sectionHeader}>
+        <span className={s.sectionNumber}>{number}</span>
+        <h2 className={s.sectionTitle}>{title}</h2>
+      </div>
+      <div className={s.sectionBody}>{children}</div>
+    </section>
+  );
+}
 
 export async function V2BlueprintView({
   slug,
@@ -64,20 +81,19 @@ export async function V2BlueprintView({
     );
   }
 
-  const { capabilityMap, engagementModel, workPlans, timeline, config } =
-    blueprint;
+  const { capabilityMap, config } = blueprint;
   const clientName =
     config?.client?.display_name ?? config?.client?.name ?? slug;
+  const statusLabel = config?.engagement_status ?? 'client';
 
-  // L3 stub body: confirm load succeeded, surface the schema version branch.
-  // Real sections land in subsequent landmarks.
   return (
     <>
       <div className={s.bgPattern} aria-hidden />
       <div className={s.container}>
         <header className={s.header}>
           <div className={s.eyebrow}>
-            POLYNIZE AGENTIC MANAGEMENT CONSOLE · CLIENT BLUEPRINT · v2.0
+            POLYNIZE AGENTIC MANAGEMENT CONSOLE · CLIENT BLUEPRINT ·{' '}
+            {statusLabel.toUpperCase()}
           </div>
           <h1 className={s.title}>{clientName}</h1>
           <div className={s.headerActions}>
@@ -92,45 +108,13 @@ export async function V2BlueprintView({
           </div>
         </header>
 
-        <section id="v2-stub" className={s.section}>
-          <div className={s.sectionHeader}>
-            <span className={s.sectionNumber}>00</span>
-            <h2 className={s.sectionTitle}>Stage 2 renderer · stub</h2>
-          </div>
-          <div className={s.sectionBody}>
-            <p>
-              Loaded <strong>{capabilityMap.capabilities.length}</strong>{' '}
-              capability rows across{' '}
-              <strong>{capabilityMap.clusters.length}</strong> clusters.
-            </p>
-            <p>
-              Allocation summary:{' '}
-              {displayAllocation('Agent')}{' '}
-              {capabilityMap.allocation_summary.percentages.agent}% ·{' '}
-              {displayAllocation('Hybrid')}{' '}
-              {capabilityMap.allocation_summary.percentages.hybrid}% ·{' '}
-              {displayAllocation('Human')}{' '}
-              {capabilityMap.allocation_summary.percentages.human}%
-            </p>
-            <p>
-              Engagement model:{' '}
-              {engagementModel
-                ? `loaded (${Object.keys(engagementModel.rows).length} rows)`
-                : 'not present (Lead / Mapping)'}
-            </p>
-            <p>Work plans: {workPlans.length}</p>
-            <p>Timeline items: {timeline ? timeline.items.length : 'n/a'}</p>
-            <p>
-              Engagement status:{' '}
-              <code>{config?.engagement_status ?? 'unset'}</code> · phase:{' '}
-              <code>{config?.engagement_phase ?? 'unset'}</code>
-            </p>
-            <p style={{ color: 'var(--bp-text-3)', fontSize: 12 }}>
-              This stub confirms the schema-version branch is firing. Full
-              section renderers land in Landmarks 6 through 11.5.
-            </p>
-          </div>
-        </section>
+        {capabilityMap.interpretation && (
+          <div className={s.intro}>{capabilityMap.interpretation}</div>
+        )}
+
+        <SectionShell number="04" title="Capability map" id="capability-map">
+          <CapabilityMap map={capabilityMap} />
+        </SectionShell>
       </div>
     </>
   );

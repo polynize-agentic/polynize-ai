@@ -1,0 +1,388 @@
+/* ============================================================
+   Stage 2 Blueprint sections — shared styles.
+   Rendered inside .container (blueprint.module.css), so the
+   --bp-* palette tokens are in scope. The heat-map cell-fill
+   hexes (#e87a4d / #e8c44d / #4de8a0) are SEMANTIC and distinct
+   from the brand tokens (--bp-coral / --bp-amber / --bp-mint),
+   which are used for labels, %, and headers. Per spec §9.1 —
+   never remap.
+   ============================================================ */
+
+/* ---------- Percentage summary bar (§9.5) ---------- */
+.summaryRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  gap: 18px;
+  align-items: end;
+  margin-bottom: 28px;
+  padding: 22px 24px;
+  background: var(--bp-surface);
+  border-radius: 16px;
+  box-shadow: var(--tac-shadow-raised);
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12.5px;
+  color: var(--bp-text-2);
+}
+
+.statPct {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.statTrack {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--bp-inset);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.statFill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.leverageBadge {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  padding-left: 18px;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.eyebrow {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bp-text-3);
+}
+
+.leverageVal {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--bp-mint);
+  line-height: 1;
+}
+
+/* ---------- Cluster sections ---------- */
+.cluster {
+  margin-bottom: 30px;
+}
+
+.clusterHead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.clusterName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--bp-text);
+  margin: 0;
+}
+
+.clusterType {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-text-3);
+}
+
+.grid {
+  background: var(--bp-surface);
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: var(--tac-shadow-raised);
+}
+
+.gridHead {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 6px;
+}
+
+.gridHFn {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bp-text-3);
+}
+
+.gridH {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+
+/* ---------- Capability row ---------- */
+.capRow {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 12px 0;
+}
+
+.capRowGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.capRowClickable {
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 120ms ease-out;
+  margin: 0 -10px;
+  padding: 12px 10px;
+}
+
+.capRowClickable:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.capLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.capName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--bp-text);
+  font-weight: 500;
+}
+
+.capId {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--bp-text-3);
+}
+
+.capDetail {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--bp-text-3);
+}
+
+/* ---------- Cells (§9.1 / §9.3 / §9.4) ---------- */
+.cell {
+  height: 28px;
+  border: 1px solid rgba(228, 228, 239, 0.06);
+  border-radius: 3px;
+  margin: 0 4px;
+  transition: all 0.3s;
+}
+
+.cellHuman {
+  background: rgba(232, 122, 77, 0.6);
+  border-color: #e87a4d;
+  box-shadow:
+    0 0 20px rgba(232, 122, 77, 0.15),
+    inset 0 0 12px rgba(232, 122, 77, 0.08);
+}
+
+.cellHybrid {
+  background: rgba(232, 196, 77, 0.6);
+  border-color: #e8c44d;
+  box-shadow:
+    0 0 20px rgba(232, 196, 77, 0.15),
+    inset 0 0 12px rgba(232, 196, 77, 0.08);
+}
+
+.cellAgent {
+  background: rgba(77, 232, 160, 0.6);
+  border-color: #4de8a0;
+  box-shadow:
+    0 0 20px rgba(77, 232, 160, 0.15),
+    inset 0 0 12px rgba(77, 232, 160, 0.08);
+}
+
+/* Completeness treatments (§9.4) — modify the lit cell */
+.cellPartial {
+  /* standard fill; tag added on the label */
+}
+
+.cellStub {
+  opacity: 0.75;
+  border-style: dashed;
+}
+
+.cellGhost {
+  opacity: 0.4;
+  border-style: dashed;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Completeness tags on the label */
+.tag {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--bp-text-3);
+}
+
+.tagPartial {
+  color: var(--bp-amber);
+  background: rgba(255, 196, 107, 0.1);
+}
+
+.tagStub {
+  color: var(--bp-text-2);
+}
+
+.tagGhost {
+  color: var(--bp-text-3);
+}
+
+.riskTag {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.riskHigh {
+  color: var(--bp-coral);
+  background: rgba(255, 143, 163, 0.1);
+}
+
+.riskMedium {
+  color: var(--bp-amber);
+  background: rgba(255, 196, 107, 0.1);
+}
+
+.riskLow {
+  color: var(--bp-text-3);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.capNameGhost {
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* ---------- Inline capability detail (transparency, §9.3) ---------- */
+.detail {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: var(--bp-inset);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.detailRow {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.detailKey {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bp-text-3);
+  padding-top: 1px;
+}
+
+.detailVal {
+  color: var(--bp-text-2);
+}
+
+.detailVal code {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--bp-electric);
+}
+
+.evidenceQuote {
+  border-left: 2px solid rgba(255, 255, 255, 0.1);
+  padding-left: 10px;
+  color: var(--bp-text-2);
+  font-style: italic;
+}
+
+.evidenceSource {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--bp-text-3);
+  font-style: normal;
+}
+
+.gapBlocking {
+  color: var(--bp-coral);
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--bp-text-2);
+}
+
+@media (max-width: 760px) {
+  .summaryRow {
+    grid-template-columns: 1fr 1fr;
+  }
+  .leverageBadge {
+    grid-column: 1 / -1;
+    align-items: flex-start;
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 12px;
+  }
+  .gridHead,
+  .capRowGrid {
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 5px;
+  }
+  .detailRow {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
