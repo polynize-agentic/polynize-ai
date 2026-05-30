@@ -17,17 +17,25 @@ import type {
   EngagementModel,
 } from '@/lib/blueprint/load-v2';
 import { AllocationChip, UpliftNeededBar, orderedCapabilities } from './shared';
+import { EditableText } from './EditableText';
 import s from './v2-sections.module.css';
 
 export function BenchmarkingAnalysis({
   map,
   model,
+  slug,
+  canEdit,
+  locked,
+  actorEmail,
 }: {
   map: CapabilityMapV05;
   model: EngagementModel;
+  slug: string;
+  canEdit: boolean;
+  locked: boolean;
+  actorEmail: string | null;
 }) {
   const rows = orderedCapabilities(map);
-  const locked = model.lock_state.locked;
 
   return (
     <div className={s.tableWrap}>
@@ -53,9 +61,26 @@ export function BenchmarkingAnalysis({
                 <td>
                   <AllocationChip allocation={cap.allocation} />
                 </td>
-                <td>{er?.current_state || <span className={s.moveEmpty}>—</span>}</td>
                 <td>
-                  {er?.benchmark || <span className={s.moveEmpty}>—</span>}
+                  <EditableText
+                    value={er?.current_state ?? null}
+                    endpoint={`/api/console/${slug}/capability/${cap.id}/current-state`}
+                    bodyKey="current_state"
+                    canEdit={canEdit}
+                    locked={locked}
+                  />
+                </td>
+                <td>
+                  <EditableText
+                    value={er?.benchmark ?? null}
+                    endpoint={`/api/console/${slug}/capability/${cap.id}/benchmark`}
+                    bodyKey="benchmark"
+                    extraBody={
+                      actorEmail ? { approvedBy: actorEmail } : undefined
+                    }
+                    canEdit={canEdit && !!actorEmail}
+                    locked={locked}
+                  />
                   {er?.benchmark && locked && (
                     <span className={s.contractual}>· contractual</span>
                   )}

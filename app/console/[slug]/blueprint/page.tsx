@@ -68,7 +68,14 @@ export default async function BlueprintPage({
   const version = parseSchemaVersion(config?.blueprint_schema_version);
 
   if (version === '2.0') {
-    return <V2BlueprintView slug={slug} isTeamUser={isTeamUser} />;
+    const actorEmail = user?.scope.type === 'team' ? user.email : null;
+    return (
+      <V2BlueprintView
+        slug={slug}
+        isTeamUser={isTeamUser}
+        actorEmail={actorEmail}
+      />
+    );
   }
 
   return (

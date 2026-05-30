@@ -571,6 +571,123 @@
   text-decoration: underline;
 }
 
+/* ---------- Inline editing (L13) ---------- */
+.editableTrigger {
+  display: inline;
+  background: transparent;
+  border: none;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  border-radius: 6px;
+  cursor: text;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  transition: background 120ms ease-out, box-shadow 120ms ease-out;
+}
+
+.editableTrigger:hover {
+  background: rgba(105, 252, 203, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(105, 252, 203, 0.2);
+}
+
+.lockedField {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.85;
+}
+
+.lockGlyph {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.editorInline {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.editorTextarea,
+.editorInput {
+  background: var(--bp-inset);
+  border: 1px solid rgba(105, 252, 203, 0.35);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--bp-text);
+  font-size: 13px;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+  width: 100%;
+  min-width: 180px;
+}
+
+.editorTextarea:focus,
+.editorInput:focus {
+  outline: none;
+  border-color: var(--bp-mint);
+}
+
+.editorErrorInline {
+  color: var(--bp-coral);
+  font-size: 11px;
+}
+
+.editorInlineActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.btnPrimarySm {
+  background: var(--bp-mint);
+  color: #0c1410;
+  border: none;
+  border-radius: 999px;
+  padding: 5px 13px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnPrimarySm:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.btnGhostSm {
+  background: transparent;
+  color: var(--bp-text-2);
+  border: none;
+  border-radius: 999px;
+  padding: 5px 13px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+/* Sprint stage status control (L13) */
+.stageSelect {
+  background: var(--bp-inset);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: var(--bp-text-2);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  padding: 2px 4px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
 /* ---------- Export button ---------- */
 .exportButton {
   display: inline-flex;

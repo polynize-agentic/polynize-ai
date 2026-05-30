@@ -25,9 +25,20 @@
 import type { DerivedGap } from '@/lib/blueprint/load-v2';
 import { deriveGapRegister } from '@/lib/blueprint/load-v2';
 import type { CapabilityMapV05 } from '@/lib/blueprint/load-v2';
+import { GapAddressButton } from './GapAddressButton';
 import s from './v2-sections.module.css';
 
-function GapRow({ gap, canEdit }: { gap: DerivedGap; canEdit: boolean }) {
+function GapRow({
+  gap,
+  slug,
+  canEdit,
+  locked,
+}: {
+  gap: DerivedGap;
+  slug: string;
+  canEdit: boolean;
+  locked: boolean;
+}) {
   return (
     <div
       className={`${s.gapItem} ${gap.blocking ? s.gapItemBlocking : ''}`}
@@ -56,9 +67,7 @@ function GapRow({ gap, canEdit }: { gap: DerivedGap; canEdit: boolean }) {
         {gap.reason && <div className={s.gapReason}>{gap.reason}</div>}
       </div>
       {canEdit && (
-        <button type="button" className={s.gapAddressBtn} disabled title="Wired in L13">
-          mark addressed
-        </button>
+        <GapAddressButton slug={slug} gapRef={gap.ref} locked={locked} />
       )}
     </div>
   );
@@ -86,10 +95,14 @@ function Group({
 
 export function GapRegisterV2({
   map,
+  slug,
   canEdit,
+  locked,
 }: {
   map: CapabilityMapV05;
+  slug: string;
   canEdit: boolean;
+  locked: boolean;
 }) {
   const reg = deriveGapRegister({ capabilityMap: map });
 
@@ -111,8 +124,14 @@ export function GapRegisterV2({
     <div>
       {reg.blocking.length > 0 && (
         <Group title="Blocking gaps" count={reg.blocking.length}>
-          {reg.blocking.map((gap, i) => (
-            <GapRow key={`b-${i}`} gap={gap} canEdit={canEdit} />
+          {reg.blocking.map((gap) => (
+            <GapRow
+              key={gap.ref}
+              gap={gap}
+              slug={slug}
+              canEdit={canEdit}
+              locked={locked}
+            />
           ))}
         </Group>
       )}
@@ -120,8 +139,14 @@ export function GapRegisterV2({
       {nonBlockingCount > 0 && (
         <Group title="Non-blocking gaps" count={nonBlockingCount}>
           {reg.nonBlockingByCapability.map((group) =>
-            group.gaps.map((gap, i) => (
-              <GapRow key={`${group.capabilityId}-${i}`} gap={gap} canEdit={canEdit} />
+            group.gaps.map((gap) => (
+              <GapRow
+                key={gap.ref}
+                gap={gap}
+                slug={slug}
+                canEdit={canEdit}
+                locked={locked}
+              />
             ))
           )}
         </Group>
@@ -129,16 +154,28 @@ export function GapRegisterV2({
 
       {reg.scopeUncertainties.length > 0 && (
         <Group title="Scope uncertainties" count={reg.scopeUncertainties.length}>
-          {reg.scopeUncertainties.map((gap, i) => (
-            <GapRow key={`s-${i}`} gap={gap} canEdit={canEdit} />
+          {reg.scopeUncertainties.map((gap) => (
+            <GapRow
+              key={gap.ref}
+              gap={gap}
+              slug={slug}
+              canEdit={canEdit}
+              locked={locked}
+            />
           ))}
         </Group>
       )}
 
       {reg.decisionsDeferred.length > 0 && (
         <Group title="Decisions deferred" count={reg.decisionsDeferred.length}>
-          {reg.decisionsDeferred.map((gap, i) => (
-            <GapRow key={`d-${i}`} gap={gap} canEdit={canEdit} />
+          {reg.decisionsDeferred.map((gap) => (
+            <GapRow
+              key={gap.ref}
+              gap={gap}
+              slug={slug}
+              canEdit={canEdit}
+              locked={locked}
+            />
           ))}
         </Group>
       )}

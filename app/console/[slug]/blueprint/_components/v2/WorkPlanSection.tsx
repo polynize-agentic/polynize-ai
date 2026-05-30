@@ -21,9 +21,18 @@ import {
   SPRINT_STAGE_ORDER,
   SPRINT_STAGE_LABELS,
 } from '@/lib/blueprint/schema-v2';
+import { StageStatusControl } from './StageStatusControl';
 import s from './v2-sections.module.css';
 
-function SprintStepper({ plan }: { plan: WorkPlan }) {
+function SprintStepper({
+  plan,
+  slug,
+  canEdit,
+}: {
+  plan: WorkPlan;
+  slug: string;
+  canEdit: boolean;
+}) {
   // Build a status map keyed by stage id; default pending.
   const byId = new Map(plan.sprint_stages.map((st) => [st.id, st]));
   return (
@@ -49,6 +58,14 @@ function SprintStepper({ plan }: { plan: WorkPlan }) {
             <span className={labelCls}>{SPRINT_STAGE_LABELS[id]}</span>
             {status === 'active' && st?.note && (
               <span className={s.stepNote}>{st.note}</span>
+            )}
+            {canEdit && (
+              <StageStatusControl
+                slug={slug}
+                workPlanId={plan.id}
+                stageId={id}
+                status={status}
+              />
             )}
           </div>
         );
@@ -81,9 +98,13 @@ function Requirements({ plan }: { plan: WorkPlan }) {
 function WorkPlanCard({
   plan,
   progressLog,
+  slug,
+  canEdit,
 }: {
   plan: WorkPlan;
   progressLog: string;
+  slug: string;
+  canEdit: boolean;
 }) {
   const isActive = plan.status === 'in_progress' || plan.status === 'operate';
   const isComplete = plan.status === 'archived';
@@ -113,7 +134,7 @@ function WorkPlanCard({
         </div>
       </div>
 
-      <SprintStepper plan={plan} />
+      <SprintStepper plan={plan} slug={slug} canEdit={canEdit} />
 
       {/* Completed (archived) work plans collapse to header + stepper. */}
       {!isComplete && (
@@ -141,8 +162,12 @@ function WorkPlanCard({
 
 export function WorkPlanSection({
   workPlans,
+  slug,
+  canEdit,
 }: {
   workPlans: { plan: WorkPlan; progressLog: string }[];
+  slug: string;
+  canEdit: boolean;
 }) {
   if (workPlans.length === 0) {
     return (
@@ -167,7 +192,13 @@ export function WorkPlanSection({
   return (
     <div>
       {ordered.map(({ plan, progressLog }) => (
-        <WorkPlanCard key={plan.id} plan={plan} progressLog={progressLog} />
+        <WorkPlanCard
+          key={plan.id}
+          plan={plan}
+          progressLog={progressLog}
+          slug={slug}
+          canEdit={canEdit}
+        />
       ))}
     </div>
   );

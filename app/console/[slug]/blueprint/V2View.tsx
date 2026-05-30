@@ -57,9 +57,11 @@ function SectionShell({
 export async function V2BlueprintView({
   slug,
   isTeamUser,
+  actorEmail,
 }: {
   slug: string;
   isTeamUser: boolean;
+  actorEmail: string | null;
 }) {
   const blueprint = await loadBlueprintV2(slug);
 
@@ -96,6 +98,10 @@ export async function V2BlueprintView({
   const statusLabel = config?.engagement_status ?? 'client';
   const phase = config?.engagement_phase ?? null;
   const showWorkPlans = phase === 'building' || phase === 'operate';
+  const locked = config?.lock?.locked === true;
+  // Editing is enabled for team users only. Engagement-section edits are
+  // additionally lock-gated at the API layer (423) and in the UI.
+  const canEdit = isTeamUser;
 
   return (
     <>
@@ -141,7 +147,14 @@ export async function V2BlueprintView({
           id="benchmarking"
         >
           {engagementModel ? (
-            <BenchmarkingAnalysis map={capabilityMap} model={engagementModel} />
+            <BenchmarkingAnalysis
+              map={capabilityMap}
+              model={engagementModel}
+              slug={slug}
+              canEdit={canEdit}
+              locked={locked}
+              actorEmail={actorEmail}
+            />
           ) : (
             <p className={v2s.placeholder}>
               Pending Modelling phase. Benchmarking is populated in the deep
@@ -152,7 +165,13 @@ export async function V2BlueprintView({
 
         <SectionShell number="06" title="Uplift plan" id="uplift">
           {engagementModel ? (
-            <UpliftPlan map={capabilityMap} model={engagementModel} />
+            <UpliftPlan
+              map={capabilityMap}
+              model={engagementModel}
+              slug={slug}
+              canEdit={canEdit}
+              locked={locked}
+            />
           ) : (
             <p className={v2s.placeholder}>
               Pending Modelling phase. The uplift plan is defined once
@@ -163,7 +182,12 @@ export async function V2BlueprintView({
 
         <SectionShell number="07" title="Next steps" id="next-steps">
           {engagementModel ? (
-            <NextSteps model={engagementModel} />
+            <NextSteps
+              model={engagementModel}
+              slug={slug}
+              canEdit={canEdit}
+              locked={locked}
+            />
           ) : (
             <p className={v2s.placeholder}>
               Pending Modelling phase. The motions that close the gaps are set
@@ -173,12 +197,21 @@ export async function V2BlueprintView({
         </SectionShell>
 
         <SectionShell number="08" title="Gap register" id="gap-register">
-          <GapRegisterV2 map={capabilityMap} canEdit={isTeamUser} />
+          <GapRegisterV2
+            map={capabilityMap}
+            slug={slug}
+            canEdit={canEdit}
+            locked={locked}
+          />
         </SectionShell>
 
         {showWorkPlans && (
           <SectionShell number="09" title="Work plans" id="work-plans">
-            <WorkPlanSection workPlans={workPlans} />
+            <WorkPlanSection
+              workPlans={workPlans}
+              slug={slug}
+              canEdit={canEdit}
+            />
           </SectionShell>
         )}
 

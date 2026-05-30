@@ -18,21 +18,35 @@ import type {
   EngagementModel,
 } from '@/lib/blueprint/load-v2';
 import { AllocationChip, orderedCapabilities } from './shared';
+import { EditableText } from './EditableText';
 import s from './v2-sections.module.css';
-
-function Move({ text }: { text: string | null }) {
-  if (!text) return <span className={s.moveEmpty}>—</span>;
-  return <>{text}</>;
-}
 
 export function UpliftPlan({
   map,
   model,
+  slug,
+  canEdit,
+  locked,
 }: {
   map: CapabilityMapV05;
   model: EngagementModel;
+  slug: string;
+  canEdit: boolean;
+  locked: boolean;
 }) {
   const rows = orderedCapabilities(map);
+
+  function moveCell(capId: string, bodyKey: string, value: string | null) {
+    return (
+      <EditableText
+        value={value}
+        endpoint={`/api/console/${slug}/capability/${capId}/uplift`}
+        bodyKey={bodyKey}
+        canEdit={canEdit}
+        locked={locked}
+      />
+    );
+  }
 
   return (
     <div className={s.tableWrap}>
@@ -93,13 +107,25 @@ export function UpliftPlan({
                   <AllocationChip allocation={cap.allocation} />
                 </td>
                 <td>
-                  <Move text={er?.uplift_moves.people_train ?? null} />
+                  {moveCell(
+                    cap.id,
+                    'people_train',
+                    er?.uplift_moves.people_train ?? null
+                  )}
                 </td>
                 <td>
-                  <Move text={er?.uplift_moves.process_transform ?? null} />
+                  {moveCell(
+                    cap.id,
+                    'process_transform',
+                    er?.uplift_moves.process_transform ?? null
+                  )}
                 </td>
                 <td>
-                  <Move text={er?.uplift_moves.ai_deploy ?? null} />
+                  {moveCell(
+                    cap.id,
+                    'ai_deploy',
+                    er?.uplift_moves.ai_deploy ?? null
+                  )}
                 </td>
               </tr>
             );

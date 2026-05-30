@@ -327,6 +327,14 @@ export interface DerivedGap {
   question: string;
   blocking: boolean;
   reason: string | null;
+  /**
+   * Stable reference identifying the gap's source position, used by the
+   * mark-addressed endpoint. Forms:
+   *   cap.<capId>.<indexWithinCapability>
+   *   scope.<index>
+   *   decision.<index>
+   */
+  ref: string;
 }
 
 export interface DerivedGapRegister {
@@ -354,7 +362,7 @@ export function deriveGapRegister(
   const nonBlockingMap = new Map<string, DerivedGap[]>();
 
   for (const row of cm.capabilities) {
-    for (const gap of row.gaps_to_close) {
+    row.gaps_to_close.forEach((gap, idx) => {
       const derived: DerivedGap = {
         kind: 'capability_gap',
         source_capability_id: row.id,
@@ -364,6 +372,7 @@ export function deriveGapRegister(
         question: gap.question,
         blocking: gap.blocking,
         reason: null,
+        ref: `cap.${row.id}.${idx}`,
       };
       if (gap.blocking) {
         blocking.push(derived);
@@ -372,11 +381,11 @@ export function deriveGapRegister(
         arr.push(derived);
         nonBlockingMap.set(row.id, arr);
       }
-    }
+    });
   }
 
   const scopeUncertainties: DerivedGap[] = cm.map_reflection.scope_uncertainty.map(
-    (s) => ({
+    (s, idx) => ({
       kind: 'scope_uncertainty',
       source_capability_id: null,
       capability_name: null,
@@ -385,11 +394,12 @@ export function deriveGapRegister(
       question: s.question,
       blocking: false,
       reason: null,
+      ref: `scope.${idx}`,
     })
   );
 
   const decisionsDeferred: DerivedGap[] = cm.map_reflection.decisions_deferred.map(
-    (d) => ({
+    (d, idx) => ({
       kind: 'decision_deferred',
       source_capability_id: null,
       capability_name: null,
@@ -398,6 +408,7 @@ export function deriveGapRegister(
       question: d.topic,
       blocking: false,
       reason: d.reason,
+      ref: `decision.${idx}`,
     })
   );
 

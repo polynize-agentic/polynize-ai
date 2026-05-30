@@ -12,6 +12,7 @@
  */
 
 import type { EngagementModel, Motion } from '@/lib/blueprint/load-v2';
+import { EditableText } from './EditableText';
 import s from './v2-sections.module.css';
 
 const ACCENT_VAR: Record<Motion['accent'], string> = {
@@ -20,7 +21,17 @@ const ACCENT_VAR: Record<Motion['accent'], string> = {
   white: 'var(--bp-electric)',
 };
 
-export function NextSteps({ model }: { model: EngagementModel }) {
+export function NextSteps({
+  model,
+  slug,
+  canEdit,
+  locked,
+}: {
+  model: EngagementModel;
+  slug: string;
+  canEdit: boolean;
+  locked: boolean;
+}) {
   if (model.motions.length === 0) {
     return (
       <p className={s.placeholder}>No motions defined for this engagement yet.</p>
@@ -38,7 +49,17 @@ export function NextSteps({ model }: { model: EngagementModel }) {
           }
         >
           <h3 className={s.motionLabel}>{motion.label}</h3>
-          <p className={s.motionDesc}>{motion.description}</p>
+          <p className={s.motionDesc}>
+            <EditableText
+              value={motion.description}
+              endpoint={`/api/console/${slug}/motion/${motion.id}`}
+              bodyKey="description"
+              canEdit={canEdit}
+              locked={locked}
+              emptyDash={false}
+              placeholder="Describe what this motion delivers…"
+            />
+          </p>
           <CoversLine motion={motion} />
         </div>
       ))}
