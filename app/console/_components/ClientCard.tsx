@@ -15,6 +15,11 @@ type Props = {
    * (no editor mounted, dot stays as a plain visual indicator).
    */
   actorEmail: string | null;
+  /**
+   * Card variant — drives the LEAD tag, opacity, and Convert-to-Client CTA.
+   * Defaults to 'client'. Determined by the caller from engagement_status.
+   */
+  variant?: 'client' | 'lead' | 'archived';
 };
 
 function relativeTime(date: Date): string {
@@ -91,17 +96,19 @@ function StatusDotButton({
   );
 }
 
-export function ClientCard({ data, actorEmail }: Props) {
+export function ClientCard({ data, actorEmail, variant = 'client' }: Props) {
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [optimisticStatus, setOptimisticStatus] = useState<ClientStatus | null>(
     null
   );
   const [editorOpen, setEditorOpen] = useState(false);
+  const [converting, setConverting] = useState(false);
 
   const displayStatus = optimisticStatus ?? data.status;
   const href = `/console/${data.slug}/blueprint`;
   const editable = !!actorEmail;
+  const isLead = variant === 'lead';
 
   function handleSaved(next: ClientStatus) {
     setOptimisticStatus(next);
@@ -112,9 +119,32 @@ export function ClientCard({ data, actorEmail }: Props) {
     startTransition(() => router.refresh());
   }
 
+  async function handleConvert(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (converting) return;
+    setConverting(true);
+    try {
+      const res = await fetch(`/api/console/${data.slug}/convert`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        startTransition(() => router.refresh());
+      }
+    } finally {
+      setConverting(false);
+    }
+  }
+
+  const wrapCls = isLead
+    ? `${s.cardWrap} ${s.cardWrapLead}`
+    : variant === 'archived'
+      ? `${s.cardWrap} ${s.cardWrapArchived}`
+      : s.cardWrap;
+
   if (data.error) {
     return (
-      <div className={s.cardWrap}>
+      <div className={wrapCls}>
         <Link href={href} className={s.card}>
           <div className={s.cardInner}>
             <h2 className={s.name}>{data.name}</h2>
@@ -140,13 +170,23 @@ export function ClientCard({ data, actorEmail }: Props) {
     );
   }
 
-  const phaseLabel =
-    data.gateNext && data.subPhase
+  // Prefer the Stage 2 engagement_phase when present; fall back to the
+  // legacy phase + sub-phase + gate convention.
+  const phaseLabel = data.engagementPhase
+    ? data.engagementPhase.toUpperCase()
+    : data.gateNext && data.subPhase
       ? `${data.phase.toUpperCase()} · ${data.subPhase} → ${data.gateNext}`
       : data.phase.toUpperCase();
 
+  // Active work plan from the registry (in_progress or operate).
+  const activeWorkPlan =
+    data.workPlanRegistry.find(
+      (w) => w.status === 'in_progress' || w.status === 'operate'
+    ) ?? null;
+
   return (
-    <div className={s.cardWrap}>
+    <div className={wrapCls}>
+      {isLead && <span className={s.leadTag}>LEAD</span>}
       <Link href={href} className={s.card}>
         <div className={s.cardInner}>
           <h2 className={s.name}>{data.name}</h2>
@@ -161,6 +201,12 @@ export function ClientCard({ data, actorEmail }: Props) {
               {data.leadEmail && (
                 <span className={s.leadEmail}>{data.leadEmail}</span>
               )}
+            </p>
+          )}
+          {activeWorkPlan && (
+            <p className={s.activeWp}>
+              <span className={s.activeWpDot} aria-hidden />
+              {activeWorkPlan.title}
             </p>
           )}
           <div className={s.cardFoot}>
@@ -178,6 +224,17 @@ export function ClientCard({ data, actorEmail }: Props) {
         editable={editable}
         onClick={() => setEditorOpen(true)}
       />
+      {/* Convert-to-Client: team-scope only, leads only. */}
+      {isLead && editable && (
+        <button
+          type="button"
+          className={s.convertCta}
+          onClick={handleConvert}
+          disabled={converting}
+        >
+          {converting ? 'Converting…' : 'Convert to Client'}
+        </button>
+      )}
       {editorOpen && actorEmail && (
         <StatusEditor
           slug={data.slug}

@@ -528,3 +528,265 @@
     width: auto;
   }
 }
+
+/* ============================================================
+   Stage 2 — dashboard sections (Clients / Leads / Archived)
+   ============================================================ */
+.dashSection {
+  margin-top: 40px;
+}
+
+.dashSectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.dashSectionTitle {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0;
+}
+
+.dashSectionCount {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-3);
+  background: var(--tac-inset);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+.dashSectionEmpty {
+  color: var(--text-3);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.archivedDetails {
+  margin-top: 40px;
+}
+
+.archivedSummary {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 8px 0;
+  user-select: none;
+}
+
+.archivedSummary:hover {
+  color: var(--text-2);
+}
+
+.archivedDetails[open] .archivedSummary {
+  margin-bottom: 18px;
+}
+
+/* ============================================================
+   Lead + archived card variants
+   ============================================================ */
+.cardWrapLead {
+  opacity: 0.9;
+}
+
+.cardWrapLead:hover {
+  opacity: 1;
+}
+
+.cardWrapArchived {
+  opacity: 0.65;
+}
+
+.leadTag {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  z-index: 2;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--amber);
+  background: rgba(240, 184, 107, 0.12);
+  padding: 3px 7px;
+  border-radius: 5px;
+}
+
+/* Lead cards carry the LEAD tag in the top-left, so nudge the title down. */
+.cardWrapLead .name {
+  margin-top: 14px;
+}
+
+.activeWp {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--text-2);
+  margin: 10px 0 0;
+}
+
+.activeWpDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 6px var(--mint);
+  flex-shrink: 0;
+}
+
+.convertCta {
+  position: absolute;
+  bottom: 14px;
+  right: 16px;
+  z-index: 2;
+  opacity: 0;
+  background: var(--mint);
+  color: #0c1410;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--tac-transition), transform var(--tac-transition);
+}
+
+.cardWrapLead:hover .convertCta,
+.convertCta:focus-visible {
+  opacity: 1;
+}
+
+.convertCta:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* ============================================================
+   Pipeline birds-eye (Level 1)
+   ============================================================ */
+.pipeline {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  background: var(--tac-surface);
+  border-radius: 16px;
+  box-shadow: var(--tac-shadow-raised);
+  padding: 20px 22px;
+}
+
+.pipelineHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.pipelineEyebrow {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mint);
+}
+
+.pipelineNote {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.pipelineRows {
+  display: grid;
+  gap: 4px;
+}
+
+.pipelineRow {
+  display: grid;
+  grid-template-columns: 12px 1.4fr 1fr 1.4fr 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 9px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--tac-transition);
+}
+
+.pipelineRow:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.pipelineRag {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.pipelineName {
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pipelinePhase {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+}
+
+.pipelineWp {
+  font-size: 12px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pipelineBarTrack {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--tac-inset);
+  overflow: hidden;
+  min-width: 60px;
+}
+
+.pipelineBarFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--mint);
+  box-shadow: 0 0 8px var(--mint);
+}
+
+.pipelinePct {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-2);
+  text-align: right;
+  min-width: 34px;
+}
+
+@media (max-width: 720px) {
+  .pipelineRow {
+    grid-template-columns: 10px 1fr auto;
+    gap: 8px;
+  }
+  .pipelinePhase,
+  .pipelineWp,
+  .pipelineBarTrack {
+    display: none;
+  }
+}
