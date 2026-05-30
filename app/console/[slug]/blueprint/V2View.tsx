@@ -25,6 +25,7 @@ import { CapabilityMapInteractive } from './_components/v2/CapabilityMapInteract
 import { BenchmarkingAnalysis } from './_components/v2/BenchmarkingAnalysis';
 import { UpliftPlan } from './_components/v2/UpliftPlan';
 import { NextSteps } from './_components/v2/NextSteps';
+import { GapRegisterV2 } from './_components/v2/GapRegisterV2';
 import s from './blueprint.module.css';
 import v2s from './_components/v2/v2-sections.module.css';
 
@@ -159,6 +160,10 @@ export async function V2BlueprintView({
               during Modelling.
             </p>
           )}
+        </SectionShell>
+
+        <SectionShell number="08" title="Gap register" id="gap-register">
+          <GapRegisterV2 map={capabilityMap} canEdit={isTeamUser} />
         </SectionShell>
       </div>
     </>
