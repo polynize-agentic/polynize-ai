@@ -14,6 +14,7 @@ import {
   extractBlueprintVersion,
 } from '@/app/console/_lib/parse-blueprint';
 import { authorizeClientAccess, requireConsoleAuth } from '@/lib/console-api-auth';
+import { loadBlueprintV2, deriveGapRegister } from '@/lib/blueprint/load-v2';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,6 +29,7 @@ type ClientConfig = {
   console?: { blueprint_path?: string; render?: string };
   integrations?: unknown[];
   infrastructure?: Record<string, unknown>;
+  blueprint_schema_version?: string;
 };
 
 export async function GET(
@@ -49,6 +51,38 @@ export async function GET(
 
   const url = new URL(request.url);
   const fullContent = url.searchParams.get('fullContent') === 'true';
+
+  // Stage 2 branch: if this engagement is 2.0, return the unified
+  // BlueprintV2 object (capabilityMap + engagementModel + workPlans +
+  // timeline + config + derived gaps) per spec §8.2. Legacy 1.x falls
+  // through to the markdown-parse path below, unchanged.
+  try {
+    const cfgRaw = await readClientFile(slug, '.polynize/client-config.yaml');
+    const cfg = (YAML.parse(cfgRaw) as ClientConfig) ?? {};
+    if (cfg.blueprint_schema_version === '2.0') {
+      const v2 = await loadBlueprintV2(slug);
+      if (!v2) {
+        return NextResponse.json(
+          { error: 'Stage 2 engagement has no capability-map.json' },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json({
+        slug,
+        schemaVersion: '2.0',
+        config: v2.config,
+        capabilityMap: v2.capabilityMap,
+        engagementModel: v2.engagementModel,
+        workPlans: v2.workPlans.map((w) => w.plan),
+        timeline: v2.timeline,
+        gaps: deriveGapRegister(v2),
+        lock: v2.config?.lock ?? null,
+      });
+    }
+  } catch {
+    // Could not read config; fall through to legacy path (which will
+    // surface its own read error if blueprint.md is also missing).
+  }
 
   try {
     const [configYaml, blueprintMd] = await Promise.all([
