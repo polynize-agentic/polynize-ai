@@ -364,6 +364,213 @@
   color: var(--bp-text-2);
 }
 
+/* ---------- Placeholder (Lead / pre-Modelling) ---------- */
+.placeholder {
+  padding: 22px 24px;
+  background: var(--bp-surface);
+  border-radius: 14px;
+  box-shadow: var(--tac-shadow-raised);
+  color: var(--bp-text-3);
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* ---------- Tables (benchmarking, uplift) ---------- */
+.tableWrap {
+  background: var(--bp-surface);
+  border-radius: 14px;
+  padding: 8px 4px;
+  box-shadow: var(--tac-shadow-raised);
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table thead th {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-text-3);
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 500;
+}
+
+.table tbody td {
+  padding: 13px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--bp-text-2);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cellCapName {
+  color: var(--bp-text);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.cellCapId {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--bp-text-3);
+  margin-right: 6px;
+}
+
+.allocChip {
+  display: inline-block;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.allocChipHuman {
+  color: #e87a4d;
+  background: rgba(232, 122, 77, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(232, 122, 77, 0.3);
+}
+
+.allocChipHybrid {
+  color: #e8c44d;
+  background: rgba(232, 196, 77, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(232, 196, 77, 0.3);
+}
+
+.allocChipAgent {
+  color: #4de8a0;
+  background: rgba(77, 232, 160, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(77, 232, 160, 0.3);
+}
+
+.contractual {
+  display: inline-block;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bp-mint);
+  margin-left: 6px;
+  opacity: 0.8;
+}
+
+/* ---------- Uplift-needed severity bar ---------- */
+.upliftBar {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 110px;
+}
+
+.upliftLabel {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+}
+
+.upliftTrack {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--bp-inset);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.upliftFill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+/* ---------- Uplift Plan move cells ---------- */
+.moveEmpty {
+  color: var(--bp-text-3);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+}
+
+.heldTag {
+  display: inline-block;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bp-electric);
+  background: rgba(165, 193, 236, 0.1);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.moveColHead {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.moveColSub {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+}
+
+/* ---------- Next Steps motions ---------- */
+.motionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.motionCard {
+  background: var(--bp-surface);
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: var(--tac-shadow-raised);
+  border-top: 3px solid var(--motion-accent, var(--bp-mint));
+}
+
+.motionLabel {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--bp-text);
+  margin: 0 0 8px;
+}
+
+.motionDesc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--bp-text-2);
+  margin: 0 0 14px;
+}
+
+.motionCovers {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--bp-text-3);
+  line-height: 1.6;
+}
+
+.motionCoversLink {
+  color: var(--bp-electric);
+  text-decoration: none;
+}
+
+.motionCoversLink:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 760px) {
   .summaryRow {
     grid-template-columns: 1fr 1fr;

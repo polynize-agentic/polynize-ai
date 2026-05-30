@@ -22,7 +22,11 @@ import Link from 'next/link';
 import { loadBlueprintV2 } from '@/lib/blueprint/load-v2';
 import { RefreshButton } from './RefreshButton';
 import { CapabilityMap } from './_components/v2/CapabilityMap';
+import { BenchmarkingAnalysis } from './_components/v2/BenchmarkingAnalysis';
+import { UpliftPlan } from './_components/v2/UpliftPlan';
+import { NextSteps } from './_components/v2/NextSteps';
 import s from './blueprint.module.css';
+import v2s from './_components/v2/v2-sections.module.css';
 
 function SectionShell({
   number,
@@ -81,7 +85,7 @@ export async function V2BlueprintView({
     );
   }
 
-  const { capabilityMap, config } = blueprint;
+  const { capabilityMap, engagementModel, config } = blueprint;
   const clientName =
     config?.client?.display_name ?? config?.client?.name ?? slug;
   const statusLabel = config?.engagement_status ?? 'client';
@@ -114,6 +118,43 @@ export async function V2BlueprintView({
 
         <SectionShell number="04" title="Capability map" id="capability-map">
           <CapabilityMap map={capabilityMap} />
+        </SectionShell>
+
+        <SectionShell
+          number="05"
+          title="Benchmarking analysis"
+          id="benchmarking"
+        >
+          {engagementModel ? (
+            <BenchmarkingAnalysis map={capabilityMap} model={engagementModel} />
+          ) : (
+            <p className={v2s.placeholder}>
+              Pending Modelling phase. Benchmarking is populated in the deep
+              dive with the client.
+            </p>
+          )}
+        </SectionShell>
+
+        <SectionShell number="06" title="Uplift plan" id="uplift">
+          {engagementModel ? (
+            <UpliftPlan map={capabilityMap} model={engagementModel} />
+          ) : (
+            <p className={v2s.placeholder}>
+              Pending Modelling phase. The uplift plan is defined once
+              benchmarks are agreed.
+            </p>
+          )}
+        </SectionShell>
+
+        <SectionShell number="07" title="Next steps" id="next-steps">
+          {engagementModel ? (
+            <NextSteps model={engagementModel} />
+          ) : (
+            <p className={v2s.placeholder}>
+              Pending Modelling phase. The motions that close the gaps are set
+              during Modelling.
+            </p>
+          )}
         </SectionShell>
       </div>
     </>

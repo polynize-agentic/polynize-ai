@@ -43,6 +43,9 @@ import {
   type WorkPlanRegistryEntry,
   type SprintStageId,
   type SprintStage,
+  type UpliftNeeded,
+  type RowStatus,
+  type MotionId,
   SPRINT_STAGE_ORDER,
   UNLOCKED_INITIAL,
 } from './schema-v2';
@@ -495,6 +498,7 @@ export type {
   EngagementModel,
   EngagementRow,
   Motion,
+  MotionId,
   WorkPlan,
   ProjectTimeline,
   LockState,
@@ -504,6 +508,8 @@ export type {
   WorkPlanRegistryEntry,
   SprintStageId,
   SprintStage,
+  UpliftNeeded,
+  RowStatus,
   ClientConfigV2Additions,
 };
 
