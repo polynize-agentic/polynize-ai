@@ -111,9 +111,18 @@ that take `approvedBy` reject the write without it.
 
 1. Ben classifies a Fireflies transcript as a Discovery call.
 2. Ben extracts prospect email + first name.
-3. Ben calls polynize.ai: `GET https://polynize.ai/api/blueprints/lookup?email=&firstName=`
+3. Ben calls the lookup on the **canonical host** `www.polynize.ai`:
+   `GET https://www.polynize.ai/api/blueprints/lookup?email=&firstName=`
    with `Authorization: Bearer $POLYNIZE_LOOKUP_KEY`. Returns
-   `{ uuid, v05Envelope, answers, generatedAt }` (404 if none).
+   `{ uuid, v05Envelope, answers, generatedAt }` (404 if none; 422 if the
+   matched row is a legacy pre-v0.5 intake that cannot seed a 2.0 Lead).
+   **Use `www.`, not the apex `polynize.ai`** — the apex 307-redirects to
+   `www`, and `fetch` drops the `Authorization` header across that
+   cross-origin redirect, which would 401. `firstName` is not optional in
+   practice: a shared inbox can hold multiple prospects, and without it
+   the lookup returns the most-recent row regardless of who it belongs to.
+   The `v05Envelope` is always the normalised `{ capability_map: {...} }`
+   form even though Supabase stores the bare map internally.
 4. Ben proposes the seed in Slack with a suggested slug.
 5. On human confirmation, Ben calls `POST /api/console/[slug]/seed` with
    `approvedBy` (the confirming human). The Console fetches the envelope
