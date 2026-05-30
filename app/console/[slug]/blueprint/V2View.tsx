@@ -26,6 +26,7 @@ import { BenchmarkingAnalysis } from './_components/v2/BenchmarkingAnalysis';
 import { UpliftPlan } from './_components/v2/UpliftPlan';
 import { NextSteps } from './_components/v2/NextSteps';
 import { GapRegisterV2 } from './_components/v2/GapRegisterV2';
+import { WorkPlanSection } from './_components/v2/WorkPlanSection';
 import s from './blueprint.module.css';
 import v2s from './_components/v2/v2-sections.module.css';
 
@@ -86,10 +87,12 @@ export async function V2BlueprintView({
     );
   }
 
-  const { capabilityMap, engagementModel, config } = blueprint;
+  const { capabilityMap, engagementModel, workPlans, config } = blueprint;
   const clientName =
     config?.client?.display_name ?? config?.client?.name ?? slug;
   const statusLabel = config?.engagement_status ?? 'client';
+  const phase = config?.engagement_phase ?? null;
+  const showWorkPlans = phase === 'building' || phase === 'operate';
 
   return (
     <>
@@ -165,6 +168,12 @@ export async function V2BlueprintView({
         <SectionShell number="08" title="Gap register" id="gap-register">
           <GapRegisterV2 map={capabilityMap} canEdit={isTeamUser} />
         </SectionShell>
+
+        {showWorkPlans && (
+          <SectionShell number="09" title="Work plans" id="work-plans">
+            <WorkPlanSection workPlans={workPlans} />
+          </SectionShell>
+        )}
       </div>
     </>
   );

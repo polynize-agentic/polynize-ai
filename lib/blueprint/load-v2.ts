@@ -47,6 +47,7 @@ import {
   type RowStatus,
   type MotionId,
   SPRINT_STAGE_ORDER,
+  SPRINT_STAGE_LABELS,
   UNLOCKED_INITIAL,
 } from './schema-v2';
 
@@ -513,4 +514,4 @@ export type {
   ClientConfigV2Additions,
 };
 
-export { UNLOCKED_INITIAL };
+export { UNLOCKED_INITIAL, SPRINT_STAGE_ORDER, SPRINT_STAGE_LABELS };
