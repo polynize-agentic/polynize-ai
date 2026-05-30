@@ -115,3 +115,24 @@ export async function writeEngagementModel(
   const json = JSON.stringify(model, null, 2) + '\n';
   return writeClientFile(slug, MODEL_PATH, json, commitMessage);
 }
+
+/**
+ * Mirror a lock state into engagement-model.json and flip every row's
+ * row_status. Used by the lock/unlock endpoints (lock_state is canonical
+ * in client-config and mirrored here per §6.1). No-op (returns null) if
+ * the engagement model file does not exist yet.
+ */
+export async function mirrorLockToModel(
+  slug: string,
+  lock: import('./schema-v2').LockState,
+  rowStatus: 'agreed' | 'locked',
+  commitMessage: string
+): Promise<{ sha: string; url: string } | null> {
+  const loaded = await loadEngagementModelForWrite(slug);
+  if (!loaded.ok || !loaded.existed) return null;
+  loaded.model.lock_state = { ...lock };
+  for (const key of Object.keys(loaded.model.rows)) {
+    loaded.model.rows[key].row_status = rowStatus;
+  }
+  return writeEngagementModel(slug, loaded.model, commitMessage);
+}
