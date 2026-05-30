@@ -28,6 +28,7 @@ import { NextSteps } from './_components/v2/NextSteps';
 import { GapRegisterV2 } from './_components/v2/GapRegisterV2';
 import { WorkPlanSection } from './_components/v2/WorkPlanSection';
 import { ProjectTimeline } from './_components/v2/ProjectTimeline';
+import { ExportButton } from './_components/v2/ExportButton';
 import s from './blueprint.module.css';
 import v2s from './_components/v2/v2-sections.module.css';
 
@@ -114,7 +115,11 @@ export async function V2BlueprintView({
             ) : (
               <span aria-hidden />
             )}
-            {isTeamUser && <RefreshButton slug={slug} />}
+            <span style={{ display: 'inline-flex', gap: 10, alignItems: 'center' }}>
+              {/* Export is a read op — available to client-scope too. */}
+              <ExportButton slug={slug} />
+              {isTeamUser && <RefreshButton slug={slug} />}
+            </span>
           </div>
         </header>
 
