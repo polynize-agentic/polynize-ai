@@ -40,10 +40,26 @@ export default async function NewNarrativePage({
   // Sort on the ISO timestamp, never on the display string: a localised date like
   // 18/08/2026 string-compares day-first and misorders the moment two months mix.
   const rows: (IdeaRow & { at: string })[] = [];
+  /**
+   * ARCHIVED HOOKS (D105): inbox ideas that are titles and have been used, which for a hook means a
+   * post made from it was scheduled. Shown at the bottom of the Hook library, out of circulation.
+   */
+  const archived: (IdeaRow & { at: string })[] = [];
   lanes.forEach((lane, ix) => {
     for (const i of lists[ix]) {
-      if (i.used_at) continue;
       if (!i.text.trim()) continue;
+      if (i.used_at) {
+        if (titleShape(i.text) && titleChecks(i.text).length === 0) {
+          archived.push({
+            id: i.id,
+            lane,
+            text: i.text.trim(),
+            at: i.used_at,
+            when: new Date(i.used_at).toLocaleDateString('en-AU'),
+          });
+        }
+        continue;
+      }
       rows.push({
         id: i.id,
         lane,
@@ -54,6 +70,8 @@ export default async function NewNarrativePage({
     }
   });
   rows.sort((a, b) => b.at.localeCompare(a.at));
+  archived.sort((a, b) => b.at.localeCompare(a.at));
+  const archivedTitles = archived.slice(0, 24).map(({ at: _at, ...r }) => r);
   /**
    * SAVED TITLES (D104). A title saved from the script screen lands in the inbox as an idea whose
    * text is a title. Gate 1 shows those as their own group when the way out is a split screen or a
@@ -76,6 +94,7 @@ export default async function NewNarrativePage({
       // "Create narrative" on an inbox idea lands here with that idea already chosen (D103).
       preselect={typeof preselect === 'string' && rows.some((r) => r.id === preselect) ? preselect : undefined}
       savedTitles={savedTitles}
+      archivedTitles={archivedTitles}
     />
   );
 }

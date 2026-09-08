@@ -181,6 +181,15 @@ export type MarketingPiece = {
    */
   focus_anchor?: string;
   cta_keyword?: string;
+  /**
+   * THE HOOK, LOCKED AT GATE 1 (D105). Marrs: "the hook that we're selecting in Gate 1 for yaps and
+   * split screens is the hook and also simultaneously the question that goes on the first slide of the
+   * prezie. Once we get to the script section, the hook should be locked." When Gate 1 was given a
+   * title, `hooks` holds it, `hook_locked` is true and the script screen proposes nothing. `hook_ref`
+   * is the inbox idea it lives in, so it can be archived when a post from it is scheduled.
+   */
+  hook_locked?: boolean;
+  hook_ref?: string;
 };
 
 function keyFor(owner: string, pieceId: string): string {

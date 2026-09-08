@@ -2999,3 +2999,41 @@ Tests: `split-screen.test.ts`, 53 assertions, including the worked example passi
 
 - **Same layout on every board.** On Polynize boards Split screen and Yap are shown but disabled, with the reason on the button: his rules document says the question rules must not be reused for Polynize without a separate validation run (D101). The use-case chips appear only on the Multi route, because they label Stories.
 - **One entry point for an idea.** Whether it becomes a Story or a split-screen, it starts at Gate 1. That is what makes "I still see this as a narrative" true in the console.
+
+
+## D104: One title at a time, the arc locked to it, the rest saved for Gate 1
+
+**Adopted 8 September 2026.** Marrs, testing the split-screen with the "future = ikigai x AI" idea: *"I selected four hooks, and then I clicked the narrative arc section... it wrote me one narrative. The narrative isn't particularly good for any of the hooks... I only should be able to select one hook, and then the narrative is locked to that hook."*
+
+### What changed
+
+**Single-select on the Marrs Attacks formats.** On a split-screen or a yap the "hook" is the title and the title is the piece, so choosing a second one is starting a second piece. The chooser now replaces rather than adds. The arc button waits for exactly one title and says **"Arc for: <title>"** above the plan; the screen plan itself opens with a `TITLE:` line. A plan can no longer read as belonging to none of them.
+
+**Save for later.** *"What I would want to do is select one hook to work on now and then have a second button, which is Save, that saves that hook."* Every title option carries it. It puts the title into the stream's ideas inbox, and **Gate 1 shows inbox ideas that are titles as their own group** ("Your saved titles") on the split-screen and yap routes, above the scored calibration titles. Recognised by shape (opens with Why or How and passes the title tests), so a title he types on his phone counts too. Choosing one at Gate 1 marks it used, as any idea is.
+
+**The Story flow is unchanged.** Choosing several hooks on a Polynize piece still means several hooks against one body, cut into several posts (the D-series hook-variant production model). Only the two formats where the title is the piece are single-select.
+
+### The organising question, left open
+
+*"We're going to come up with a lot of hooks here... We'll just have to work out a way to organise those in Gate 1."* The inbox group is the first cut: a flat list, newest first, capped at sixteen. Sections (by focus anchor, by shape, by score) are the obvious next step once there are enough saved titles to need them; deciding the sections before that would be guessing.
+
+
+## D105: The Hook library, the locked hook, and the archive
+
+**Adopted 8 September 2026.** Three notes from Marrs while testing Gate 1, in order: *"let's call it the hook library on gate 1... if I've already selected a hook at gate 1, gate 2 shouldn't include multiple hooks."* *"In the hook library, there should be a separate section at the bottom: archived hooks, ones that have already been used. Once they're scheduled, we take them out of circulation."* *"The hook that we're selecting in Gate 1 for yaps and split screens is the hook and also simultaneously the question that goes on the first slide of the prezi. Once we get to the script section, the hook should be locked."*
+
+### What changed
+
+**The Hook library, named.** On the split-screen and yap routes Gate 1 shows three groups under one heading: **Your hooks** (inbox ideas that are titles: saved from the script screen or typed as a title), **Scored hooks** (the calibration set, minus any already in the inbox), and **Archived hooks** at the bottom, faded and struck through, with the date they were used.
+
+**The library is the inbox.** A hook is an inbox idea whose text is a title. Choosing a scored hook creates its inbox entry the first time, so every hook that has ever been chosen can be archived the same way. Active means no `used_at`; archived means `used_at` is set.
+
+**Locked at Gate 1.** When what comes through the door is already a title, it becomes the piece's one hook, names the piece, and `hook_locked` is set. The script screen then proposes nothing: stage one reads "Locked at Gate 1: <hook>. This is the title, and the question on the prezie's first slide." The arc and the script follow from it, and the prezie one-shot is told the exact title that tap 0 carries. A rough idea that is not yet a title still gets the title step, as before.
+
+**Archived on schedule, not on start.** The door no longer marks a hook used when a piece is created. `shipEntry`, the one dispatch every schedule and hand-over goes through, archives the hook after a post from a Marrs Attacks piece ships. An abandoned piece gives its hook back.
+
+### Decisions inside it
+
+- **Recognised by shape, not by a flag.** A hook is anything that opens with Why or How and passes the mechanical tests, so a title typed on his phone into ideas is in the library without ceremony.
+- **Best effort bookkeeping.** Archiving runs after the post has shipped and can never fail the post.
+- **Scored hooks that are chosen become his.** They move from the scored group to Your hooks (and later to Archived), so the scored list slowly empties as he uses it, which is the point of it.

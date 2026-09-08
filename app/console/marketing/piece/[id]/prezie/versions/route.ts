@@ -175,6 +175,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         piece.format === SPLIT_SCREEN_FORMAT
           ? [
               VISUAL_GRAMMAR,
+              piece.hooks?.[0]?.trim()
+                ? `THE TITLE ON TAP 0, verbatim, and nowhere else on the screen: ${piece.hooks[0].trim()}`
+                : '',
               piece.outline?.trim()
                 ? `THE AGREED SCREEN PLAN for this piece. Build exactly these six states (TAP 0 to TAP 5) of the one OBJECT it names, TAP 0 included:\n"""\n${piece.outline.trim()}\n"""`
                 : '',

@@ -23,6 +23,7 @@ import { defaultStreamSchedule, timezoneForEntry } from './posting-schedule';
 import { getChannelSchedule, NETWORKS, type Network } from './channel-schedule';
 import { resolvePostTime } from './when-to-post';
 import { youtubeTypeToken } from './youtube-type';
+import { archiveHookOnShip } from './hook-archive';
 
 export type PublishResult =
   | { ok: true; entry: CalendarEntry; warning?: string }
@@ -233,7 +234,7 @@ export async function publishEntry(
  * A manual entry is PREPARED, EMAILED AND LEFT AS A DRAFT, the same three things the wave does. It
  * is not scheduled, it gets no external_ref, and it stays on the calendar until he posts it himself.
  */
-export async function shipEntry(
+async function shipEntryInner(
   owner: string,
   entry: CalendarEntry,
   opts: { draft?: boolean } = {}
@@ -268,4 +269,17 @@ export async function shipEntry(
       ? `${channelLabel(entry.channel)} on this stream is set to post by hand, so nothing was sent to Metricool. The brief could not be emailed: ${brief.skipped}. The post is on the calendar.`
       : `${channelLabel(entry.channel)} on this stream is set to post by hand, so it was emailed to you rather than scheduled. Post it, then mark it published.`,
   };
+}
+
+/**
+ * ONE DISPATCH, PLUS THE BOOKKEEPING (D105): after a post ships (scheduled through Metricool, or handed
+ * over to be posted by hand), the hook it was made from leaves the Hook library's circulation. Best
+ * effort and after the fact, so it can never cost the post.
+ */
+export async function shipEntry(
+  ...args: Parameters<typeof shipEntryInner>
+): ReturnType<typeof shipEntryInner> {
+  const result = await shipEntryInner(...args);
+  if (result.ok) await archiveHookOnShip(args[0], args[1]);
+  return result;
 }

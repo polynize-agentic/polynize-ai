@@ -45,6 +45,7 @@ export function NewNarrative({
   fixedLane,
   preselect,
   savedTitles = [],
+  archivedTitles = [],
 }: {
   ideas: IdeaRow[];
   /** Every stream, for the fallback picker. */
@@ -55,6 +56,8 @@ export function NewNarrative({
   preselect?: string;
   /** Inbox ideas that are titles (D104), shown as their own group on the split-screen and yap routes. */
   savedTitles?: IdeaRow[];
+  /** Hooks already used: a post made from them was scheduled (D105). Out of circulation. */
+  archivedTitles?: IdeaRow[];
 }) {
   const router = useRouter();
   const [picked, setPicked] = useState<string | null>(preselect ?? null);
@@ -201,10 +204,19 @@ export function NewNarrative({
 
       {/* HIS SCORED TITLES AS SUGGESTIONS (D103), when the way out is a split screen or a yap. One
           click puts a title in the box; he can still type his own. The 9s and 10s come first. */}
+      {/* THE HOOK LIBRARY (D105). Marrs: "let's call it the hook library on gate 1." Three groups:
+          his own hooks (saved from the script screen or typed as a title), the scored hooks from the
+          calibration set that are not already his, and at the bottom the archived ones, out of
+          circulation since a post made from them was scheduled. The hook chosen here is locked on
+          the script screen and is the question on the prezie's first slide. */}
+      {route !== 'multi' && marrsBoard ? (
+        <p className={g.libraryHead}>Hook library</p>
+      ) : null}
+
       {route !== 'multi' && marrsBoard && savedTitles.length > 0 ? (
         <>
           <p className={g.useCaseHead}>
-            Your saved titles
+            Your hooks
             <span className={g.meta}> (saved from the script screen, or typed as a title)</span>
           </p>
           <div className={g.examples}>
@@ -230,11 +242,15 @@ export function NewNarrative({
       {route !== 'multi' && marrsBoard ? (
         <>
           <p className={g.useCaseHead}>
-            Or start from one of your scored titles
-            <span className={g.meta}> (9s and 10s first)</span>
+            Scored hooks
+            <span className={g.meta}> (your calibration set, 9s and 10s first)</span>
           </p>
           <div className={g.examples}>
-            {EXAMPLE_TITLES.map((t) => (
+            {EXAMPLE_TITLES.filter(
+              (t) =>
+                !savedTitles.some((s) => s.text.toLowerCase() === t.title.toLowerCase()) &&
+                !archivedTitles.some((s) => s.text.toLowerCase() === t.title.toLowerCase())
+            ).map((t) => (
               <button
                 key={t.title}
                 type="button"
@@ -248,6 +264,22 @@ export function NewNarrative({
               >
                 {t.title}
               </button>
+            ))}
+          </div>
+        </>
+      ) : null}
+
+      {route !== 'multi' && marrsBoard && archivedTitles.length > 0 ? (
+        <>
+          <p className={g.useCaseHead}>
+            Archived hooks
+            <span className={g.meta}> (used: a post made from them has been scheduled)</span>
+          </p>
+          <div className={g.examples}>
+            {archivedTitles.map((t) => (
+              <span key={t.id} className={`${g.example} ${g.exampleOff}`} title={`used ${t.when}`}>
+                {t.text}
+              </span>
             ))}
           </div>
         </>

@@ -439,6 +439,7 @@ export function ScriptScreen({
               // THE TITLE IS THE PIECE (D104): one at a time on the Marrs Attacks formats, the rest saved.
               single={marrsFormat}
               stream={initial.stream}
+              locked={Boolean(initial.hook_locked)}
             />
           ) : null}
           <div className={s.toolbar}>

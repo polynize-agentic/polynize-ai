@@ -42,6 +42,12 @@ type Props = {
   single?: boolean;
   /** The stream whose inbox saved titles go to. */
   stream?: string;
+  /**
+   * LOCKED AT GATE 1 (D105). The hook was chosen from the Hook library, so this screen proposes
+   * nothing: it shows the hook and moves on to the arc. It is also the question on the prezie's first
+   * slide, so changing it here would change the piece.
+   */
+  locked?: boolean;
 };
 
 export function StagedBuild({
@@ -56,7 +62,9 @@ export function StagedBuild({
   hasScript,
   single = false,
   stream,
+  locked = false,
 }: Props) {
+  const hookLocked = single && locked && hooks.length === 1;
   const [open, setOpen] = useState(!hasScript);
   /** Which options have been saved to the inbox this visit, so the button can say so. */
   const [saved, setSaved] = useState<Record<string, 'saving' | 'saved' | 'failed'>>({});
@@ -202,11 +210,25 @@ function grow(el: HTMLTextAreaElement | null) {
       {/* STAGE ONE: HOOKS */}
       <div className={s.step}>
         <p className={s.stepLabel}>
-          1. Hooks{' '}
+          1. {single ? 'The hook' : 'Hooks'}{' '}
           <span className={s.count}>
-            {hooks.length} chosen{hooks.length > 0 ? ', and each goes in word for word' : ''}
+            {hookLocked
+              ? 'locked at Gate 1'
+              : `${hooks.length} chosen${hooks.length > 0 ? ', and each goes in word for word' : ''}`}
           </span>
         </p>
+        {/* LOCKED AT GATE 1 (D105): the hook came from the Hook library, so nothing is proposed here.
+            It is the title, and the question on the prezie's first slide. */}
+        {hookLocked ? (
+          <p className={s.arcFor}>
+            <strong>{hooks[0]}</strong>
+            <br />
+            Chosen in the Hook library. It is the title, and the question on the prezie&apos;s first slide. To
+            work on a different hook, start a new one from Gate 1.
+          </p>
+        ) : null}
+        {hookLocked ? null : (
+        <>
         <textarea
           className={s.steer}
           ref={grow}
@@ -239,8 +261,10 @@ function grow(el: HTMLTextAreaElement | null) {
             </button>
           ) : null}
         </div>
+        </>
+        )}
 
-        {options.length > 0 ? (
+        {options.length > 0 && !hookLocked ? (
           <ul className={s.hookList}>
             {options.map((o, i) => {
               const chosen = hooks.includes(o.hook);

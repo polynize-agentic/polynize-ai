@@ -20,6 +20,7 @@ import { SPLIT_SCREEN_FORMAT, YAP_FORMAT } from '@/lib/marketing/split-screen';
 import { usesUseCases } from '@/lib/marketing/use-case';
 import { formatById } from '@/lib/marketing/output-plan';
 import { updateIdea } from '@/lib/marketing/idea-store';
+import { isHookText, ensureHookIdea } from '@/lib/marketing/hook-archive';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -41,6 +42,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ str
   const format = body?.format === YAP_FORMAT ? YAP_FORMAT : SPLIT_SCREEN_FORMAT;
   const fmt = formatById(format);
 
+  /**
+   * A TITLE AT GATE 1 IS THE HOOK, LOCKED (D105). If what came in is already a title (opens with Why or
+   * How and passes the tests), it is the agreed hook: stored as the piece's one hook, named as the
+   * piece, and nothing on the script screen will propose another. It also lives in the inbox as a
+   * hook-library entry so it can be archived once a post from it is scheduled. A rough idea that is
+   * not yet a title goes to the title step as before.
+   */
+  const asHook = isHookText(idea);
+  const hookRef = asHook ? await ensureHookIdea(stream, idea) : undefined;
+
   const now = new Date().toISOString();
   const piece: MarketingPiece = {
     piece_id: randomUUID(),
@@ -52,6 +63,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ str
     title: idea.split('\n')[0].trim().slice(0, 90) || (fmt?.label ?? 'Split-screen explainer'),
     script: '',
     angle: idea,
+    ...(asHook ? { hooks: [idea], hook_locked: true, ...(hookRef ? { hook_ref: hookRef } : {}) } : {}),
     platforms: fmt?.channels.slice(0, 3) ?? ['instagram', 'tiktok', 'youtube'],
     status: 'draft',
     provenance: 'hybrid',
@@ -63,7 +75,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ str
     console.error('[split-screen.new] save failed:', err);
     return NextResponse.json({ error: 'could not create the piece' }, { status: 500 });
   }
-  // A spent inbox idea leaves the chooser, as it does when it becomes a Story. Best effort.
-  if (ideaRef) void updateIdea(stream, ideaRef, { used_at: now }).catch(() => {});
+  /**
+   * NOT MARKED USED HERE (D105). A hook leaves circulation when a post made from it is SCHEDULED,
+   * not when a piece is started, so an abandoned piece gives its hook back. A rough idea that is not
+   * a hook is still spent by becoming a piece, as it is by becoming a Story.
+   */
+  if (ideaRef && !asHook) void updateIdea(stream, ideaRef, { used_at: now }).catch(() => {});
   return NextResponse.json({ id: piece.piece_id });
 }

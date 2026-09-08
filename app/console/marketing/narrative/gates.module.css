@@ -236,6 +236,19 @@
   border-color: var(--mint, #69fccb);
   color: var(--text-1);
 }
+/* Archived hooks (D105): present, faded, not a choice. */
+.exampleOff {
+  opacity: 0.45;
+  cursor: default;
+  text-decoration: line-through;
+}
+.libraryHead {
+  margin: 22px 0 0;
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+}
 @media (max-width: 560px) {
   .routes {
     grid-template-columns: 1fr;
