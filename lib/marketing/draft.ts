@@ -869,6 +869,7 @@ ${promptOpts.feedback ?? ''}
 
 Output shape, plain text, no markdown, no preamble, exactly these lines in this order:
 
+TITLE: ${title}
 TRANSFORM: <one of the seven, or "does not classify" if none fits, with one line saying why>
 OBJECT: <the single object, and what shape it takes at rest>
 TAP 0: <title plus the object at rest>

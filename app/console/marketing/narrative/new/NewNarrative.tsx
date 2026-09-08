@@ -44,6 +44,7 @@ export function NewNarrative({
   streams,
   fixedLane,
   preselect,
+  savedTitles = [],
 }: {
   ideas: IdeaRow[];
   /** Every stream, for the fallback picker. */
@@ -52,6 +53,8 @@ export function NewNarrative({
   fixedLane?: string;
   /** An inbox idea to arrive with already chosen ("Create narrative" on the ideas panel). */
   preselect?: string;
+  /** Inbox ideas that are titles (D104), shown as their own group on the split-screen and yap routes. */
+  savedTitles?: IdeaRow[];
 }) {
   const router = useRouter();
   const [picked, setPicked] = useState<string | null>(preselect ?? null);
@@ -156,7 +159,9 @@ export function NewNarrative({
         disabled={busy}
       />
 
-      {ideas.map((i) => (
+      {ideas
+        .filter((i) => !(route !== 'multi' && marrsBoard && savedTitles.some((t) => t.id === i.id)))
+        .map((i) => (
         <button
           key={i.id}
           type="button"
@@ -196,6 +201,32 @@ export function NewNarrative({
 
       {/* HIS SCORED TITLES AS SUGGESTIONS (D103), when the way out is a split screen or a yap. One
           click puts a title in the box; he can still type his own. The 9s and 10s come first. */}
+      {route !== 'multi' && marrsBoard && savedTitles.length > 0 ? (
+        <>
+          <p className={g.useCaseHead}>
+            Your saved titles
+            <span className={g.meta}> (saved from the script screen, or typed as a title)</span>
+          </p>
+          <div className={g.examples}>
+            {savedTitles.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                className={`${g.example} ${picked === t.id ? g.exampleOn : ''}`}
+                onClick={() => {
+                  setPicked(t.id);
+                  setTyped('');
+                }}
+                disabled={busy}
+                title={`saved ${t.when}`}
+              >
+                {t.text}
+              </button>
+            ))}
+          </div>
+        </>
+      ) : null}
+
       {route !== 'multi' && marrsBoard ? (
         <>
           <p className={g.useCaseHead}>

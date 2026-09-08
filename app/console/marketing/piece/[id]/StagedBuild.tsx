@@ -32,6 +32,16 @@ type Props = {
   writing: boolean;
   /** True when a script already exists, so the panel starts collapsed and out of the way. */
   hasScript: boolean;
+  /**
+   * ONE AT A TIME (D104). On the Marrs Attacks formats the "hook" is the title and the title is the
+   * piece, so choosing a second one is starting a second piece. Marrs, after choosing four: "it wrote
+   * me one narrative. The narrative isn't particularly good for any of the hooks... I only should be
+   * able to select one hook, and then the narrative is locked to that hook." The others are saved to
+   * the ideas inbox for Gate 1 instead.
+   */
+  single?: boolean;
+  /** The stream whose inbox saved titles go to. */
+  stream?: string;
 };
 
 export function StagedBuild({
@@ -44,8 +54,26 @@ export function StagedBuild({
   onWriteScript,
   writing,
   hasScript,
+  single = false,
+  stream,
 }: Props) {
   const [open, setOpen] = useState(!hasScript);
+  /** Which options have been saved to the inbox this visit, so the button can say so. */
+  const [saved, setSaved] = useState<Record<string, 'saving' | 'saved' | 'failed'>>({});
+  const saveForLater = async (text: string) => {
+    if (!stream || saved[text] === 'saving' || saved[text] === 'saved') return;
+    setSaved((m) => ({ ...m, [text]: 'saving' }));
+    try {
+      const res = await fetch(`/console/marketing/stream/${stream}/ideas`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      setSaved((m) => ({ ...m, [text]: res.ok ? 'saved' : 'failed' }));
+    } catch {
+      setSaved((m) => ({ ...m, [text]: 'failed' }));
+    }
+  };
   const [steer, setSteer] = useState('');
   const [options, setOptions] = useState<HookOption[]>([]);
   const [busy, setBusy] = useState<null | 'hooks' | 'outline'>(null);
@@ -124,6 +152,11 @@ function grow(el: HTMLTextAreaElement | null) {
   };
 
   const toggle = (hook: string) => {
+    if (single) {
+      // The title is the piece: choosing one replaces the other, never adds to it.
+      onHooksChange(hooks.includes(hook) ? [] : [hook]);
+      return;
+    }
     onHooksChange(hooks.includes(hook) ? hooks.filter((h) => h !== hook) : [...hooks, hook]);
   };
 
@@ -236,6 +269,23 @@ function grow(el: HTMLTextAreaElement | null) {
                       <span className={s.material}>
                         {o.material || 'no material named'}
                       </span>
+                      {single && stream ? (
+                        <button
+                          type="button"
+                          className={`${s.save} ${saved[o.hook] === 'saved' ? s.saved : ''}`}
+                          onClick={() => void saveForLater(o.hook)}
+                          disabled={saved[o.hook] === 'saving' || saved[o.hook] === 'saved'}
+                          title="Put this title in your ideas inbox, so it is one click away at Gate 1 later."
+                        >
+                          {saved[o.hook] === 'saved'
+                            ? 'Saved to ideas'
+                            : saved[o.hook] === 'saving'
+                              ? 'Saving…'
+                              : saved[o.hook] === 'failed'
+                                ? 'Not saved, try again'
+                                : 'Save for later'}
+                        </button>
+                      ) : null}
                     </p>
                   </div>
                 </li>
@@ -248,6 +298,18 @@ function grow(el: HTMLTextAreaElement | null) {
       {/* STAGE TWO: THE ARC */}
       <div className={s.step}>
         <p className={s.stepLabel}>2. The narrative arc</p>
+        {/* SAY WHICH TITLE THE ARC IS FOR (D104), so a plan can never read as belonging to none. */}
+        {single ? (
+          hooks.length === 1 ? (
+            <p className={s.arcFor}>
+              Arc for: <strong>{hooks[0]}</strong>
+            </p>
+          ) : (
+            <p className={s.arcFor}>
+              {hooks.length === 0 ? 'Choose one title above first.' : 'Choose one title only; the arc is locked to it.'}
+            </p>
+          )
+        ) : null}
         {hooks.length === 0 ? (
           <p className={s.hint}>Choose your hooks first. The arc has to hand over to all of them.</p>
         ) : (
@@ -257,7 +319,7 @@ function grow(el: HTMLTextAreaElement | null) {
                 type="button"
                 className={s.primary}
                 onClick={getOutline}
-                disabled={busy !== null}
+                disabled={busy !== null || (single && hooks.length !== 1)}
               >
                 {busy === 'outline'
                   ? 'Thinking…'

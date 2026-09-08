@@ -3,6 +3,7 @@ import { getCurrentUser } from '@/lib/console-auth';
 import { listIdeas } from '@/lib/marketing/idea-store';
 import { STREAMS, isStreamId } from '@/lib/marketing/streams';
 import { NewNarrative, type IdeaRow } from './NewNarrative';
+import { titleShape, titleChecks } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
 
@@ -53,6 +54,17 @@ export default async function NewNarrativePage({
     }
   });
   rows.sort((a, b) => b.at.localeCompare(a.at));
+  /**
+   * SAVED TITLES (D104). A title saved from the script screen lands in the inbox as an idea whose
+   * text is a title. Gate 1 shows those as their own group when the way out is a split screen or a
+   * yap, so a good title found while working on another one is one click away later. Recognised by
+   * shape (opens with Why or How and passes the title tests), not by a flag: an idea he typed as a
+   * title on his phone counts too.
+   */
+  const savedTitles = rows
+    .filter((r) => titleShape(r.text) && titleChecks(r.text).length === 0)
+    .slice(0, 16)
+    .map(({ at: _at, ...r }) => r);
   // The chooser shows a screenful, not the whole archive: the inbox remains the archive.
   const recent = rows.slice(0, 8).map(({ at: _at, ...r }) => r);
 
@@ -63,6 +75,7 @@ export default async function NewNarrativePage({
       fixedLane={fixedLane}
       // "Create narrative" on an inbox idea lands here with that idea already chosen (D103).
       preselect={typeof preselect === 'string' && rows.some((r) => r.id === preselect) ? preselect : undefined}
+      savedTitles={savedTitles}
     />
   );
 }

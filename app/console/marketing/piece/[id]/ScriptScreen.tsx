@@ -436,6 +436,9 @@ export function ScriptScreen({
               onWriteScript={draft}
               writing={drafting}
               hasScript={script.trim() !== '' && !(scriptIsScaffold && script === initial.script)}
+              // THE TITLE IS THE PIECE (D104): one at a time on the Marrs Attacks formats, the rest saved.
+              single={marrsFormat}
+              stream={initial.stream}
             />
           ) : null}
           <div className={s.toolbar}>

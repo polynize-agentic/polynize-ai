@@ -260,3 +260,38 @@
     text-align: center;
   }
 }
+
+/* SAVE FOR LATER (D104): a good title that is not the one being worked on goes to the ideas inbox. */
+.save {
+  margin-left: auto;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line, rgba(255, 255, 255, 0.14));
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.save:hover {
+  color: var(--text-1);
+  border-color: var(--mint, #69fccb);
+}
+.save:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.saved {
+  color: var(--mint, #69fccb);
+  border-color: var(--mint, #69fccb);
+}
+.arcFor {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.arcFor strong {
+  color: var(--text-1);
+  font-weight: 500;
+}
