@@ -46,56 +46,79 @@ export type UseCase = {
   cues: string[];
 };
 
+/**
+ * THE THREE (Marrs, 8 September 2026): "We're thinking of just focusing on three of the use cases."
+ * Confirmed the same day: AI enablement, Talent assessment, Organisational redesign. The ids of the
+ * first two are unchanged from the six, because leads, entries and Stories already carry them and a
+ * Kit segment may too; only the labels moved. The third is new.
+ *
+ * Marrs also said "we need to be able to expand and contract depending on those use cases", which is
+ * why this is a list and why the retired four are kept below rather than deleted: anything stored
+ * with a retired id still reads back with its name, and bringing one back is moving one entry up.
+ */
 export const USE_CASES: readonly UseCase[] = [
   {
     id: 'ai_capability_lead',
-    label: 'AI capability',
-    hint: 'Teams working out what AI changes in their work',
+    label: 'AI enablement',
+    hint: 'Teams and their L&D leads working out what AI changes in their work',
     landing: '/map-your-team',
     magnet: 'Map your team',
-    cues: ['ai', 'agent', 'agents', 'automation', 'llm', 'copilot', 'capability map', 'strip the ai'],
-  },
-  {
-    id: 'sales_lead',
-    label: 'Sales capability',
-    hint: 'Sales leaders and their teams',
-    landing: '/map-your-team',
-    magnet: 'Capability map your team',
-    cues: ['sales', 'pipeline', 'quota', 'deal', 'prospect', 'revenue', 'sdr', 'closing'],
-  },
-  {
-    id: 'ld_lead',
-    label: 'Leadership development',
-    hint: 'L&D and people leaders',
-    landing: '/map-your-team',
-    magnet: 'Capability map your team',
-    cues: ['leadership', 'leader', 'l&d', 'learning', 'development', 'training', 'coaching', 'manager'],
+    cues: ['ai', 'agent', 'agents', 'automation', 'llm', 'copilot', 'capability map', 'strip the ai', 'enablement', 'learning', 'l&d', 'training'],
   },
   {
     id: 'hiring_manager',
-    label: 'Hiring assessment',
-    hint: 'Hiring managers assessing a role or a candidate',
-    landing: '/agents',
-    magnet: 'Map a bottleneck',
-    cues: ['hiring', 'hire', 'recruit', 'candidate', 'interview', 'job description', 'role', 'headcount'],
+    label: 'Talent assessment',
+    hint: 'Understanding your people: hiring, roles, who is good at what',
+    landing: '/job-mapping',
+    magnet: 'Map your job against AI',
+    cues: ['hiring', 'hire', 'recruit', 'candidate', 'interview', 'job description', 'role', 'headcount', 'talent', 'assessment', 'hr', 'people'],
   },
   {
-    id: 'security_lead',
-    label: 'Cybersecurity',
-    hint: 'Security leads and their teams. No magnet yet.',
-    landing: '/',
-    cues: ['security', 'cyber', 'ciso', 'threat', 'breach', 'compliance', 'soc'],
-  },
-  {
-    id: 'deal_side',
-    label: 'Acquisition diagnostic',
-    hint: 'Buyers and advisers on a deal. No magnet yet.',
-    landing: '/',
-    cues: ['acquisition', 'acquire', 'm&a', 'merger', 'due diligence', 'investor', 'portfolio', 'private equity'],
+    id: 'org_design',
+    label: 'Organisational redesign',
+    hint: 'Process and structure: how the work is organised, not who does it',
+    landing: '/map-your-team',
+    magnet: 'Map your team',
+    cues: ['org', 'organisation', 'organization', 'structure', 'restructure', 'process', 'redesign', 'operating model', 'team design', 'workflow'],
   },
 ];
 
-const BY_ID = new Map(USE_CASES.map((u) => [u.id, u]));
+/**
+ * RETIRED, NOT DELETED. The other three of the original six (and the sales one). A Story, entry or
+ * lead stored with one of these ids still shows its name; the pickers do not offer them.
+ */
+export const RETIRED_USE_CASES: readonly UseCase[] = [
+  { id: 'sales_lead', label: 'Sales capability (retired)', hint: '', landing: '/map-your-team', magnet: 'Capability map your team', cues: [] },
+  { id: 'ld_lead', label: 'Leadership development (retired)', hint: '', landing: '/map-your-team', magnet: 'Capability map your team', cues: [] },
+  { id: 'security_lead', label: 'Cybersecurity (retired)', hint: '', landing: '/', cues: [] },
+  { id: 'deal_side', label: 'Acquisition diagnostic (retired)', hint: '', landing: '/', cues: [] },
+];
+
+const BY_ID = new Map([...USE_CASES, ...RETIRED_USE_CASES].map((u) => [u.id, u]));
+
+/**
+ * THE USE CASES ARE FOR POLYNIZE CONTENT, NOT FOR MARRS ATTACKS. Marrs, 8 September, twice: "the
+ * three use cases that we mentioned are for Polynize content, not for Marrs Attacks."
+ *
+ * The marrs stream carries a different strategy (growth of his own account; the split-screen rules
+ * in docs/pam-console/marrs-split-screen-rules.md) whose pieces are labelled by their question's
+ * focus anchor and their CTA keyword, never by a Polynize use case. So the pickers do not appear on
+ * that board, and a link from that board carries `marrs_attacks` as its campaign rather than a
+ * use case. The other people's streams carry Polynize content (the strategy's "personal profiles
+ * carry reach"), so they keep the use cases.
+ */
+export const MARRS_ATTACKS_STREAM = 'marrs';
+export const MARRS_ATTACKS_CAMPAIGN = 'marrs_attacks';
+
+export function usesUseCases(stream: string | undefined): boolean {
+  return stream !== MARRS_ATTACKS_STREAM;
+}
+
+/** What goes in a link's utm_campaign for a post on this stream. */
+export function campaignFor(input: { stream: string; use_case?: string }): string | undefined {
+  if (input.stream === MARRS_ATTACKS_STREAM) return MARRS_ATTACKS_CAMPAIGN;
+  return input.use_case;
+}
 
 export function isUseCaseId(x: unknown): x is string {
   return typeof x === 'string' && BY_ID.has(x);

@@ -18,6 +18,9 @@ On day one a viewer commented "Map", ManyChat sent them a lead magnet, they comp
 
 ### Where the build is
 
+> **8 September:** the six use cases became three (AI enablement, Talent assessment, Organisational redesign) and they label **Polynize content only**. Marrs's own account runs a different strategy, Marrs Attacks, with its own rules (`marrs-attacks-brief.md`, `marrs-split-screen-rules.md`) and its own measures (saves and shares first). D101 and D102.
+
+
 | Step | Status |
 |---|---|
 | 1. Every post gets its own tracking label | **Built and live, 5 September (D96).** Copy buttons on every calendar entry; the link in the hand-post brief; the first comment on LinkedIn. |

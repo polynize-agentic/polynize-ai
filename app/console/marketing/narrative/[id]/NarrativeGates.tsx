@@ -35,7 +35,7 @@ import { HERO_BATCH } from '@/lib/marketing/hero';
 import { networkAvailable } from '@/lib/marketing/connected-networks';
 import { IMAGE_MODELS, DEFAULT_IMAGE_MODEL } from '@/lib/marketing/higgsfield-models';
 import g from '../gates.module.css';
-import { USE_CASES } from '@/lib/marketing/use-case';
+import { USE_CASES, usesUseCases } from '@/lib/marketing/use-case';
 
 type PieceRow = {
   id: string;
@@ -593,6 +593,7 @@ export function NarrativeGates({
         {/* THE USE CASE (D96), changeable at every gate because a Story's audience can turn out to
             be someone else once the article is written. Saved at once; every piece and entry made
             after this reads it. */}
+        {usesUseCases(narrative.lane) ? (
         <select
           className={g.useCaseSelect}
           aria-label="Use case"
@@ -610,6 +611,7 @@ export function NarrativeGates({
             </option>
           ))}
         </select>
+        ) : null}
         <span className={g.dots}>
           {[1, ...gates].map((x, i) => (
             <span

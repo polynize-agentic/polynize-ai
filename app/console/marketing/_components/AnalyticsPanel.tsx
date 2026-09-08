@@ -29,6 +29,7 @@
 import type { StreamSlice } from '@/lib/marketing/analytics-metrics';
 import { getSiteAnalytics } from '@/lib/marketing/site-analytics-store';
 import { listAllEntries } from '@/lib/marketing/calendar-store';
+import { usesUseCases } from '@/lib/marketing/use-case';
 import { PullButton } from './PullButton';
 import { AnalyticsView, type EntryLite } from './AnalyticsView';
 import s from './analytics.module.css';
@@ -130,7 +131,14 @@ export async function AnalyticsPanel({
       {error ? <p className={s.mockWhy}>{error}</p> : null}
       {/* Said, not hidden: the site's half can fail on its own (keys, token) while Metricool's half works. */}
       {site?.error ? <p className={s.mockWhy}>polynize.ai: {site.error}</p> : null}
-      <AnalyticsView slices={slices} today={today} site={site} entries={entries} />
+      <AnalyticsView
+        slices={slices}
+        today={today}
+        site={site}
+        entries={entries}
+        // The Marrs Attacks board measures in saves and shares; Polynize boards in leads (D101).
+        defaultRank={usesUseCases(scope) ? 'leads' : 'sends'}
+      />
     </section>
   );
 }

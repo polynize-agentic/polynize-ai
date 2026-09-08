@@ -17,6 +17,7 @@
 | Update post | `PUT /v2/scheduler/posts/{id}` | Same body shape (partial). |
 | Delete post | `DELETE /v2/scheduler/posts/{id}` | |
 | Calendar events | `GET /v2/scheduler/calendar/events` | (read) |
+| Per-network post analytics | `GET /v2/analytics/posts/instagram`, `/v2/analytics/reels/instagram`, `/v2/analytics/posts/tiktok`, `/v2/analytics/posts/linkedin` (all `from`, `to`, `timezone` as full datetimes) | **Where saves, shares, views and follows live (D101).** The brand summary does not carry them. Fields read off the spec 8 September: Instagram `saved`, `shares`, `follows`, `views`, `reach`; Reels add `videoViews`, `averageWatchTime`, `reelsSkipRate`; TikTok `shareCount`, `viewCount`, `fullVideoWatchedRate`; LinkedIn `shares`, `clicks`, `videoViews`. **There is no `/v2/analytics/posts/youtube`**; only competitor videos exist for YouTube. |
 | List scheduled posts | `GET /v2/scheduler/posts` (needs `blogId`, `start`, `end` as full datetimes, `timezone`) | **The url join (D98):** each post carries `id` (Metricool's integer, our `external_ref`) and `providers[]` with `network` and `publicUrl` once published. `lib/marketing/url-join.ts` reads it nightly. |
 
 ## Create-post body (the exact shape — note `providers` are OBJECTS)

@@ -5,7 +5,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { USE_CASES, isUseCaseId, labelForUseCase, landingFor, guessUseCase } from '../use-case';
+import { USE_CASES, RETIRED_USE_CASES, isUseCaseId, labelForUseCase, landingFor, guessUseCase, usesUseCases, campaignFor } from '../use-case';
 import {
   buildTrackingLink,
   linkVariants,
@@ -28,27 +28,38 @@ const eq = <T>(a: T, b: T, msg: string) => {
 
 /* ------------------------------------------------------------------ the six use cases */
 
-eq(USE_CASES.length, 6, 'six use cases, as the strategy defines');
+eq(USE_CASES.length, 3, 'three use cases, as Marrs confirmed on 8 September');
 eq(
   USE_CASES.map((u) => u.id),
-  ['ai_capability_lead', 'sales_lead', 'ld_lead', 'hiring_manager', 'security_lead', 'deal_side'],
-  'ids are the Kit segment ids from the nurture design, in the strategy order'
+  ['ai_capability_lead', 'hiring_manager', 'org_design'],
+  'the two surviving ids are unchanged so stored data still matches; the third is new'
 );
-ok(new Set(USE_CASES.map((u) => u.id)).size === 6, 'ids are unique');
+eq(USE_CASES.map((u) => u.label), ['AI enablement', 'Talent assessment', 'Organisational redesign'], 'his three names');
+ok(new Set([...USE_CASES, ...RETIRED_USE_CASES].map((u) => u.id)).size === 7, 'active and retired ids are all distinct');
+ok(isUseCaseId('sales_lead'), 'a retired id is still recognised, so old Stories and leads read back');
+eq(labelForUseCase('security_lead'), 'Cybersecurity (retired)', 'and it says it is retired');
+eq(guessUseCase('Why the CISO should care about the breach'), undefined, 'a retired use case is never guessed');
 ok(USE_CASES.every((u) => u.landing.startsWith('/')), 'every landing is a path, never a full url');
 ok(isUseCaseId('hiring_manager'), 'a known id is accepted');
 ok(!isUseCaseId('hiring'), 'a partial id is not');
 ok(!isUseCaseId(undefined) && !isUseCaseId(3), 'non-strings are not');
-eq(labelForUseCase('ld_lead'), 'Leadership development', 'label lookup');
+eq(labelForUseCase('hiring_manager'), 'Talent assessment', 'label lookup');
 eq(labelForUseCase(undefined), 'No use case', 'absent reads as none, never as an empty string');
-eq(landingFor('sales_lead'), '/map-your-team', 'sales lands on the team map');
-eq(landingFor('security_lead'), '/', 'a use case with no magnet lands on the home page');
+eq(landingFor('org_design'), '/map-your-team', 'org design lands on the team map');
+eq(landingFor('security_lead'), '/', 'a retired use case with no magnet lands on the home page');
 eq(landingFor('nonsense'), '/', 'an unknown id lands on the home page rather than throwing');
+
+/* Polynize only (D101) */
+ok(usesUseCases('polynize') && usesUseCases('shourov'), 'Polynize content streams carry use cases');
+ok(!usesUseCases('marrs'), 'the marrs stream is Marrs Attacks and carries none');
+eq(campaignFor({ stream: 'marrs', use_case: 'ai_capability_lead' }), 'marrs_attacks', 'a marrs link is labelled marrs_attacks whatever the piece says');
+eq(campaignFor({ stream: 'kristin', use_case: 'org_design' }), 'org_design', 'a Polynize link carries its use case');
+eq(campaignFor({ stream: 'kristin' }), undefined, 'and none when none was set');
 
 /* the guess at Gate 1 */
 eq(guessUseCase('Why every hiring manager should map the role before the interview'), 'hiring_manager', 'hiring cues');
-eq(guessUseCase('Our sales pipeline was lying to us'), 'sales_lead', 'sales cues');
-eq(guessUseCase('What the CISO said about the breach'), 'security_lead', 'security cues');
+eq(guessUseCase('How we restructured the operating model'), 'org_design', 'org design cues');
+eq(guessUseCase('Talent assessment for every new hire'), 'hiring_manager', 'talent cues');
 eq(guessUseCase('Monday. Coffee. Nothing else.'), undefined, 'no cue, no guess');
 eq(guessUseCase('She said it was fine'), undefined, '"ai" inside "said" does not fire');
 eq(guessUseCase(''), undefined, 'empty idea, no guess');

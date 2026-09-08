@@ -24,7 +24,7 @@ import type { MarketingPiece } from '@/lib/marketing/piece-store';
 import { FINISHED_MEDIA_FORMAT } from '@/lib/marketing/finished-media';
 import { youtubeTitleFrom, YOUTUBE_TITLE_MAX } from '@/lib/marketing/youtube-title';
 import { youtubeTypeLabel, type YoutubeVideoType } from '@/lib/marketing/youtube-type';
-import { USE_CASES } from '@/lib/marketing/use-case';
+import { USE_CASES, usesUseCases } from '@/lib/marketing/use-case';
 import s from './text.module.css';
 import c from './chat.module.css';
 
@@ -473,6 +473,7 @@ export function TextOutputScreen({
         })}
         {/* WHO IT IS FOR (D96). Sits with the platforms because together they are the label every
             link from this piece will carry: which network, which use case, which post. */}
+        {usesUseCases(initial.stream) ? (
         <select
           className={s.useCaseSelect}
           aria-label="Use case"
@@ -487,6 +488,7 @@ export function TextOutputScreen({
             </option>
           ))}
         </select>
+        ) : null}
         {/* An id from an older piece that this screen cannot offer, shown so it is not silently
             dropped: X and Substack pieces exist and their entries are still real. */}
         {platforms

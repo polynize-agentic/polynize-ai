@@ -51,7 +51,7 @@ import {
   type SiteAnalytics,
 } from '@/lib/marketing/site-analytics';
 import { labelForUseCase } from '@/lib/marketing/use-case';
-import { frameLadder } from '@/lib/marketing/frame-ladder';
+import { frameLadder, type LadderMetric } from '@/lib/marketing/frame-ladder';
 import { outputById } from '@/lib/marketing/kit';
 import { formatById } from '@/lib/marketing/output-plan';
 import s from './analytics.module.css';
@@ -84,6 +84,7 @@ export function AnalyticsView({
   today,
   site = null,
   entries = [],
+  defaultRank,
 }: {
   /** One entry per stream in scope. One on a stream page, five on the engine page. */
   slices: StreamSlice[];
@@ -93,12 +94,18 @@ export function AnalyticsView({
   site?: SiteAnalytics | null;
   /** Our calendar entries in scope, for posts-per-use-case and the join to Metricool's rows. */
   entries?: EntryLite[];
+  /**
+   * WHAT "WORKING" MEANS HERE (D101): Polynize boards rank by leads, the Marrs Attacks board by
+   * saves and shares. The operator can switch; this is only where the buttons start.
+   */
+  defaultRank?: LadderMetric;
 }) {
   const [range, setRange] = useState<RangeId>('90');
   const [hoverBucket, setHoverBucket] = useState<number | null>(null);
   const [hoverSeg, setHoverSeg] = useState<string | null>(null);
   /** Which use case the leaderboard shows. '' means every post together. */
   const [ladderUseCase, setLadderUseCase] = useState<string>('');
+  const [rank, setRank] = useState<LadderMetric>(defaultRank ?? 'leads');
 
   const days = RANGES.find((r) => r.id === range)!.days;
   const from = rangeStart(today, days);
@@ -168,8 +175,9 @@ export function AnalyticsView({
         win: siteWin,
         postsByEntry,
         label: frameLabel,
+        metric: rank,
       }),
-    [entries, ladderUseCase, from, today, siteWin, postsByEntry]
+    [entries, ladderUseCase, from, today, siteWin, postsByEntry, rank]
   );
   /**
    * ONLY THE STREAMS THAT ACTUALLY CONTRIBUTED (D89). A legend naming a colour that appears in no
@@ -198,6 +206,24 @@ export function AnalyticsView({
       source: "The average of each post's own rate",
     },
     { label: 'Posts', value: String(sum.posts), source: 'Hand-posted content included' },
+    /* THE MARRS ATTACKS MEASURES (D101), from the per-network feeds. Saves and shares are the ones
+       that matter most on his board: a save is weighted like five likes, a share means it was worth
+       sending to someone. Follows per post is Instagram only. */
+    {
+      label: 'Saves',
+      value: sum.saves === undefined ? undefined : compactNumber(sum.saves),
+      source: 'Instagram and Reels report saves; other networks do not',
+    },
+    {
+      label: 'Shares',
+      value: sum.shares === undefined ? undefined : compactNumber(sum.shares),
+      source: 'Instagram, TikTok and LinkedIn shares, summed',
+    },
+    {
+      label: 'Follows',
+      value: sum.follows === undefined ? undefined : compactNumber(sum.follows),
+      source: 'Follows Instagram attributed to a post',
+    },
     /* THE SITE'S THREE (D98). Clicks are page views from labelled links; leads are lead magnets
        completed; bookings are discovery-call links pressed. All from polynize.ai, all by post. */
     {
@@ -328,12 +354,35 @@ export function AnalyticsView({
                     {u === 'none' ? 'No use case' : labelForUseCase(u)}
                   </button>
                 ))}
+              </div>
+              <div className={s.filters} role="group" aria-label="Rank by">
+                {(
+                  [
+                    ['leads', 'Rank by leads'],
+                    ['sends', 'Rank by saves and shares'],
+                    ['reach', 'Rank by reach'],
+                  ] as [LadderMetric, string][]
+                ).map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    className={`${s.filterBtn} ${rank === id ? s.filterOn : ''}`}
+                    aria-pressed={rank === id}
+                    onClick={() => setRank(id)}
+                  >
+                    {label}
+                  </button>
+                ))}
                 <span className={s.filterNote}>
                   {ladder.ranked_by === 'completions'
                     ? 'ranked by leads per post'
-                    : ladder.ranked_by === 'impressions'
-                      ? 'ranked by median reach, until a lead is recorded'
-                      : 'ranked by how many were posted; no numbers reported yet'}
+                    : ladder.ranked_by === 'sends'
+                      ? 'ranked by saves and shares per post'
+                      : ladder.ranked_by === 'impressions'
+                        ? rank === 'reach'
+                          ? 'ranked by median reach'
+                          : 'ranked by median reach, until the chosen measure is reported'
+                        : 'ranked by how many were posted; no numbers reported yet'}
                 </span>
               </div>
               <div className={s.tableScroll}>
@@ -345,6 +394,9 @@ export function AnalyticsView({
                       <th scope="col" className={s.num}>Leads</th>
                       <th scope="col" className={s.num} title="Lead magnets completed, divided by posts of this type">
                         Leads per post
+                      </th>
+                      <th scope="col" className={s.num} title="Saves plus shares, divided by posts of this type">
+                        Saves + shares per post
                       </th>
                       <th scope="col" className={s.num} title="The middle post's impressions, so one runaway post cannot flatter the type">
                         Median reach
@@ -362,6 +414,7 @@ export function AnalyticsView({
                         <td className={s.num}>{r.n}</td>
                         <td className={s.num}>{r.completions === undefined ? '' : r.completions}</td>
                         <td className={s.num}>{r.completions_per_post === undefined ? '' : r.completions_per_post}</td>
+                        <td className={s.num}>{r.sends_per_post === undefined ? '' : r.sends_per_post}</td>
                         <td className={s.num}>{r.median_impressions === undefined ? '' : compactNumber(r.median_impressions)}</td>
                       </tr>
                     ))}

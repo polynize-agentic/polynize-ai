@@ -15,6 +15,7 @@ import {
 } from '../site-analytics';
 import { publicUrlFor } from '../url-join';
 import { frameLadder, median } from '../frame-ladder';
+import { normalizePost, enrichPosts, type PostMetrics } from '../analytics-metrics';
 
 let n = 0;
 const ok = (c: unknown, msg: string) => {
@@ -236,5 +237,55 @@ eq(parseVariants('Sure! Here: ["A second way"] hope that helps', 'The post'), ['
 eq(parseVariants('not json at all', 'The post'), ['The post'], 'garbage degrades to the original alone');
 eq(parseVariants('["The post", "", "New"]', 'The post'), ['The post', 'New'], 'duplicates of the original and blanks are dropped');
 eq(parseVariants('["a","b","c","d"]', 'o', 3), ['o', 'a', 'b'], 'capped');
+
+/* ------------------------------------------------------------------ saves, shares, follows (D101) */
+
+const igRow = normalizePost(
+  { postId: 'ig1', url: 'https://www.instagram.com/p/ABC/', publishedAt: '2026-09-01T09:00:00', impressions: 900, reach: 700, saved: 40, shares: 12, follows: 3, likes: 80, comments: 5, views: 1200 },
+  'instagram'
+);
+eq(igRow?.saves, 40, 'Instagram saved reads as saves');
+eq(igRow?.shares, 12, 'shares');
+eq(igRow?.follows, 3, 'follows per post, Instagram only');
+eq(igRow?.views, 1200, 'views');
+eq(igRow?.likes, 80, 'likes');
+eq(igRow?.comments, 5, 'comments');
+eq(normalizePost(igRow), igRow, 'a normalised row reads back unchanged (the D89 invariant holds for the new fields)');
+const ttRow = normalizePost({ videoId: 'tt1', shareUrl: 'https://www.tiktok.com/@m/video/1', createTime: '2026-09-01T09:00:00', viewCount: 5000, shareCount: 30, likeCount: 200, commentCount: 9 }, 'tiktok');
+eq(ttRow?.shares, 30, 'TikTok shareCount reads as shares');
+eq(ttRow?.views, 5000, 'TikTok viewCount reads as views');
+eq(ttRow?.saves, undefined, 'TikTok reports no saves, so none, not zero');
+
+const spine: PostMetrics[] = [
+  { id: 'ig1', network: 'instagram', text: 'a', url: 'https://instagram.com/p/ABC', impressions: 950 },
+  { id: 'urn:li:1', network: 'linkedin', text: 'b', url: 'https://www.linkedin.com/feed/update/urn:li:1' },
+];
+const enriched = enrichPosts(spine, [
+  igRow!,
+  { id: 'other', network: 'linkedin', text: 'b', url: 'https://www.linkedin.com/feed/update/urn:li:1/', shares: 4 },
+  { id: 'new1', network: 'tiktok', text: 'c', shares: 1 },
+]);
+eq(enriched.find((p) => p.id === 'ig1')?.saves, 40, 'matched by id: saves folded on');
+eq(enriched.find((p) => p.id === 'ig1')?.impressions, 950, 'the spine\'s own number is never overwritten');
+eq(enriched.find((p) => p.id === 'urn:li:1')?.shares, 4, 'matched by url when the ids differ');
+eq(enriched.length, 3, 'a per-network row that matches nothing is added');
+eq(spine[0].saves, undefined, 'the input is not mutated');
+
+/* ranking by saves and shares */
+const sposts = new Map([
+  ['a1', { id: 'p1', network: 'instagram', text: '', impressions: 100, saves: 10, shares: 2 }],
+  ['a2', { id: 'p2', network: 'instagram', text: '', impressions: 100, saves: 4 }],
+  ['b1', { id: 'p3', network: 'instagram', text: '', impressions: 5000, saves: 1, shares: 1 }],
+  ['b2', { id: 'p4', network: 'instagram', text: '', impressions: 5000 }],
+]);
+const S = frameLadder(lentries, { useCase: 'hiring_manager', from: '2026-08-07', to: '2026-09-05', postsByEntry: sposts, label, metric: 'sends' });
+eq(S.ranked_by, 'sends', 'the Marrs measure ranks when asked and reported');
+eq(S.rows.map((r) => r.frame), ['li_contrarian', 'ig_reel', 'unlabelled'], 'contrarian: 16 sends over 3 posts beats reel: 2 over 2');
+eq(S.rows[0].sends, 16, 'saves plus shares summed');
+eq(S.rows[0].sends_per_post, 5.3, 'per post, one decimal');
+eq(S.rows[1].sends, 2, 'a post with no saves or shares reported contributes nothing, not zero');
+const R = frameLadder(lentries, { useCase: 'hiring_manager', from: '2026-08-07', to: '2026-09-05', win: lwin, postsByEntry: sposts, label, metric: 'reach' });
+eq(R.ranked_by, 'impressions', 'reach ranks by median impressions even when leads exist');
+eq(R.rows[0].frame, 'ig_reel', 'reel 5000 median beats contrarian 100');
 
 console.log(`evergreen: ${n} assertions total`);

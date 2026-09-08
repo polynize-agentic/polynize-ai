@@ -13,7 +13,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/console-auth';
 import { createNarrative, saveNarrative, isNarrativeLane } from '@/lib/marketing/narrative-store';
 import { updateIdea } from '@/lib/marketing/idea-store';
-import { guessUseCase, isUseCaseId } from '@/lib/marketing/use-case';
+import { guessUseCase, isUseCaseId, usesUseCases } from '@/lib/marketing/use-case';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -46,7 +46,8 @@ export async function POST(req: NextRequest) {
    * created unlabelled when its own words say what it is about. The guess is visible on the Story
    * screen and one click to change.
    */
-  const useCase = isUseCaseId(body?.use_case) ? body.use_case : guessUseCase(idea);
+  // Never on the marrs stream: its pieces are not Polynize use cases (D101).
+  const useCase = !usesUseCases(lane) ? undefined : isUseCaseId(body?.use_case) ? body.use_case : guessUseCase(idea);
 
   try {
     const narrative = await createNarrative(lane, idea, ideaRef, useCase);

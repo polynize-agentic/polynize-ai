@@ -41,14 +41,19 @@ export type LadderRow = {
   completions_per_post?: number;
   /** Median impressions over the posts Metricool reported. Absent when none were joined. */
   median_impressions?: number;
+  /** Saves plus shares, summed, and per post. The Marrs Attacks measure (D101). Absent when not reported. */
+  sends?: number;
+  sends_per_post?: number;
   /** Fewer than three posts: shown, but faded. */
   thin: boolean;
 };
 
+export type LadderMetric = 'leads' | 'sends' | 'reach';
+
 export type Ladder = {
   rows: LadderRow[];
   /** Which number the rungs are ordered by. */
-  ranked_by: 'completions' | 'impressions' | 'posts';
+  ranked_by: 'completions' | 'sends' | 'impressions' | 'posts';
 };
 
 export const THIN_UNDER = 3;
@@ -75,8 +80,15 @@ export function frameLadder(
     win?: SiteWindow;
     postsByEntry?: Map<string, PostMetrics>;
     label: (frame: string) => string;
+    /**
+     * WHAT "WORKING" MEANS ON THIS BOARD (D101). Polynize content is measured in leads; Marrs Attacks
+     * in saves and shares ("a save carries roughly five times the weight of a like, and a share means
+     * the piece was worth sending to a specific person"). Each falls back to reach, then to count.
+     */
+    metric?: LadderMetric;
   }
 ): Ladder {
+  const metric = opts.metric ?? 'leads';
   const groups = new Map<string, LadderEntry[]>();
   for (const e of entries) {
     if (e.status === 'draft' || !e.scheduled_at) continue;
@@ -89,16 +101,23 @@ export function frameLadder(
 
   let anyCompletions = false;
   let anyImpressions = false;
+  let anySends = false;
   const rows: LadderRow[] = [];
   for (const [frame, list] of groups) {
     let completions: number | undefined;
+    let sends: number | undefined;
     const impressions: number[] = [];
     for (const e of list) {
       const c = opts.win?.entries[e.entry_id]?.completions;
       if (c !== undefined) completions = (completions ?? 0) + c;
-      const imp = opts.postsByEntry?.get(e.entry_id)?.impressions;
+      const post = opts.postsByEntry?.get(e.entry_id);
+      const imp = post?.impressions;
       if (imp !== undefined) impressions.push(imp);
+      if (post && (post.saves !== undefined || post.shares !== undefined)) {
+        sends = (sends ?? 0) + (post.saves ?? 0) + (post.shares ?? 0);
+      }
     }
+    if (sends !== undefined) anySends = true;
     if (completions !== undefined && completions > 0) anyCompletions = true;
     if (impressions.length) anyImpressions = true;
     const row: LadderRow = {
@@ -113,13 +132,28 @@ export function frameLadder(
     }
     const med = median(impressions);
     if (med !== undefined) row.median_impressions = Math.round(med);
+    if (sends !== undefined) {
+      row.sends = sends;
+      row.sends_per_post = Math.round((sends / list.length) * 10) / 10;
+    }
     rows.push(row);
   }
 
-  const ranked_by: Ladder['ranked_by'] = anyCompletions ? 'completions' : anyImpressions ? 'impressions' : 'posts';
+  const ranked_by: Ladder['ranked_by'] =
+    metric === 'leads' && anyCompletions
+      ? 'completions'
+      : metric === 'sends' && anySends
+        ? 'sends'
+        : anyImpressions
+          ? 'impressions'
+          : 'posts';
   rows.sort((a, b) => {
     if (ranked_by === 'completions') {
       const d = (b.completions_per_post ?? 0) - (a.completions_per_post ?? 0);
+      if (d !== 0) return d;
+    }
+    if (ranked_by === 'sends') {
+      const d = (b.sends_per_post ?? 0) - (a.sends_per_post ?? 0);
       if (d !== 0) return d;
     }
     if (ranked_by !== 'posts') {

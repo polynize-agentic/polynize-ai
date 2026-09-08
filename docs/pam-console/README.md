@@ -17,6 +17,8 @@ The PAM Console is becoming Polynize's **marketing engine** — the working envi
 
 0b. **`analytics-and-scale.md`** *(3 September 2026, plain-English plan and build status at the top)* — the brief for the next phase: why the console keeps its own queue and uses Metricool autolists for evergreen only, why click-through is zero today by construction, the first-party attribution design (`utm_content = entry_id`, `utm_campaign = lane`), the funnel we can measure end to end, lanes as the missing axis for scaling brands per use case, and the build order.
 
+0c. **`marrs-attacks-brief.md`** and **`marrs-split-screen-rules.md`** *(8 September 2026, Marrs's documents, stored verbatim)*: the strategy and the generation rules for his own account's hero format, the split-screen explainer. The rules are the intelligence layer the console's split-screen format is built from (D102). Two points in the brief were overruled by Marrs the same day and are noted at its top.
+
 **Must read (defines what we're building and the first move):**
 1. **`pam-console-ux-flow-v1.0.md`** *(Marrs's source doc — the functional spec)* — what each screen does, the three layers (Dashboard / Production Spine / Chat), the pipeline (fixed top → swappable middle → fixed tail). The north star.
 2. **`phase-1-vertical-slice.md`** — the first thing we build (the Script screen + chat + one agent round-trip, short-form) and the **six ordered tickets (T1–T6)**. Plus the concrete **test vehicle** ("Strip the AI out first" → its full derivative set).

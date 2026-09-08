@@ -18,7 +18,8 @@
 import { mcProbeGet } from './metricool-client';
 import { getBrandMap } from './metricool-config-store';
 import { laneTimezone } from './channel-schedule';
-import { normalizeFeed, rangeStart } from './analytics-metrics';
+import { normalizeFeed, enrichPosts, rangeStart } from './analytics-metrics';
+import { connectedList } from './connected-networks';
 import { saveStreamAnalytics, type StreamAnalytics } from './analytics-store';
 
 /** The default window. Ninety days is long enough to hold a quarter's work and short enough to return. */
@@ -92,7 +93,33 @@ export async function pullStream(stream: string, days = PULL_DAYS): Promise<Pull
     return { stream, ok: false, posts: 0, error };
   }
 
-  const posts = normalizeFeed(call.json);
+  let posts = normalizeFeed(call.json);
+
+  /**
+   * THE MEASURES MARRS ASKED FOR (D101): saves and shares, views, follows. The brand summary does not
+   * carry them; the per-network feeds do (read off the spec 8 September: InstagramPost.saved,
+   * .shares, .follows; InstagramReel.saved, .shares, .videoViews; TikTokPost.shareCount, .viewCount;
+   * LinkedinPost.shares). One call per connected network, folded onto the summary's rows by id then
+   * url. Best effort: a network that refuses costs its own measures, never the pull.
+   *
+   * YouTube has no per-video analytics endpoint in their v2 API (only competitor videos), so YouTube
+   * rows keep the summary's numbers only.
+   */
+  const connected = await connectedList(blogId).catch(() => null);
+  const want = (n: string) => connected === null || connected.includes(n);
+  const feeds: { path: string; network: string }[] = [];
+  if (want('instagram')) feeds.push({ path: '/v2/analytics/posts/instagram', network: 'instagram' }, { path: '/v2/analytics/reels/instagram', network: 'instagram' });
+  if (want('tiktok')) feeds.push({ path: '/v2/analytics/posts/tiktok', network: 'tiktok' });
+  if (want('linkedin')) feeds.push({ path: '/v2/analytics/posts/linkedin', network: 'linkedin' });
+  for (const f of feeds) {
+    const extra = await mcProbeGet(f.path, {
+      blogId,
+      params: { from: `${from}T00:00:00`, to: `${to}T23:59:59`, timezone: laneTimezone(stream) },
+    });
+    if (extra.status !== 200) continue;
+    posts = enrichPosts(posts, normalizeFeed(extra.json, f.network));
+  }
+
   await save({ ...base, blogId, posts });
   return { stream, ok: true, posts: posts.length };
 }

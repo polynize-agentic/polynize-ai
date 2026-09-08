@@ -26,7 +26,7 @@ import { complete } from '@/lib/llm';
 import { stripEmDashes } from '@/lib/em-dash';
 import { getChannelSchedule, NETWORKS, type Network } from '@/lib/marketing/channel-schedule';
 import { buildTrackingLink, siteOrigin } from '@/lib/marketing/tracking-link';
-import { landingFor } from '@/lib/marketing/use-case';
+import { landingFor, campaignFor } from '@/lib/marketing/use-case';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -188,7 +188,8 @@ export async function POST(
         path: landingFor(piece.use_case),
         network: channel,
         medium: 'social',
-        useCase: piece.use_case,
+        // Polynize content carries its use case; the marrs stream carries marrs_attacks (D101).
+        useCase: campaignFor({ stream: piece.stream, use_case: piece.use_case }),
         entryId,
       });
       const labelled = {

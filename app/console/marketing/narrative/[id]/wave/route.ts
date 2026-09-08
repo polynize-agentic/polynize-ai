@@ -45,7 +45,7 @@ import { publishEntry } from '@/lib/marketing/publish';
 import { sendHandPostBrief, handPostFromEntry } from '@/lib/marketing/hand-post';
 import { narrativeHeadline } from '@/lib/marketing/narrative-store';
 import { buildTrackingLink, siteOrigin } from '@/lib/marketing/tracking-link';
-import { landingFor } from '@/lib/marketing/use-case';
+import { landingFor, campaignFor } from '@/lib/marketing/use-case';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -429,7 +429,8 @@ export async function POST(
             path: landingFor(narrative.use_case),
             network,
             medium: 'social',
-            useCase: narrative.use_case,
+            // Polynize content carries its use case; the marrs stream carries marrs_attacks (D101).
+            useCase: campaignFor({ stream: narrative.lane, use_case: narrative.use_case }),
             entryId,
           });
           const linkInFirstComment =

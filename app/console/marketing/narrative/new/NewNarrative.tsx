@@ -17,7 +17,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { streamLabel } from '@/lib/marketing/streams';
-import { USE_CASES, guessUseCase } from '@/lib/marketing/use-case';
+import { USE_CASES, guessUseCase, usesUseCases } from '@/lib/marketing/use-case';
 import g from '../gates.module.css';
 
 export type IdeaRow = { id: string; lane: string; text: string; when: string };
@@ -50,8 +50,10 @@ export function NewNarrative({
    * and the Story screen can change it again, so this is a default and not a commitment.
    */
   const [pickedUseCase, setPickedUseCase] = useState<string | null>(null);
-  const suggested = chosenText ? guessUseCase(chosenText) : undefined;
-  const useCase = pickedUseCase ?? suggested ?? null;
+  // Polynize content only: the marrs stream is Marrs Attacks and has no use cases (D101).
+  const showUseCases = usesUseCases(lane ?? undefined);
+  const suggested = showUseCases && chosenText ? guessUseCase(chosenText) : undefined;
+  const useCase = showUseCases ? (pickedUseCase ?? suggested ?? null) : null;
 
   const develop = async () => {
     if (!ready || busy) return;
@@ -133,6 +135,8 @@ export function NewNarrative({
         </div>
       )}
 
+      {showUseCases ? (
+      <>
       <p className={g.useCaseHead}>
         Who is this for?
         {suggested && !pickedUseCase ? <span className={g.meta}> suggested from the idea</span> : null}
@@ -151,6 +155,8 @@ export function NewNarrative({
           </button>
         ))}
       </div>
+      </>
+      ) : null}
 
       {err ? <p className={g.err}>{err}</p> : null}
 

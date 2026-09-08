@@ -2919,3 +2919,31 @@ Tests in `site-analytics.test.ts` (now 49 assertions): ranking by each of the th
 - **A second press is a no-op** that says "Already evergreen."
 
 Tests: the pure half (`evergreen.ts`: the quiet slot, reading list and item ids, parsing April's variants) in `site-analytics.test.ts`, now 65 assertions.
+
+
+## D101: Three use cases for Polynize, none for Marrs Attacks, and the measures that matter on his board
+
+**Adopted 8 September 2026.** Marrs came back after three days with a change of direction and two documents: the *Marrs Attacks: Split-Screen Explainer* strategic brief and its companion *Generation Rules*, both now in `docs/pam-console/` verbatim (em dashes replaced). This entry records what changed in the console because of them; D102 records the split-screen build itself.
+
+### What Marrs decided
+
+- **Partner-first.** He is pitching the leadership team on a partner-first strategy: marketing brings leads, partners take them by specialty. The attribution plumbing (D96 to D100) is what that needs and nothing in it was undone.
+- **Three Polynize use cases, not six:** AI enablement, Talent assessment, Organisational redesign. "We need to be able to expand and contract", so the list stays a list; the other four are retired, not deleted, and anything stored with a retired id still reads back with its name.
+- **The use cases are for Polynize content only.** Said twice: "the three use cases that we mentioned are for Polynize content, not for Marrs Attacks." The marrs stream is a different strategy (his own account, growth, working professionals who want to get their personal AI in order) and its pieces are never labelled with a Polynize use case. The pickers do not appear on his board; a link from his board carries `marrs_attacks` as its campaign.
+- **Two corrections to the brief, his own words.** The brief says the CTA is a follow and the platform is LinkedIn-first. Marrs: "'follow' is not a CTA, that's incorrect": the CTA is a lead magnet keyword (MAP, ROLE), because the audience is "working professionals that want to get their personal AI shit together" who may buy resources now and open doors to their organisations later. And "the Marrs Attacks strategy is not even on LinkedIn... I'm focusing on Instagram for sure. LinkedIn is more the anchor for the Polynize brand." Both are noted at the top of the stored brief.
+- **Pillars dropped.** I had proposed labelling his pieces with the brief's four pillars. He asked what I meant and said the content is not necessarily that; the label his own rules already define is the question's focus anchor (AI, creativity, productivity, purpose, work). Pillars are not in the console.
+
+### What was built
+
+**Three use cases** in `use-case.ts`, ids unchanged for the two that survived (leads and Stories already carry them), `org_design` new, four retired and still readable. `usesUseCases(stream)` and `campaignFor()` make the Polynize-only rule one function; Gate 1, the Story header, the caption screen, the create route, the wave and prepare all read it.
+
+**The measures his brief ranks first.** The brand-summary feed carries impressions, interactions and engagement and nothing else. The per-network feeds carry what he asked for, read off Metricool's spec on 8 September: `InstagramPost.saved`, `.shares`, `.follows`, `InstagramReel.saved`, `.shares`, `.videoViews`, `TikTokPost.shareCount`, `.viewCount`, `LinkedinPost.shares`. The pull now reads those four feeds per connected network and folds them onto the summary's rows by id, then url (`enrichPosts`), never overwriting a number the summary already had. YouTube has no per-video analytics endpoint in their v2 API, so YouTube rows keep the summary's numbers. New tiles: Saves, Shares, Follows. **The leaderboard ranks by leads on Polynize boards and by saves plus shares on his**, with a toggle (leads, saves and shares, reach) so either can be read either way.
+
+### Decisions inside it
+
+- **Retired, not deleted**, because a use case is a label on stored things and deleting the label would make old Stories and leads illegible.
+- **The stream decides the vocabulary.** One function answers "does this board use Polynize use cases"; nothing checks the stream name anywhere else.
+- **Fold, never overwrite.** A per-network row can disagree with the summary about impressions; the summary wins because it is the one shape every network shares and the panel's bars are built on it.
+- **Unverified until the first pull.** The per-network field names are from the spec, not from his rows. `normalizePost` reads several names for each measure for that reason, and the first Pull now after this deploy is the test.
+
+Tests: 47 in `attribution.test.ts`, 87 in `site-analytics.test.ts` (both files now cover the new fields, the fold, and ranking by saves and shares).

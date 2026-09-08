@@ -38,6 +38,20 @@ export type PostMetrics = {
   interactions?: number;
   /** Percent, as the platform computes it. Never re-derived here: their divisor is not ours. */
   engagement?: number;
+  /**
+   * THE MARRS ATTACKS MEASURES (D101), in the brief's order: saves and shares first, then views, then
+   * follows. These come from Metricool's PER-NETWORK feeds (InstagramPost.saved/shares/follows,
+   * InstagramReel.saved/shares, TikTokPost.shareCount, LinkedinPost.shares), never from the brand
+   * summary, which does not carry them. Absent when the network did not report them; a blank on the
+   * panel, never a zero.
+   */
+  saves?: number;
+  shares?: number;
+  views?: number;
+  /** Follows attributed to this post. Instagram reports it per post; nothing else does. */
+  follows?: number;
+  likes?: number;
+  comments?: number;
 };
 
 /* ------------------------------------------------------------------ reading their feed */
@@ -129,7 +143,48 @@ export function normalizePost(raw: unknown, fallbackNetwork?: string): PostMetri
     impressions: metric(both, ['impressions', 'impressionsTotal', 'views', 'viewCount', 'reach']),
     interactions: metric(both, ['interactions', 'engagementCount', 'likes', 'likeCount']),
     engagement: metric(both, ['engagement']),
+    // Own names first, so a stored post reads back unchanged (the D89 invariant).
+    saves: metric(both, ['saves', 'saved', 'saveCount']),
+    shares: metric(both, ['shares', 'shareCount', 'reposts']),
+    views: metric(both, ['views', 'videoViews', 'viewCount', 'videoViewsTotal']),
+    follows: metric(both, ['follows']),
+    likes: metric(both, ['likes', 'like', 'likeCount']),
+    comments: metric(both, ['comments', 'commentCount', 'comment']),
   };
+}
+
+/**
+ * THE PER-NETWORK NUMBERS, FOLDED ONTO THE BRAND FEED (D101). The brand summary is the spine (every
+ * network, one shape, dated), and the per-network feeds carry the measures it lacks. A per-network
+ * row is matched to a spine row by id first (Instagram postId, TikTok videoId, the LinkedIn urn),
+ * then by url; matched fields are copied only where the spine has none, so the spine's own numbers
+ * are never overwritten by a second reading of the same thing. A per-network row that matches nothing
+ * is added, so a post the summary missed still counts.
+ */
+export function enrichPosts(spine: PostMetrics[], extra: PostMetrics[]): PostMetrics[] {
+  const out = spine.map((p) => ({ ...p }));
+  const byId = new Map(out.map((p) => [p.id, p]));
+  const byUrl = new Map<string, PostMetrics>();
+  for (const p of out) if (p.url) byUrl.set(urlKey(p.url), p);
+  for (const e of extra) {
+    const hit = byId.get(e.id) ?? (e.url ? byUrl.get(urlKey(e.url)) : undefined);
+    if (!hit) {
+      out.push({ ...e });
+      continue;
+    }
+    for (const k of [
+      'saves', 'shares', 'views', 'follows', 'likes', 'comments', 'impressions', 'interactions', 'engagement',
+    ] as const) {
+      if (hit[k] === undefined && e[k] !== undefined) hit[k] = e[k];
+    }
+    if (!hit.url && e.url) hit.url = e.url;
+    if (!hit.published_at && e.published_at) hit.published_at = e.published_at;
+  }
+  return out;
+}
+
+function urlKey(u: string): string {
+  return u.trim().replace(/^http:/, 'https:').replace(/\/+$/, '').replace(/\?.*$/, '').toLowerCase();
 }
 
 /** Every identifiable post in a response, whatever wrapper it arrived in. */
@@ -156,6 +211,11 @@ export type NetworkTotal = { network: string; posts: number; impressions?: numbe
 
 export type Summary = {
   posts: number;
+  /** The Marrs Attacks measures (D101), summed. Absent when no post in the set reported them. */
+  saves?: number;
+  shares?: number;
+  follows?: number;
+  views?: number;
   /** Absent when not one post carried the figure, which is different from every post scoring 0. */
   impressions?: number;
   interactions?: number;
@@ -238,6 +298,10 @@ export function summarise(posts: PostMetrics[], weeks = 12): Summary {
     impressions: total(posts.map((p) => p.impressions)),
     interactions: total(posts.map((p) => p.interactions)),
     engagement: mean(posts.map((p) => p.engagement)),
+    saves: total(posts.map((p) => p.saves)),
+    shares: total(posts.map((p) => p.shares)),
+    follows: total(posts.map((p) => p.follows)),
+    views: total(posts.map((p) => p.views)),
     byNetwork: [...byNet.entries()]
       .map(([network, ps]) => ({
         network,
@@ -279,6 +343,10 @@ export function mergeSummaries(parts: Summary[]): Summary {
     impressions: total(all.map((p) => p.impressions)),
     interactions: total(all.map((p) => p.interactions)),
     engagement: mean(all.map((p) => p.engagement)),
+    saves: total(all.map((p) => p.saves)),
+    shares: total(all.map((p) => p.shares)),
+    follows: total(all.map((p) => p.follows)),
+    views: total(all.map((p) => p.views)),
     byNetwork: [...nets.values()].sort((a, b) => (b.impressions ?? 0) - (a.impressions ?? 0)),
     top: all
       .flatMap((p) => p.top)
