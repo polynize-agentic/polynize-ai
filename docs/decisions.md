@@ -3037,3 +3037,22 @@ Tests: `split-screen.test.ts`, 53 assertions, including the worked example passi
 - **Recognised by shape, not by a flag.** A hook is anything that opens with Why or How and passes the mechanical tests, so a title typed on his phone into ideas is in the library without ceremony.
 - **Best effort bookkeeping.** Archiving runs after the post has shipped and can never fail the post.
 - **Scored hooks that are chosen become his.** They move from the scored group to Your hooks (and later to Archived), so the scored list slowly empties as he uses it, which is the point of it.
+
+
+## D106: The arc is the point of the piece, not the screen
+
+**Adopted 8 September 2026.** Marrs, on his first arc for "Why AI won't make your kids stupid": *"At the moment, what is being generated is not the narrative arc. It's actually the entire design for the prezi... the narrative it's given me is some kind of bicep curl thing. There's too much text here... The narrative arc is just: what's the point of this piece?"*
+
+### What changed
+
+**The arc is two short moves.** Press Propose an arc and, on a split-screen or a yap, April offers **three directions**: where the locked hook could go, one line each, why it fits, and the one object that could carry it on screen. Take one, and it is developed into **the beats**: TITLE, DIRECTION, OBJECT, then BEAT 1 to 4 with what each argues and what it stands on, a blank line between every part. Nothing about taps or transforms. The prezie decides the screen later, from the script and the arc, and is told to choose the transform and design the six states itself.
+
+**"Any ideas or direction?"** A box above the arc button, on every piece. What he types steers the directions and the developed arc (and, on a Story piece, the arc). Empty, the button just says Propose an arc.
+
+**The locked hook is just the hook.** Stage one now reads "1. The hook" and the hook in large type. The sentence explaining the lock is gone: *"We're always going for minimal distraction here."*
+
+### Decisions inside it
+
+- **Directions differ in substance, not wording.** The prompt asks for a different reason, stake or person each time, all built on the title and nothing else. Three, always.
+- **The screen leaves the arc.** D102 put TRANSFORM and the six TAP states in the arc; that made the arc unreadable and made the prezie's job twice. The visual grammar still reaches the prezie builder, now with the arc rather than a finished plan, so it does the design.
+- **The check follows.** The arc is checked for the title matching the locked hook, a direction, an object and four beats. The old screen-plan checks stay in the module for the prezie step to use later; nothing in the arc path calls them.

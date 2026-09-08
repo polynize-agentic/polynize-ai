@@ -34,8 +34,9 @@ import {
   TITLE_RULES,
   WHY_BEATS,
   HOW_BEATS,
-  VISUAL_GRAMMAR,
   parseTitleProposal,
+  parseArcDirections,
+  type ArcDirection,
   titleShape,
   hookALine,
 } from './split-screen';
@@ -846,73 +847,6 @@ export function parseHookProposal(raw: string): HookProposal {
   return { concept_read: read, hooks };
 }
 
-/**
- * THE ARC OF A SPLIT-SCREEN IS ITS SCREEN PLAN (D102): the transform, the object, the six tap states,
- * and the four beat jobs for the agreed title's shape. Stored in the same outline field and read by the
- * script (as the binding arc) and by the prezie one-shot (as the visual brief). If the turn will not
- * classify against the seven transforms the model is told to say so, and checkScreenPlan names it.
- */
-async function proposeScreenPlan(owner: string, piece: MarketingPiece): Promise<string> {
-  const { conceptBody, promptOpts } = await gather(owner, piece, 'video', 'outline');
-  const title = (piece.hooks ?? []).map((h) => h.trim()).find(Boolean);
-  if (!title) throw new DraftError('no-hooks');
-  const shape = titleShape(title) ?? 'why';
-  const system = `You are April, planning a split-screen explainer for Marrs's own account. The title is agreed. You are NOT writing the spoken words yet: you are deciding the four beats and the one object on the screen.
-
-THE AGREED TITLE: ${title}
-ITS SHAPE: ${shape === 'why' ? 'a contradiction (WHY)' : 'a wanted outcome (HOW)'}
-
-${shape === 'why' ? WHY_BEATS : HOW_BEATS}
-
-${VISUAL_GRAMMAR}
-${promptOpts.feedback ?? ''}
-
-Output shape, plain text, no markdown, no preamble, exactly these lines in this order:
-
-TITLE: ${title}
-TRANSFORM: <one of the seven, or "does not classify" if none fits, with one line saying why>
-OBJECT: <the single object, and what shape it takes at rest>
-TAP 0: <title plus the object at rest>
-TAP 1: <the belief made visible>
-TAP 2: <the object changes state: the turn>
-TAP 3: <the new state settles and is renamed>
-TAP 4: <the artefact worth screenshotting>
-TAP 5: <the keyword, timer stopped>
-
-BEAT 1
-Argues: <the move, one or two plain sentences>
-Stands on: <the material from the idea it uses, or "the argument itself">
-
-BEAT 2
-(same two lines)
-
-BEAT 3
-(same)
-
-BEAT 4
-(same; for a WHY this is the one action they can take tonight with no purchase; for a HOW it is the bit nobody does)
-
-Never use the em-dash character.`;
-  let raw: string;
-  try {
-    raw = await complete({
-      system,
-      messages: [{ role: 'user', content: `THE IDEA (Marrs's own words):\n"""\n${conceptBody}\n"""\n\nPlan the screen and the beats for "${title}".` }],
-      maxTokens: 6000,
-      temperature: 0.6,
-      json: false,
-      model: scriptModel(),
-      apiKey: process.env.APRIL_OPENROUTER_API_KEY,
-    });
-  } catch (e) {
-    console.error(`[screen-plan] LLM call threw: ${e instanceof Error ? e.message : String(e)}`);
-    throw new DraftError('llm-unavailable');
-  }
-  const out = cleanOutput(raw);
-  if (!out) throw new DraftError('empty');
-  return out;
-}
-
 function outlineSystemPrompt(opts: PromptOpts): string {
   return `You are April, Polynize's copy chief. You are NOT writing the script yet. Propose the NARRATIVE ARC for a ${opts.formatLabel}: the beats it moves through, in order.
 
@@ -953,19 +887,35 @@ Argues: <what the last line has to land, since it gets the emphasis in the edit>
  * textarea he can rewrite freely beats a structured editor he has to fight. The script stage
  * consumes it as given.
  */
+export type OutlineResult = {
+  /** The developed arc, when there is one. */
+  outline?: string;
+  /** Three places the hook could go (Marrs Attacks formats), when a direction has not been chosen yet. */
+  directions?: ArcDirection[];
+};
+
+/**
+ * THE ARC (D106). For a Story piece: the beats, as before, with the operator's direction if given.
+ * For a split-screen or a yap it is two short moves, because Marrs found the old single move too
+ * dense ("it's actually the entire design for the prezi"): first three DIRECTIONS the locked hook
+ * could take, one or two lines each; then, once he picks one, the four beats and the one object.
+ * No taps, no transform: the prezie decides the screen later, from the script and the arc.
+ */
 export async function proposeOutline(
   owner: string,
-  piece: MarketingPiece
-): Promise<string> {
-  if (piece.format === SPLIT_SCREEN_FORMAT) return proposeScreenPlan(owner, piece);
+  piece: MarketingPiece,
+  opts: { steer?: string; direction?: string } = {}
+): Promise<OutlineResult> {
+  if (isMarrsAttacksFormat(piece.format)) {
+    if (!opts.direction?.trim()) return { directions: await proposeArcDirections(owner, piece, opts.steer) };
+    return { outline: await developArc(owner, piece, opts.direction, opts.steer) };
+  }
   const { conceptBody, formatLabel, promptOpts } = await gather(owner, piece, 'video', 'outline');
-  const hooks = (piece.hooks ?? []).map((h) => h.trim()).filter(Boolean);
-  if (hooks.length === 0) throw new DraftError('no-hooks');
-
-  const hookBlock = `THE AGREED HOOKS (already chosen by the operator, final, not to be rewritten):\n${hooks
-    .map((h, i) => `${i + 1}. ${h}`)
-    .join('\n')}\n\n`;
-
+  const agreedHooks = (piece.hooks ?? []).map((h) => h.trim()).filter(Boolean);
+  if (agreedHooks.length === 0) throw new DraftError('no-hooks');
+  const steerBlock = opts.steer?.trim()
+    ? `WHAT THE OPERATOR WANTS THIS TO SAY OR WHERE HE WANTS IT TO GO (his own words; it steers the arc):\n"""\n${opts.steer.trim()}\n"""\n\n`
+    : '';
   let raw: string;
   try {
     raw = await complete({
@@ -973,7 +923,7 @@ export async function proposeOutline(
       messages: [
         {
           role: 'user',
-          content: `${hookBlock}CONCEPT:\n"""\n${conceptBody}\n"""\n\nPropose the narrative arc for the ${formatLabel}.`,
+          content: `${steerBlock}THE AGREED HOOKS:\n${agreedHooks.map((h, i) => `HOOK ${i + 1}: ${h}`).join('\n')}\n\nCONCEPT:\n"""\n${conceptBody}\n"""\n\nPropose the arc for the ${formatLabel}.`,
         },
       ],
       maxTokens: 6000,
@@ -988,5 +938,136 @@ export async function proposeOutline(
   }
   const out = cleanOutput(raw);
   if (!out) throw new DraftError('empty');
+  return { outline: out };
+}
+
+/** The locked hook, or the first agreed one. */
+function lockedHook(piece: MarketingPiece): string {
+  const title = (piece.hooks ?? []).map((h) => h.trim()).find(Boolean);
+  if (!title) throw new DraftError('no-hooks');
+  return title;
+}
+
+/**
+ * THREE PLACES THE HOOK COULD GO (D106). Marrs: "when you click Propose a narrative arc, there are
+ * maybe three options for where we can go... Short: it should be almost like three ideas. Where do
+ * you want to take this?" Each is one line of where, one line of why it fits the hook, and a few words
+ * naming the object that would carry it. The theme has to be based on the hook.
+ */
+async function proposeArcDirections(owner: string, piece: MarketingPiece, steer?: string): Promise<ArcDirection[]> {
+  const { conceptBody, promptOpts } = await gather(owner, piece, 'video', 'outline');
+  const title = lockedHook(piece);
+  const shape = titleShape(title) ?? 'why';
+  const steerBlock = steer?.trim()
+    ? `WHAT MARRS WANTS THIS TO SAY OR WHERE HE WANTS IT TO GO (his own words; every direction must honour it):\n"""\n${steer.trim()}\n"""\n\n`
+    : '';
+  const system = `You are April, finding the point of a split-screen explainer on Marrs's own account. The title is agreed and locked. You are proposing THREE DIRECTIONS the piece could take: three different answers to the promise the title makes, for the operator to choose one.
+
+THE LOCKED TITLE: ${title}
+ITS SHAPE: ${shape === 'why' ? 'a contradiction (WHY): each direction is a different reason the title is true' : 'a wanted outcome (HOW): each direction is a different route to the outcome the title promises'}
+
+Each direction must be built on the title and nothing else: it is the argument, not the illustration. One or two plain lines. The three must differ in substance (a different reason, a different stake, a different person it is relief for), never in wording.
+${voiceBlock(promptOpts.brandVoice)}${promptOpts.feedback ?? ''}
+
+Return ONLY a JSON object:
+{
+  "directions": [
+    {"where": "where this takes the title, in one line", "why": "why it fits this title, in one line", "object": "the one thing the screen could show changing, in a few words"}
+  ]
+}
+Exactly three. Never use the em-dash character.`;
+  let raw: string;
+  try {
+    raw = await complete({
+      system,
+      messages: [{ role: 'user', content: `${steerBlock}THE IDEA (Marrs's own words):\n"""\n${conceptBody}\n"""\n\nPropose three directions for "${title}".` }],
+      maxTokens: 4000,
+      temperature: 0.8,
+      json: true,
+      model: scriptModel(),
+      apiKey: process.env.APRIL_OPENROUTER_API_KEY,
+    });
+  } catch (e) {
+    console.error(`[arc-directions] LLM call threw: ${e instanceof Error ? e.message : String(e)}`);
+    throw new DraftError('llm-unavailable');
+  }
+  const directions = parseArcDirections(cleanOutput(raw));
+  if (directions.length === 0) throw new DraftError('empty');
+  return directions;
+}
+
+/**
+ * THE CHOSEN DIRECTION, DEVELOPED INTO THE ARC (D106): the title, the direction, the one object, and
+ * the four beats for the title's shape, each with what it argues and what it stands on. Blank lines
+ * between everything, because Marrs asked for the gaps. Nothing about the screen beyond the object.
+ */
+async function developArc(owner: string, piece: MarketingPiece, direction: string, steer?: string): Promise<string> {
+  const { conceptBody, promptOpts } = await gather(owner, piece, 'video', 'outline');
+  const title = lockedHook(piece);
+  const shape = titleShape(title) ?? 'why';
+  const steerBlock = steer?.trim()
+    ? `WHAT MARRS WANTS THIS TO SAY (his own words; honour it):\n"""\n${steer.trim()}\n"""\n\n`
+    : '';
+  const system = `You are April, developing the narrative arc of a split-screen explainer on Marrs's own account. The title is locked and the direction is chosen. You are NOT writing the spoken words: you are deciding the four beats and naming the one object that will carry them.
+
+THE LOCKED TITLE: ${title}
+THE CHOSEN DIRECTION: ${direction.trim()}
+
+${shape === 'why' ? WHY_BEATS : HOW_BEATS}
+
+THE OBJECT is the one thing the screen will show changing state across the beats (a job as a block of tasks, a homework page, a calendar). Name it in a few words; the screen itself is designed later.
+${promptOpts.feedback ?? ''}
+
+Output shape, plain text, no markdown, no preamble, a BLANK LINE between every part:
+
+TITLE: ${title}
+
+DIRECTION: <the chosen direction, in one line>
+
+OBJECT: <the one object, in a few words>
+
+BEAT 1
+Argues: <the move, one or two plain sentences>
+Stands on: <the material from the idea it uses, or "the argument itself">
+
+BEAT 2
+Argues: ...
+Stands on: ...
+
+BEAT 3
+Argues: ...
+Stands on: ...
+
+BEAT 4
+Argues: ...
+Stands on: ...
+
+Never use the em-dash character.`;
+  let raw: string;
+  try {
+    raw = await complete({
+      system,
+      messages: [{ role: 'user', content: `${steerBlock}THE IDEA (Marrs's own words):\n"""\n${conceptBody}\n"""\n\nDevelop the arc.` }],
+      maxTokens: 5000,
+      temperature: 0.6,
+      json: false,
+      model: scriptModel(),
+      apiKey: process.env.APRIL_OPENROUTER_API_KEY,
+    });
+  } catch (e) {
+    console.error(`[arc] LLM call threw: ${e instanceof Error ? e.message : String(e)}`);
+    throw new DraftError('llm-unavailable');
+  }
+  const out = cleanOutput(raw);
+  if (!out) throw new DraftError('empty');
   return out;
 }
+
+
+/**
+ * Propose the narrative arc, given the agreed hooks. Throws DraftError on failure.
+ *
+ * Deliberately prose and not JSON: this is the artifact the operator edits by hand, and a
+ * textarea he can rewrite freely beats a structured editor he has to fight. The script stage
+ * consumes it as given.
+ */

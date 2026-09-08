@@ -17,14 +17,14 @@ import { llmErrorText } from '@/lib/llm/error-text';
 import { getCurrentUser } from '@/lib/console-auth';
 import { getPiece } from '@/lib/marketing/piece-store';
 import { proposeOutline, DraftError, scriptModelInUse } from '@/lib/marketing/draft';
-import { SPLIT_SCREEN_FORMAT, checkScreenPlan } from '@/lib/marketing/split-screen';
+import { isMarrsAttacksFormat, checkArc } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -43,9 +43,23 @@ export async function POST(
   }
   if (!piece) return NextResponse.json({ error: 'piece not found' }, { status: 404 });
 
+  /**
+   * THE ARC IN TWO MOVES (D106). `steer` is the "Any ideas or direction?" box. Without a `direction`,
+   * a Marrs Attacks piece gets three directions to choose from; with one, the developed arc. A Story
+   * piece gets its arc in one move, steered.
+   */
+  const body = (await req.json().catch(() => null)) as { steer?: unknown; direction?: unknown } | null;
+  const steer = typeof body?.steer === 'string' ? body.steer.slice(0, 4000) : undefined;
+  const direction = typeof body?.direction === 'string' ? body.direction.slice(0, 1000) : undefined;
   try {
-    const outline = await proposeOutline(owner, piece);
-    return NextResponse.json({ outline, model: scriptModelInUse() , warnings: piece.format === SPLIT_SCREEN_FORMAT ? checkScreenPlan(outline) : [] });
+    const result = await proposeOutline(owner, piece, { steer, direction });
+    if (result.directions) return NextResponse.json({ directions: result.directions, model: scriptModelInUse() });
+    const outline = result.outline ?? '';
+    return NextResponse.json({
+      outline,
+      model: scriptModelInUse(),
+      warnings: isMarrsAttacksFormat(piece.format) ? checkArc(outline, piece.hooks?.[0]) : [],
+    });
   } catch (e) {
     if (e instanceof DraftError) {
       if (e.reason === 'no-concept') {

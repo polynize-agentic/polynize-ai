@@ -179,7 +179,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 ? `THE TITLE ON TAP 0, verbatim, and nowhere else on the screen: ${piece.hooks[0].trim()}`
                 : '',
               piece.outline?.trim()
-                ? `THE AGREED SCREEN PLAN for this piece. Build exactly these six states (TAP 0 to TAP 5) of the one OBJECT it names, TAP 0 included:\n"""\n${piece.outline.trim()}\n"""`
+                ? `THE AGREED ARC for this piece (the title, the direction, the one OBJECT, the four beats). Design the screen from it: choose the transform for beat 2 from the seven, and build the six states (TAP 0 to TAP 5) of the OBJECT it names, TAP 0 included with the title:\n"""\n${piece.outline.trim()}\n"""`
                 : '',
               body.direction?.trim() ?? '',
             ]

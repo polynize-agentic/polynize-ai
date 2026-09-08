@@ -407,6 +407,85 @@ export function checkScreenPlan(text: string): string[] {
   return out;
 }
 
+
+/* ------------------------------------------------------------------ the arc (D106) */
+
+/**
+ * THE ARC IS THE POINT OF THE PIECE, NOT THE SCREEN (D106). Marrs: "At the moment, what is being
+ * generated is not the narrative arc. It's actually the entire design for the prezi... The narrative
+ * arc is just: what's the point of this piece?" So the arc step is two short moves: three DIRECTIONS
+ * to choose from (where could this hook go, one or two lines each), then the chosen one developed into
+ * the four beats, with one line naming the object that will carry it. No taps, no transform: the prezie
+ * decides the screen later, from the script and the arc.
+ */
+export type ArcDirection = {
+  /** Where this takes the hook, in one line. */
+  where: string;
+  /** Why it fits this hook, in one line. */
+  why: string;
+  /** The object that would carry it on the screen, a few words. */
+  object: string;
+};
+
+export function parseArcDirections(raw: string): ArcDirection[] {
+  let obj: unknown;
+  try {
+    const start = raw.indexOf('{');
+    const end = raw.lastIndexOf('}');
+    obj = start >= 0 && end > start ? JSON.parse(raw.slice(start, end + 1)) : null;
+  } catch {
+    obj = null;
+  }
+  const list = (obj as { directions?: unknown } | null)?.directions;
+  const line = (v: unknown) => (typeof v === 'string' ? v.replace(/—/g, ':').trim() : '');
+  const out: ArcDirection[] = [];
+  for (const d of Array.isArray(list) ? list : []) {
+    const r = (d ?? {}) as Record<string, unknown>;
+    const where = line(r.where);
+    if (!where) continue;
+    out.push({ where, why: line(r.why), object: line(r.object) });
+    if (out.length >= 4) break;
+  }
+  return out;
+}
+
+export type Arc = { title?: string; direction?: string; object?: string; beats: string[] };
+
+/**
+ * The developed arc as the console stores it: KEY lines for the title, the direction and the object,
+ * then BEAT sections with their Argues and Stands on lines, blank lines between everything.
+ */
+export function parseArc(text: string): Arc {
+  const out: Arc = { beats: [] };
+  const beats = new Map<number, string>();
+  for (const raw of text.split('\n')) {
+    const m = raw.trim().match(/^(TITLE|DIRECTION|OBJECT)\s*:\s*(.*)$/i);
+    if (!m) continue;
+    const key = m[1].toUpperCase();
+    if (key === 'TITLE') out.title = m[2].trim();
+    else if (key === 'DIRECTION') out.direction = m[2].trim();
+    else out.object = m[2].trim();
+  }
+  for (const sct of scriptSections(text)) {
+    const label = sct.label.toUpperCase().trim();
+    if (/^BEAT \d$/.test(label)) beats.set(Number(label.slice(5)), sct.body);
+  }
+  out.beats = [...beats.keys()].sort((a, b) => a - b).map((k) => beats.get(k)!);
+  return out;
+}
+
+/** Named, never forced: what the developed arc is missing. */
+export function checkArc(text: string, hook?: string): string[] {
+  const a = parseArc(text);
+  const out: string[] = [];
+  if (!a.title) out.push('no TITLE line');
+  else if (hook && a.title.trim().toLowerCase() !== hook.trim().toLowerCase()) out.push('the TITLE is not the locked hook, word for word');
+  if (!a.direction) out.push('no DIRECTION line: which of the three this arc develops');
+  if (!a.object) out.push('no OBJECT line: the one thing the screen will show changing');
+  if (a.beats.length !== 4) out.push(`${a.beats.length} beats: the format is exactly four`);
+  return out;
+}
+
 /* ------------------------------------------------------------------ the yap */
 
 /**

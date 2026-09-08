@@ -86,6 +86,11 @@ export function StagedBuild({
   const [options, setOptions] = useState<HookOption[]>([]);
   const [busy, setBusy] = useState<null | 'hooks' | 'outline'>(null);
   const [arcFlags, setArcFlags] = useState<string[]>([]);
+  /** "Any ideas or direction?" (D106): where he wants this to go, in his words, before the arc. */
+  const [arcSteer, setArcSteer] = useState('');
+  /** The three places the hook could go, for the Marrs Attacks formats, until one is taken. */
+  const [directions, setDirections] = useState<{ where: string; why: string; object: string }[]>([]);
+  const [taking, setTaking] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [model, setModel] = useState<string | null>(null);
 
@@ -135,27 +140,48 @@ function grow(el: HTMLTextAreaElement | null) {
     }
   };
 
-  const getOutline = async () => {
+  /**
+   * THE ARC IN TWO MOVES (D106). Without a direction: a Story piece gets its arc; a Marrs Attacks piece
+   * gets three directions to choose from. With one (`develop`): the chosen direction becomes the beats.
+   */
+  const getOutline = async (direction?: string) => {
     if (busy) return;
     setBusy('outline');
     setErr(null);
+    if (direction) setTaking(direction);
     try {
-      const res = await fetch(`${base()}/outline`, { method: 'POST' });
+      const res = await fetch(`${base()}/outline`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ steer: arcSteer.trim() || undefined, direction }),
+      });
       const b = (await res.json().catch(() => null)) as
-        | { outline?: string; model?: string; error?: string; warnings?: string[] }
+        | {
+            outline?: string;
+            directions?: { where: string; why: string; object: string }[];
+            model?: string;
+            error?: string;
+            warnings?: string[];
+          }
         | null;
       if (!res.ok) {
         setErr(b?.error ?? 'Could not get the arc.');
         return;
       }
-      onOutlineChange(b?.outline ?? '');
       setModel(b?.model ?? null);
-      // Named, not fixed (D102): a screen plan whose turn will not classify is flagged, never forced.
+      if (b?.directions) {
+        setDirections(b.directions);
+        return;
+      }
+      onOutlineChange(b?.outline ?? '');
+      setDirections([]);
+      // Named, not fixed: what the arc is missing, if anything.
       setArcFlags(Array.isArray(b?.warnings) ? b.warnings : []);
     } catch {
       setErr('Network error. Try again.');
     } finally {
       setBusy(null);
+      setTaking(null);
     }
   };
 
@@ -210,23 +236,19 @@ function grow(el: HTMLTextAreaElement | null) {
       {/* STAGE ONE: HOOKS */}
       <div className={s.step}>
         <p className={s.stepLabel}>
-          1. {single ? 'The hook' : 'Hooks'}{' '}
-          <span className={s.count}>
-            {hookLocked
-              ? 'locked at Gate 1'
-              : `${hooks.length} chosen${hooks.length > 0 ? ', and each goes in word for word' : ''}`}
-          </span>
+          1. {single ? 'The hook' : 'Hooks'}
+          {hookLocked ? null : (
+            <>
+              {' '}
+              <span className={s.count}>
+                {hooks.length} chosen{hooks.length > 0 ? ', and each goes in word for word' : ''}
+              </span>
+            </>
+          )}
         </p>
-        {/* LOCKED AT GATE 1 (D105): the hook came from the Hook library, so nothing is proposed here.
-            It is the title, and the question on the prezie's first slide. */}
-        {hookLocked ? (
-          <p className={s.arcFor}>
-            <strong>{hooks[0]}</strong>
-            <br />
-            Chosen in the Hook library. It is the title, and the question on the prezie&apos;s first slide. To
-            work on a different hook, start a new one from Gate 1.
-          </p>
-        ) : null}
+        {/* LOCKED AT GATE 1 (D105, trimmed in D106): the hook, big, and nothing else. Marrs: "We're
+            always going for minimal distraction here." */}
+        {hookLocked ? <p className={s.lockedHook}>{hooks[0]}</p> : null}
         {hookLocked ? null : (
         <>
         <textarea
@@ -322,36 +344,65 @@ function grow(el: HTMLTextAreaElement | null) {
       {/* STAGE TWO: THE ARC */}
       <div className={s.step}>
         <p className={s.stepLabel}>2. The narrative arc</p>
-        {/* SAY WHICH TITLE THE ARC IS FOR (D104), so a plan can never read as belonging to none. */}
-        {single ? (
-          hooks.length === 1 ? (
-            <p className={s.arcFor}>
-              Arc for: <strong>{hooks[0]}</strong>
-            </p>
-          ) : (
-            <p className={s.arcFor}>
-              {hooks.length === 0 ? 'Choose one title above first.' : 'Choose one title only; the arc is locked to it.'}
-            </p>
-          )
-        ) : null}
         {hooks.length === 0 ? (
-          <p className={s.hint}>Choose your hooks first. The arc has to hand over to all of them.</p>
+          <p className={s.hint}>
+            {single ? 'Choose one hook above first.' : 'Choose your hooks first. The arc has to hand over to all of them.'}
+          </p>
+        ) : single && hooks.length !== 1 ? (
+          <p className={s.hint}>Choose one hook only; the arc is locked to it.</p>
         ) : (
           <>
+            {/* WHERE HE WANTS IT TO GO (D106). Marrs: "I'd want a text box in there that says Any ideas
+                or direction?... If I don't have an idea, it just says Propose an arc." */}
+            <textarea
+              className={s.steer}
+              ref={grow}
+              value={arcSteer}
+              onInput={(e) => grow(e.currentTarget)}
+              onChange={(e) => setArcSteer(e.target.value)}
+              placeholder="Any ideas or direction?"
+              rows={2}
+              disabled={busy !== null}
+            />
             <div className={s.row}>
               <button
                 type="button"
                 className={s.primary}
-                onClick={getOutline}
-                disabled={busy !== null || (single && hooks.length !== 1)}
+                onClick={() => void getOutline()}
+                disabled={busy !== null}
               >
-                {busy === 'outline'
+                {busy === 'outline' && !taking
                   ? 'Thinking…'
-                  : outline.trim()
-                    ? 'Propose a different arc'
-                    : 'Propose the arc'}
+                  : outline.trim() || directions.length
+                    ? single
+                      ? 'Propose different directions'
+                      : 'Propose a different arc'
+                    : 'Propose an arc'}
               </button>
             </div>
+            {/* THREE PLACES THE HOOK COULD GO (D106): where, why it fits, the object. Take one and it
+                becomes the beats below. */}
+            {single && directions.length > 0 ? (
+              <ul className={s.directions}>
+                {directions.map((d) => (
+                  <li key={d.where} className={s.direction}>
+                    <p className={s.directionWhere}>{d.where}</p>
+                    <p className={s.directionWhy}>
+                      {d.why}
+                      {d.object ? <span className={s.directionObject}> · on screen: {d.object}</span> : null}
+                    </p>
+                    <button
+                      type="button"
+                      className={s.ghost}
+                      onClick={() => void getOutline(d.where)}
+                      disabled={busy !== null}
+                    >
+                      {taking === d.where ? 'Developing…' : 'Take this →'}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
             {outline.trim() ? (
               <textarea
                 className={s.outline}

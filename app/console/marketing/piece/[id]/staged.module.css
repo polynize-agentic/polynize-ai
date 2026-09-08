@@ -295,3 +295,43 @@
   color: var(--text-1);
   font-weight: 500;
 }
+
+/* THE LOCKED HOOK (D106): big, and nothing else. */
+.lockedHook {
+  margin: 6px 0 4px;
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 22px;
+  line-height: 1.25;
+  font-weight: 600;
+  color: var(--text-1);
+}
+/* THE THREE DIRECTIONS (D106): where the hook could go; take one and it becomes the beats. */
+.directions {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.direction {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line, rgba(255, 255, 255, 0.14));
+}
+.directionWhere {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text-1);
+}
+.directionWhy {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-3);
+}
+.directionObject {
+  color: var(--text-2);
+}

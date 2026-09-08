@@ -22,6 +22,9 @@ import {
   isMarrsAttacksFormat,
   WORD_BUDGET,
   EXAMPLE_TITLES,
+  parseArcDirections,
+  parseArc,
+  checkArc,
 } from '../split-screen';
 
 let n = 0;
@@ -158,5 +161,42 @@ ok(EXAMPLE_TITLES.length >= 30, 'the calibration set\'s 8s, 9s and 10s are all o
 ok(EXAMPLE_TITLES.every((t) => titleChecks(t.title).length === 0), 'every suggestion passes the mechanical tests');
 ok(EXAMPLE_TITLES.slice(0, 17).every((t) => t.score >= 9), 'the 9s and 10s come first');
 ok(EXAMPLE_TITLES.every((t, i) => i === 0 || EXAMPLE_TITLES[i - 1].score >= t.score), 'never a lower score before a higher one');
+
+/* the arc: three directions, then the beats (D106) */
+const dirs = parseArcDirections('Sure: {"directions":[{"where":"Kids who use AI learn to check it, which is the skill school never taught","why":"turns the accusation into an advantage","object":"a homework page"},{"where":"The stupid one is the parent who bans it","why":"relief for the parent","object":"a locked door"},{"where":"","why":"x","object":"y"},{"where":"Calculators, again","why":"history rhymes","object":"a calculator"}]}');
+eq(dirs.length, 3, 'three directions, the blank one dropped');
+eq(dirs[0].object, 'a homework page', 'each carries its object');
+eq(parseArcDirections('nope'), [], 'garbage is no directions');
+
+const arc = `TITLE: Why AI won't make your kids stupid
+
+DIRECTION: Kids who use AI learn to check it, which is the skill school never taught
+
+OBJECT: a homework page, marked
+
+BEAT 1
+Argues: Parents think AI does the thinking for the kid.
+Stands on: the fear as stated
+
+BEAT 2
+Argues: But AI is wrong often enough that the kid has to check it.
+Stands on: the argument itself
+
+BEAT 3
+Argues: So the kid learns to verify, which school never taught.
+Stands on: the argument itself
+
+BEAT 4
+Argues: Tonight, ask your kid to catch AI being wrong once.
+Stands on: the argument itself`;
+const parsedArc = parseArc(arc);
+eq(parsedArc.title, "Why AI won't make your kids stupid", 'title read');
+eq(parsedArc.direction, 'Kids who use AI learn to check it, which is the skill school never taught', 'direction read');
+eq(parsedArc.object, 'a homework page, marked', 'object read');
+eq(parsedArc.beats.length, 4, 'four beats');
+eq(checkArc(arc, "Why AI won't make your kids stupid"), [], 'a complete arc for the locked hook passes');
+ok(checkArc(arc, 'Why AI will make your kids stupid').some((p) => p.includes('locked hook')), 'a title that is not the locked hook is named');
+ok(checkArc(arc.replace('OBJECT: a homework page, marked\n\n', '')).some((p) => p.includes('OBJECT')), 'a missing object is named');
+ok(checkArc(arc.replace(/BEAT 4[\s\S]*$/, '')).some((p) => p.includes('3 beats')), 'three beats is named');
 
 console.log(`split-screen: ${n} assertions passed`);
