@@ -62,6 +62,30 @@ export function NewNarrative({
   const router = useRouter();
   const [picked, setPicked] = useState<string | null>(preselect ?? null);
   /**
+   * THE LIST IS LOCAL STATE so a stale idea can be deleted in place (D107). Marrs: "some are a bit
+   * stale and I just need to delete them." The delete goes to the inbox route; the row disappears at
+   * once and comes back if the server refused.
+   */
+  const [list, setList] = useState<IdeaRow[]>(ideas);
+  const [hookList, setHookList] = useState<IdeaRow[]>(savedTitles);
+  const removeIdea = async (row: IdeaRow) => {
+    setList((l) => l.filter((i) => i.id !== row.id));
+    setHookList((l) => l.filter((i) => i.id !== row.id));
+    if (picked === row.id) setPicked(null);
+    try {
+      const res = await fetch(`/console/marketing/stream/${row.lane}/ideas`, {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: row.id }),
+      });
+      if (!res.ok) throw new Error('refused');
+    } catch {
+      setErr('Could not delete that idea. It is still in the inbox.');
+      setList(ideas);
+      setHookList(savedTitles);
+    }
+  };
+  /**
    * WHICH WAY OUT. Multi by default everywhere. On Polynize boards Split screen and Yap are shown
    * but disabled, because his rules document says the question rules must not be reused there
    * without a separate validation run: the layout stays the same on every board, and the reason
@@ -74,7 +98,8 @@ export function NewNarrative({
   const [chosenLane, setChosenLane] = useState<string | null>(null);
   const lane = fixedLane ?? chosenLane;
 
-  const chosenText = typed.trim() || ideas.find((i) => i.id === picked)?.text || '';
+  const chosenText =
+    typed.trim() || [...list, ...hookList].find((i) => i.id === picked)?.text || '';
   const ready = chosenText !== '' && lane !== null;
   const marrsBoard = lane !== null && !usesUseCases(lane);
 
@@ -162,22 +187,34 @@ export function NewNarrative({
         disabled={busy}
       />
 
-      {ideas
-        .filter((i) => !(route !== 'multi' && marrsBoard && savedTitles.some((t) => t.id === i.id)))
+      {list
+        .filter((i) => !(route !== 'multi' && marrsBoard && hookList.some((t) => t.id === i.id)))
         .map((i) => (
-        <button
-          key={i.id}
-          type="button"
-          className={`${g.idea} ${picked === i.id ? g.ideaOn : ''}`}
-          onClick={() => {
-            setPicked(i.id);
-            setTyped('');
-          }}
-          disabled={busy}
-        >
-          {i.text}
-          <span className={g.meta}>caught {i.when}</span>
-        </button>
+        <div key={i.id} className={g.ideaRow}>
+          <button
+            type="button"
+            className={`${g.idea} ${picked === i.id ? g.ideaOn : ''}`}
+            onClick={() => {
+              setPicked(i.id);
+              setTyped('');
+            }}
+            disabled={busy}
+          >
+            {i.text}
+            <span className={g.meta}>caught {i.when}</span>
+          </button>
+          {/* THE LITTLE CROSS (D107): a stale idea leaves the inbox. */}
+          <button
+            type="button"
+            className={g.ideaDel}
+            onClick={() => void removeIdea(i)}
+            disabled={busy}
+            aria-label="Delete this idea"
+            title="Delete this idea"
+          >
+            ×
+          </button>
+        </div>
       ))}
 
       {/* THE THREE WAYS OUT (D103), under the ideas. */}
@@ -213,27 +250,38 @@ export function NewNarrative({
         <p className={g.libraryHead}>Hook library</p>
       ) : null}
 
-      {route !== 'multi' && marrsBoard && savedTitles.length > 0 ? (
+      {route !== 'multi' && marrsBoard && hookList.length > 0 ? (
         <>
           <p className={g.useCaseHead}>
             Your hooks
             <span className={g.meta}> (saved from the script screen, or typed as a title)</span>
           </p>
           <div className={g.examples}>
-            {savedTitles.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                className={`${g.example} ${picked === t.id ? g.exampleOn : ''}`}
-                onClick={() => {
-                  setPicked(t.id);
-                  setTyped('');
-                }}
-                disabled={busy}
-                title={`saved ${t.when}`}
-              >
-                {t.text}
-              </button>
+            {hookList.map((t) => (
+              <span key={t.id} className={g.exampleRow}>
+                <button
+                  type="button"
+                  className={`${g.example} ${picked === t.id ? g.exampleOn : ''}`}
+                  onClick={() => {
+                    setPicked(t.id);
+                    setTyped('');
+                  }}
+                  disabled={busy}
+                  title={`saved ${t.when}`}
+                >
+                  {t.text}
+                </button>
+                <button
+                  type="button"
+                  className={g.exampleDel}
+                  onClick={() => void removeIdea(t)}
+                  disabled={busy}
+                  aria-label="Delete this hook"
+                  title="Delete this hook"
+                >
+                  ×
+                </button>
+              </span>
             ))}
           </div>
         </>
@@ -248,7 +296,7 @@ export function NewNarrative({
           <div className={g.examples}>
             {EXAMPLE_TITLES.filter(
               (t) =>
-                !savedTitles.some((s) => s.text.toLowerCase() === t.title.toLowerCase()) &&
+                !hookList.some((s) => s.text.toLowerCase() === t.title.toLowerCase()) &&
                 !archivedTitles.some((s) => s.text.toLowerCase() === t.title.toLowerCase())
             ).map((t) => (
               <button

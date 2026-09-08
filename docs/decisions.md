@@ -3056,3 +3056,10 @@ Tests: `split-screen.test.ts`, 53 assertions, including the worked example passi
 - **Directions differ in substance, not wording.** The prompt asks for a different reason, stake or person each time, all built on the title and nothing else. Three, always.
 - **The screen leaves the arc.** D102 put TRANSFORM and the six TAP states in the arc; that made the arc unreadable and made the prezie's job twice. The visual grammar still reaches the prezie builder, now with the arc rather than a finished plan, so it does the design.
 - **The check follows.** The arc is checked for the title matching the locked hook, a direction, an object and four beats. The old screen-plan checks stay in the module for the prezie step to use later; nothing in the arc path calls them.
+
+
+## D107: A little cross on a caught idea
+
+**Adopted 8 September 2026.** Marrs: *"This section in Gate 1 has previous ideas 'caught' and then the date... I just need a little cross in the corner of those, just so I can delete them if I don't want them there, because some are a bit stale."*
+
+Each caught idea at Gate 1, and each hook under Your hooks, carries a small cross in its corner. It deletes the idea from the inbox through the existing delete route; the row disappears at once and comes back with a message if the server refused. Scored hooks and archived hooks have no cross: the scored set is the calibration data, and the archive is the record.

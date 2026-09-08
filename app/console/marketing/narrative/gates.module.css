@@ -242,6 +242,45 @@
   cursor: default;
   text-decoration: line-through;
 }
+/* THE LITTLE CROSS (D107) on a caught idea or a saved hook. */
+.ideaRow {
+  position: relative;
+}
+.ideaRow .idea {
+  width: 100%;
+  padding-right: 34px;
+}
+.ideaDel,
+.exampleDel {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-3);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+.ideaDel:hover,
+.exampleDel:hover {
+  color: var(--coral, #ff7a6b);
+  border-color: var(--coral, #ff7a6b);
+}
+.exampleRow {
+  position: relative;
+  display: inline-flex;
+}
+.exampleRow .example {
+  padding-right: 30px;
+}
+.exampleDel {
+  top: 2px;
+  right: 4px;
+}
 .libraryHead {
   margin: 22px 0 0;
   font-family: var(--font-space-grotesk), sans-serif;
