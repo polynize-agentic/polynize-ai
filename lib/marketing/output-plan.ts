@@ -189,63 +189,85 @@ export const FORMATS: FormatDef[] = [
       'Aim for 1,300 to 2,500 characters, and never under 400. The band is the overlap of two large studies that disagree with each other (AuthoredUp on 372k posts, Taplio), so treat it as a hint; the 400 floor is the one length claim every study agrees on. Hard cap 3,000. Keep it tight: cut any line that does not earn its place.',
   },
   {
+    /**
+     * THE SPLIT-SCREEN EXPLAINER (D102), Marrs's own account's hero format, to his own rules in
+     * docs/pam-console/marrs-split-screen-rules.md. The shape is LOCKED: the cold open is fixed every
+     * time, the argument is four beats, the CTA is a comment keyword outside the clock. The model
+     * fills the blanks and lib/marketing/split-screen.ts checks the result and names what failed.
+     *
+     * Instagram first (Marrs, 8 September: "I'm focusing on Instagram for sure"), the rest behind it.
+     */
     id: 'split_screen_short',
-    label: 'Split-screen short (9:16 hero)',
+    label: 'Split-screen explainer (9:16 hero)',
     kind: 'video',
     module: 'built',
     channels: ['instagram', 'tiktok', 'youtube', 'linkedin'],
     defaultLength:
-      'Aim for 45 to 75 seconds spoken (roughly 120 to 190 words). Never over 90 seconds.',
+      'Sixty seconds promised, forty-eight delivered: four beats of about 33 to 36 spoken words, roughly 140 words in total. If it cannot survive 140 words it is not this format.',
     twoTrack: true,
-    scriptShape: `Output shape. This is the SPLIT-SCREEN 9:16 hero format. One studio setup, two angles: the TOP half of the frame is a mid front shot of the presenter to camera, the BOTTOM half is a bird's-eye view of a 32in touchscreen the presenter is touching. Both halves are on screen the whole time, so the words and the screen move together.
+    scriptShape: `Output shape. This is the SPLIT-SCREEN EXPLAINER, Marrs's own format on his own account. Top half of the frame: Marrs, torso up, to camera. Bottom half: a bird's-eye view of the touchscreen on his desk. He walks on holding a countdown timer, makes a promise, puts the timer down on the desk, taps Go, and delivers a four-beat argument, one tap per beat. The timer stops on camera with time to spare.
 
-THE SHAPE, exactly. This is Marrs's own short-form structure, taken from a script he wrote; it is the house standard for short form, not a suggestion.
+THE SHAPE, exactly, and it is LOCKED. You fill the blanks; you never restructure it.
 
-HOOK 1:
-<what he says, one breath, 15 to 25 words>
+HOOK A
+In under 60 seconds I'm going to explain to you <why|how>...
 
-----
-
-HOOK 2:
-(same)
-
-----
-
-HOOK 3:
-(same)
-
-----
+TITLE
+<the agreed title, word for word. It opens with the same word hook A ended on>
 
 BEAT 1
-<spoken prose, one or two short paragraphs, one idea>
+<spoken prose, about 33 to 36 words>
 
 BEAT 2
-<spoken prose>
+<spoken prose, about 33 to 36 words>
 
 BEAT 3
-<spoken prose>
+<spoken prose, about 33 to 36 words>
 
-BEAT 4 (only if the argument needs it)
-<spoken prose>
+BEAT 4
+<spoken prose, about 33 to 36 words>
 
 CTA
-<the ask, one or two sentences>
-
-CLOSE
-<one line after the CTA, the last thing said, worth punching>
+<about ten words, spoken after the timer has stopped: how many seconds were spare, then "Comment <KEYWORD> and I'll send you the <magnet>">
 
 Rules that follow from that shape:
-- Write as many HOOKS as asked for (the default is one; a template can ask for three), each separated by a line of four hyphens. Every hook is a DIFFERENT way in to the same argument, and every one must hand over cleanly to BEAT 1, because only one of them will survive the edit.
-- A HOOK IS ONE SPOKEN LINE. No on-screen caption line: on this format the first-frame text is the PREZIE's own title and is authored there, so a caption in the script would only be a second draft of it that then has to be reconciled. Write the words he says and nothing else.
-- THE WHOLE SCRIPT IS SPOKEN WORDS ONLY, hooks and beats alike. No screen notes, no captions, no stage directions, no shot marks: every line is read off a teleprompter, and the screen is planned separately as the prezie.
-- CTA and CLOSE are separate sections and both are needed. The CTA is the ask. The CLOSE is one line AFTER it, the actual last thing said, and it is punched in the edit, so it has to be worth punching.
-- Three beats is the norm and four is allowed when the argument genuinely has a fourth move. One idea per beat.`,
-    screenPromptShape: `Before the first beat, add one line labelled "ON-SCREEN TEXT:" holding the first-frame caption that stops the scroll, or write "none" if the opening is purely visual. It is never spoken, and if used its words differ from the spoken hook so the two together open a gap.
+- HOOK A is fixed text and ends on the word "why" or "how", whichever the title opens with. TITLE is the agreed title verbatim; never paraphrase it.
+- WHY titles follow: BEAT 1 Setup (the belief the viewer holds, stated fairly), BEAT 2 But (the turn, the only surprise), BEAT 3 Therefore (what it means for them), BEAT 4 So do this (one action they can take tonight, no purchase required).
+- HOW titles follow: BEAT 1 The result (show the finished thing first), BEAT 2 step one, BEAT 3 step two, BEAT 4 The bit nobody does (the non-obvious move that makes it work).
+- About 140 spoken words across the four beats. Never more. If the idea needs more, say so instead of writing a longer script.
+- News is a trigger, never the subject: a news peg may enter at BEAT 1 and never appears in the TITLE.
+- THE WHOLE SCRIPT IS SPOKEN WORDS ONLY. No screen notes, no captions, no stage directions, no shot marks: every line is read off a teleprompter, and the screen is planned separately from the arc (TRANSFORM, OBJECT and the six tap states).
+- THE CTA names ONE comment keyword in capitals, MAP (the team bottleneck map) or ROLE (the job map). Never JOB, TEAM, AI or YES, never a plural. The CTA is a lead magnet, not a follow.
+- Never use the em-dash character.`,
+    screenPromptShape: `THE SCREEN FOLLOWS THE VISUAL GRAMMAR: one object, five states, one change per tap, the change on the beat word. The arc for this piece names the TRANSFORM (one of Split, Drain, Move, Invert, Reveal, Rescale, Widen), the OBJECT, and what each of TAP 0 to TAP 5 shows. Build exactly those six states of that one object. No text except tap 0 (the title plus the object at rest) and tap 5 (the keyword, timer stopped); numbers allowed where a number is the point. The object must be followable as an argument with the sound off.
 
-FRAMING for this format, state it in the DESIGN SYSTEM section. These are measured from the real rig, so design to them:
-- The bird's-eye camera captures the WHOLE 32in display, so the full 16:9 screen is in shot and every part of it is usable. Compose edge to edge; there is no crop to design around.
-- SCALE is the real constraint. The display lands in the upper part of the lower half of a vertical video watched on a phone, so it reads at roughly a quarter of the phone's height. Type is huge, strokes are heavy, and a state never carries more than one idea. If it would not be legible as a thumbnail, it is too small.
-- The presenter's HAND enters from the RIGHT and rests over the right and lower-right of the display while they talk. Keep the payoff (the key word, the number, the resolution) LEFT of centre and high on the screen, and put the touch target on the right where the hand already is. Never place the thing the viewer must read under the hand.`,
+FRAMING, measured from the real rig: the bird's-eye camera captures the WHOLE display, so compose edge to edge. SCALE is the constraint: the display reads at roughly a quarter of a phone's height, so type is huge, strokes are heavy, and a state never carries more than one idea. The presenter's HAND enters from the RIGHT and rests over the right and lower-right of the display; keep the payoff LEFT of centre and high, and the touch target on the right where the hand already is.`,
+  },
+  {
+    /**
+     * THE YAP (D102): the same question as a split-screen, straight to camera, one take, no edits, no
+     * screen. Marrs: "yaps are more natural." Fifteen to thirty minutes to make against the
+     * split-screen's forty-five to ninety, so it is the format for anything with a 48-hour window and
+     * for testing a question cheaply before it earns a split-screen. Instagram first.
+     */
+    id: 'yap',
+    label: 'Yap (straight to camera, one take)',
+    kind: 'video',
+    module: 'built',
+    channels: ['instagram', 'tiktok', 'youtube'],
+    defaultLength: 'Forty-five to sixty seconds, one take, about 150 words at most.',
+    scriptShape: `Output shape. This is a YAP: the presenter talking straight to camera in one take, no edits, no screen. It carries the same question and the same argument as a split-screen explainer, as TALK rather than as beats.
+
+TITLE
+<the agreed title, word for word, as the first thing said>
+
+TALK
+<one continuous natural paragraph, as he would say it to a friend: the belief, the turn, what it means, the one thing to do tonight. About 120 words. No labels, no beats.>
+
+CTA
+<one sentence: "Comment <KEYWORD> and I'll send you the <magnet>". MAP or ROLE. Never JOB, TEAM, AI or YES.>
+
+Spoken words only. No stage directions. Never use the em-dash character.`,
   },
   {
     id: 'screen_record_long',

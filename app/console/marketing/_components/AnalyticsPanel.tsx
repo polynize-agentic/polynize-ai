@@ -91,6 +91,7 @@ export async function AnalyticsPanel({
         title: e.title,
         use_case: e.use_case,
         frame: e.frame,
+        variant: e.variant,
         scheduled_at: e.scheduled_at,
         status: e.status,
         public_url: e.public_url,

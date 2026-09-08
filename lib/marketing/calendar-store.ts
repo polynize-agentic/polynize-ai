@@ -122,6 +122,8 @@ export type CalendarEntry = {
    * which the ladder shows as "unlabelled" rather than dropping.
    */
   frame?: string;
+  /** The version letter (D102), copied from the piece, so the leaderboard can compare versions of one question. */
+  variant?: string;
   /**
    * PROMOTED TO EVERGREEN (D100): this post now also lives in a Metricool autolist that repeats on
    * its network's quiet slots. The list and item ids are kept so the recycled post still joins back

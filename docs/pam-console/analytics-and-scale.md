@@ -18,7 +18,7 @@ On day one a viewer commented "Map", ManyChat sent them a lead magnet, they comp
 
 ### Where the build is
 
-> **8 September:** the six use cases became three (AI enablement, Talent assessment, Organisational redesign) and they label **Polynize content only**. Marrs's own account runs a different strategy, Marrs Attacks, with its own rules (`marrs-attacks-brief.md`, `marrs-split-screen-rules.md`) and its own measures (saves and shares first). D101 and D102.
+> **8 September:** the six use cases became three (AI enablement, Talent assessment, Organisational redesign) and they label **Polynize content only**. Marrs's own account runs a different strategy, Marrs Attacks, with its own rules (`marrs-attacks-brief.md`, `marrs-split-screen-rules.md`) and its own measures (saves and shares first). D101 and D102. **The split-screen explainer is built as a locked formula** (D102): a door on his board, a title gate to his rules, a screen plan, named checks, the yap, and version testing.
 
 
 | Step | Status |

@@ -273,3 +273,12 @@
   outline: none;
   border-bottom-color: var(--mint);
 }
+
+/* The tests a Marrs Attacks draft failed (D102), named under the draft button. Amber: a heads up, not a fault. */
+.draftFlags {
+  margin: 6px 0 0;
+  padding: 0 0 0 16px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--amber, #f0b86b);
+}

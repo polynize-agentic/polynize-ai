@@ -17,6 +17,7 @@ import { llmErrorText } from '@/lib/llm/error-text';
 import { getCurrentUser } from '@/lib/console-auth';
 import { getPiece } from '@/lib/marketing/piece-store';
 import { proposeOutline, DraftError, scriptModelInUse } from '@/lib/marketing/draft';
+import { SPLIT_SCREEN_FORMAT, checkScreenPlan } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -44,7 +45,7 @@ export async function POST(
 
   try {
     const outline = await proposeOutline(owner, piece);
-    return NextResponse.json({ outline, model: scriptModelInUse() });
+    return NextResponse.json({ outline, model: scriptModelInUse() , warnings: piece.format === SPLIT_SCREEN_FORMAT ? checkScreenPlan(outline) : [] });
   } catch (e) {
     if (e instanceof DraftError) {
       if (e.reason === 'no-concept') {

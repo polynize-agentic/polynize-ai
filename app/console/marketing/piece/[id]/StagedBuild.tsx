@@ -49,6 +49,7 @@ export function StagedBuild({
   const [steer, setSteer] = useState('');
   const [options, setOptions] = useState<HookOption[]>([]);
   const [busy, setBusy] = useState<null | 'hooks' | 'outline'>(null);
+  const [arcFlags, setArcFlags] = useState<string[]>([]);
   const [err, setErr] = useState<string | null>(null);
   const [model, setModel] = useState<string | null>(null);
 
@@ -105,7 +106,7 @@ function grow(el: HTMLTextAreaElement | null) {
     try {
       const res = await fetch(`${base()}/outline`, { method: 'POST' });
       const b = (await res.json().catch(() => null)) as
-        | { outline?: string; model?: string; error?: string }
+        | { outline?: string; model?: string; error?: string; warnings?: string[] }
         | null;
       if (!res.ok) {
         setErr(b?.error ?? 'Could not get the arc.');
@@ -113,6 +114,8 @@ function grow(el: HTMLTextAreaElement | null) {
       }
       onOutlineChange(b?.outline ?? '');
       setModel(b?.model ?? null);
+      // Named, not fixed (D102): a screen plan whose turn will not classify is flagged, never forced.
+      setArcFlags(Array.isArray(b?.warnings) ? b.warnings : []);
     } catch {
       setErr('Network error. Try again.');
     } finally {
@@ -271,6 +274,13 @@ function grow(el: HTMLTextAreaElement | null) {
                 rows={16}
                 spellCheck={false}
               />
+            ) : null}
+            {arcFlags.length ? (
+              <ul className={s.material} aria-label="Tests this plan failed">
+                {arcFlags.map((w) => (
+                  <li key={w}>{w}</li>
+                ))}
+              </ul>
             ) : null}
           </>
         )}

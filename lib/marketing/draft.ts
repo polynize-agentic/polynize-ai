@@ -28,6 +28,17 @@ import { HOOK_GUIDANCE } from './hook-guidance';
 import { exemplarBlock, pickExemplars } from './exemplars';
 import { applyTo, feedbackBlock, type JobId } from './feedback';
 import { listNotes } from './feedback-store';
+import {
+  SPLIT_SCREEN_FORMAT,
+  isMarrsAttacksFormat,
+  TITLE_RULES,
+  WHY_BEATS,
+  HOW_BEATS,
+  VISUAL_GRAMMAR,
+  parseTitleProposal,
+  titleShape,
+  hookALine,
+} from './split-screen';
 
 /**
  * The model that writes. Falls through to OPENROUTER_MODEL when unset, so this is a
@@ -457,7 +468,16 @@ async function gather(
   /** Which job this draft is, so a note scoped to it is picked up. */
   job: JobId
 ): Promise<Materials> {
-  const conceptBody = await conceptBodyForPiece(owner, piece);
+  let conceptBody = await conceptBodyForPiece(owner, piece);
+  /**
+   * MARRS ATTACKS PIECES HAVE NO STORY (D102). The idea typed at the door is stored as the piece's
+   * angle, and for these two formats that IS the material: "the question is the product", and the
+   * research arm supplies vocabulary rather than facts. So the angle stands in for the concept, and
+   * the prompts' "the concept is your only source of truth" then means "what he typed".
+   */
+  if (!conceptBody.trim() && isMarrsAttacksFormat(piece.format) && piece.angle?.trim()) {
+    conceptBody = piece.angle.trim();
+  }
   if (!conceptBody.trim()) throw new DraftError('no-concept');
 
   const fmt = formatById(piece.format);
@@ -543,7 +563,10 @@ async function generate(
    */
   const agreedHooks = (piece.hooks ?? []).map((h) => h.trim()).filter(Boolean);
   const hooksBlock =
-    kind === 'video' && agreedHooks.length > 0
+    kind === 'video' && piece.format === SPLIT_SCREEN_FORMAT && agreedHooks.length > 0
+      ? /* THE AGREED TITLE (D102): one, verbatim, and hook A is fixed text ending on its first word. */
+        `THE AGREED TITLE. Marrs chose it, so it is FINAL COPY: the TITLE section is exactly this, word for word, and HOOK A is exactly "${hookALine(agreedHooks[0])}".\nTITLE: ${agreedHooks[0]}\n\n`
+      : kind === 'video' && agreedHooks.length > 0
       ? `THE AGREED HOOKS. The operator chose these, so they are FINAL COPY. Reproduce each one word for word as its own hook, in this order, and write no others. Do not paraphrase, tighten, correct or improve them, even if you would have written them differently: a changed hook is a failure of this step, not an edit.\n${agreedHooks
           .map((h, i) => `HOOK ${i + 1}: ${h}`)
           .join('\n')}\n\n`
@@ -682,6 +705,8 @@ export async function proposeHooks(
   piece: MarketingPiece,
   steer?: string
 ): Promise<HookProposal> {
+  // The split-screen's "hooks" are TITLES, proposed against Marrs's own rules (D102).
+  if (piece.format === SPLIT_SCREEN_FORMAT) return proposeTitles(owner, piece, steer);
   const { conceptBody, formatLabel, promptOpts } = await gather(owner, piece, 'video', 'hooks');
   const steerBlock = steer?.trim()
     ? `WHAT THE OPERATOR ALREADY KNOWS HE WANTS (his own words. Any complete line here is final copy and goes in as written; anything that reads as direction rather than as copy steers the set):\n"""\n${steer.trim()}\n"""\n\n`
@@ -719,6 +744,74 @@ export async function proposeHooks(
  * must fail loudly as 'empty' rather than render as an empty chooser, which reads as "April had
  * no ideas" when the truth is that the response was malformed.
  */
+/**
+ * THE TITLE GATE (D102). "The question is the product. Everything downstream is execution." April
+ * proposes titles against the two shapes, the killer test, the construction rules and the scored
+ * calibration set from docs/pam-console/marrs-split-screen-rules.md, and names what she killed and
+ * why. The mechanical tests run again here on every title she kept, so a title that fails one is
+ * moved to the killed list with the test named whatever she thought of it (rule 7: flag, never force).
+ *
+ * Returned in the HookProposal shape so the chooser on the script screen shows them unchanged:
+ * the title is the hook, the pattern line carries the gap and the focus anchor, the material line
+ * says what belief it contradicts or what outcome it promises. Killed titles are appended to the
+ * concept read as "Killed:" lines, so the rejections are visible without a new screen.
+ */
+async function proposeTitles(owner: string, piece: MarketingPiece, steer?: string): Promise<HookProposal> {
+  const { conceptBody, promptOpts } = await gather(owner, piece, 'video', 'hooks');
+  const steerBlock = steer?.trim()
+    ? `WHAT MARRS ALREADY KNOWS HE WANTS (his own words; a complete title here is tested like any other, not exempted):\n"""\n${steer.trim()}\n"""\n\n`
+    : '';
+  const system = `You are April, proposing TITLES for a split-screen explainer on Marrs's own account.
+
+${TITLE_RULES}
+${voiceBlock(promptOpts.brandVoice)}${promptOpts.feedback ?? ''}
+
+Return ONLY a JSON object:
+{
+  "concept_read": ["what in the idea is usable, one line each, at most six"],
+  "titles": [
+    {"title": "Why ... or How to ...", "anchor": "AI | creativity | productivity | purpose | work", "material": "the belief it contradicts, or the outcome it promises, in one line"}
+  ],
+  "killed": [
+    {"title": "a title you considered and rejected", "failed": "the specific test it failed, named"}
+  ]
+}
+Propose six titles that pass every test, and list at least two you killed with the test named. Never use the em-dash character.`;
+  let raw: string;
+  try {
+    raw = await complete({
+      system,
+      messages: [
+        {
+          role: 'user',
+          content: `${steerBlock}THE IDEA (Marrs's own words, the only material):\n"""\n${conceptBody}\n"""\n\nPropose the titles.`,
+        },
+      ],
+      maxTokens: 6000,
+      temperature: 0.8,
+      json: true,
+      model: scriptModel(),
+      apiKey: process.env.APRIL_OPENROUTER_API_KEY,
+    });
+  } catch (e) {
+    console.error(`[titles] LLM call threw: ${e instanceof Error ? e.message : String(e)}`);
+    throw new DraftError('llm-unavailable');
+  }
+  const proposal = parseTitleProposal(cleanOutput(raw));
+  if (proposal.titles.length === 0 && proposal.killed.length === 0) throw new DraftError('empty');
+  return {
+    concept_read: [
+      ...proposal.concept_read,
+      ...proposal.killed.map((k) => `Killed: "${k.title}" (${k.failed})`),
+    ].slice(0, 16),
+    hooks: proposal.titles.map((t) => ({
+      hook: t.title,
+      pattern: `${t.gap} · ${t.anchor}`,
+      material: t.material,
+    })),
+  };
+}
+
 export function parseHookProposal(raw: string): HookProposal {
   let obj: unknown;
   try {
@@ -751,6 +844,72 @@ export function parseHookProposal(raw: string): HookProposal {
     : [];
   if (hooks.length === 0) throw new DraftError('empty');
   return { concept_read: read, hooks };
+}
+
+/**
+ * THE ARC OF A SPLIT-SCREEN IS ITS SCREEN PLAN (D102): the transform, the object, the six tap states,
+ * and the four beat jobs for the agreed title's shape. Stored in the same outline field and read by the
+ * script (as the binding arc) and by the prezie one-shot (as the visual brief). If the turn will not
+ * classify against the seven transforms the model is told to say so, and checkScreenPlan names it.
+ */
+async function proposeScreenPlan(owner: string, piece: MarketingPiece): Promise<string> {
+  const { conceptBody, promptOpts } = await gather(owner, piece, 'video', 'outline');
+  const title = (piece.hooks ?? []).map((h) => h.trim()).find(Boolean);
+  if (!title) throw new DraftError('no-hooks');
+  const shape = titleShape(title) ?? 'why';
+  const system = `You are April, planning a split-screen explainer for Marrs's own account. The title is agreed. You are NOT writing the spoken words yet: you are deciding the four beats and the one object on the screen.
+
+THE AGREED TITLE: ${title}
+ITS SHAPE: ${shape === 'why' ? 'a contradiction (WHY)' : 'a wanted outcome (HOW)'}
+
+${shape === 'why' ? WHY_BEATS : HOW_BEATS}
+
+${VISUAL_GRAMMAR}
+${promptOpts.feedback ?? ''}
+
+Output shape, plain text, no markdown, no preamble, exactly these lines in this order:
+
+TRANSFORM: <one of the seven, or "does not classify" if none fits, with one line saying why>
+OBJECT: <the single object, and what shape it takes at rest>
+TAP 0: <title plus the object at rest>
+TAP 1: <the belief made visible>
+TAP 2: <the object changes state: the turn>
+TAP 3: <the new state settles and is renamed>
+TAP 4: <the artefact worth screenshotting>
+TAP 5: <the keyword, timer stopped>
+
+BEAT 1
+Argues: <the move, one or two plain sentences>
+Stands on: <the material from the idea it uses, or "the argument itself">
+
+BEAT 2
+(same two lines)
+
+BEAT 3
+(same)
+
+BEAT 4
+(same; for a WHY this is the one action they can take tonight with no purchase; for a HOW it is the bit nobody does)
+
+Never use the em-dash character.`;
+  let raw: string;
+  try {
+    raw = await complete({
+      system,
+      messages: [{ role: 'user', content: `THE IDEA (Marrs's own words):\n"""\n${conceptBody}\n"""\n\nPlan the screen and the beats for "${title}".` }],
+      maxTokens: 6000,
+      temperature: 0.6,
+      json: false,
+      model: scriptModel(),
+      apiKey: process.env.APRIL_OPENROUTER_API_KEY,
+    });
+  } catch (e) {
+    console.error(`[screen-plan] LLM call threw: ${e instanceof Error ? e.message : String(e)}`);
+    throw new DraftError('llm-unavailable');
+  }
+  const out = cleanOutput(raw);
+  if (!out) throw new DraftError('empty');
+  return out;
 }
 
 function outlineSystemPrompt(opts: PromptOpts): string {
@@ -797,6 +956,7 @@ export async function proposeOutline(
   owner: string,
   piece: MarketingPiece
 ): Promise<string> {
+  if (piece.format === SPLIT_SCREEN_FORMAT) return proposeScreenPlan(owner, piece);
   const { conceptBody, formatLabel, promptOpts } = await gather(owner, piece, 'video', 'outline');
   const hooks = (piece.hooks ?? []).map((h) => h.trim()).filter(Boolean);
   if (hooks.length === 0) throw new DraftError('no-hooks');

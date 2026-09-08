@@ -27,6 +27,7 @@ import { stripEmDashes } from '@/lib/em-dash';
 import { getChannelSchedule, NETWORKS, type Network } from '@/lib/marketing/channel-schedule';
 import { buildTrackingLink, siteOrigin } from '@/lib/marketing/tracking-link';
 import { landingFor, campaignFor } from '@/lib/marketing/use-case';
+import { keywordIn, landingForKeyword } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -183,9 +184,14 @@ export async function POST(
        * comment (every LinkedIn text output declares it), so it is written there as well and never
        * into the copy, which is the operator's words.
        */
+      /**
+       * WHERE THE LINK LANDS (D102). A Marrs Attacks piece has no use case; its CTA keyword decides the
+       * magnet (MAP: the team map, ROLE: the job map), read off the piece or its script.
+       */
+      const keyword = piece.cta_keyword ?? keywordIn(piece.script ?? '');
       const link = buildTrackingLink({
         origin: siteOrigin(),
-        path: landingFor(piece.use_case),
+        path: landingForKeyword(keyword) ?? landingFor(piece.use_case),
         network: channel,
         medium: 'social',
         // Polynize content carries its use case; the marrs stream carries marrs_attacks (D101).
@@ -196,6 +202,8 @@ export async function POST(
         ...(piece.use_case ? { use_case: piece.use_case } : {}),
         // The post type, for the leaderboard (D99): a storyless piece's frame is its format.
         frame: piece.format,
+        // The version letter (D102), so versions of one question can be compared.
+        ...(piece.variant ? { variant: piece.variant } : {}),
         link,
         ...(channel === 'linkedin' ? { first_comment: link } : {}),
       };

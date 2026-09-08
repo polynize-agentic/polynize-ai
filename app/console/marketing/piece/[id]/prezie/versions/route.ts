@@ -40,6 +40,7 @@ import { generatePrezieFromScript } from '@/lib/marketing/prezie-oneshot';
 import { conceptBodyForPiece } from '@/lib/marketing/draft';
 import { DraftError } from '@/lib/marketing/draft';
 import { stripEmDashes } from '@/lib/em-dash';
+import { SPLIT_SCREEN_FORMAT, VISUAL_GRAMMAR } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -165,10 +166,27 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
     try {
       const conceptBody = await conceptBodyForPiece(user.email, piece).catch(() => '');
+      /**
+       * THE SPLIT-SCREEN'S GRAMMAR (D102): one object, six states, one change per tap, and the plan
+       * agreed at the arc step (TRANSFORM, OBJECT, TAP 0 to 5). Sent as the direction, so the builder
+       * makes those states of that object rather than one picture per beat.
+       */
+      const direction =
+        piece.format === SPLIT_SCREEN_FORMAT
+          ? [
+              VISUAL_GRAMMAR,
+              piece.outline?.trim()
+                ? `THE AGREED SCREEN PLAN for this piece. Build exactly these six states (TAP 0 to TAP 5) of the one OBJECT it names, TAP 0 included:\n"""\n${piece.outline.trim()}\n"""`
+                : '',
+              body.direction?.trim() ?? '',
+            ]
+              .filter(Boolean)
+              .join('\n\n')
+          : body.direction;
       const { figures, model } = await generatePrezieFromScript(script, {
         concept: conceptBody,
         angle: piece.angle,
-        direction: body.direction,
+        direction,
       });
       const now = new Date().toISOString();
       const prezie: Prezie = {

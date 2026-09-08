@@ -29,6 +29,7 @@ import { StagedBuild } from './StagedBuild';
 import { BackLink } from '@/app/console/marketing/_components/BackLink';
 import s from './script.module.css';
 import c from './chat.module.css';
+import { useRouter } from 'next/navigation';
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -57,7 +58,38 @@ export function ScriptScreen({
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [chatBusy, setChatBusy] = useState(false);
   const [drafting, setDrafting] = useState(false);
+  const router = useRouter();
   const [draftError, setDraftError] = useState<string | null>(null);
+  /** The tests the draft failed, named (D102). Shown, never used to rewrite. */
+  const [draftWarnings, setDraftWarnings] = useState<string[]>([]);
+  const [making, setMaking] = useState<null | 'yap' | 'version'>(null);
+  const [makeError, setMakeError] = useState<string | null>(null);
+  const marrsFormat = initial.format === 'split_screen_short' || initial.format === 'yap';
+
+  /**
+   * THE YAP AND THE VERSION (D102). Both mint a sibling piece and open it. The yap is written from this
+   * split-screen's beats; the version is a copy with the next letter, to be changed in one place and
+   * re-recorded.
+   */
+  const make = async (what: 'yap' | 'version') => {
+    if (making) return;
+    setMaking(what);
+    setMakeError(null);
+    try {
+      await flush();
+      const res = await fetch(`/console/marketing/piece/${initial.piece_id}/${what}`, { method: 'POST' });
+      const b = (await res.json().catch(() => null)) as { id?: string; error?: string; warnings?: string[] } | null;
+      if (!res.ok || !b?.id) {
+        setMakeError(b?.error ?? `Could not make the ${what}.`);
+        return;
+      }
+      router.push(`/console/marketing/piece/${b.id}`);
+    } catch {
+      setMakeError('Network error. Try again.');
+    } finally {
+      setMaking(null);
+    }
+  };
   const [undo, setUndo] = useState<string | null>(null);
   const [media, setMedia] = useState<string[]>(initial.media ?? []);
   /**
@@ -262,11 +294,13 @@ export function ScriptScreen({
         setDraftError(b?.error ?? 'Could not draft the script.');
         return;
       }
-      const { script: drafted, model } = (await res.json()) as {
+      const { script: drafted, model, warnings } = (await res.json()) as {
         script: string;
         model?: string;
+        warnings?: string[];
       };
       setDraftModel(model ?? null);
+      setDraftWarnings(Array.isArray(warnings) ? warnings : []);
       applyChatEdit(drafted);
     } catch {
       setDraftError('Network error. Try again.');
@@ -325,6 +359,31 @@ export function ScriptScreen({
           {/* QUEUE IT FOR THE STUDIO. Here as well as on the Prezie stage, because a piece with no prezie
               never visits that stage and would otherwise have no way into the shoot queue at all. */}
           <ReadyToRecord pieceId={initial.piece_id} ready={Boolean(initial.shoot_ready)} />
+          {marrsFormat ? (
+            <>
+              {initial.format === 'split_screen_short' ? (
+                <button
+                  type="button"
+                  className={s.prompterLink}
+                  onClick={() => void make('yap')}
+                  disabled={making !== null}
+                  title="Write the same question as a one-take, straight-to-camera yap, from these four beats."
+                >
+                  {making === 'yap' ? 'Writing…' : 'Make the yap'}
+                </button>
+              ) : null}
+              <button
+                type="button"
+                className={s.prompterLink}
+                onClick={() => void make('version')}
+                disabled={making !== null}
+                title="Copy this piece as the next version, to change one thing and re-record."
+              >
+                {making === 'version' ? 'Copying…' : 'Duplicate as version'}
+              </button>
+              {makeError ? <span className={s.draftError}>{makeError}</span> : null}
+            </>
+          ) : null}
           <Link
             href={`/console/marketing/piece/${initial.piece_id}/teleprompter`}
             className={s.prompterLink}
@@ -393,6 +452,13 @@ export function ScriptScreen({
                   : 'Draft from the concept'}
             </button>
             {draftError ? <span className={s.draftError}>{draftError}</span> : null}
+            {draftWarnings.length ? (
+              <ul className={s.draftFlags} aria-label="Tests this draft failed">
+                {draftWarnings.map((w) => (
+                  <li key={w}>{w}</li>
+                ))}
+              </ul>
+            ) : null}
             {/* Who wrote it. Shown only right after a draft, so a two-model comparison is
                 attributable instead of taken on faith about which env var was live. */}
             {!draftError && draftModel ? (

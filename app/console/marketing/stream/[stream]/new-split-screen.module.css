@@ -1,0 +1,61 @@
+/* The split-screen door (D102), on the Marrs Attacks board. */
+.wrap {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+.head {
+  margin: 0;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.idea {
+  width: 100%;
+  resize: vertical;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line, rgba(255, 255, 255, 0.14));
+  background: transparent;
+  color: var(--text-1);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.go,
+.goQuiet {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--mint, #69fccb);
+  background: transparent;
+  color: var(--text-1);
+  cursor: pointer;
+}
+.goQuiet {
+  border-color: var(--line, rgba(255, 255, 255, 0.14));
+  color: var(--text-2);
+}
+.go:disabled,
+.goQuiet:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.note {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.err {
+  margin: 0;
+  font-size: 12px;
+  color: var(--coral, #ff7a6b);
+}

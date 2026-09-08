@@ -160,6 +160,27 @@ export type MarketingPiece = {
    * through the media-library door). Carried onto every calendar entry and into every link.
    */
   use_case?: string;
+  /**
+   * VERSION TESTING (D102). Marrs: "work out how we do version testing." A version is a sibling piece
+   * of the same question with one thing changed (the walk-on, hook A, the title's wording), so the
+   * leaderboard can compare them. `variant` is the letter he sees (B, C); `variant_of` is the piece it
+   * was duplicated from, so every version of one question can be found. The original has neither.
+   */
+  variant?: string;
+  variant_of?: string;
+  /**
+   * THE YAP (D102): the same question delivered straight to camera in one take, generated from the
+   * split-screen's beats. `sibling_of` points at the split-screen piece so the two can be compared as
+   * "same question, different format".
+   */
+  sibling_of?: string;
+  /**
+   * MARRS ATTACKS LABELS (D102), in place of a use case on his board: the question's focus anchor
+   * (AI, creativity, productivity, purpose, work) and the CTA keyword (MAP, ROLE) that decides which
+   * magnet the link lands on.
+   */
+  focus_anchor?: string;
+  cta_keyword?: string;
 };
 
 function keyFor(owner: string, pieceId: string): string {

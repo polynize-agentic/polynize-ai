@@ -15,6 +15,7 @@ import { llmErrorText } from '@/lib/llm/error-text';
 import { getCurrentUser } from '@/lib/console-auth';
 import { getPiece } from '@/lib/marketing/piece-store';
 import { draftVideoScript, DraftError, scriptModelInUse } from '@/lib/marketing/draft';
+import { SPLIT_SCREEN_FORMAT, YAP_FORMAT, checkSplitScreenScript, checkYapScript } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -45,7 +46,18 @@ export async function POST(
   try {
     const script = await draftVideoScript(owner, piece);
     // The model rides back with the draft so the screen can say who wrote it.
-    return NextResponse.json({ script, model: scriptModelInUse() });
+    /**
+     * THE REJECTION BEHAVIOUR (D102): for the two Marrs Attacks formats every test the script fails is
+     * named back to him. The script is still returned (he can fix one word himself); nothing is
+     * silently adapted to fit.
+     */
+    const warnings =
+      piece.format === SPLIT_SCREEN_FORMAT
+        ? checkSplitScreenScript(script)
+        : piece.format === YAP_FORMAT
+          ? checkYapScript(script)
+          : [];
+    return NextResponse.json({ script, model: scriptModelInUse(), warnings });
   } catch (e) {
     if (e instanceof DraftError) {
       if (e.reason === 'no-concept') {

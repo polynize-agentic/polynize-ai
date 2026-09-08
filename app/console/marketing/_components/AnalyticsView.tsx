@@ -69,6 +69,7 @@ export type EntryLite = {
   title: string;
   use_case?: string;
   frame?: string;
+  variant?: string;
   scheduled_at?: string;
   status: 'draft' | 'scheduled' | 'published';
   public_url?: string;

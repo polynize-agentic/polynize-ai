@@ -2947,3 +2947,37 @@ Tests: the pure half (`evergreen.ts`: the quiet slot, reading list and item ids,
 - **Unverified until the first pull.** The per-network field names are from the spec, not from his rows. `normalizePost` reads several names for each measure for that reason, and the first Pull now after this deploy is the test.
 
 Tests: 47 in `attribution.test.ts`, 87 in `site-analytics.test.ts` (both files now cover the new fields, the fold, and ranking by saves and shares).
+
+
+## D102: The split-screen explainer as a formula, the yap, and version testing
+
+**Adopted 8 September 2026.** Marrs: *"the pitch follows a formula, which means that we have our style guide, we smash out the formula, the pitch gets created, and it's a lot easier to execute quicker... stick to one concept, lock it down, and just pump out as much as we can."* Built to his own document, `docs/pam-console/marrs-split-screen-rules.md`, which is the source; where the code and it disagree, the code is wrong.
+
+### What was built
+
+**The formula is locked, in the format itself.** `split_screen_short` in `output-plan.ts` is now the split-screen explainer: the fixed cold open (HOOK A ending on why or how, the TITLE verbatim), four beats of about 33 to 36 words following the WHY structure (setup, but, therefore, so do this) or the HOW structure (the result, step one, step two, the bit nobody does), about 140 words in total, a CTA of about ten words outside the clock naming one comment keyword. Instagram first, then TikTok, YouTube, LinkedIn. A second format, `yap`, is the same question straight to camera in one take.
+
+**The title gate.** On a split-screen piece the hooks step proposes TITLES. April is given the two shapes, the killer test ("if the viewer can answer the title themselves, kill it"), the construction rules, and the whole scored calibration set from his document as few-shots, and asked for six titles that pass plus the ones she killed with the failed test named. Every title she keeps is then run through the mechanical tests here (opens with Why or How; one sentence, cut at the full stop; no double negative; no question mark); a failure moves it to the killed list with the test named. The killed titles appear as "Killed:" lines in the concept read, so the rejections are visible without a new screen.
+
+**The screen plan is the arc.** On a split-screen piece the arc step produces TRANSFORM (one of the seven, or "does not classify"), OBJECT, TAP 0 to TAP 5, and the four beat jobs for the agreed title's shape. It is stored in the existing outline field, read by the script as the binding arc and by the prezie one-shot as the visual brief together with the whole visual grammar (one object, five states, one change per tap, the change on the beat word). A transform that is not one of the seven is flagged under the plan, never forced.
+
+**The checks, named back.** After a draft, `checkSplitScreenScript` names every test the script fails: beats not four, over 140 words ("if an idea cannot survive 140 words, it is not this format"), a beat over 42 or under 20 words, hook A not ending on the title's word, the CTA over sixteen words, no keyword, a forbidden keyword (JOB, TEAM, AI, YES), a plural. They are printed in amber under the draft button. The script is still returned; nothing is rewritten silently. The worked example in his document passes every check.
+
+**The door.** On the Marrs Attacks board, one box: the idea or the question. Split-screen or yap. No Story, no gates: his format is question-driven. The idea is stored as the piece's angle and stands in for the concept in every prompt.
+
+**The yap** is written from the split-screen's four beats as talk, opening on the title verbatim, at most 160 words, same keyword. A sibling piece joined by `sibling_of`, so "same question, different format" is a comparison the leaderboard can make.
+
+**Version testing.** "Duplicate as version" copies a piece as the next letter (B, C...) with media and recording state cleared, joined to the original by `variant_of`. Every entry made from a version carries the letter and the leaderboard gives each version its own rung, so two walk-ons of one question sit side by side.
+
+**Where the link lands.** A Marrs Attacks piece has no use case; its CTA keyword decides the magnet: MAP to the team map, ROLE to the job map. The link's campaign is `marrs_attacks` (D101).
+
+### Decisions inside it
+
+- **Locked shape, filled blanks.** The model cannot restructure the script; the section labels are fixed and the teleprompter reads them as it reads every other script. That is what makes the formula fast.
+- **Spoken words only in the script, the screen in the plan.** The same two-track discipline D29 and D92 established. The screen plan lives in the outline field rather than a new one, because the outline already flows to the script and the prezie.
+- **Flag, never force**, in code: every check returns names, and no check rewrites anything. His document says silent adaptation is worse than rejection.
+- **The calibration set is in the prompt verbatim**, because his document says the data calibrates better than the rules and the rules are a summary of it.
+- **Focus anchor and keyword as fields** (`focus_anchor`, `cta_keyword`) exist on the piece for the Marrs Attacks labels; the keyword is read off the script at prepare time when the field is empty. The anchor is not yet written by the title gate (it is shown on the option, not stored); a follow-up.
+- **Unverified in production**, as his document says of its own script and visual rules. The first split-screen through the console is the test: the title gate, the plan, the checks and the prezie's six states will each show whether the prompts land.
+
+Tests: `split-screen.test.ts`, 53 assertions, including the worked example passing every check and each named failure firing.

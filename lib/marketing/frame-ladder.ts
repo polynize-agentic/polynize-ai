@@ -26,6 +26,8 @@ import type { SiteWindow } from './site-analytics';
 export type LadderEntry = {
   entry_id: string;
   frame?: string;
+  /** The version letter (D102). A version is its own rung, so versions of one question sit side by side. */
+  variant?: string;
   use_case?: string;
   scheduled_at?: string;
   status: 'draft' | 'scheduled' | 'published';
@@ -95,7 +97,7 @@ export function frameLadder(
     const day = e.scheduled_at.slice(0, 10);
     if (day < opts.from || day > opts.to) continue;
     if (opts.useCase !== undefined && (e.use_case ?? 'none') !== opts.useCase) continue;
-    const frame = e.frame ?? 'unlabelled';
+    const frame = `${e.frame ?? 'unlabelled'}${e.variant ? ` · version ${e.variant}` : ''}`;
     groups.set(frame, [...(groups.get(frame) ?? []), e]);
   }
 
@@ -120,9 +122,10 @@ export function frameLadder(
     if (sends !== undefined) anySends = true;
     if (completions !== undefined && completions > 0) anyCompletions = true;
     if (impressions.length) anyImpressions = true;
+    const base = frame.replace(/ · version [A-Z0-9]+$/, '');
     const row: LadderRow = {
       frame,
-      label: opts.label(frame),
+      label: `${opts.label(base)}${frame === base ? '' : frame.slice(base.length)}`,
       n: list.length,
       thin: list.length < THIN_UNDER,
     };
