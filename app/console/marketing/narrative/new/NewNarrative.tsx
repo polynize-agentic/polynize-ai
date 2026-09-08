@@ -18,7 +18,24 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { streamLabel } from '@/lib/marketing/streams';
 import { USE_CASES, guessUseCase, usesUseCases } from '@/lib/marketing/use-case';
+import { EXAMPLE_TITLES } from '@/lib/marketing/split-screen';
 import g from '../gates.module.css';
+
+/**
+ * THREE WAYS OUT OF GATE 1 (D103). Marrs: "you have the ideas page, and then underneath that, there are
+ * three selections: Split Screen, Yap, Multi. It decides from there how it routes it."
+ *
+ * Multi is the Story as it always was: one narrative, the article, the kit, many outputs. Split
+ * Screen and Yap are his Marrs Attacks formats: one question, one piece, straight to the script
+ * screen. All three start from the same idea, which is why they live on this screen and not on the
+ * board; the board is for work in flight.
+ */
+type Route = 'split' | 'yap' | 'multi';
+const ROUTES: { id: Route; label: string; hint: string }[] = [
+  { id: 'split', label: 'Split screen', hint: 'One question, four beats, the timer. His hero format.' },
+  { id: 'yap', label: 'Yap', hint: 'The same question straight to camera, one take.' },
+  { id: 'multi', label: 'Multi', hint: 'A narrative: the article, the kit, many outputs.' },
+];
 
 export type IdeaRow = { id: string; lane: string; text: string; when: string };
 
@@ -26,15 +43,25 @@ export function NewNarrative({
   ideas,
   streams,
   fixedLane,
+  preselect,
 }: {
   ideas: IdeaRow[];
   /** Every stream, for the fallback picker. */
   streams: { id: string; label: string }[];
   /** The stream we came from. When set, there is nothing to pick. */
   fixedLane?: string;
+  /** An inbox idea to arrive with already chosen ("Create narrative" on the ideas panel). */
+  preselect?: string;
 }) {
   const router = useRouter();
-  const [picked, setPicked] = useState<string | null>(null);
+  const [picked, setPicked] = useState<string | null>(preselect ?? null);
+  /**
+   * WHICH WAY OUT. Multi by default everywhere. On Polynize boards Split screen and Yap are shown
+   * but disabled, because his rules document says the question rules must not be reused there
+   * without a separate validation run: the layout stays the same on every board, and the reason
+   * is on the button.
+   */
+  const [route, setRoute] = useState<Route>('multi');
   const [typed, setTyped] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -43,6 +70,7 @@ export function NewNarrative({
 
   const chosenText = typed.trim() || ideas.find((i) => i.id === picked)?.text || '';
   const ready = chosenText !== '' && lane !== null;
+  const marrsBoard = lane !== null && !usesUseCases(lane);
 
   /**
    * THE USE CASE (D96): what this Story is about and for whom. April's suggestion comes from the
@@ -59,6 +87,31 @@ export function NewNarrative({
     if (!ready || busy) return;
     setBusy(true);
     setErr(null);
+    // Split screen and Yap mint one piece and open its script screen; no Story, no gates.
+    if (route !== 'multi') {
+      try {
+        const res = await fetch(`/console/marketing/stream/${lane}/split-screen`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            idea: chosenText,
+            format: route === 'yap' ? 'yap' : 'split_screen_short',
+            idea_ref: typed.trim() ? undefined : (picked ?? undefined),
+          }),
+        });
+        const b = (await res.json().catch(() => null)) as { id?: string; error?: string } | null;
+        if (!res.ok || !b?.id) {
+          setErr(b?.error ?? 'Could not create it.');
+          setBusy(false);
+          return;
+        }
+        router.push(`/console/marketing/piece/${b.id}`);
+      } catch {
+        setErr('Network error. Try again.');
+        setBusy(false);
+      }
+      return;
+    }
     try {
       const res = await fetch('/console/marketing/narrative/create', {
         method: 'POST',
@@ -119,6 +172,56 @@ export function NewNarrative({
         </button>
       ))}
 
+      {/* THE THREE WAYS OUT (D103), under the ideas. */}
+      <p className={g.useCaseHead}>What is it?</p>
+      <div className={g.routes} role="group" aria-label="Format">
+        {ROUTES.map((r) => {
+          const off = r.id !== 'multi' && lane !== null && !marrsBoard;
+          return (
+            <button
+              key={r.id}
+              type="button"
+              className={`${g.route} ${route === r.id ? g.routeOn : ''}`}
+              onClick={() => setRoute(r.id)}
+              disabled={busy || off}
+              title={off ? 'A Marrs Attacks format. Its question rules are not yet validated for Polynize content.' : r.hint}
+              aria-pressed={route === r.id}
+            >
+              <span className={g.routeLabel}>{r.label}</span>
+              <span className={g.routeHint}>{off ? 'Marrs Attacks only' : r.hint}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* HIS SCORED TITLES AS SUGGESTIONS (D103), when the way out is a split screen or a yap. One
+          click puts a title in the box; he can still type his own. The 9s and 10s come first. */}
+      {route !== 'multi' && marrsBoard ? (
+        <>
+          <p className={g.useCaseHead}>
+            Or start from one of your scored titles
+            <span className={g.meta}> (9s and 10s first)</span>
+          </p>
+          <div className={g.examples}>
+            {EXAMPLE_TITLES.map((t) => (
+              <button
+                key={t.title}
+                type="button"
+                className={`${g.example} ${typed.trim() === t.title ? g.exampleOn : ''}`}
+                onClick={() => {
+                  setTyped(t.title);
+                  setPicked(null);
+                }}
+                disabled={busy}
+                title={`Scored ${t.score} by you`}
+              >
+                {t.title}
+              </button>
+            ))}
+          </div>
+        </>
+      ) : null}
+
       {fixedLane ? null : (
         <div className={g.lanes}>
           {streams.map((st) => (
@@ -135,7 +238,7 @@ export function NewNarrative({
         </div>
       )}
 
-      {showUseCases ? (
+      {showUseCases && route === 'multi' ? (
       <>
       <p className={g.useCaseHead}>
         Who is this for?
@@ -168,7 +271,11 @@ export function NewNarrative({
               ? 'Pick an idea'
               : !lane
                 ? 'Pick whose it is'
-                : 'Develop →'}
+                : route === 'split'
+                  ? 'Split screen →'
+                  : route === 'yap'
+                    ? 'Yap →'
+                    : 'Develop →'}
         </button>
       </div>
     </div>

@@ -19,7 +19,7 @@ export const dynamic = 'force-dynamic';
 export default async function NewNarrativePage({
   searchParams,
 }: {
-  searchParams: Promise<{ stream?: string }>;
+  searchParams: Promise<{ stream?: string; idea?: string }>;
 }) {
   const user = await getCurrentUser();
   if (!user) return null;
@@ -27,7 +27,7 @@ export default async function NewNarrativePage({
     redirect(`/console/${user.scope.slug}/blueprint`);
   }
 
-  const { stream } = await searchParams;
+  const { stream, idea: preselect } = await searchParams;
   const fixedLane = isStreamId(stream) ? stream : undefined;
   const lanes = fixedLane ? [fixedLane] : STREAMS.map((st) => st.id);
   const lists = await Promise.all(
@@ -61,6 +61,8 @@ export default async function NewNarrativePage({
       ideas={recent}
       streams={STREAMS.map((st) => ({ id: st.id, label: st.label }))}
       fixedLane={fixedLane}
+      // "Create narrative" on an inbox idea lands here with that idea already chosen (D103).
+      preselect={typeof preselect === 'string' && rows.some((r) => r.id === preselect) ? preselect : undefined}
     />
   );
 }

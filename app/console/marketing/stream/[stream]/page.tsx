@@ -17,8 +17,6 @@ import { cardState } from '@/lib/marketing/kit';
 import s from '../../../_components/client-card.module.css';
 import l from '../../../_components/launcher.module.css';
 import lane from './lanes.module.css';
-import { NewSplitScreen } from './NewSplitScreen';
-import { usesUseCases } from '@/lib/marketing/use-case';
 
 export const dynamic = 'force-dynamic';
 
@@ -296,9 +294,6 @@ export default async function StreamPage({
               + New narrative
             </Link>
           </div>
-          {/* THE SPLIT-SCREEN DOOR (D102), on the Marrs Attacks board only: his hero format is
-              question-driven, not Story-driven, so it does not go through the gates. */}
-          {!usesUseCases(stream) ? <NewSplitScreen stream={stream} /> : null}
           {narratives.length === 0 ? (
             <p className={lane.empty}>
               Nothing here yet. Catch an idea and it lands at gate 1, at the bottom, until it

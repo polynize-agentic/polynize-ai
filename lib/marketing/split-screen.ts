@@ -174,6 +174,48 @@ OBJECT SELECTION. Find the noun the viewer is worried about (job, creativity, br
 
 HARD RULES. Sound-off test: the object must be followable as an argument with captions covered. One change per tap. No text except tap 0 and tap 5 (numbers allowed where a number is the point). The tap lands on the beat word: "but", "so", never mid-sentence.`;
 
+/**
+ * THE SCORED TITLES, AS SUGGESTIONS (D103). Marrs: "I spent a lot of time creating some examples...
+ * when I click Split Screen, underneath there should come some example questions... at every stage,
+ * we're trying to reduce the friction in that creative decision." These are his own titles from the
+ * calibration set, the 9s and 10s first, then the 8s. Every one passes the mechanical tests (asserted).
+ */
+export const EXAMPLE_TITLES: readonly { title: string; score: number }[] = [
+  { title: 'Why you need a 100-year plan to hit your goals', score: 10 },
+  { title: "Why AI won't make your kids stupid", score: 10 },
+  { title: 'Why deadlines make you more creative', score: 10 },
+  { title: 'Why you abandon things at 80 percent', score: 10 },
+  { title: "How to know when something's finished", score: 10 },
+  { title: 'How to make your work impossible to copy', score: 10 },
+  { title: 'How to have the best idea in the room', score: 10 },
+  { title: 'Why your taste is ahead of your skill', score: 9 },
+  { title: "Why AI won't rot your brain", score: 9 },
+  { title: "Why AI won't kill your creativity", score: 9 },
+  { title: "Why using AI isn't cheating", score: 9 },
+  { title: "Why you're not too old for AI", score: 9 },
+  { title: 'Why you should let AI do the fun part', score: 9 },
+  { title: "Why you trust AI most when it's wrong", score: 9 },
+  { title: "How to know what you're actually good at", score: 9 },
+  { title: 'How to stop second-guessing yourself', score: 9 },
+  { title: 'How to make yourself hard to replace', score: 9 },
+  { title: 'Why your best ideas come on the toilet', score: 8 },
+  { title: 'Why finishing badly beats finishing well', score: 8 },
+  { title: "Why you're allowed to quit at 90 percent", score: 8 },
+  { title: "Why the question you're embarrassed to ask AI is the right one", score: 8 },
+  { title: 'Why nobody can keep up with AI', score: 8 },
+  { title: 'Why your worst idea is worth writing down', score: 8 },
+  { title: "Why you're too polite to AI", score: 8 },
+  { title: 'Why nobody actually knows how to use AI yet', score: 8 },
+  { title: "Why you're not too late to learn AI", score: 8 },
+  { title: "Why you're not falling behind on AI", score: 8 },
+  { title: "Why you're chasing a goal you never chose", score: 8 },
+  { title: "Why you ask AI things you'd never ask a person", score: 8 },
+  { title: 'How to trust your own taste', score: 8 },
+  { title: "How to make a decision you won't regret", score: 8 },
+  { title: 'How to never run out of ideas', score: 8 },
+  { title: 'How to tell when AI is lying to you', score: 8 },
+];
+
 /* ------------------------------------------------------------------ title proposals */
 
 export type TitleOption = {

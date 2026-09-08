@@ -364,7 +364,7 @@ export function ScriptScreen({
               {initial.format === 'split_screen_short' ? (
                 <button
                   type="button"
-                  className={s.prompterLink}
+                  className={`${s.prompterLink} ${s.headBtn}`}
                   onClick={() => void make('yap')}
                   disabled={making !== null}
                   title="Write the same question as a one-take, straight-to-camera yap, from these four beats."
@@ -374,7 +374,7 @@ export function ScriptScreen({
               ) : null}
               <button
                 type="button"
-                className={s.prompterLink}
+                className={`${s.prompterLink} ${s.headBtn}`}
                 onClick={() => void make('version')}
                 disabled={making !== null}
                 title="Copy this piece as the next version, to change one thing and re-record."

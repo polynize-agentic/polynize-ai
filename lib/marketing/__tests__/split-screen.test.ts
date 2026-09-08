@@ -21,6 +21,7 @@ import {
   checkYapScript,
   isMarrsAttacksFormat,
   WORD_BUDGET,
+  EXAMPLE_TITLES,
 } from '../split-screen';
 
 let n = 0;
@@ -151,5 +152,11 @@ eq(checkYapScript(yap, 'Why AI won\'t take your job'), [], 'a good yap passes');
 ok(checkYapScript(yap, 'Why AI will take your job').some((p) => p.includes('verbatim')), 'the title must be the split-screen title verbatim');
 ok(checkYapScript(yap.replace('TALK', 'BODY')).some((p) => p.includes('no TALK')), 'sections are named');
 ok(isMarrsAttacksFormat('split_screen_short') && isMarrsAttacksFormat('yap') && !isMarrsAttacksFormat('linkedin_text'), 'the two Marrs Attacks formats');
+
+/* his scored titles as suggestions (D103) */
+ok(EXAMPLE_TITLES.length >= 30, 'the calibration set\'s 8s, 9s and 10s are all offered');
+ok(EXAMPLE_TITLES.every((t) => titleChecks(t.title).length === 0), 'every suggestion passes the mechanical tests');
+ok(EXAMPLE_TITLES.slice(0, 17).every((t) => t.score >= 9), 'the 9s and 10s come first');
+ok(EXAMPLE_TITLES.every((t, i) => i === 0 || EXAMPLE_TITLES[i - 1].score >= t.score), 'never a lower score before a higher one');
 
 console.log(`split-screen: ${n} assertions passed`);

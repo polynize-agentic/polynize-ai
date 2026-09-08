@@ -255,18 +255,19 @@ function IdeaCard({
         aria-label="Idea"
       />
       <div className={s.foot}>
-        {/* Carries the idea INTO the interview rather than copying it out. April opens with the
-            note already in the box, so the thinking is not retyped. */}
+        {/* Carries the idea INTO Gate 1 with itself already chosen (D103). Marrs: "It should say
+            Create Narrative, and it should inject that idea directly into gate 1... The idea of core
+            concepts is redundant and shouldn't be in anyone's flow anymore." */}
         <Link
           className={empty ? s.createOff : s.create}
-          href={`/console/marketing/intake?stream=${stream}&idea=${idea.id}`}
+          href={`/console/marketing/narrative/new?stream=${stream}&idea=${idea.id}`}
           aria-disabled={empty}
           onClick={(e) => {
             if (empty) e.preventDefault();
           }}
-          title={empty ? 'Write something first' : 'Take this into the concept interview'}
+          title={empty ? 'Write something first' : 'Take this idea into Gate 1, already chosen'}
         >
-          Create core concept →
+          Create narrative →
         </Link>
         <span className={`${s.state} ${state === 'saved' ? s.saved : ''} ${state === 'failed' ? s.failed : ''}`}>
           {state === 'saving' ? 'saving…' : state === 'saved' ? 'saved' : state === 'failed' ? 'not saved' : ''}

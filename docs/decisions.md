@@ -2981,3 +2981,21 @@ Tests: 47 in `attribution.test.ts`, 87 in `site-analytics.test.ts` (both files n
 - **Unverified in production**, as his document says of its own script and visual rules. The first split-screen through the console is the test: the title gate, the plan, the checks and the prezie's six states will each show whether the prompts land.
 
 Tests: `split-screen.test.ts`, 53 assertions, including the worked example passing every check and each named failure firing.
+
+
+## D103: Gate 1 has three ways out, and ideas go to Gate 1
+
+**Adopted 8 September 2026.** Marrs, on seeing the split-screen door on his board: *"I don't like it being bare on the narratives page like this. It doesn't feel quite right... I still see this as a narrative."*
+
+### What changed
+
+**The board is back to how it was.** The box added in D102 is gone. **Gate 1 now has three selections under the ideas: Split screen, Yap, Multi.** Multi is the Story as it always was. Split screen and Yap mint one piece from the idea and open its script screen, marking an inbox idea used the way a Story does. The Develop button says which way it is going.
+
+**His scored titles as suggestions.** *"I spent a lot of time creating some examples... when I click Split Screen, underneath there should come some example questions... at every stage, we're trying to reduce the friction in that creative decision."* Choosing Split screen or Yap on his board shows the calibration set's titles, 9s and 10s first, then the 8s, one click to put one in the box. Every one is asserted to pass the mechanical title tests.
+
+**"Create core concept" is gone from ideas.** *"That's wrong. It should say Create Narrative, and it should inject that idea directly into gate 1... The idea of core concepts is redundant and shouldn't be in anyone's flow anymore."* The button on an idea now says Create narrative and opens Gate 1 with that idea already chosen. The concept library and the intake interview still exist as screens; they are no longer on the ideas path.
+
+### Decisions inside it
+
+- **Same layout on every board.** On Polynize boards Split screen and Yap are shown but disabled, with the reason on the button: his rules document says the question rules must not be reused for Polynize without a separate validation run (D101). The use-case chips appear only on the Multi route, because they label Stories.
+- **One entry point for an idea.** Whether it becomes a Story or a split-screen, it starts at Gate 1. That is what makes "I still see this as a narrative" true in the console.

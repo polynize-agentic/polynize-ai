@@ -155,6 +155,21 @@
   white-space: nowrap;
   transition: background var(--tac-transition), border-color var(--tac-transition);
 }
+/* THE SAME LOOK ON A BUTTON (D103). Marrs: "the white highlight with the blue writing doesn't look
+   great." A <button> carries the browser's default light background where an <a> is transparent, so
+   the two Marrs Attacks buttons sharing .prompterLink rendered white with mint text. */
+.headBtn {
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: normal;
+}
+.headBtn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
 .prompterLink:hover {
   background: rgba(105, 252, 203, 0.08);
   border-color: var(--mint);

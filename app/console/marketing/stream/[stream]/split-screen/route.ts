@@ -19,6 +19,7 @@ import { savePiece, type MarketingPiece } from '@/lib/marketing/piece-store';
 import { SPLIT_SCREEN_FORMAT, YAP_FORMAT } from '@/lib/marketing/split-screen';
 import { usesUseCases } from '@/lib/marketing/use-case';
 import { formatById } from '@/lib/marketing/output-plan';
+import { updateIdea } from '@/lib/marketing/idea-store';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -33,8 +34,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ str
   if (usesUseCases(stream)) {
     return NextResponse.json({ error: 'The split-screen explainer is a Marrs Attacks format. Polynize streams use Stories.' }, { status: 400 });
   }
-  const body = (await req.json().catch(() => null)) as { idea?: unknown; format?: unknown } | null;
+  const body = (await req.json().catch(() => null)) as { idea?: unknown; format?: unknown; idea_ref?: unknown } | null;
   const idea = typeof body?.idea === 'string' ? body.idea.trim().slice(0, 4000) : '';
+  const ideaRef = typeof body?.idea_ref === 'string' ? body.idea_ref : undefined;
   if (!idea) return NextResponse.json({ error: 'write the idea or the question first' }, { status: 400 });
   const format = body?.format === YAP_FORMAT ? YAP_FORMAT : SPLIT_SCREEN_FORMAT;
   const fmt = formatById(format);
@@ -61,5 +63,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ str
     console.error('[split-screen.new] save failed:', err);
     return NextResponse.json({ error: 'could not create the piece' }, { status: 500 });
   }
+  // A spent inbox idea leaves the chooser, as it does when it becomes a Story. Best effort.
+  if (ideaRef) void updateIdea(stream, ideaRef, { used_at: now }).catch(() => {});
   return NextResponse.json({ id: piece.piece_id });
 }
