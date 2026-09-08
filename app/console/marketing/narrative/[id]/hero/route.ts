@@ -54,7 +54,7 @@ import { isHiggsfieldConfigured } from '@/lib/marketing/higgsfield';
 import {
   imageModelById,
   providerOf,
-  DEFAULT_IMAGE_MODEL,
+  DEFAULT_POST_IMAGE_MODEL,
 } from '@/lib/marketing/higgsfield-models';
 import { openRouterKey } from '@/lib/marketing/openrouter-image';
 import { generateHostedImages } from '@/lib/marketing/image-generate';
@@ -106,7 +106,8 @@ export async function POST(
     return NextResponse.json({ error: 'unknown stream' }, { status: 400 });
   }
 
-  const model = imageModelById(body.model ?? '') ?? imageModelById(DEFAULT_IMAGE_MODEL);
+  // A post image, so the default is not Soul (D108).
+  const model = imageModelById(body.model ?? '') ?? imageModelById(DEFAULT_POST_IMAGE_MODEL);
   if (!model) {
     return NextResponse.json({ error: 'no image model is configured' }, { status: 400 });
   }

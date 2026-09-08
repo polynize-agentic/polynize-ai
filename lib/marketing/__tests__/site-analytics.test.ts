@@ -16,6 +16,7 @@ import {
 import { publicUrlFor } from '../url-join';
 import { frameLadder, median } from '../frame-ladder';
 import { normalizePost, enrichPosts, type PostMetrics } from '../analytics-metrics';
+import { shouldAnnounce, announcementText } from '../slack-content';
 
 let n = 0;
 const ok = (c: unknown, msg: string) => {
@@ -287,5 +288,15 @@ eq(S.rows[1].sends, 2, 'a post with no saves or shares reported contributes noth
 const R = frameLadder(lentries, { useCase: 'hiring_manager', from: '2026-08-07', to: '2026-09-05', win: lwin, postsByEntry: sposts, label, metric: 'reach' });
 eq(R.ranked_by, 'impressions', 'reach ranks by median impressions even when leads exist');
 eq(R.rows[0].frame, 'ig_reel', 'reel 5000 median beats contrarian 100');
+
+/* the #content ping (D108) */
+ok(shouldAnnounce({ stream: 'polynize', channel: 'instagram' }), 'anything on the Polynize brand is announced');
+ok(shouldAnnounce({ stream: 'kristin', channel: 'linkedin' }), 'LinkedIn on any stream is announced');
+ok(shouldAnnounce({ stream: 'marrs', channel: 'youtube' }), 'YouTube on any stream is announced');
+ok(!shouldAnnounce({ stream: 'marrs', channel: 'instagram' }), 'a Marrs Attacks Instagram post is not team-share material');
+ok(!shouldAnnounce({ stream: 'shourov', channel: 'tiktok' }), 'nor TikTok on a personal stream');
+const said = announcementText({ title: 'Why AI won\'t take your job', stream: 'polynize', channel: 'linkedin', public_url: 'https://www.linkedin.com/feed/update/urn:li:1' });
+ok(said.startsWith('*Why AI won\'t take your job* is live on LinkedIn (Polynize).'), 'the message names the post, the network and the brand');
+ok(said.endsWith('https://www.linkedin.com/feed/update/urn:li:1'), 'and ends with the link to share');
 
 console.log(`evergreen: ${n} assertions total`);

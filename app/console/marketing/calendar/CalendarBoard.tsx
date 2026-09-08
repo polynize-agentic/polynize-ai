@@ -613,7 +613,14 @@ export function CalendarBoard({
   // -------- List view --------
   const renderList = () => {
     const dated = entries.filter((e) => e.scheduled_at).slice();
-    dated.sort((a, b) => (a.scheduled_at! < b.scheduled_at! ? -1 : 1));
+    /**
+     * INVERTED (D108). Marrs: "I think we invert the list so the unscheduled are at the top. When I
+     * add something from a post and I get taken to the calendar screen, the posts that are
+     * unscheduled and that I need to work on are at the top. If I scroll down it says Today and if
+     * I scroll down it's got past dates." So: unscheduled first, then what is coming (latest first,
+     * down to tomorrow), the today line, today, then the past (yesterday first).
+     */
+    dated.sort((a, b) => (a.scheduled_at! > b.scheduled_at! ? -1 : 1));
     const days = new Map<string, CalendarEntry[]>();
     for (const e of dated) {
       const k = keyOf(e.scheduled_at);
@@ -632,13 +639,20 @@ export function CalendarBoard({
      * browser adds both. Same discipline as the month view's today cell.
      */
     const groups = [...days.entries()];
-    const firstAhead = todayKey ? groups.findIndex(([day]) => day >= todayKey) : -1;
+    // In descending order the line sits before the first day that is today or already past.
+    const firstBehind = todayKey ? groups.findIndex(([day]) => day <= todayKey) : -1;
 
     return (
       <div className={s.board}>
+        {undated.length > 0 ? (
+          <section className={s.dayGroup}>
+            <h2 className={s.dayHead}>Unscheduled</h2>
+            <div className={s.entries}>{undated.map(renderEntry)}</div>
+          </section>
+        ) : null}
         {groups.map(([day, items], ix) => (
           <div key={day}>
-            {ix === firstAhead ? (
+            {ix === firstBehind ? (
               <div className={s.todayLine}>
                 <span className={s.todayMark}>today</span>
                 <span className={s.todayDate}>{prettyDay(todayKey)}</span>
@@ -653,21 +667,13 @@ export function CalendarBoard({
             </section>
           </div>
         ))}
-        {/* Everything on the board is behind us: the line still belongs, at the end, because it is
-            the answer to "what is coming up" as much as it is a divider. */}
-        {firstAhead === -1 && groups.length > 0 ? (
+        {/* Everything on the board is still ahead: the line belongs at the end, marking where the
+            future stops and nothing has been published yet. */}
+        {firstBehind === -1 && groups.length > 0 && todayKey ? (
           <div className={s.todayLine}>
             <span className={s.todayMark}>today</span>
-            <span className={s.todayDate}>
-              {prettyDay(todayKey)} · nothing scheduled from here on
-            </span>
+            <span className={s.todayDate}>{prettyDay(todayKey)} · nothing published yet</span>
           </div>
-        ) : null}
-        {undated.length > 0 ? (
-          <section className={s.dayGroup}>
-            <h2 className={s.dayHead}>Unscheduled</h2>
-            <div className={s.entries}>{undated.map(renderEntry)}</div>
-          </section>
         ) : null}
       </div>
     );

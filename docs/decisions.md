@@ -3063,3 +3063,36 @@ Tests: `split-screen.test.ts`, 53 assertions, including the worked example passi
 **Adopted 8 September 2026.** Marrs: *"This section in Gate 1 has previous ideas 'caught' and then the date... I just need a little cross in the corner of those, just so I can delete them if I don't want them there, because some are a bit stale."*
 
 Each caught idea at Gate 1, and each hook under Your hooks, carries a small cross in its corner. It deletes the idea from the inbox through the existing delete route; the row disappears at once and comes back with a message if the server refused. Scored hooks and archived hooks have no cross: the scored set is the calibration data, and the archive is the record.
+
+
+## D108: Five fixes from a day of testing, and the #content ping
+
+**Adopted 8 September 2026.** Marrs, after running the first split-screens through: five things in one message.
+
+### The split-screen prezie is a template, not a free build
+
+*"These ones have a formula to follow unlike the past ones we did... First page is the title and the object, then the object goes through a simple but effective transformation that follows the script narrative... A simple animation to the object as it goes through the twists and turns of the narrative. It's more abstract than anything, starting with text and ending with a CTA text if requested."*
+
+The one-shot builder has a second system prompt for the split-screen format: **one figure, five taps, one object.** State 0 is the locked title and the object at rest. Taps 1 to 4 follow beats 1 to 4 and change the object's state with CSS transitions (the tap classes the engine already accumulates), the transform for beat 2 chosen from the seven. Tap 5 is the CTA keyword. No text except state 0 and tap 5. The builder is given the title, the arc (with its OBJECT line) and the script. The free build for every other format is untouched.
+
+### No media library on the split-screen or yap script screen
+
+*"There is no need for the media library to appear in the script section."* Hidden for the two Marrs Attacks formats; the recording is attached on the caption screen. Other video pieces keep it.
+
+### Soul stays in the media library
+
+*"That sole model is really only good for creating the sole ID and not other images... it should just be available in the Image Library for that specific task."* A `POST_IMAGE_MODELS` list (everything but Soul) now feeds the Story hero picker, the hero route's default and the slide renderer. The media library's Generate tab keeps the full list, because that is where a Soul ID is made.
+
+### The calendar list is inverted
+
+*"When I add something from a post and I get taken to the calendar screen, the posts that are unscheduled and that I need to work on are at the top. If I scroll down it says Today and if I scroll down it's got past dates."* Unscheduled first, then what is coming (latest first, down to tomorrow), the today line, today, then the past (yesterday first, dimmed). No collapsing needed.
+
+### The #content ping
+
+*"A channel in our Slack that pings everyone when something goes live... Whenever a Polynize piece gets published or something on one of our LinkedIn channels gets published... That's pretty much just for LinkedIn and YouTube."*
+
+**When:** the moment the url join reads a post's public url back from Metricool (D98), which is the platform confirming it is live. Once per post (`announced_at`). **Which:** anything on the Polynize brand, and anything on LinkedIn or YouTube on any stream. Marrs Attacks posts on Instagram and TikTok are left out. **How:** a Slack incoming webhook for #content, its url in the console's environment as `SLACK_CONTENT_WEBHOOK`. The message names the post, the network and the brand, and ends with the link to share.
+
+**The one thing only Marrs can do:** in Slack, Apps → Incoming Webhooks → Add to Slack → choose #content → copy the webhook url → into the console project's Vercel environment as `SLACK_CONTENT_WEBHOOK` → redeploy. Until then nothing pings and nothing else changes.
+
+**Not covered yet:** hand-posted LinkedIn posts (his own profile) never get a public url from Metricool, so they do not ping. A "mark published with link" on a hand-posted entry would close that; noted in the todo.

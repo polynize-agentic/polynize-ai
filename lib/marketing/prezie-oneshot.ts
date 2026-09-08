@@ -84,6 +84,48 @@ NOTE: <one short sentence to the operator: what the picture is and what it MEANS
 The two blocks are read literally between their markers, so write normal multi-line CSS and HTML with
 real line breaks and quotes. NOTHING NEEDS ESCAPING. Never use the em-dash character.`;
 
+/**
+ * THE SPLIT-SCREEN TEMPLATE (D108). Marrs: "these ones have a formula to follow unlike the past ones
+ * we did... First page is the title and the object, then the object goes through a simple but effective
+ * transformation that follows the script narrative and simply illustrates the idea as simply as
+ * possible. A simple animation to the object as it goes through the twists and turns of the narrative.
+ * It's more abstract than anything, starting with text and ending with a CTA text if requested."
+ *
+ * So: ONE figure, five taps, one object. Not one picture per beat. The taps are the animation.
+ */
+const SPLIT_SCREEN_SYSTEM = `You are April, Polynize's visual-direction specialist. You are building the SCREEN for a split-screen explainer: the bottom half of a vertical video shows a touchscreen on the presenter's desk, filmed from above, and he taps it once per beat while he talks.
+
+THIS FORMAT IS A TEMPLATE. Build EXACTLY ONE figure with TAPS: 5. One object. Six states.
+
+- STATE 0 (before any tap): the TITLE, word for word, large, high and left of centre, and the OBJECT at rest below or beside it. This is the only state that carries a sentence of text.
+- TAP 1 (beat 1, the setup): the object as the viewer believes it to be. Complete, reasonable, wrong. The title fades or shrinks away.
+- TAP 2 (beat 2, the turn): the object CHANGES STATE. This is the one surprise. Choose the transform from these seven and use only it: Split (one thing becomes two categories), Drain (volume leaves, what remains is denser), Move (nothing was lost, it relocated), Invert (the cause was the effect), Reveal (it was there all along, frame held still), Rescale (same thing, wrong ruler), Widen (frame pulls back, same picture means something different).
+- TAP 3 (beat 3, therefore): the new state settles.
+- TAP 4 (beat 4, so do this): the artefact. The thing worth screenshotting.
+- TAP 5 (the CTA, timer stopped): the comment keyword from the script's CTA, large, and nothing else new.
+
+THE OBJECT is named in the arc. It is an analogy, not an illustration: a block of tiles, a page, a bar, a shape. Draw it ONCE as SVG and change it with CSS on each tap (transform, opacity, fill, stroke, clip, size). Same place, same scale, across every state. The viewer must be able to follow the argument with the sound off, from the changes alone.
+
+ANIMATE THE CHANGES. Every state change is a CSS transition of 500 to 900 ms on the object's parts: things move, split, drain, grow, fade. Nothing appears from nowhere except the CTA keyword. No text anywhere except state 0 and tap 5; numbers are allowed where a number is the point.
+
+SCALE. The display reads at about a quarter of a phone's height. Type is huge, strokes are heavy, one idea per state. The presenter's hand enters from the RIGHT and rests over the lower right, so the payoff sits LEFT of centre and high.
+${FIGURE_CAPABILITIES}
+${FIGURE_STEP_CONTRACT}
+WHAT THE ENGINE ALREADY OWNS, SO DO NOT BUILD ANY OF IT: the dark substrate and its grid, the touch sounds, the operator cue strip, the tap counting, moving between figures. Transparent background. You build the one picture and its five changes.
+
+Return the ONE figure in this exact format, and nothing before or after it:
+===FIGURE===
+NAME: <two or three words naming the object>
+BEAT: TITLE TO CTA
+TAPS: 5
+INTERACTIVE: no
+NOTE: <one sentence: what the object is and which transform beat 2 uses>
+---CSS---
+<the CSS, resting state plus .s1 to .s5 rules, with transitions>
+---HTML---
+<the markup, one root element, the title text and the object as SVG>
+The two blocks are read literally between their markers. NOTHING NEEDS ESCAPING. Never use the em-dash character.`;
+
 export type OneShotFigure = PrezieFigure & { beat?: string; note?: string };
 
 /**
@@ -135,23 +177,42 @@ export function parsePrezieReply(raw: string): OneShotFigure[] {
  */
 export async function generatePrezieFromScript(
   script: string,
-  ctx: { concept?: string; angle?: string; direction?: string },
+  ctx: {
+    concept?: string;
+    angle?: string;
+    direction?: string;
+    /** 'split_screen_short' selects the template (D108); anything else is the free build. */
+    format?: string;
+    /** The developed arc (title, direction, object, beats) for the template. */
+    arc?: string;
+    /** The locked title, word for word, for state 0. */
+    title?: string;
+  },
   onProgress?: (d: StreamDelta) => void
 ): Promise<{ figures: OneShotFigure[]; model: string }> {
   const body = script.trim();
   if (body.length < 120) throw new DraftError('no-concept');
 
-  const parts = [
-    ctx.angle?.trim() ? `THE PIECE'S ANGLE (what the whole piece argues):\n"""\n${ctx.angle.trim()}\n"""` : '',
-    ctx.concept?.trim()
-      ? `THE CONCEPT, as reference for any real name or number you put on screen. NOT a brief to illustrate:\n"""\n${ctx.concept.trim()}\n"""`
-      : '',
-    ctx.direction?.trim() ? `THE OPERATOR'S DIRECTION FOR THIS BOARD:\n"""\n${ctx.direction.trim()}\n"""` : '',
-    `THE SCRIPT. One figure per BEAT, plus the CTA. Skip the hooks:\n"""\n${body}\n"""`,
-  ].filter(Boolean);
+  // THE TEMPLATE OR THE FREE BUILD (D108). The split-screen is one figure with five taps of one object.
+  const template = ctx.format === 'split_screen_short';
+  const parts = template
+    ? [
+        ctx.title?.trim() ? `THE TITLE for state 0, word for word:\n${ctx.title.trim()}` : '',
+        ctx.arc?.trim() ? `THE ARC (the direction, the OBJECT to draw, the four beats):\n"""\n${ctx.arc.trim()}\n"""` : '',
+        ctx.direction?.trim() ? `THE OPERATOR'S DIRECTION:\n"""\n${ctx.direction.trim()}\n"""` : '',
+        `THE SCRIPT. Taps 1 to 4 follow BEAT 1 to 4; tap 5 shows the keyword from the CTA:\n"""\n${body}\n"""`,
+      ].filter(Boolean)
+    : [
+        ctx.angle?.trim() ? `THE PIECE'S ANGLE (what the whole piece argues):\n"""\n${ctx.angle.trim()}\n"""` : '',
+        ctx.concept?.trim()
+          ? `THE CONCEPT, as reference for any real name or number you put on screen. NOT a brief to illustrate:\n"""\n${ctx.concept.trim()}\n"""`
+          : '',
+        ctx.direction?.trim() ? `THE OPERATOR'S DIRECTION FOR THIS BOARD:\n"""\n${ctx.direction.trim()}\n"""` : '',
+        `THE SCRIPT. One figure per BEAT, plus the CTA. Skip the hooks:\n"""\n${body}\n"""`,
+      ].filter(Boolean);
 
   const call = {
-    system: SYSTEM,
+    system: template ? SPLIT_SCREEN_SYSTEM : SYSTEM,
     messages: [{ role: 'user' as const, content: parts.join('\n\n') }],
     // Five or six figures of markup plus CSS plus a reasoning model's overhead. A ceiling sized for one
     // figure truncates the last two, which reads as her having found fewer beats than the script has.

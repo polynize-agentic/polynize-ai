@@ -33,7 +33,7 @@ import { PlatformIcon } from '@/app/console/marketing/_components/PlatformIcon';
 import { channelLabel } from '@/lib/marketing/channels';
 import { HERO_BATCH } from '@/lib/marketing/hero';
 import { networkAvailable } from '@/lib/marketing/connected-networks';
-import { IMAGE_MODELS, DEFAULT_IMAGE_MODEL } from '@/lib/marketing/higgsfield-models';
+import { POST_IMAGE_MODELS, DEFAULT_POST_IMAGE_MODEL } from '@/lib/marketing/higgsfield-models';
 import g from '../gates.module.css';
 import { USE_CASES, usesUseCases } from '@/lib/marketing/use-case';
 
@@ -382,7 +382,8 @@ export function NarrativeGates({
    * is composited in code. A Gemini image model can, so the choice belongs on the screen rather
    * than in a constant.
    */
-  const [heroModel, setHeroModel] = useState<string>(DEFAULT_IMAGE_MODEL);
+  // Soul is not offered here (D108): it is for making a Soul ID, in the media library.
+  const [heroModel, setHeroModel] = useState<string>(DEFAULT_POST_IMAGE_MODEL);
   const [heroZoom, setHeroZoom] = useState<string | null>(null);
   const heroLive = narrative.hero_url ?? null;
   const zoomCloseRef = useRef<HTMLButtonElement>(null);
@@ -850,7 +851,7 @@ export function NarrativeGates({
                 onChange={(e) => setHeroModel(e.target.value)}
                 disabled={heroBusy !== null}
               >
-                {IMAGE_MODELS.map((m) => (
+                {POST_IMAGE_MODELS.map((m) => (
                   <option key={m.id} value={m.id}>
                     {m.label}
                   </option>
@@ -858,7 +859,7 @@ export function NarrativeGates({
               </select>
             </label>
             <p className={g.lookModelWhy}>
-              {IMAGE_MODELS.find((m) => m.id === heroModel)?.blurb ?? ''}
+              {POST_IMAGE_MODELS.find((m) => m.id === heroModel)?.blurb ?? ''}
             </p>
             <div className={g.lookBtns}>
               <button

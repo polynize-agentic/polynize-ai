@@ -40,7 +40,7 @@ import { generatePrezieFromScript } from '@/lib/marketing/prezie-oneshot';
 import { conceptBodyForPiece } from '@/lib/marketing/draft';
 import { DraftError } from '@/lib/marketing/draft';
 import { stripEmDashes } from '@/lib/em-dash';
-import { SPLIT_SCREEN_FORMAT, VISUAL_GRAMMAR } from '@/lib/marketing/split-screen';
+import { SPLIT_SCREEN_FORMAT } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -171,25 +171,18 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
        * agreed at the arc step (TRANSFORM, OBJECT, TAP 0 to 5). Sent as the direction, so the builder
        * makes those states of that object rather than one picture per beat.
        */
-      const direction =
-        piece.format === SPLIT_SCREEN_FORMAT
-          ? [
-              VISUAL_GRAMMAR,
-              piece.hooks?.[0]?.trim()
-                ? `THE TITLE ON TAP 0, verbatim, and nowhere else on the screen: ${piece.hooks[0].trim()}`
-                : '',
-              piece.outline?.trim()
-                ? `THE AGREED ARC for this piece (the title, the direction, the one OBJECT, the four beats). Design the screen from it: choose the transform for beat 2 from the seven, and build the six states (TAP 0 to TAP 5) of the OBJECT it names, TAP 0 included with the title:\n"""\n${piece.outline.trim()}\n"""`
-                : '',
-              body.direction?.trim() ?? '',
-            ]
-              .filter(Boolean)
-              .join('\n\n')
-          : body.direction;
+      /**
+       * THE SPLIT-SCREEN TEMPLATE (D108): the one-shot builds one figure with five taps from the arc
+       * and the script when the format asks for it. The grammar lives in the builder's own system
+       * prompt now, not here.
+       */
       const { figures, model } = await generatePrezieFromScript(script, {
         concept: conceptBody,
         angle: piece.angle,
-        direction,
+        direction: body.direction,
+        format: piece.format,
+        arc: piece.format === SPLIT_SCREEN_FORMAT ? piece.outline : undefined,
+        title: piece.format === SPLIT_SCREEN_FORMAT ? piece.hooks?.[0] : undefined,
       });
       const now = new Date().toISOString();
       const prezie: Prezie = {

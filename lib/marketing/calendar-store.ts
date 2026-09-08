@@ -115,6 +115,8 @@ export type CalendarEntry = {
    * D85's inferred "Posted" into a confirmed one.
    */
   public_url?: string;
+  /** When the #content Slack ping went out for this post (D108), so it goes once. */
+  announced_at?: string;
   /**
    * WHICH POST TYPE THIS IS (D99): the kit output id the wave made it from (contrarian post, reel
    * two of three), or the piece's format for a piece with no Story. The leaderboard groups by it.

@@ -500,19 +500,23 @@ export function ScriptScreen({
               ? 'The chat is editing the script. The editor unlocks when it is done.'
               : 'Edits autosave. Use the chat to change the script by command, or open the teleprompter (own URL) to record.'}
           </p>
-          <MediaPicker
-            pieceId={initial.piece_id}
-            stream={initial.stream}
-            // This narrative's own images first, the whole library folded below (D52).
-            narrativeRef={initial.narrative_ref}
-            selected={media}
-            disabled={chatBusy}
-            onChange={(ids) => {
-              setMedia(ids);
-              latestMedia.current = ids;
-              void save();
-            }}
-          />
+          {/* NOT ON A SPLIT-SCREEN OR A YAP (D108). Marrs: "there is no need for the media library to
+              appear in the script section." The recording is attached on the caption screen. */}
+          {marrsFormat ? null : (
+            <MediaPicker
+              pieceId={initial.piece_id}
+              stream={initial.stream}
+              // This narrative's own images first, the whole library folded below (D52).
+              narrativeRef={initial.narrative_ref}
+              selected={media}
+              disabled={chatBusy}
+              onChange={(ids) => {
+                setMedia(ids);
+                latestMedia.current = ids;
+                void save();
+              }}
+            />
+          )}
         </div>
 
         <ChatPanel

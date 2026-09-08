@@ -124,6 +124,16 @@ export const IMAGE_MODELS: ImageModel[] = [
  */
 export const DEFAULT_IMAGE_MODEL = 'soul';
 
+/**
+ * THE MODELS OFFERED WHERE POSTS ARE MADE (D108). Marrs: "That sole model is really only good for
+ * creating the sole ID and not other images, so it shouldn't be displayed in the section where you're
+ * creating posts... it should just be available in the Image Library for that specific task." So the
+ * Story hero, the slide renderer and any post-image tool read this list; the media library's Generate
+ * tab keeps the full one, because that is where a Soul ID is made.
+ */
+export const POST_IMAGE_MODELS: ImageModel[] = IMAGE_MODELS.filter((m) => m.id !== 'soul');
+export const DEFAULT_POST_IMAGE_MODEL = POST_IMAGE_MODELS[0]?.id ?? DEFAULT_IMAGE_MODEL;
+
 export function imageModelById(id: string): ImageModel | undefined {
   return IMAGE_MODELS.find((m) => m.id === id);
 }

@@ -22,6 +22,7 @@ import { getBrandMap } from './metricool-config-store';
 import { mcProbeGet } from './metricool-client';
 import { laneTimezone } from './channel-schedule';
 import { rangeStart } from './analytics-metrics';
+import { announcePublished } from './slack-content';
 
 export type UrlJoinResult = { checked: number; joined: number; errors: string[] };
 
@@ -104,12 +105,15 @@ export async function joinPublishedUrls(now = new Date()): Promise<UrlJoinResult
       if (!url) continue;
       const passed = e.scheduled_at ? e.scheduled_at.slice(0, 10) <= to : true;
       try {
-        await saveEntry(e.owner, {
+        const live: CalendarEntry = {
           ...e,
           public_url: url,
           status: e.status === 'scheduled' && passed ? 'published' : e.status,
           updated_at: now.toISOString(),
-        });
+        };
+        // THE #CONTENT PING (D108): the platform has confirmed the post exists, so the team hears now.
+        if (!live.announced_at && (await announcePublished(live))) live.announced_at = now.toISOString();
+        await saveEntry(e.owner, live);
         out.joined += 1;
       } catch (err) {
         out.errors.push(`${e.entry_id}: ${err instanceof Error ? err.message : String(err)}`);

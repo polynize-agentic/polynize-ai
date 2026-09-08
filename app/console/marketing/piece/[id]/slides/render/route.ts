@@ -29,7 +29,7 @@ import { getCurrentUser } from '@/lib/console-auth';
 import { getPiece } from '@/lib/marketing/piece-store';
 import { isStreamId } from '@/lib/marketing/streams';
 import { isHiggsfieldConfigured, generateImages } from '@/lib/marketing/higgsfield';
-import { imageModelById } from '@/lib/marketing/higgsfield-models';
+import { imageModelById, DEFAULT_POST_IMAGE_MODEL } from '@/lib/marketing/higgsfield-models';
 import { renderAndHostSlide } from '@/lib/marketing/slide-render';
 import { BRAND_HEXES } from '@/lib/marketing/brand-colors';
 import { sourceSizeFor, slideWantsImage } from '@/lib/marketing/slide-plan';
@@ -123,7 +123,8 @@ export async function POST(
         { status: 400 }
       );
     }
-    const model = imageModelById('soul');
+    // Slides are post images, so not Soul (D108): Soul is for a Soul ID, in the media library.
+    const model = imageModelById(DEFAULT_POST_IMAGE_MODEL);
     if (!model) {
       return NextResponse.json({ error: 'no image model is configured' }, { status: 400 });
     }
