@@ -3136,4 +3136,4 @@ Two causes, both fixed. The draft was fired the instant the button was pressed w
 
 ### The kit row on his board
 
-*"Fix the kit row wording on my board too."* On his board the Reels and Shorts rows read **Split-screen explainer: one title, four beats, the timer**, and the reels series collapses to one output so the wave plans one post, not three cuts of one body. Polynize boards keep "your 3 hooks, one body" and the three.
+*"Fix the kit row wording on my board too."* On his board the Reels and Shorts rows' sub line reads **the split-screen explainer: one title, four beats, the timer**, and the reels series collapses to one output so the wave plans one post, not three cuts of one body. The row labels themselves stay as they were, because D54's rule (one name across Gate 3, Gate 4 and Gate 5) is asserted by the tests and a relabel broke four of them on the first attempt. Polynize boards keep "your 3 hooks, one body" and the three.

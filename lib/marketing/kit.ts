@@ -1343,8 +1343,9 @@ export function kitRows(lane: NarrativeLane): KitRow[] {
   /**
    * HIS BOARD'S SHORTS ARE THE SPLIT-SCREEN EXPLAINER (D110). Marrs: "Fix the kit row wording on my
    * board too." The shorts master becomes the explainer there (D109), which is one title, four beats
-   * and one post, not three hooks cut into three. So the row says so, and the series collapses to one
-   * output so the wave plans one placement rather than three.
+   * and one post, not three hooks cut into three. So the row's sub line says so (the label itself keeps
+   * the D54 rule: one name across Gate 3, Gate 4 and Gate 5), and the series collapses to one output so
+   * the wave plans one placement rather than three.
    */
   const explainer = !usesUseCases(lane);
   for (const net of KIT_NETWORK_ORDER) {
@@ -1367,8 +1368,9 @@ export function kitRows(lane: NarrativeLane): KitRow[] {
           key: o.series,
           network: net,
           ids: members.map((m) => m.id),
-          label: explainer && o.master === 'shorts' ? 'Split-screen explainer' : o.label,
-          sub: explainer && o.master === 'shorts' ? 'one title, four beats, the timer' : o.sub,
+          // THE LABEL STAYS (D54: one name across all three gates); the sub line says the formula.
+          label: o.label,
+          sub: explainer && o.master === 'shorts' ? 'the split-screen explainer: one title, four beats, the timer' : o.sub,
           pill: members.length > 1 ? `x${members.length}` : undefined,
           on: o.on.includes(kind),
           blocked: o.blocked,
@@ -1379,8 +1381,8 @@ export function kitRows(lane: NarrativeLane): KitRow[] {
           key: o.id,
           network: net,
           ids: [o.id],
-          label: explainer && o.master === 'shorts' ? 'Split-screen explainer' : o.label,
-          sub: explainer && o.master === 'shorts' ? 'one title, four beats, the timer' : o.sub,
+          label: o.label,
+          sub: explainer && o.master === 'shorts' ? 'the split-screen explainer: one title, four beats, the timer' : o.sub,
           on: o.on.includes(kind),
           blocked: o.blocked,
           ...describe(o),
