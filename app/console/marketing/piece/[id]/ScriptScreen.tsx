@@ -468,18 +468,23 @@ export function ScriptScreen({
             />
           ) : null}
           <div className={s.toolbar}>
-            <button
-              type="button"
-              className={s.draftBtn}
-              onClick={draft}
-              disabled={drafting || chatBusy}
-            >
-              {drafting
-                ? 'Drafting…'
-                : script.trim()
-                  ? 'Redraft from the concept'
-                  : 'Draft from the concept'}
-            </button>
+            {/* ONE WAY TO WRITE IT ON HIS FORMATS (D111): a split-screen or a yap has no concept, and this
+                button did the same thing as stage three's Write the script. Marrs: "which button am I supposed
+                to press?" One is left. */}
+            {marrsFormat ? null : (
+              <button
+                type="button"
+                className={s.draftBtn}
+                onClick={draft}
+                disabled={drafting || chatBusy}
+              >
+                {drafting
+                  ? 'Drafting…'
+                  : script.trim()
+                    ? 'Redraft from the concept'
+                    : 'Draft from the concept'}
+              </button>
+            )}
             {draftError ? <span className={s.draftError}>{draftError}</span> : null}
             {draftWarnings.length ? (
               <ul className={s.draftFlags} aria-label="Tests this draft failed">

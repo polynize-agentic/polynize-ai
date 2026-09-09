@@ -3154,3 +3154,7 @@ Now: the prompt says an instruction about tone, voice or wording applies to ever
 *"If I create a split screen and take that all the way through to the end, can I then repurpose that split screen as a multi? Does that flow exist?"* It did not; it does now. **Make a narrative from this** on a split-screen creates a Story at Gate 2 on his board with the hook, the arc and the script as its idea, so the article is drafted from what the video already argued. The split-screen itself is attached to the Story as its shorts piece, so ticking the shorts row at Gate 3 reuses it rather than minting a second one. The button reads "Open its narrative" once one exists.
 
 Both directions now exist: Multi to split-screen through the shorts row (D109), and split-screen to Multi through this button.
+
+### One way to write it
+
+Marrs: *"if I put in my own narrative arc, which button am I supposed to press: Write the script or Draft from the concept?"* They did the same thing, and a split-screen has no concept. The toolbar's Draft from the concept is gone on his two formats; stage three's **Write the script** is the one button. The order is: type the arc, press **Use mine as the arc**, then **Write the script**.
