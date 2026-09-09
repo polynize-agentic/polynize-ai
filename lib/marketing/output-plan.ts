@@ -209,11 +209,11 @@ export const FORMATS: FormatDef[] = [
 
 THE SHAPE, exactly, and it is LOCKED. You fill the blanks; you never restructure it.
 
-HOOK A
-In under 60 seconds I'm going to explain to you <why|how>...
+INTRO
+In under 60 seconds I'm going to explain to you
 
-TITLE
-<the agreed title, word for word. It opens with the same word hook A ended on>
+HOOK
+<the agreed title, word for word. It opens with Why or How; the intro never does>
 
 BEAT 1
 <spoken prose, about 33 to 36 words>
@@ -231,7 +231,7 @@ CTA
 <about ten words, spoken after the timer has stopped: how many seconds were spare, then "Comment <KEYWORD> and I'll send you the <magnet>">
 
 Rules that follow from that shape:
-- HOOK A is fixed text and ends on the word "why" or "how", whichever the title opens with. TITLE is the agreed title verbatim; never paraphrase it.
+- INTRO is fixed text, exactly "In under 60 seconds I'm going to explain to you", and it stops there. The why or how is the first word of the HOOK, never the last word of the intro. HOOK is the agreed title verbatim; never paraphrase it.
 - WHY titles follow: BEAT 1 Setup (the belief the viewer holds, stated fairly), BEAT 2 But (the turn, the only surprise), BEAT 3 Therefore (what it means for them), BEAT 4 So do this (one action they can take tonight, no purchase required).
 - HOW titles follow: BEAT 1 The result (show the finished thing first), BEAT 2 step one, BEAT 3 step two, BEAT 4 The bit nobody does (the non-obvious move that makes it work).
 - About 140 spoken words across the four beats. Never more. If the idea needs more, say so instead of writing a longer script.

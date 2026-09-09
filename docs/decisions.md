@@ -3158,3 +3158,12 @@ Both directions now exist: Multi to split-screen through the shorts row (D109), 
 ### One way to write it
 
 Marrs: *"if I put in my own narrative arc, which button am I supposed to press: Write the script or Draft from the concept?"* They did the same thing, and a split-screen has no concept. The toolbar's Draft from the concept is gone on his two formats; stage three's **Write the script** is the one button. The order is: type the arc, press **Use mine as the arc**, then **Write the script**.
+
+
+## D112: The intro is fixed and the hook is the title
+
+**Adopted 9 September 2026.** Marrs, on a drafted script: *"she just needs to leave the 'why' at the end of the hook because the title is the actual hook... Hook A is actually the intro. Intro is in under 60 seconds I'm going to explain to you... Hook: Why you're not late to learn AI."*
+
+The script's first two sections are now **INTRO** and **HOOK**. The intro is one fixed line, "In under 60 seconds I'm going to explain to you", and it stops there. The hook is the agreed title, word for word, and it is the hook that opens with Why or How. April is told exactly that; the check flags an intro that carries a why or how, or that is not the fixed line; scripts written with the old HOOK A and TITLE labels still read.
+
+His rules document calls these hook A and hook B and has hook A end on the why. His correction on the page wins; the document's naming is noted here as superseded on this point.

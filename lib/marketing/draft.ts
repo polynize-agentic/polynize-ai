@@ -39,7 +39,7 @@ import {
   parseArcDirections,
   type ArcDirection,
   titleShape,
-  hookALine,
+  introLine,
 } from './split-screen';
 
 /**
@@ -568,7 +568,7 @@ async function generate(
   const hooksBlock =
     kind === 'video' && isMarrsAttacksPiece(piece) && piece.format === SPLIT_SCREEN_FORMAT && agreedHooks.length > 0
       ? /* THE AGREED TITLE (D102): one, verbatim, and hook A is fixed text ending on its first word. */
-        `THE AGREED TITLE. Marrs chose it, so it is FINAL COPY: the TITLE section is exactly this, word for word, and HOOK A is exactly "${hookALine(agreedHooks[0])}".\nTITLE: ${agreedHooks[0]}\n\n`
+        `THE AGREED HOOK. Marrs chose it, so it is FINAL COPY: the HOOK section is exactly this, word for word, and the INTRO section is exactly "${introLine()}" and stops there.\nHOOK: ${agreedHooks[0]}\n\n`
       : kind === 'video' && agreedHooks.length > 0
       ? `THE AGREED HOOKS. The operator chose these, so they are FINAL COPY. Reproduce each one word for word as its own hook, in this order, and write no others. Do not paraphrase, tighten, correct or improve them, even if you would have written them differently: a changed hook is a failure of this step, not an edit.\n${agreedHooks
           .map((h, i) => `HOOK ${i + 1}: ${h}`)

@@ -305,8 +305,22 @@ export function wordCount(text: string): number {
   return text.trim() ? text.trim().split(/\s+/).length : 0;
 }
 
+/**
+ * THE INTRO IS FIXED AND THE HOOK IS THE TITLE (D112). Marrs, on seeing "HOOK A: In under 60 seconds I'm
+ * going to explain to you why..." followed by "TITLE: Why you're not too late to learn AI": "Hook A is
+ * actually the intro. Intro is in under 60 seconds I'm going to explain to you... Hook: Why you're not
+ * late to learn AI." So the fixed line stops at "to you", carries no why or how of its own, and the
+ * title IS the hook, spoken next. His rules document called these hook A and hook B; his correction
+ * wins and the words on screen are INTRO and HOOK.
+ */
+export const INTRO_LINE = "In under 60 seconds I'm going to explain to you";
+
+export function introLine(): string {
+  return INTRO_LINE;
+}
+
 export type SplitScreenScript = {
-  hookA: string;
+  intro: string;
   title: string;
   beats: string[];
   cta: string;
@@ -317,23 +331,18 @@ export type SplitScreenScript = {
  * which is also what the teleprompter reads. Anything not in the formula's sections is ignored.
  */
 export function parseSplitScreenScript(text: string): SplitScreenScript {
-  const out: SplitScreenScript = { hookA: '', title: '', beats: [], cta: '' };
+  const out: SplitScreenScript = { intro: '', title: '', beats: [], cta: '' };
   const beats = new Map<number, string>();
   for (const s of scriptSections(text)) {
     const label = s.label.toUpperCase().replace(/\s+/g, ' ').trim();
-    if (label === 'HOOK A' || label === 'HOOK') out.hookA = s.body;
-    else if (label === 'TITLE' || label === 'HOOK B') out.title = s.body.split('\n')[0].trim();
+    // INTRO and HOOK are the names (D112); HOOK A and TITLE are read too, for scripts written before.
+    if (label === 'INTRO' || label === 'HOOK A') out.intro = s.body;
+    else if (label === 'HOOK' || label === 'TITLE' || label === 'HOOK B') out.title = s.body.split('\n')[0].trim();
     else if (/^BEAT \d$/.test(label)) beats.set(Number(label.slice(5)), s.body);
     else if (label === 'CTA' || label === 'CLOSE') out.cta = out.cta ? `${out.cta} ${s.body}` : s.body;
   }
   out.beats = [...beats.keys()].sort((a, b) => a - b).map((k) => beats.get(k)!);
   return out;
-}
-
-/** Hook A as the format fixes it: the promise, ending on the title's own first word. */
-export function hookALine(title: string): string {
-  const shape = titleShape(title) ?? 'why';
-  return `In under 60 seconds I'm going to explain to you ${shape}...`;
 }
 
 /**
@@ -343,13 +352,14 @@ export function hookALine(title: string): string {
 export function checkSplitScreenScript(text: string): string[] {
   const s = parseSplitScreenScript(text);
   const out: string[] = [];
-  if (!s.title) out.push('no TITLE section');
-  else out.push(...titleChecks(s.title).map((p) => `title: ${p}`));
-  if (!s.hookA) out.push('no HOOK A section');
+  if (!s.title) out.push('no HOOK section (the title, word for word)');
+  else out.push(...titleChecks(s.title).map((p) => `hook: ${p}`));
+  if (!s.intro) out.push('no INTRO section');
   else {
-    const shape = titleShape(s.title);
-    const endsOn = s.hookA.trim().replace(/[.…]+$/, '').split(/\s+/).pop()?.toLowerCase();
-    if (shape && endsOn !== shape) out.push(`hook A must end on the word "${shape}", the title's own first word (it ends on "${endsOn ?? ''}")`);
+    const said = s.intro.trim().replace(/[.…\s]+$/, '').toLowerCase();
+    if (said !== INTRO_LINE.toLowerCase()) {
+      out.push(`the INTRO is fixed text, "${INTRO_LINE}", and stops there: the why or how belongs to the hook`);
+    }
   }
   if (s.beats.length !== 4) out.push(`${s.beats.length} beats: the format is exactly four`);
   const total = s.beats.reduce((n, b) => n + wordCount(b), 0);

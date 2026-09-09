@@ -14,7 +14,8 @@ import {
   parseSplitScreenScript,
   checkSplitScreenScript,
   keywordIn,
-  hookALine,
+  introLine,
+  INTRO_LINE,
   wordCount,
   parseScreenPlan,
   checkScreenPlan,
@@ -86,10 +87,10 @@ eq(parseTitleProposal('garbage').titles, [], 'garbage is no titles, not a throw'
 
 /* ------------------------------------------------------------------ the worked example */
 
-const worked = `HOOK A
-In under 60 seconds I'm going to explain to you why...
+const worked = `INTRO
+In under 60 seconds I'm going to explain to you
 
-TITLE
+HOOK
 Why AI won't take your job
 
 BEAT 1
@@ -114,7 +115,11 @@ eq(parsed.beats.reduce((s, b) => s + wordCount(b), 0), 116, 'the worked example 
 ok(parsed.beats.reduce((s, b) => s + wordCount(b), 0) <= WORD_BUDGET, 'inside the budget');
 eq(checkSplitScreenScript(worked), [], 'the worked example passes every check');
 eq(keywordIn(worked), 'ROLE', 'the keyword the script uses');
-eq(hookALine('How to know when something\'s finished'), 'In under 60 seconds I\'m going to explain to you how...', 'hook A ends on the title\'s first word');
+eq(introLine(), INTRO_LINE, 'the intro is one fixed line');
+ok(!/\b(why|how)\W*$/i.test(INTRO_LINE), 'and it does not end on why or how: that word belongs to the hook');
+const legacy = worked.replace('INTRO\n', 'HOOK A\n').replace('HOOK\nWhy AI', 'TITLE\nWhy AI');
+eq(parseSplitScreenScript(legacy).title, "Why AI won't take your job", 'a script written with the old labels still reads');
+ok(checkSplitScreenScript(worked.replace(INTRO_LINE, `${INTRO_LINE} why...`)).some((p) => p.includes('stops there')), 'an intro that carries the why is flagged');
 
 /* failures, each named */
 ok(checkSplitScreenScript(worked.replace('BEAT 4\n', 'BEAT 4\nAlso, ')).length === 0, 'a small edit inside a beat is fine');
@@ -123,8 +128,8 @@ const long = worked.replace('A few are already gone.', 'A few are already gone. 
 ok(checkSplitScreenScript(long).some((p) => p.includes('budget')), 'over 140 words is flagged with the format\'s own sentence');
 ok(checkSplitScreenScript(worked.replace('Comment ROLE', 'Comment JOB')).some((p) => p.includes('forbidden')), 'a forbidden keyword is flagged');
 ok(checkSplitScreenScript(worked.replace('Comment ROLE and I\'ll send you the map.', 'Follow for more.')).some((p) => p.includes('names no comment keyword')), 'a follow is not a CTA');
-ok(checkSplitScreenScript(worked.replace('explain to you why...', 'explain to you how...')).some((p) => p.includes('must end on the word "why"')), 'hook A must end on the title\'s word');
-ok(checkSplitScreenScript(worked.replace('Why AI won\'t take your job', 'AI won\'t take your job')).some((p) => p.startsWith('title:')), 'a title failing its test is named as the title');
+ok(checkSplitScreenScript(worked.replace(INTRO_LINE, 'In 60 seconds I will explain')).some((p) => p.includes('fixed text')), 'a rewritten intro is flagged');
+ok(checkSplitScreenScript(worked.replace('Why AI won\'t take your job', 'AI won\'t take your job')).some((p) => p.startsWith('hook:')), 'a hook failing its test is named as the hook');
 ok(checkSplitScreenScript('').length >= 4, 'an empty script fails everything');
 
 /* ------------------------------------------------------------------ the screen plan */
