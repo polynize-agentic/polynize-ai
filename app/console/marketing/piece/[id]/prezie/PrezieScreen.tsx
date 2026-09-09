@@ -682,6 +682,15 @@ export function PrezieScreen({
   // ---- versions ----
   const build = async () => {
     if (busy) return;
+    /**
+     * ON HIS SPLIT-SCREENS THE ONLY BUILDER IS THE TEMPLATE (D113). Marrs pressed Build a new version and
+     * got the older scene builder's three-card board back. Every version of a split-screen is one object
+     * with five taps, so this button runs the one-shot with the "what to change" box as its direction.
+     */
+    if (initial.format === 'split_screen_short' && initial.stream === 'marrs') {
+      await oneShot();
+      return;
+    }
     setBusy(true);
     setError(null);
     flush();
@@ -1053,9 +1062,6 @@ export function PrezieScreen({
                 <textarea
                   value={ask}
                   onChange={(e) => setAsk(e.target.value)}
-                  placeholder={
-                    'e.g. a lever. Small coral ball on the long arm is the work, big mint mass on the short arm is AI. One tap and the mass drops, the beam flips, the work is flung out as OUTPUT.'
-                  }
                   rows={5}
                   disabled={drawing}
                 />
@@ -1385,7 +1391,6 @@ export function PrezieScreen({
               <textarea
                 value={narrative}
                 onChange={(e) => setNarrative(e.target.value)}
-                placeholder="e.g. AI is a force multiplier, so mapping the work has to come first, or it multiplies the mess"
                 rows={3}
                 disabled={busy}
               />

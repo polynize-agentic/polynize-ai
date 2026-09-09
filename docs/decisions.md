@@ -3167,3 +3167,14 @@ Marrs: *"if I put in my own narrative arc, which button am I supposed to press: 
 The script's first two sections are now **INTRO** and **HOOK**. The intro is one fixed line, "In under 60 seconds I'm going to explain to you", and it stops there. The hook is the agreed title, word for word, and it is the hook that opens with Why or How. April is told exactly that; the check flags an intro that carries a why or how, or that is not the fixed line; scripts written with the old HOOK A and TITLE labels still read.
 
 His rules document calls these hook A and hook B and has hook A end on the why. His correction on the page wins; the document's naming is noted here as superseded on this point.
+
+
+## D113: The prezie page, after the first real split-screen board
+
+**Adopted 9 September 2026.** Marrs, with two screenshots.
+
+**The title on state 0** had lost the house type: white sans, smallish, left, where the earlier boards had the big uppercase cream display, centred. The template prompt now names the style: Space Grotesk 700, uppercase, cream, centred in the upper third, one or two lines, and the title whole, because the second screenshot's board had dropped "Why you're" from it.
+
+**The example text is gone** from "Talk about figure N" and from "The angle you gave this piece". *"There's no need for example text there. It's just making everything a bit cluttered."*
+
+**"Build a new version" went back to the old builder.** The page had two builders: the one-shot (which, on his pieces, is the template) and the older scene builder behind the Build button, which made a three-card board. On a split-screen on his board, Build a new version now runs the template with the "what to change" box as direction, so every version of a split-screen is one object with five taps. *"I need a better way to get a prezie that works"*: the loop is now build, read it on the touchscreen preview, type what to change, build again; and "Change figure 1" for a smaller fix.
