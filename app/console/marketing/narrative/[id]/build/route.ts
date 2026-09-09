@@ -20,6 +20,7 @@ import { getCurrentUser } from '@/lib/console-auth';
 import { getNarrative, saveNarrative, narrativeHeadline } from '@/lib/marketing/narrative-store';
 import { plansForTicks, type MasterAsset } from '@/lib/marketing/kit';
 import { listSavedPieces, savePiece, type MarketingPiece } from '@/lib/marketing/piece-store';
+import { usesUseCases } from '@/lib/marketing/use-case';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -132,7 +133,8 @@ export async function POST(
         piece_id: randomUUID(),
         owner,
         stream: narrative.lane,
-        format: FORMAT_FOR[plan.master],
+        // THE SHORTS MASTER IS TWO FORMATS (D109): the explainer on his board, the three-hook shape elsewhere.
+        format: plan.master === 'shorts' && usesUseCases(narrative.lane) ? 'split_screen_free' : FORMAT_FOR[plan.master],
         title: `${headline}: ${plan.label}`,
         script: '',
         kind: plan.kind,

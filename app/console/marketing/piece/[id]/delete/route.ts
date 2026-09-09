@@ -10,6 +10,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/console-auth';
 import { getPiece, deletePiece } from '@/lib/marketing/piece-store';
 import { listEntriesForPiece, deleteEntry } from '@/lib/marketing/calendar-store';
+import { listIdeas, updateIdea } from '@/lib/marketing/idea-store';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -26,8 +27,10 @@ export async function POST(
   const owner = user.email;
 
   let conceptSlug: string | undefined;
+  let streamOfDeleted: string | undefined;
   try {
     const piece = await getPiece(owner, id);
+    streamOfDeleted = piece?.stream;
     const m = piece?.concept_ref?.match(/core-concept-(.+)\.md$/);
     if (m) conceptSlug = m[1];
   } catch (err) {
@@ -44,6 +47,15 @@ export async function POST(
 
   try {
     await deletePiece(owner, id);
+    // The idea comes back to the library when its piece goes (D109). Best effort.
+    try {
+      if (streamOfDeleted) {
+        const idea = (await listIdeas(streamOfDeleted)).find((i) => i.piece_ref === id);
+        if (idea) await updateIdea(streamOfDeleted, idea.id, { piece_ref: null });
+      }
+    } catch {
+      /* bookkeeping only */
+    }
     return NextResponse.json({ ok: true, conceptSlug });
   } catch (err) {
     console.error('[piece.delete] delete failed:', err);

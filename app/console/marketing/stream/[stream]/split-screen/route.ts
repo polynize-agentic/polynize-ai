@@ -81,5 +81,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ str
    * a hook is still spent by becoming a piece, as it is by becoming a Story.
    */
   if (ideaRef && !asHook) void updateIdea(stream, ideaRef, { used_at: now }).catch(() => {});
+  // IN FLIGHT (D109): the hook's inbox entry points at the piece, so the dashboard can hide it and
+  // Gate 1 can mark it, until a post from it ships or the piece is deleted.
+  if (hookRef) void updateIdea(stream, hookRef, { piece_ref: piece.piece_id }).catch(() => {});
   return NextResponse.json({ id: piece.piece_id });
 }

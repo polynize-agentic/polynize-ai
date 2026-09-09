@@ -15,7 +15,7 @@ import { llmErrorText } from '@/lib/llm/error-text';
 import { getCurrentUser } from '@/lib/console-auth';
 import { getPiece } from '@/lib/marketing/piece-store';
 import { draftVideoScript, DraftError, scriptModelInUse } from '@/lib/marketing/draft';
-import { SPLIT_SCREEN_FORMAT, YAP_FORMAT, checkSplitScreenScript, checkYapScript } from '@/lib/marketing/split-screen';
+import { SPLIT_SCREEN_FORMAT, YAP_FORMAT, isMarrsAttacksPiece, checkSplitScreenScript, checkYapScript } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -52,9 +52,9 @@ export async function POST(
      * silently adapted to fit.
      */
     const warnings =
-      piece.format === SPLIT_SCREEN_FORMAT
+      isMarrsAttacksPiece(piece) && piece.format === SPLIT_SCREEN_FORMAT
         ? checkSplitScreenScript(script)
-        : piece.format === YAP_FORMAT
+        : isMarrsAttacksPiece(piece) && piece.format === YAP_FORMAT
           ? checkYapScript(script)
           : [];
     return NextResponse.json({ script, model: scriptModelInUse(), warnings });

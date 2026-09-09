@@ -3096,3 +3096,27 @@ The one-shot builder has a second system prompt for the split-screen format: **o
 **The one thing only Marrs can do:** in Slack, Apps → Incoming Webhooks → Add to Slack → choose #content → copy the webhook url → into the console project's Vercel environment as `SLACK_CONTENT_WEBHOOK` → redeploy. Until then nothing pings and nothing else changes.
 
 **Not covered yet:** hand-posted LinkedIn posts (his own profile) never get a public url from Metricool, so they do not ping. A "mark published with link" on a hand-posted entry would close that; noted in the todo.
+
+
+## D109: An idea in flight belongs to Gate 1, and the split-screen from a Story
+
+**Adopted 9 September 2026.** Two things from Marrs.
+
+### An unfinished idea shows only at Gate 1
+
+*"If I have an unfinished idea, it's showing up in Gate 1 as well as in the idea section on the dashboard. I don't think it should show up in the idea section. Just keep it to Gate 1."*
+
+When a hook from the Hook library becomes a piece, its inbox entry now points at that piece (`piece_ref`). The dashboard's ideas panel hides an idea with a piece in flight; Gate 1 shows it, marked "in progress". Deleting the piece clears the pointer and the idea comes back. Shipping a post from it archives it (D105). So an idea has four states, each in one place: a note (dashboard and Gate 1), in progress (Gate 1 only), archived (Gate 1's archive), deleted.
+
+### Yes, the split-screen is reachable from Multi
+
+*"Is the split screen option available in the multi option? If I choose a hook, choose multi, and create the article, can I then go back and, through that flow, select split screen?"*
+
+Yes. A Story's **shorts master** (the Reels and Shorts rows at Gate 3) has always become a `split_screen_short` piece, and on his board that piece now runs the formula: the title gate proposes titles from the article, the arc, the script, the template prezie. Choose Multi, write the article, tick the shorts row, and the split-screen is one of the pieces the Story produces, with the article as its material. The yap is then one press from that split-screen.
+
+**And the new one supersedes the old, on his board.** Marrs: *"the version of split screen we're creating now supersedes the previous one we were creating. This one's more focused, and this is the split screen we need to create."* The Polynize boards are a different case: his rules document says the question rules must not be reused for Polynize without a validation run, so **the old three-hook, one-body shape is kept whole as `split_screen_free`**, and a Story's shorts master becomes that on a Polynize board. A Polynize piece already carrying the `split_screen_short` id from before D102 reads the old shape too. One function, `isMarrsAttacksPiece`, decides: the format AND his stream.
+
+### Decisions inside it
+
+- **Two formats, not a flag.** The Polynize shape and his formula have different prompts, different checks and a different prezie; a single format switching on the stream would have been the same thing written twice inside one definition.
+- **The kit row still says "your 3 hooks, one body"** on every board, including his where it is now one title and four beats. The kit's rows are shared; wording them per board is a small follow-up, noted in the todo.

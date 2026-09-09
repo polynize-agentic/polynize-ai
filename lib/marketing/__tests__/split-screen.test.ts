@@ -25,6 +25,8 @@ import {
   parseArcDirections,
   parseArc,
   checkArc,
+  isMarrsAttacksPiece,
+  formatOf,
 } from '../split-screen';
 
 let n = 0;
@@ -198,5 +200,14 @@ eq(checkArc(arc, "Why AI won't make your kids stupid"), [], 'a complete arc for 
 ok(checkArc(arc, 'Why AI will make your kids stupid').some((p) => p.includes('locked hook')), 'a title that is not the locked hook is named');
 ok(checkArc(arc.replace('OBJECT: a homework page, marked\n\n', '')).some((p) => p.includes('OBJECT')), 'a missing object is named');
 ok(checkArc(arc.replace(/BEAT 4[\s\S]*$/, '')).some((p) => p.includes('3 beats')), 'three beats is named');
+
+/* the formula is his board's (D109) */
+ok(isMarrsAttacksPiece({ format: 'split_screen_short', stream: 'marrs' }), 'a split-screen on his board is a Marrs Attacks piece');
+ok(isMarrsAttacksPiece({ format: 'yap', stream: 'marrs' }), 'so is a yap');
+ok(!isMarrsAttacksPiece({ format: 'split_screen_short', stream: 'kristin' }), 'a split-screen on a Polynize board is not');
+ok(!isMarrsAttacksPiece({ format: 'linkedin_text', stream: 'marrs' }), 'nor a LinkedIn post on his');
+eq(formatOf({ format: 'split_screen_short', stream: 'kristin' }), 'split_screen_free', 'a Polynize split-screen reads the old three-hook shape');
+eq(formatOf({ format: 'split_screen_short', stream: 'marrs' }), 'split_screen_short', 'his reads the formula');
+eq(formatOf({ format: 'yap', stream: 'kristin' }), 'yap', 'other formats are themselves');
 
 console.log(`split-screen: ${n} assertions passed`);

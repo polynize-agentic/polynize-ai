@@ -17,7 +17,7 @@ import { llmErrorText } from '@/lib/llm/error-text';
 import { getCurrentUser } from '@/lib/console-auth';
 import { getPiece } from '@/lib/marketing/piece-store';
 import { proposeOutline, DraftError, scriptModelInUse } from '@/lib/marketing/draft';
-import { isMarrsAttacksFormat, checkArc } from '@/lib/marketing/split-screen';
+import { isMarrsAttacksPiece, checkArc } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -58,7 +58,7 @@ export async function POST(
     return NextResponse.json({
       outline,
       model: scriptModelInUse(),
-      warnings: isMarrsAttacksFormat(piece.format) ? checkArc(outline, piece.hooks?.[0]) : [],
+      warnings: isMarrsAttacksPiece(piece) ? checkArc(outline, piece.hooks?.[0]) : [],
     });
   } catch (e) {
     if (e instanceof DraftError) {

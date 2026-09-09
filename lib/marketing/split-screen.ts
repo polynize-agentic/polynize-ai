@@ -17,12 +17,28 @@
  */
 
 import { scriptSections } from './script-sections';
+import { usesUseCases } from './use-case';
 
 export const SPLIT_SCREEN_FORMAT = 'split_screen_short';
 export const YAP_FORMAT = 'yap';
 
 export function isMarrsAttacksFormat(format: string | undefined): boolean {
   return format === SPLIT_SCREEN_FORMAT || format === YAP_FORMAT;
+}
+
+/**
+ * THE FORMULA IS HIS BOARD'S (D109). A piece is a Marrs Attacks piece when it is one of the two formats
+ * AND it sits on his stream. A Polynize piece that carries the split_screen_short id from before D102
+ * is not, and keeps the old three-hook behaviour (formatOf() maps it to split_screen_free), because his
+ * document says the question rules must not be reused for Polynize without a validation run.
+ */
+export function isMarrsAttacksPiece(piece: { format?: string; stream?: string }): boolean {
+  return isMarrsAttacksFormat(piece.format) && !usesUseCases(piece.stream);
+}
+
+/** The format whose shape a piece reads: the old split-screen shape for a Polynize split_screen_short. */
+export function formatOf(piece: { format: string; stream?: string }): string {
+  return piece.format === SPLIT_SCREEN_FORMAT && usesUseCases(piece.stream) ? 'split_screen_free' : piece.format;
 }
 
 /* ------------------------------------------------------------------ the vocabulary */

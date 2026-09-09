@@ -30,7 +30,8 @@ import { applyTo, feedbackBlock, type JobId } from './feedback';
 import { listNotes } from './feedback-store';
 import {
   SPLIT_SCREEN_FORMAT,
-  isMarrsAttacksFormat,
+  isMarrsAttacksPiece,
+  formatOf,
   TITLE_RULES,
   WHY_BEATS,
   HOW_BEATS,
@@ -476,12 +477,13 @@ async function gather(
    * research arm supplies vocabulary rather than facts. So the angle stands in for the concept, and
    * the prompts' "the concept is your only source of truth" then means "what he typed".
    */
-  if (!conceptBody.trim() && isMarrsAttacksFormat(piece.format) && piece.angle?.trim()) {
+  if (!conceptBody.trim() && isMarrsAttacksPiece(piece) && piece.angle?.trim()) {
     conceptBody = piece.angle.trim();
   }
   if (!conceptBody.trim()) throw new DraftError('no-concept');
 
-  const fmt = formatById(piece.format);
+  // A Polynize split_screen_short reads the old three-hook shape (D109).
+  const fmt = formatById(formatOf(piece));
   const formatLabel = fmt?.label ?? (kind === 'video' ? 'video' : 'post');
   const brandVoice = await getBrandVoiceForStream(piece.stream);
   const parts = await pieceTemplateParts(piece);
@@ -564,7 +566,7 @@ async function generate(
    */
   const agreedHooks = (piece.hooks ?? []).map((h) => h.trim()).filter(Boolean);
   const hooksBlock =
-    kind === 'video' && piece.format === SPLIT_SCREEN_FORMAT && agreedHooks.length > 0
+    kind === 'video' && isMarrsAttacksPiece(piece) && piece.format === SPLIT_SCREEN_FORMAT && agreedHooks.length > 0
       ? /* THE AGREED TITLE (D102): one, verbatim, and hook A is fixed text ending on its first word. */
         `THE AGREED TITLE. Marrs chose it, so it is FINAL COPY: the TITLE section is exactly this, word for word, and HOOK A is exactly "${hookALine(agreedHooks[0])}".\nTITLE: ${agreedHooks[0]}\n\n`
       : kind === 'video' && agreedHooks.length > 0
@@ -707,7 +709,7 @@ export async function proposeHooks(
   steer?: string
 ): Promise<HookProposal> {
   // The split-screen's "hooks" are TITLES, proposed against Marrs's own rules (D102).
-  if (piece.format === SPLIT_SCREEN_FORMAT) return proposeTitles(owner, piece, steer);
+  if (isMarrsAttacksPiece(piece) && piece.format === SPLIT_SCREEN_FORMAT) return proposeTitles(owner, piece, steer);
   const { conceptBody, formatLabel, promptOpts } = await gather(owner, piece, 'video', 'hooks');
   const steerBlock = steer?.trim()
     ? `WHAT THE OPERATOR ALREADY KNOWS HE WANTS (his own words. Any complete line here is final copy and goes in as written; anything that reads as direction rather than as copy steers the set):\n"""\n${steer.trim()}\n"""\n\n`
@@ -906,7 +908,7 @@ export async function proposeOutline(
   piece: MarketingPiece,
   opts: { steer?: string; direction?: string } = {}
 ): Promise<OutlineResult> {
-  if (isMarrsAttacksFormat(piece.format)) {
+  if (isMarrsAttacksPiece(piece)) {
     if (!opts.direction?.trim()) return { directions: await proposeArcDirections(owner, piece, opts.steer) };
     return { outline: await developArc(owner, piece, opts.direction, opts.steer) };
   }

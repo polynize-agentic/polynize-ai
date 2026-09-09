@@ -37,7 +37,15 @@ const ROUTES: { id: Route; label: string; hint: string }[] = [
   { id: 'multi', label: 'Multi', hint: 'A narrative: the article, the kit, many outputs.' },
 ];
 
-export type IdeaRow = { id: string; lane: string; text: string; when: string };
+export type IdeaRow = {
+  id: string;
+  lane: string;
+  text: string;
+  when: string;
+  /** A piece is being worked on from this idea (D109). Shown, marked, and it opens that piece. */
+  inFlight?: boolean;
+  pieceRef?: string;
+};
 
 export function NewNarrative({
   ideas,
@@ -201,7 +209,7 @@ export function NewNarrative({
             disabled={busy}
           >
             {i.text}
-            <span className={g.meta}>caught {i.when}</span>
+            <span className={g.meta}>{i.inFlight ? 'in progress' : `caught ${i.when}`}</span>
           </button>
           {/* THE LITTLE CROSS (D107): a stale idea leaves the inbox. */}
           <button
@@ -267,9 +275,10 @@ export function NewNarrative({
                     setTyped('');
                   }}
                   disabled={busy}
-                  title={`saved ${t.when}`}
+                  title={t.inFlight ? 'In progress: a piece is being made from this hook' : `saved ${t.when}`}
                 >
                   {t.text}
+                  {t.inFlight ? <span className={g.meta}> · in progress</span> : null}
                 </button>
                 <button
                   type="button"

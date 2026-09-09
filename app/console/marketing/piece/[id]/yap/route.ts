@@ -20,6 +20,7 @@ import { llmErrorText } from '@/lib/llm/error-text';
 import {
   SPLIT_SCREEN_FORMAT,
   YAP_FORMAT,
+  isMarrsAttacksPiece,
   parseSplitScreenScript,
   yapSystemPrompt,
   checkYapScript,
@@ -37,7 +38,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   }
   const piece = await getPiece(user.email, id);
   if (!piece) return NextResponse.json({ error: 'piece not found' }, { status: 404 });
-  if (piece.format !== SPLIT_SCREEN_FORMAT) {
+  if (piece.format !== SPLIT_SCREEN_FORMAT || !isMarrsAttacksPiece(piece)) {
     return NextResponse.json({ error: 'a yap is made from a split-screen explainer' }, { status: 400 });
   }
   const source = parseSplitScreenScript(piece.script ?? '');

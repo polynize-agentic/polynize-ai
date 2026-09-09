@@ -64,7 +64,8 @@ export function ScriptScreen({
   const [draftWarnings, setDraftWarnings] = useState<string[]>([]);
   const [making, setMaking] = useState<null | 'yap' | 'version'>(null);
   const [makeError, setMakeError] = useState<string | null>(null);
-  const marrsFormat = initial.format === 'split_screen_short' || initial.format === 'yap';
+  // His board's formats only (D109): a Polynize split-screen keeps the Story behaviour.
+  const marrsFormat = (initial.format === 'split_screen_short' || initial.format === 'yap') && initial.stream === 'marrs';
 
   /**
    * THE YAP AND THE VERSION (D102). Both mint a sibling piece and open it. The yap is written from this

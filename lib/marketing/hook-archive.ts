@@ -14,7 +14,7 @@
 import type { CalendarEntry } from './calendar-store';
 import { getPiece } from './piece-store';
 import { listIdeas, createIdea, updateIdea } from './idea-store';
-import { isMarrsAttacksFormat, titleShape, titleChecks } from './split-screen';
+import { isMarrsAttacksPiece, titleShape, titleChecks } from './split-screen';
 
 /** True when this text is a hook in the library's sense: a title that passes the mechanical tests. */
 export function isHookText(text: string): boolean {
@@ -43,7 +43,7 @@ export async function ensureHookIdea(stream: string, hook: string): Promise<stri
 export async function archiveHookOnShip(owner: string, entry: CalendarEntry): Promise<void> {
   try {
     const piece = await getPiece(owner, entry.piece_id);
-    if (!piece || !isMarrsAttacksFormat(piece.format)) return;
+    if (!piece || !isMarrsAttacksPiece(piece)) return;
     const hook = piece.hooks?.[0]?.trim();
     if (!hook) return;
     const id = piece.hook_ref ?? (await ensureHookIdea(piece.stream, hook));

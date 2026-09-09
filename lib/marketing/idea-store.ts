@@ -27,6 +27,13 @@ export type Idea = {
   updated_at: string;
   /** Set when an idea has been turned into a concept, so it can be shown as spent. */
   used_at?: string;
+  /**
+   * IN FLIGHT (D109): the piece this idea became, while it is being worked on and before a post from it
+   * has shipped. Marrs: "if I have an unfinished idea, it's showing up in Gate 1 as well as in the idea
+   * section on the dashboard... Just keep it to Gate 1." The dashboard hides an idea with a piece_ref;
+   * Gate 1 shows it with an "in progress" mark. Cleared if the piece is deleted, so the idea comes back.
+   */
+  piece_ref?: string;
 };
 
 const SAFE_STREAM = /^[a-z0-9_-]{1,40}$/;
@@ -54,6 +61,7 @@ function normalize(x: unknown): Idea[] {
       created_at: typeof r.created_at === 'string' ? r.created_at : '',
       updated_at: typeof r.updated_at === 'string' ? r.updated_at : '',
       used_at: typeof r.used_at === 'string' ? r.used_at : undefined,
+      piece_ref: typeof r.piece_ref === 'string' && r.piece_ref ? r.piece_ref : undefined,
     });
   }
   return out.slice(0, MAX_IDEAS);
@@ -116,7 +124,7 @@ export async function createIdea(stream: string, text = ''): Promise<Idea> {
 export async function updateIdea(
   stream: string,
   id: string,
-  patch: { text?: string; used_at?: string | null }
+  patch: { text?: string; used_at?: string | null; piece_ref?: string | null }
 ): Promise<Idea | null> {
   const all = await read(stream);
   const i = all.findIndex((x) => x.id === id);
@@ -125,6 +133,7 @@ export async function updateIdea(
     ...all[i],
     ...(patch.text !== undefined ? { text: patch.text.slice(0, MAX_CHARS) } : {}),
     ...(patch.used_at !== undefined ? { used_at: patch.used_at ?? undefined } : {}),
+    ...(patch.piece_ref !== undefined ? { piece_ref: patch.piece_ref ?? undefined } : {}),
     updated_at: new Date().toISOString(),
   };
   all[i] = next;

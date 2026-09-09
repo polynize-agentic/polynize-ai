@@ -389,7 +389,8 @@ export default async function StreamPage({
             bottom. It's still an idea, and still there." A caught note becomes a narrative
             at gate 1 through New narrative, which is where it joins the lanes above.
           */}
-          <Ideas stream={stream} initial={ideas} />
+          {/* IN FLIGHT IDEAS ARE GATE 1's (D109): an idea that has become a piece is not a note any more. */}
+          <Ideas stream={stream} initial={ideas.filter((i) => !(i.piece_ref && !i.used_at))} />
         </section>
 
         {/* AT THE BOTTOM (D66), below the ideas, because it is the last thing you look at and

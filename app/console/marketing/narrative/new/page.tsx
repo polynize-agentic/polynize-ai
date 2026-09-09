@@ -66,6 +66,9 @@ export default async function NewNarrativePage({
         text: i.text.trim(),
         at: i.created_at ?? '',
         when: i.created_at ? new Date(i.created_at).toLocaleDateString('en-AU') : '',
+        // In flight (D109): a piece exists for it and nothing from it has shipped yet.
+        inFlight: Boolean(i.piece_ref),
+        pieceRef: i.piece_ref,
       });
     }
   });

@@ -40,7 +40,7 @@ import { generatePrezieFromScript } from '@/lib/marketing/prezie-oneshot';
 import { conceptBodyForPiece } from '@/lib/marketing/draft';
 import { DraftError } from '@/lib/marketing/draft';
 import { stripEmDashes } from '@/lib/em-dash';
-import { SPLIT_SCREEN_FORMAT } from '@/lib/marketing/split-screen';
+import { SPLIT_SCREEN_FORMAT, isMarrsAttacksPiece, formatOf } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -180,9 +180,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         concept: conceptBody,
         angle: piece.angle,
         direction: body.direction,
-        format: piece.format,
-        arc: piece.format === SPLIT_SCREEN_FORMAT ? piece.outline : undefined,
-        title: piece.format === SPLIT_SCREEN_FORMAT ? piece.hooks?.[0] : undefined,
+        // The template is his board's (D109); a Polynize split-screen keeps the free build.
+        format: isMarrsAttacksPiece(piece) ? piece.format : formatOf(piece),
+        arc: isMarrsAttacksPiece(piece) && piece.format === SPLIT_SCREEN_FORMAT ? piece.outline : undefined,
+        title: isMarrsAttacksPiece(piece) && piece.format === SPLIT_SCREEN_FORMAT ? piece.hooks?.[0] : undefined,
       });
       const now = new Date().toISOString();
       const prezie: Prezie = {

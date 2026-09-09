@@ -270,6 +270,73 @@ CTA
 Spoken words only. No stage directions. Never use the em-dash character.`,
   },
   {
+    /**
+     * THE POLYNIZE SPLIT-SCREEN (D109): the shape the shorts master had before D102, kept whole for the
+     * Polynize streams. Three hooks against one body, cut into three posts, with the prezie planned
+     * separately. Marrs's own split-screen explainer (`split_screen_short`) is a different formula with
+     * question rules his document says must not be reused for Polynize without a validation run, so the
+     * two are two formats: a Story's shorts master becomes this one on a Polynize board and the
+     * explainer on his.
+     */
+    id: 'split_screen_free',
+    label: 'Split-screen short (three hooks, one body)',
+    kind: 'video',
+    module: 'built',
+    channels: ['instagram', 'tiktok', 'youtube', 'linkedin'],
+    defaultLength:
+      'Aim for 45 to 75 seconds spoken (roughly 120 to 190 words). Never over 90 seconds.',
+    twoTrack: true,
+    scriptShape: `Output shape. This is the SPLIT-SCREEN 9:16 hero format. One studio setup, two angles: the TOP half of the frame is a mid front shot of the presenter to camera, the BOTTOM half is a bird's-eye view of a 32in touchscreen the presenter is touching. Both halves are on screen the whole time, so the words and the screen move together.
+
+THE SHAPE, exactly. This is Marrs's own short-form structure, taken from a script he wrote; it is the house standard for short form, not a suggestion.
+
+HOOK 1:
+<what he says, one breath, 15 to 25 words>
+
+----
+
+HOOK 2:
+(same)
+
+----
+
+HOOK 3:
+(same)
+
+----
+
+BEAT 1
+<spoken prose, one or two short paragraphs, one idea>
+
+BEAT 2
+<spoken prose>
+
+BEAT 3
+<spoken prose>
+
+BEAT 4 (only if the argument needs it)
+<spoken prose>
+
+CTA
+<the ask, one or two sentences>
+
+CLOSE
+<one line after the CTA, the last thing said, worth punching>
+
+Rules that follow from that shape:
+- Write as many HOOKS as asked for (the default is one; a template can ask for three), each separated by a line of four hyphens. Every hook is a DIFFERENT way in to the same argument, and every one must hand over cleanly to BEAT 1, because only one of them will survive the edit.
+- A HOOK IS ONE SPOKEN LINE. No on-screen caption line: on this format the first-frame text is the PREZIE's own title and is authored there, so a caption in the script would only be a second draft of it that then has to be reconciled. Write the words he says and nothing else.
+- THE WHOLE SCRIPT IS SPOKEN WORDS ONLY, hooks and beats alike. No screen notes, no captions, no stage directions, no shot marks: every line is read off a teleprompter, and the screen is planned separately as the prezie.
+- CTA and CLOSE are separate sections and both are needed. The CTA is the ask. The CLOSE is one line AFTER it, the actual last thing said, and it is punched in the edit, so it has to be worth punching.
+- Three beats is the norm and four is allowed when the argument genuinely has a fourth move. One idea per beat.`,
+    screenPromptShape: `Before the first beat, add one line labelled "ON-SCREEN TEXT:" holding the first-frame caption that stops the scroll, or write "none" if the opening is purely visual. It is never spoken, and if used its words differ from the spoken hook so the two together open a gap.
+
+FRAMING for this format, state it in the DESIGN SYSTEM section. These are measured from the real rig, so design to them:
+- The bird's-eye camera captures the WHOLE 32in display, so the full 16:9 screen is in shot and every part of it is usable. Compose edge to edge; there is no crop to design around.
+- SCALE is the real constraint. The display lands in the upper part of the lower half of a vertical video watched on a phone, so it reads at roughly a quarter of the phone's height. Type is huge, strokes are heavy, and a state never carries more than one idea. If it would not be legible as a thumbnail, it is too small.
+- The presenter's HAND enters from the RIGHT and rests over the right and lower-right of the display while they talk. Keep the payoff (the key word, the number, the resolution) LEFT of centre and high on the screen, and put the touch target on the right where the hand already is. Never place the thing the viewer must read under the hand.`,
+  },
+  {
     id: 'screen_record_long',
     label: 'Screen-record long (16:9 hero)',
     kind: 'video',

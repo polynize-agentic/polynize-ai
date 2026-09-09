@@ -27,7 +27,7 @@ import { stripEmDashes } from '@/lib/em-dash';
 import { getChannelSchedule, NETWORKS, type Network } from '@/lib/marketing/channel-schedule';
 import { buildTrackingLink, siteOrigin } from '@/lib/marketing/tracking-link';
 import { landingFor, campaignFor } from '@/lib/marketing/use-case';
-import { keywordIn, landingForKeyword } from '@/lib/marketing/split-screen';
+import { keywordIn, landingForKeyword, isMarrsAttacksPiece } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -188,7 +188,7 @@ export async function POST(
        * WHERE THE LINK LANDS (D102). A Marrs Attacks piece has no use case; its CTA keyword decides the
        * magnet (MAP: the team map, ROLE: the job map), read off the piece or its script.
        */
-      const keyword = piece.cta_keyword ?? keywordIn(piece.script ?? '');
+      const keyword = isMarrsAttacksPiece(piece) ? (piece.cta_keyword ?? keywordIn(piece.script ?? '')) : undefined;
       const link = buildTrackingLink({
         origin: siteOrigin(),
         path: landingForKeyword(keyword) ?? landingFor(piece.use_case),
