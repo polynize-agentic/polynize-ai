@@ -62,7 +62,7 @@ export function ScriptScreen({
   const [draftError, setDraftError] = useState<string | null>(null);
   /** The tests the draft failed, named (D102). Shown, never used to rewrite. */
   const [draftWarnings, setDraftWarnings] = useState<string[]>([]);
-  const [making, setMaking] = useState<null | 'yap' | 'version'>(null);
+  const [making, setMaking] = useState<null | 'yap' | 'version' | 'narrative'>(null);
   const [makeError, setMakeError] = useState<string | null>(null);
   // His board's formats only (D109): a Polynize split-screen keeps the Story behaviour.
   const marrsFormat = (initial.format === 'split_screen_short' || initial.format === 'yap') && initial.stream === 'marrs';
@@ -72,7 +72,7 @@ export function ScriptScreen({
    * split-screen's beats; the version is a copy with the next letter, to be changed in one place and
    * re-recorded.
    */
-  const make = async (what: 'yap' | 'version') => {
+  const make = async (what: 'yap' | 'version' | 'narrative') => {
     if (making) return;
     setMaking(what);
     setMakeError(null);
@@ -84,7 +84,8 @@ export function ScriptScreen({
         setMakeError(b?.error ?? `Could not make the ${what}.`);
         return;
       }
-      router.push(`/console/marketing/piece/${b.id}`);
+      // A Story opens on its own screen; a yap or a version opens as a piece.
+      router.push(what === 'narrative' ? `/console/marketing/narrative/${b.id}` : `/console/marketing/piece/${b.id}`);
     } catch {
       setMakeError('Network error. Try again.');
     } finally {
@@ -383,6 +384,17 @@ export function ScriptScreen({
                   title="Write the same question as a one-take, straight-to-camera yap, from these four beats."
                 >
                   {making === 'yap' ? 'Writing…' : 'Make the yap'}
+                </button>
+              ) : null}
+              {initial.format === 'split_screen_short' ? (
+                <button
+                  type="button"
+                  className={`${s.prompterLink} ${s.headBtn}`}
+                  onClick={() => void make('narrative')}
+                  disabled={making !== null}
+                  title="Make a Story from this split-screen: the article is drafted from the hook, the arc and the script, and this piece becomes the Story's short."
+                >
+                  {making === 'narrative' ? 'Creating…' : initial.narrative_ref ? 'Open its narrative' : 'Make a narrative from this'}
                 </button>
               ) : null}
               <button

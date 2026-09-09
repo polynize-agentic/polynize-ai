@@ -268,7 +268,7 @@ export function NarrativeGates({
         body: JSON.stringify({ instruction }),
       });
       const b = (await res.json().catch(() => null)) as
-        | { article?: string; error?: string; note?: string }
+        | { article?: string; error?: string; note?: string; changed?: number }
         | null;
       if (res.ok && b?.article) {
         setArticle(b.article);
@@ -281,7 +281,15 @@ export function NarrativeGates({
          */
         setChat((c) => [
           ...c,
-          { who: 'april', text: b.note ?? 'Done. The article is updated.' },
+          {
+            who: 'april',
+            // A note is either feedback stored or an unchanged article (D111); a change says its size.
+            text:
+              b.note ??
+              (typeof b.changed === 'number'
+                ? `Done. ${b.changed} paragraph${b.changed === 1 ? '' : 's'} changed.`
+                : 'Done. The article is updated.'),
+          },
         ]);
       } else {
         setChat((c) => [

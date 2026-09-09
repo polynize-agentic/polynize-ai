@@ -3137,3 +3137,20 @@ Two causes, both fixed. The draft was fired the instant the button was pressed w
 ### The kit row on his board
 
 *"Fix the kit row wording on my board too."* On his board the Reels and Shorts rows' sub line reads **the split-screen explainer: one title, four beats, the timer**, and the reels series collapses to one output so the wave plans one post, not three cuts of one body. The row labels themselves stay as they were, because D54's rule (one name across Gate 3, Gate 4 and Gate 5) is asserted by the tests and a relabel broke four of them on the first attempt. Polynize boards keep "your 3 hooks, one body" and the three.
+
+
+## D111: "Done" must be true, and a split-screen can become a Story
+
+**Adopted 9 September 2026.**
+
+### The Gate 2 chat that said done and changed nothing
+
+Marrs: *"I've tried to use the chat window for her to rewrite it. She says it's done, but she hasn't changed anything."* His instruction was "rewrite this in my conversational tone". Two things were wrong. The editor prompt told April "change NOTHING the instruction does not require... an unasked-for improvement is a failure", at a cool temperature, so a whole-voice instruction read to her as a request to change nothing, and she returned the article as it was. And the screen said "Done. The article is updated." whenever any article came back, including an identical one.
+
+Now: the prompt says an instruction about tone, voice or wording applies to every sentence, and that returning the article unchanged is a failure. The route compares before and after by paragraph; an unchanged article comes back as **"April returned the article unchanged"** with what to do (name the paragraph or the words, or paste a line the way you would say it), and, when the stream has no voice document, says so, because "my tone" has nothing to point at without one. A changed article says **"Done. N paragraphs changed."**
+
+### A split-screen can become a Multi
+
+*"If I create a split screen and take that all the way through to the end, can I then repurpose that split screen as a multi? Does that flow exist?"* It did not; it does now. **Make a narrative from this** on a split-screen creates a Story at Gate 2 on his board with the hook, the arc and the script as its idea, so the article is drafted from what the video already argued. The split-screen itself is attached to the Story as its shorts piece, so ticking the shorts row at Gate 3 reuses it rather than minting a second one. The button reads "Open its narrative" once one exists.
+
+Both directions now exist: Multi to split-screen through the shorts row (D109), and split-screen to Multi through this button.

@@ -114,7 +114,11 @@ This model reasons before it answers, so plan silently: find the through-line, o
 function reviseSystemPrompt(lane: NarrativeLane, brandVoice?: string): string {
   return `You are April, Polynize's copy chief, working as an editor. The user's message carries the current article and ONE instruction. Apply that instruction to the article and return the complete revised article.
 
-Change NOTHING the instruction does not require. Every line the instruction leaves alone stays word for word: this is a targeted edit, not a rewrite, and an unasked-for improvement is a failure here, because the operator has already read and part-approved what is on the page.
+Change NOTHING the instruction does not require. Every line the instruction leaves alone stays word for word: a targeted edit is not a rewrite, and an unasked-for improvement is a failure here, because the operator has already read and part-approved what is on the page.
+
+BUT READ THE SCOPE OF THE INSTRUCTION. An instruction about tone, voice, register or wording ("more conversational", "closer to how I talk", "in my voice", "less formal", "shorter sentences") applies to EVERY sentence: rewrite each line in that voice while keeping the argument, the facts, the paragraph order and the title. That is what was asked for, so it is not an unasked-for change. The voice to move toward is the brand voice below, when there is one.
+
+RETURNING THE ARTICLE UNCHANGED IS A FAILURE. The operator is watching the page to see it change. If you cannot apply the instruction, change the one line that best shows what you understood and leave the rest, so the response is visibly a response.
 
 Keep the article's discipline while you edit: 300 to 450 words, plain text, first line the bare title, one argument start to end, a final line worth remembering.
 
@@ -140,6 +144,28 @@ Hard constraints:
  * headline on their way to a post. Marrs: "don't use any star symbols for bolding because that
  * doesn't work here."
  */
+/**
+ * HOW MANY PARAGRAPHS DIFFER between two versions of the article (D111). Whitespace-insensitive, so a
+ * reflow is not a change. Zero means the model returned the article as it was, which the chat must
+ * say rather than announce an update.
+ */
+export function paragraphsChanged(before: string, after: string): number {
+  const norm = (t: string) =>
+    t
+      .split(/\n\s*\n/)
+      .map((x) => x.replace(/\s+/g, ' ').trim())
+      .filter(Boolean);
+  const a = norm(before);
+  const b = norm(after);
+  if (a.join('\n') === b.join('\n')) return 0;
+  const setA = new Set(a);
+  const setB = new Set(b);
+  let n = 0;
+  for (const x of b) if (!setA.has(x)) n += 1;
+  for (const x of a) if (!setB.has(x)) n += 1;
+  return Math.max(1, Math.ceil(n / 2));
+}
+
 export function cleanArticle(raw: string): string {
   let body = raw.trim();
   const fence = body.match(/^```(?:\w+)?\s*([\s\S]*?)\s*```$/);

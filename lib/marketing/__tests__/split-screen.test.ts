@@ -28,6 +28,7 @@ import {
   isMarrsAttacksPiece,
   formatOf,
 } from '../split-screen';
+import { paragraphsChanged } from '../article-draft';
 
 let n = 0;
 const ok = (c: unknown, msg: string) => {
@@ -209,5 +210,13 @@ ok(!isMarrsAttacksPiece({ format: 'linkedin_text', stream: 'marrs' }), 'nor a Li
 eq(formatOf({ format: 'split_screen_short', stream: 'kristin' }), 'split_screen_free', 'a Polynize split-screen reads the old three-hook shape');
 eq(formatOf({ format: 'split_screen_short', stream: 'marrs' }), 'split_screen_short', 'his reads the formula');
 eq(formatOf({ format: 'yap', stream: 'kristin' }), 'yap', 'other formats are themselves');
+
+/* "Done" must be true (D111) */
+const art = 'Title\n\nFirst paragraph here.\n\nSecond paragraph here.';
+eq(paragraphsChanged(art, art), 0, 'the same article is zero changes');
+eq(paragraphsChanged(art, 'Title\n\n  First   paragraph here.\n\nSecond paragraph here.\n'), 0, 'a reflow is not a change');
+eq(paragraphsChanged(art, 'Title\n\nFirst paragraph, said my way.\n\nSecond paragraph here.'), 1, 'one paragraph rewritten is one');
+eq(paragraphsChanged(art, 'Title\n\nFirst, my way.\n\nSecond, my way.'), 2, 'two rewritten is two');
+ok(paragraphsChanged(art, 'Title\n\nFirst paragraph here.') >= 1, 'a cut paragraph counts');
 
 console.log(`split-screen: ${n} assertions passed`);

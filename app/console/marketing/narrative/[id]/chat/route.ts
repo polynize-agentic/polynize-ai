@@ -14,6 +14,8 @@ import { getCurrentUser } from '@/lib/console-auth';
 import { getNarrative, saveNarrative } from '@/lib/marketing/narrative-store';
 import { reviseArticle } from '@/lib/marketing/article-draft';
 import { captureFeedback } from '@/lib/marketing/feedback-capture';
+import { getBrandVoiceForStream } from '@/lib/marketing/brand-voice-store';
+import { paragraphsChanged } from '@/lib/marketing/article-draft';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -77,10 +79,27 @@ export async function POST(
   }
 
   try {
-    const article = await reviseArticle(narrative.lane, narrative.article, instruction);
+    const before = narrative.article;
+    const article = await reviseArticle(narrative.lane, before, instruction);
+    /**
+     * "DONE" MUST BE TRUE (D111). Marrs: "She says it's done, but she hasn't changed anything." The
+     * client used to say the article was updated whenever an article came back, including when the
+     * model returned it untouched. Now the route compares, and an unchanged article is reported as
+     * unchanged with what to do about it, and a changed one says how much changed.
+     */
+    const changed = paragraphsChanged(before, article);
+    if (changed === 0) {
+      const voice = (await getBrandVoiceForStream(narrative.lane).catch(() => undefined))?.trim();
+      return NextResponse.json({
+        article: before,
+        note: `April returned the article unchanged. Say what to change more concretely (which paragraph, which words, or paste a line the way you would say it).${
+          voice ? '' : ` There is no voice document for the ${narrative.lane} stream yet, so "my tone" has nothing to point at; add one under Brand voice.`
+        }`,
+      });
+    }
     narrative.article = article;
     await saveNarrative(narrative);
-    return NextResponse.json({ article });
+    return NextResponse.json({ article, changed });
   } catch (err) {
     console.error('[narrative.chat] revise failed:', err);
     return NextResponse.json(
