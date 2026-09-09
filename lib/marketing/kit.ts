@@ -1,6 +1,7 @@
 import type { Network, SlotKind, SlotPrefers } from './channel-schedule';
 import type { NarrativeLane } from './narrative-store';
 import { streamKind, STREAM_IDS, type StreamKind } from './streams';
+import { usesUseCases } from './use-case';
 import { safeRect, type SafeRect } from './safe-area';
 
 /**
@@ -1339,6 +1340,13 @@ export function kitRows(lane: NarrativeLane): KitRow[] {
   const kind = streamKind(lane);
   const rows: KitRow[] = [];
   const seenSeries = new Set<string>();
+  /**
+   * HIS BOARD'S SHORTS ARE THE SPLIT-SCREEN EXPLAINER (D110). Marrs: "Fix the kit row wording on my
+   * board too." The shorts master becomes the explainer there (D109), which is one title, four beats
+   * and one post, not three hooks cut into three. So the row says so, and the series collapses to one
+   * output so the wave plans one placement rather than three.
+   */
+  const explainer = !usesUseCases(lane);
   for (const net of KIT_NETWORK_ORDER) {
     // Screen order, which is not array order: see KitOutput.row. Stable within equal numbers, so
     // an unnumbered output keeps its array position relative to its unnumbered neighbours.
@@ -1351,15 +1359,16 @@ export function kitRows(lane: NarrativeLane): KitRow[] {
       if (o.series) {
         if (seenSeries.has(o.series)) continue;
         seenSeries.add(o.series);
-        const members = CATALOGUE.filter(
+        const allMembers = CATALOGUE.filter(
           (x) => x.series === o.series && x.shown.includes(kind)
         );
+        const members = explainer && o.master === 'shorts' ? allMembers.slice(0, 1) : allMembers;
         rows.push({
           key: o.series,
           network: net,
           ids: members.map((m) => m.id),
-          label: o.label,
-          sub: o.sub,
+          label: explainer && o.master === 'shorts' ? 'Split-screen explainer' : o.label,
+          sub: explainer && o.master === 'shorts' ? 'one title, four beats, the timer' : o.sub,
           pill: members.length > 1 ? `x${members.length}` : undefined,
           on: o.on.includes(kind),
           blocked: o.blocked,
@@ -1370,8 +1379,8 @@ export function kitRows(lane: NarrativeLane): KitRow[] {
           key: o.id,
           network: net,
           ids: [o.id],
-          label: o.label,
-          sub: o.sub,
+          label: explainer && o.master === 'shorts' ? 'Split-screen explainer' : o.label,
+          sub: explainer && o.master === 'shorts' ? 'one title, four beats, the timer' : o.sub,
           on: o.on.includes(kind),
           blocked: o.blocked,
           ...describe(o),

@@ -379,6 +379,21 @@ function grow(el: HTMLTextAreaElement | null) {
                       : 'Propose a different arc'
                     : 'Propose an arc'}
               </button>
+              {/* HIS OWN ARC (D110). Marrs: "if I have an idea for a narrative arc, there's no way for me
+                  to input that narrative arc and for April to use my proposed narrative arc to write
+                  the script." What he typed becomes the direction and April develops it into the
+                  beats, honouring it, rather than proposing three of her own. */}
+              {single && arcSteer.trim() ? (
+                <button
+                  type="button"
+                  className={s.ghost}
+                  onClick={() => void getOutline(arcSteer.trim())}
+                  disabled={busy !== null}
+                  title="Develop what you typed into the four beats, as the arc."
+                >
+                  {taking === arcSteer.trim() ? 'Developing…' : 'Use mine as the arc →'}
+                </button>
+              ) : null}
             </div>
             {/* THREE PLACES THE HOOK COULD GO (D106): where, why it fits, the object. Take one and it
                 becomes the beats below. */}

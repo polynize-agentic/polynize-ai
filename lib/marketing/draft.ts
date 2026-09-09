@@ -601,7 +601,8 @@ async function generate(
       // brief, which is long and per-state), on top of ~2000-2300 reasoning tokens,
       // so the video ceiling is generous. max_tokens is a cap, not a target, so a
       // model that reasons less simply uses less of it.
-      maxTokens: kind === 'video' ? 16000 : 6000,
+      // A split-screen or a yap is under 200 spoken words; the ceiling is for the reasoning, not the output (D110).
+      maxTokens: kind === 'video' ? (isMarrsAttacksPiece(piece) ? 8000 : 16000) : 6000,
       temperature: 0.7,
       json: false,
       model: scriptModel(),

@@ -19,7 +19,8 @@ import { SPLIT_SCREEN_FORMAT, YAP_FORMAT, isMarrsAttacksPiece, checkSplitScreenS
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+/** A thinking model reasoning over a long shape and an arc; the old sixty was cutting real drafts off (D110). */
+export const maxDuration = 120;
 
 export async function POST(
   _req: NextRequest,

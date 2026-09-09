@@ -288,11 +288,23 @@ export function ScriptScreen({
     setDrafting(true);
     setDraftError(null);
     try {
+      /**
+       * THE ARC AND THE HOOK REACH THE SERVER FIRST (D110). Autosave is debounced by a second and the
+       * draft was fired at once, so an arc typed and then drafted inside that second was drafted from
+       * the arc before it. The same race D81 fixed for the platform toggles.
+       */
+      await flush();
       const url = window.location.pathname.replace(/\/+$/, '') + '/script-draft';
       const res = await fetch(url, { method: 'POST' });
       if (!res.ok) {
         const b = (await res.json().catch(() => null)) as { error?: string } | null;
-        setDraftError(b?.error ?? 'Could not draft the script.');
+        // A non-JSON failure is the platform cutting the request off, not April; say which.
+        setDraftError(
+          b?.error ??
+            (res.status === 504 || res.status === 502
+              ? `The server ran out of time (${res.status}). Try again; a shorter arc helps.`
+              : `Could not draft the script (${res.status}).`)
+        );
         return;
       }
       const { script: drafted, model, warnings } = (await res.json()) as {

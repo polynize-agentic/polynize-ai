@@ -3120,3 +3120,20 @@ Yes. A Story's **shorts master** (the Reels and Shorts rows at Gate 3) has alway
 
 - **Two formats, not a flag.** The Polynize shape and his formula have different prompts, different checks and a different prezie; a single format switching on the stream would have been the same thing written twice inside one definition.
 - **The kit row still says "your 3 hooks, one body"** on every board, including his where it is now one title and four beats. The kit's rows are shared; wording them per board is a small follow-up, noted in the todo.
+
+
+## D110: His own arc, the draft that could not draft, and the kit row on his board
+
+**Adopted 9 September 2026.**
+
+### "Use mine as the arc"
+
+Marrs: *"if I have an idea for a narrative arc, there's no way for me to input that narrative arc and for April to use my proposed narrative arc to write the script."* The "Any ideas or direction?" box now has a second button beside Propose an arc when it has text: **Use mine as the arc**. What he typed becomes the direction and April develops it into the four beats, honouring it, instead of proposing three of her own. The developed arc lands in the editable arc box as before, and the script is written from it.
+
+### "Could not draft a script"
+
+Two causes, both fixed. The draft was fired the instant the button was pressed while autosave waits a second, so an arc typed and drafted inside that second was drafted from the arc before it; the script screen now saves before it drafts, the same race D81 fixed for the platform toggles. And the draft route allowed sixty seconds while a thinking model reasoned over a long shape plus an arc; it now allows 120, and a split-screen or yap asks for half the token ceiling, because its output is under 200 words and the ceiling was for the reasoning. When the platform still cuts a request off, the screen now says so with the status rather than "Could not draft the script".
+
+### The kit row on his board
+
+*"Fix the kit row wording on my board too."* On his board the Reels and Shorts rows read **Split-screen explainer: one title, four beats, the timer**, and the reels series collapses to one output so the wave plans one post, not three cuts of one body. Polynize boards keep "your 3 hooks, one body" and the three.
