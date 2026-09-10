@@ -254,3 +254,16 @@ What it was, kept because it is the shape of the bug: `pam/config/posting-schedu
 **17. Nothing lints. FIXED (D75).** ESLint 9 flat config, narrow and correctness-only, gating the build via `prebuild`. Verified against the actual bug: D74 reintroduced temporarily produces an ESLint error and no TypeScript complaint. 20 pre-existing errors were fixed rather than suppressed. What it was: D74 was a function calling itself instead of reading a map, which TypeScript cannot catch (`string ?? x` is legal) and which left `LANE_VOICE` unused with nothing objecting. A configured `no-unused-vars` plus `no-constant-binary-expression` would have caught both halves at commit time. It cost a week of Gate 2 being dead.
 
 **15. No test runner beyond two suites.** Still true, though the marketing suite has grown a long way: `npm run test:marketing` is 698 assertions now (was 111 when this was written) and `npm run test:blueprint`. Everything else is unverified by anything but a typecheck, and `tsc` cannot see a client component importing server code, which shipped a 500 once already (D47).
+
+## After the split and the library (10 September 2026, D114 and D115)
+
+Open items, in the order they matter:
+
+1. **Marrs decides two words** (see `console-audit-2026-09.md` §1 and §3): one name for a Story on the board (Narrative / Story / Multi), and whether the Content templates setup card stays.
+2. **Press "Bring them across" once** on the Marrs Attacks board: moves this week's split-screens, hooks, calendar drafts, voice doc and Metricool mapping from the Marrs board. The panel disappears when nothing is left.
+3. **Send the co-founder photo** for the Marrs card (the mint mark is the placeholder); add it to `STREAM_AVATARS`.
+4. **First learning through the flow:** add one, read April's first pass, publish it, open polynize.ai/library/<slug>, make a Story from it and check the link on a prepared post lands on the library page.
+5. **Marrs Attacks keyword destinations** move to marrsattacks.world once the site exists (today MAP and ROLE still land on polynize.ai): make the keyword list editable per board.
+6. **Clean-up commit** after two weeks of learnings: retire the concept flow, the redirects from old addresses, and the dead Metricool `slots` table. Data untouched.
+7. **Still owed from the analytics build:** Slack webhook in Vercel, first Pull now with the Vercel keys, first Make evergreen, "mark published with link" for hand-posted LinkedIn, store the focus anchor.
+8. **Later, on his word:** the How-to kit row (a step-by-step article) and Interactive experiences; the partner enablement console built on the library.

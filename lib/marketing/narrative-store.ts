@@ -8,6 +8,7 @@ import {
   deleteObject,
 } from '@/lib/agents/bucket';
 import { isUseCaseId } from './use-case';
+import { isSafeSlug } from './learning-store';
 
 /**
  * STORIES: the unit that moves through the Gates.
@@ -53,6 +54,13 @@ export type Narrative = {
    * utm_campaign. Never called `lane`: that word already means the stream here.
    */
   use_case?: string;
+  /**
+   * MADE FROM A LEARNING (D115). The library entry this Story was cut from, and its public slug,
+   * which is where every post's link lands (polynize.ai/library/{slug}) instead of a booking page.
+   * The slug is copied here so the wave never has to read the library to build a link.
+   */
+  learning_ref?: string;
+  learning_slug?: string;
   /** The caught idea, verbatim. Never rewritten by the pipeline. */
   idea: string;
   /** Id in idea-store when the narrative came from the inbox, so the note shows as spent. */
@@ -180,6 +188,8 @@ export function normalizeNarrative(x: unknown): Narrative | null {
     ...(isUseCaseId(r.use_case) ? { use_case: r.use_case } : {}),
     idea: typeof r.idea === 'string' ? r.idea.slice(0, MAX_IDEA_CHARS) : '',
     idea_ref: typeof r.idea_ref === 'string' ? r.idea_ref : undefined,
+    ...(typeof r.learning_ref === 'string' && r.learning_ref ? { learning_ref: r.learning_ref.slice(0, 64) } : {}),
+    ...(isSafeSlug(r.learning_slug) ? { learning_slug: r.learning_slug } : {}),
     article: typeof r.article === 'string' ? r.article.slice(0, MAX_ARTICLE_CHARS) : '',
     // A garbled gate falls back to 1, not to rejection: losing board position is
     // recoverable by clicking through the gates; losing the narrative is not.

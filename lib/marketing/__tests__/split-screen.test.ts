@@ -208,12 +208,14 @@ ok(checkArc(arc.replace('OBJECT: a homework page, marked\n\n', '')).some((p) => 
 ok(checkArc(arc.replace(/BEAT 4[\s\S]*$/, '')).some((p) => p.includes('3 beats')), 'three beats is named');
 
 /* the formula is his board's (D109) */
-ok(isMarrsAttacksPiece({ format: 'split_screen_short', stream: 'marrs' }), 'a split-screen on his board is a Marrs Attacks piece');
-ok(isMarrsAttacksPiece({ format: 'yap', stream: 'marrs' }), 'so is a yap');
+// D114: his board is the marrsattacks stream; the marrs stream is Marrs the co-founder.
+ok(isMarrsAttacksPiece({ format: 'split_screen_short', stream: 'marrsattacks' }), 'a split-screen on his board is a Marrs Attacks piece');
+ok(isMarrsAttacksPiece({ format: 'yap', stream: 'marrsattacks' }), 'so is a yap');
+ok(!isMarrsAttacksPiece({ format: 'split_screen_short', stream: 'marrs' }), 'a split-screen on the co-founder board is not (it reads as the free shape)');
 ok(!isMarrsAttacksPiece({ format: 'split_screen_short', stream: 'kristin' }), 'a split-screen on a Polynize board is not');
-ok(!isMarrsAttacksPiece({ format: 'linkedin_text', stream: 'marrs' }), 'nor a LinkedIn post on his');
+ok(!isMarrsAttacksPiece({ format: 'linkedin_text', stream: 'marrsattacks' }), 'nor a LinkedIn post on his');
 eq(formatOf({ format: 'split_screen_short', stream: 'kristin' }), 'split_screen_free', 'a Polynize split-screen reads the old three-hook shape');
-eq(formatOf({ format: 'split_screen_short', stream: 'marrs' }), 'split_screen_short', 'his reads the formula');
+eq(formatOf({ format: 'split_screen_short', stream: 'marrsattacks' }), 'split_screen_short', 'his reads the formula');
 eq(formatOf({ format: 'yap', stream: 'kristin' }), 'yap', 'other formats are themselves');
 
 /* "Done" must be true (D111) */

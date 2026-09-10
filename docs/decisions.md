@@ -3211,3 +3211,35 @@ Both post through the same Metricool brand (*"Just Marrs and Marrs Attacks go to
 - **The old constant is recorded.** Until this decision `MARRS_ATTACKS_STREAM` was `'marrs'`; anything stored with `utm_campaign=marrs_attacks` from that week is still his and still reads back.
 
 Tests: gate4 gains the private-board, Studio, video-row and slot assertions (all four marketing files still 0 failed).
+
+## D115: The Polynize Content Library of Core Learnings
+
+**Adopted 10 September 2026.** The leadership meeting of 9 September (Shourov, Marrs, Kristin) landed on it in one exchange. Shourov: *"we've talked before about taking learnings from meetings and we've now got the engine to create content from that."* Marrs: *"you have a core learning and then you create these assets around it to communicate that to the market... if we can start collecting these in the console, the engine's already there, we just have to work out where it goes."* Kristin: *"a content library of core learnings."* Marrs, naming it: *"The Polynize content library of Core Learnings."*
+
+Marrs to me, the next day: *"we promote the core learnings module just above the narratives module... you click 'Learnings' to give us the learning. We all work with voice, so the input would be just a voice dump or a transcript... 'Tell us what the insight is' or 'Paste the text about the insight'. Then April turns it into a first pass as a full article. You can edit that. Once you commit that to an article, the article goes directly to polynize.ai/library... just like we have a media library, we should also have a learnings library... We're moving towards collecting these to be the atoms that we use to make our full partner enablement console."*
+
+### The shape
+
+| Where | What |
+|---|---|
+| Front page, **Learnings library** button | Every learning the company has collected: title, the insight in a sentence, who brought it, live or draft, how many Stories were made from it. **+ Add a learning.** |
+| Polynize board, **Learnings** module above Narratives | The newest few, the same button, the library one click on. Polynize board only: a learning is Polynize content. |
+| **Add a learning** | One box, two modes: *Tell us what the insight is* (a spoken dump) or *Paste the text about the insight* (notes, a transcript). One optional line for where it came from, which stays internal. Optional use case. **April, write the first pass.** |
+| **The learning** | The article with April beside it, exactly Gate 2's shape: edit the text, or one instruction at a time. Under it: the learning in one sentence, where it came from, the image for the public page (make four, or pick from the Polynize library). Two doors out: **Publish to polynize.ai/library**, and **Make a Story from this** on a chosen board. |
+| **polynize.ai/library** | Public. Every published learning, newest first. |
+| **polynize.ai/library/{slug}** | Public. The article, its image, the insight as the lede, and one thing to do next: the use case's magnet. |
+
+**A Story made from a learning** opens at Gate 2 with the article already in place (no bare-idea draft), carries the learning's use case, and remembers the learning. **Every post cut from it links to the learning's page** rather than straight to a booking page: the wave and the prepare route both read `learning_slug`. The funnel is now post, article page, magnet, lead, and the attribution cookie set on the way in (D97) is what the lead is joined to. The library page is also what a delivery partner will be pointed at when enablement packs exist; that is a separate build.
+
+### Decisions inside it
+
+- **Recycled the flow, not the storage.** The concept bank was per person (`pam/concept-bank/{email}`), which is why Shourov's concepts were only Shourov's. A learning is the company's the moment it is written, so `learning-store.ts` keeps one shared prefix and `added_by` names the person. The concept screens are untouched and still reachable by url (D45 demoted them; nothing links to them since D48); they are now superseded and listed for retirement in the audit.
+- **No pull from Fireflies.** Marrs: *"We won't do the 'Get transcript from Fireflies.' That's a security breach."* The two inputs are the person and the paste. *"The flow is what collects the data. You don't have to build it to collect it from a specific source. We'll bring it ourselves."*
+- **Names stay out, by prompt and by design.** April is told never to name a client, a company or a person from the source. `source` and `raw` are internal fields; the public page and the public list never read them. A cleared case study is a hand edit.
+- **The article convention is the Story's.** First line is the title, plain text, no markdown. So the reviser, the honesty rule (*"Done. N paragraphs changed"* or *"Nothing changed"*, D111) and the headline helper are the same code.
+- **Longer than a Story's article on purpose.** 450 to 700 words: this is the long form everything is cut from, published as a page, not a LinkedIn post (Marrs in the meeting: *"a 600 word article"*). A Story cut from it can ask April to shorten.
+- **Library, not learnings, in public.** *"Publicly, library sounds a bit better than learnings."* The internal screen says Learnings; the address says library.
+- **Deferred on his word.** *"Don't worry about those new kit rows of how-to and interactive experience... We have enough variation in the kit already."* The how-to is a step-by-step article; both wait until the library has run.
+- **Publishing is a flag, not a copy.** The public page reads the stored article, so an edit after publishing is live on the next request, and taking it down is clearing one field.
+
+Tests: `learnings.test.ts` (34): the slug, the parse of April's first pass, the record shape, and that a card never carries the internal fields. Added to `test:marketing`.

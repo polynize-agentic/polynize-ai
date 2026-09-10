@@ -137,6 +137,10 @@ export default async function MarketingHome() {
             <Link href="/console/marketing/calendar" className={s.startConceptCta}>
               Calendar
             </Link>
+            {/* THE LEARNINGS LIBRARY (D115): the company's, so it sits with the whole-engine buttons. */}
+            <Link href="/console/marketing/learnings" className={s.startConceptCta}>
+              Learnings library
+            </Link>
             {/* The Studio and the Calendar sit here because they are about the whole engine
                 rather than one stream. THE STUDIO IS HIS ROOM (D114): drawn for Marrs only. */}
             {canUseStudio(user.email) ? (

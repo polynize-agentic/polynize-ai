@@ -1,0 +1,199 @@
+/* THE LEARNINGS LIBRARY (D115): the list, the add screen, the learning screen's extras. */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+.rowWrap {
+  position: relative;
+}
+.row {
+  display: block;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--tac-surface, rgba(255, 255, 255, 0.03));
+  box-shadow: var(--tac-shadow-raised, 0 1px 0 rgba(255, 255, 255, 0.04) inset);
+  color: var(--text, #f4ece4);
+  text-decoration: none;
+  transition: transform 120ms ease;
+}
+.row:hover {
+  transform: translateY(-1px);
+}
+.rowTop {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.rowTitle {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+.rowLearning {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-2, #c7b9ac);
+}
+.rowMeta {
+  margin: 8px 0 0;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: var(--text-3, #8a7d72);
+}
+.live {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mint, #69fccb);
+}
+.draft {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3, #8a7d72);
+}
+
+/* the add screen */
+.modes {
+  display: flex;
+  gap: 8px;
+  margin: 14px 0 10px;
+}
+.mode {
+  border: 1px solid var(--tac-edge-dark, rgba(255, 255, 255, 0.08));
+  background: transparent;
+  color: var(--text-2, #c7b9ac);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.modeOn {
+  border-color: var(--mint, #69fccb);
+  color: var(--text, #f4ece4);
+}
+.dump {
+  width: 100%;
+  min-height: 260px;
+  resize: vertical;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--tac-edge-dark, rgba(255, 255, 255, 0.08));
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text, #f4ece4);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.line {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--tac-edge-dark, rgba(255, 255, 255, 0.08));
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text, #f4ece4);
+  font: inherit;
+  font-size: 13px;
+}
+.label {
+  display: block;
+  margin-top: 16px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3, #8a7d72);
+}
+
+/* the learning screen's extras */
+.extras {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+@media (max-width: 760px) {
+  .extras {
+    grid-template-columns: 1fr;
+  }
+}
+.heroGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+.heroTile {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0;
+  cursor: pointer;
+}
+.heroTileOn {
+  border-color: var(--mint, #69fccb);
+}
+.heroTile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.heroNow {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  object-fit: cover;
+  display: block;
+  margin-top: 10px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.select {
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--tac-edge-dark, rgba(255, 255, 255, 0.08));
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text, #f4ece4);
+  font: inherit;
+  font-size: 13px;
+}
+.del {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: var(--text-3, #8a7d72);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.del:hover {
+  color: var(--coral, #ff7a6b);
+}
+.publicLink {
+  color: var(--mint, #69fccb);
+  font-size: 13px;
+  text-decoration: none;
+}
+.publicLink:hover {
+  text-decoration: underline;
+}

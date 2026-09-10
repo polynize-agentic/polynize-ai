@@ -51,8 +51,11 @@ eq(landingFor('nonsense'), '/', 'an unknown id lands on the home page rather tha
 
 /* Polynize only (D101) */
 ok(usesUseCases('polynize') && usesUseCases('shourov'), 'Polynize content streams carry use cases');
-ok(!usesUseCases('marrs'), 'the marrs stream is Marrs Attacks and carries none');
-eq(campaignFor({ stream: 'marrs', use_case: 'ai_capability_lead' }), 'marrs_attacks', 'a marrs link is labelled marrs_attacks whatever the piece says');
+// D114: Marrs Attacks is its own board now; the marrs stream is the co-founder and carries use cases.
+ok(!usesUseCases('marrsattacks'), 'the Marrs Attacks board carries no use case');
+ok(usesUseCases('marrs'), 'the co-founder Marrs board carries them, since D114');
+eq(campaignFor({ stream: 'marrsattacks', use_case: 'ai_capability_lead' }), 'marrs_attacks', 'a Marrs Attacks link is labelled marrs_attacks whatever the piece says');
+eq(campaignFor({ stream: 'marrs', use_case: 'ai_capability_lead' }), 'ai_capability_lead', 'and a co-founder link carries the use case');
 eq(campaignFor({ stream: 'kristin', use_case: 'org_design' }), 'org_design', 'a Polynize link carries its use case');
 eq(campaignFor({ stream: 'kristin' }), undefined, 'and none when none was set');
 

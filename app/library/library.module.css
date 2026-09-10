@@ -1,0 +1,149 @@
+/*
+ * THE POLYNIZE CONTENT LIBRARY OF CORE LEARNINGS, the public side (D115).
+ * The site's own tokens: ink ground, cream text, mint for the one thing to click.
+ */
+.page {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 56px 24px 96px;
+  color: var(--text);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  position: relative;
+  z-index: 1;
+}
+.eyebrow {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.eyebrow a {
+  color: inherit;
+  text-decoration: none;
+}
+.eyebrow a:hover {
+  color: var(--mint);
+}
+.h1 {
+  margin: 14px 0 0;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(30px, 5vw, 44px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+.lede {
+  margin: 18px 0 0;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.meta {
+  margin: 18px 0 0;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+}
+.hero {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 16px;
+  margin: 32px 0 0;
+  display: block;
+}
+.body {
+  margin-top: 36px;
+  font-size: 18px;
+  line-height: 1.65;
+}
+.body p {
+  margin: 0 0 1.25em;
+}
+.cta {
+  margin-top: 48px;
+  padding: 24px;
+  border-radius: 16px;
+  background: rgba(105, 252, 203, 0.06);
+  border: 1px solid rgba(105, 252, 203, 0.25);
+}
+.ctaTitle {
+  margin: 0;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+}
+.ctaText {
+  margin: 8px 0 0;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.ctaBtn {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--mint);
+  color: var(--bg);
+  font-weight: 600;
+  text-decoration: none;
+}
+.ctaBtn:hover {
+  filter: brightness(1.06);
+}
+.list {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.card {
+  display: block;
+  padding: 22px 24px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 140ms ease, transform 140ms ease;
+}
+.card:hover {
+  border-color: rgba(105, 252, 203, 0.45);
+  transform: translateY(-1px);
+}
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+.cardLearning {
+  margin: 10px 0 0;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.cardMeta {
+  margin: 12px 0 0;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+}
+.empty {
+  margin-top: 36px;
+  color: var(--text-2);
+}
+.foot {
+  margin-top: 56px;
+  font-size: 14px;
+  color: var(--text-3);
+}
+.foot a {
+  color: var(--text-2);
+}

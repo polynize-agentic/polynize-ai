@@ -141,16 +141,17 @@ Each stream has one brand-voice document (`Stream setup → Brand voice`). Paste
 
 ---
 
-## 6. Concepts
+## 6. Learnings 🧪 (D115)
 
-A **core concept** is a living master document — a strategic idea, framed for an audience, that many pieces draw from.
+A **core learning** is one insight from real client work that is true beyond that client. It is the atom of the Polynize Content Library of Core Learnings, and the thing Stories are cut from.
 
-- **Develop a concept** ✅ — opens an interview with **April**. Give her your idea; she draws it out and writes the concept doc. Opener: *"Give me your idea for a core concept and we can shape it into something great together."* Includes a working-framing field and a Start-over button; the interview survives a reload.
-- **Import a concept** ✅ — paste a finished `.md` (e.g. one you extracted from a meeting in a separate, secure session) and it becomes a concept in the stream. A same-title import asks before overwriting.
-- **Update concept** ✅ — on a concept page, tell April *what's changed* and she restructures the whole doc in place (same concept, no version history kept).
-- **Concept library** ✅ — browse the concepts in *other* streams and **copy** one into yours. It's a copy, never a move — the original stays put.
+- **Learnings library** (front page button) — every learning collected, newest first: title, the insight in a sentence, who brought it, live or draft, how many Stories were made from it.
+- **Learnings** module on the Polynize board, above Narratives — the newest few, and **+ Add a learning**.
+- **Add a learning** — one box, two modes: *Tell us what the insight is* (dictate it) or *Paste the text about the insight* (notes, a transcript). One optional line for where it came from, which stays internal. April writes the first pass: the title, the insight in a sentence, and a 450 to 700 word article in the Polynize voice, with no client names.
+- **The learning** — the article with April beside it, exactly like Gate 2: edit the text yourself or give April one instruction at a time. Under it: the one-sentence learning, where it came from, and the image for the public page (make four from a line about the look, or pick one from the Polynize media library). **Publish to polynize.ai/library** makes it live at `polynize.ai/library/<slug>`; **Take it down** unpublishes. **Make a Story from this** opens a Story at Gate 2 with the article already in place, on the board you choose; every post from that Story links to the learning's page.
+- **polynize.ai/library** — the public list; each learning has its own page with the article, its image and the use case's magnet as the one thing to do next.
 
-*Note on meeting extraction:* pulling concepts straight from Fireflies transcripts is **postponed** for client-data security. For now, extract manually in an isolated session and use **Import**. The method is captured in `concept-extraction.md`.
+*Concepts (the older flow: interview, import, concept library) still exist at their urls with their data, but nothing links to them and the learnings replace them. See the September 2026 console audit for the retirement plan.*
 
 ---
 

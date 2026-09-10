@@ -27,6 +27,7 @@ import { stripEmDashes } from '@/lib/em-dash';
 import { getChannelSchedule, NETWORKS, type Network } from '@/lib/marketing/channel-schedule';
 import { buildTrackingLink, siteOrigin } from '@/lib/marketing/tracking-link';
 import { landingFor, campaignFor } from '@/lib/marketing/use-case';
+import { getNarrative } from '@/lib/marketing/narrative-store';
 import { keywordIn, landingForKeyword, isMarrsAttacksPiece } from '@/lib/marketing/split-screen';
 
 export const dynamic = 'force-dynamic';
@@ -101,6 +102,12 @@ export async function POST(
     );
   }
   const channels = (piece.platforms ?? []).filter(Boolean);
+  /**
+   * WHERE A STORY'S POSTS LAND (D115): on its learning's page, when it was made from one. One read of
+   * the Story, before the loop, and a miss simply falls through to the use case's landing.
+   */
+  const story = piece.narrative_ref ? await getNarrative(piece.narrative_ref).catch(() => null) : null;
+  const learningPath = story?.learning_slug ? `/library/${story.learning_slug}` : undefined;
   if (channels.length === 0) {
     return NextResponse.json(
       { error: 'no channels selected for this piece. Re-plan it with at least one platform.' },
@@ -191,7 +198,7 @@ export async function POST(
       const keyword = isMarrsAttacksPiece(piece) ? (piece.cta_keyword ?? keywordIn(piece.script ?? '')) : undefined;
       const link = buildTrackingLink({
         origin: siteOrigin(),
-        path: landingForKeyword(keyword) ?? landingFor(piece.use_case),
+        path: landingForKeyword(keyword) ?? learningPath ?? landingFor(piece.use_case),
         network: channel,
         medium: 'social',
         // Polynize content carries its use case; the marrs stream carries marrs_attacks (D101).

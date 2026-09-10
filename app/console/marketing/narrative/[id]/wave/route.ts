@@ -426,7 +426,8 @@ export async function POST(
           const entryId = randomUUID();
           const link = buildTrackingLink({
             origin: siteOrigin(),
-            path: landingFor(narrative.use_case),
+            // A Story made from a learning links to the learning's page on polynize.ai (D115).
+            path: narrative.learning_slug ? `/library/${narrative.learning_slug}` : landingFor(narrative.use_case),
             network,
             medium: 'social',
             // Polynize content carries its use case; the marrs stream carries marrs_attacks (D101).

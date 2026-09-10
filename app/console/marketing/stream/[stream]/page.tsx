@@ -6,7 +6,8 @@ import { Ideas } from './Ideas';
 import { isStreamId, streamLabel, canSeeStream, isPrivateStream } from '@/lib/marketing/streams';
 import { AdoptFormula } from './AdoptFormula';
 import { isMarrsAttacksFormat } from '@/lib/marketing/split-screen';
-import { MARRS_ATTACKS_STREAM } from '@/lib/marketing/use-case';
+import { MARRS_ATTACKS_STREAM, labelForUseCase } from '@/lib/marketing/use-case';
+import { listLearningCards, type LearningCard } from '@/lib/marketing/learning-store';
 import { AnalyticsPanel } from '@/app/console/marketing/_components/AnalyticsPanel';
 import { getStreamAnalytics } from '@/lib/marketing/analytics-store';
 import { NarrativeDelete } from './NarrativeDelete';
@@ -214,6 +215,14 @@ export default async function StreamPage({
   const brandVoiceSet = !!brandVoiceRes;
 
   /**
+   * THE LEARNINGS MODULE (D115), on the Polynize board only, above the narratives. Marrs: "I think we
+   * promote the core learnings module just above the narratives module." The newest few, and the way
+   * in; the whole library is one click further.
+   */
+  const learnings: LearningCard[] =
+    stream === 'polynize' ? await listLearningCards().catch(() => [] as LearningCard[]) : [];
+
+  /**
    * WHAT IS STILL FILED UNDER MARRS THAT BELONGS HERE (D114). Counted from the piece list already in
    * hand: a formula-format piece on the marrs stream. Zero means the panel does not render.
    */
@@ -257,8 +266,8 @@ export default async function StreamPage({
               </span>
               <span className={s.bvDesc}>
                 {brandVoiceSet
-                  ? 'The voice every concept and post in this stream is written in. Edit it.'
-                  : 'Set the voice so every concept and post in this stream sounds like this brand.'}
+                  ? 'The voice every Story and post on this board is written in. Edit it.'
+                  : 'Set the voice so every Story and post on this board sounds like this brand.'}
               </span>
             </Link>
             <Link
@@ -299,6 +308,50 @@ export default async function StreamPage({
         </section>
 
         {stream === MARRS_ATTACKS_STREAM ? <AdoptFormula stream={stream} pending={pendingFormula} /> : null}
+
+        {stream === 'polynize' ? (
+          <section className={`${s.dashSection} ${s.panel}`}>
+            <div className={s.dashSectionHead}>
+              <h2 className={s.dashSectionTitle}>Learnings</h2>
+              <span className={s.dashSectionCount}>{learnings.length}</span>
+            </div>
+            <div className={s.sectionCtas}>
+              <Link href="/console/marketing/learnings/new" className={s.startConceptCta}>
+                + Add a learning
+              </Link>
+              <Link href="/console/marketing/learnings" className={l.cardEyebrow} style={{ textDecoration: 'none' }}>
+                Learnings library →
+              </Link>
+            </div>
+            {learnings.length === 0 ? (
+              <p className={lane.empty}>
+                Nothing collected yet. A learning is one insight from real client work; say it or paste
+                it and April writes the first pass. Stories are cut from it.
+              </p>
+            ) : (
+              <div className={lane.wrap}>
+                {learnings.slice(0, 5).map((c) => (
+                  <div key={c.id} className={lane.rowWrap}>
+                    <Link href={`/console/marketing/learnings/${c.id}`} className={lane.row}>
+                      <span className={lane.top}>
+                        <span className={lane.headline}>{c.title}</span>
+                        <span className={lane.gate}>
+                          {[
+                            c.published_at ? 'live' : 'draft',
+                            c.use_case ? labelForUseCase(c.use_case) : null,
+                            c.stories > 0 ? `${c.stories} ${c.stories === 1 ? 'story' : 'stories'}` : null,
+                          ]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </span>
+                      </span>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        ) : null}
 
         {/* THE BOARD, first, because it is the work. Everything below it is setup or archive. */}
         <section className={`${s.dashSection} ${s.panel}`}>

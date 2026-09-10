@@ -1,5 +1,7 @@
 # Analytics, attribution and scale: the deep dive
 
+> **10 September 2026 (D115):** a Story made from a core learning now links every post to the learning's page on polynize.ai/library rather than straight to the booking page, so the funnel reads post, article page, magnet, lead. The attribution cookie is set on the article page and carried into the magnet.
+
 **Written 3 September 2026, for Marrs. Revised the same day after his feedback.**
 
 > **One word first.** The content strategy v0.2 calls them *lanes*. The team's word is **use case**, and Marrs has asked for that throughout. This document says use case everywhere; where the strategy's YAML says `lane_id` it means the same thing. The brief for the next phase: turning Metricool's numbers and polynize.ai's traffic into decisions about what to post more of, across more brands, to drive more people into the lead magnets and on to discovery calls, trials, proposals and delivery.
