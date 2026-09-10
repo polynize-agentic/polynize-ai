@@ -15,7 +15,7 @@
 | `/console/marketing/stream/{board}` | One board: setup cards, Learnings (Polynize only), Narratives at their gates, ideas, numbers | the cards | Keep. **Fixed today:** private board redirects others home; brand voice card no longer says "concept" |
 | `…/stream/{board}/brand-voice` | The voice doc | setup card | Keep |
 | `…/stream/{board}/media` | The media library | setup card, the pickers | Keep |
-| `…/stream/{board}/templates` | Content templates | setup card | **Decide.** Nothing in the five gates reads these; only the retired concept flow did (the template picker under a concept). The card is a door to a room nothing uses. Recommend hiding the card; the code stays until the concept flow is retired |
+| `…/stream/{board}/templates` | Content templates | nothing (card hidden 10 September, D116) | **Hidden, on his word.** Nothing in the five gates reads these; only the retired concept flow did. The screen and its data stay until the concept flow is retired |
 | `/console/marketing/narrative/new` | Gate 1: the inbox, the hook library, the three doors on his board | + New narrative, Create narrative on an idea | Keep |
 | `/console/marketing/narrative/{id}` | Gates 2 to 5 | the board rows | Keep |
 | `/console/marketing/learnings` and `/new` and `/{id}` | The learnings library, add a learning, one learning | front page button, Polynize board | Keep (new today, D115) |
@@ -42,7 +42,7 @@ Every one of the 66 routes under `/console/marketing` has a caller in the consol
 
 ## 3. Names
 
-Three words for one thing. The board says **Narratives** and **+ New narrative**; Gate 1's third door says **Multi**; Marrs and the documents say **Story** and **the kit**. The gates themselves say "Story" in their copy since D109. **Decide:** one word. Recommend **Story** on the board and the button, because it is the word he uses and the word the gates already use; "Multi" stays as the name of the door that makes one (a Story that becomes many pieces), or becomes "Story" too.
+Three words for one thing. The board said **Narratives** and **+ New narrative**; Gate 1's third door said **Multi**; the documents said **Story**. **Decided 10 September (D116): Narrative.** Marrs: *"I prefer Narrative over Story."* Every user-facing string now says narrative, including Gate 1's third door. The documents before D116 keep the word Story as a record of what was said at the time.
 
 "Concept" is gone from live copy as of today (the brand voice card was the last). "Library" now means polynize.ai/library; the internal screen is "Learnings".
 
@@ -52,10 +52,9 @@ Three words for one thing. The board says **Narratives** and **+ New narrative**
 - **Hand-posted LinkedIn** never gets a public url, so it never pings and never joins the numbers. Idea on the list: "mark published with link" on the calendar row.
 - **Focus anchor** is shown on the split-screen screen but not stored.
 - **First live proofs still owed:** a Pull now with the Vercel keys in, a first Make evergreen, a first template prezie board, and now a first learning published and a first Story cut from it.
-- **The co-founder photo:** the Marrs card paints the mint mark until Marrs sends a second image (D114).
 
 ## 5. What I would do next, in order
 
-1. Marrs decides the one word (section 3) and the templates card (section 1). Both are one-line changes.
+1. ~~Marrs decides the one word and the templates card.~~ Done the same day (D116).
 2. Two weeks of learnings through the new flow.
-3. The clean-up commit: retire the concept flow, the redirects and the dead Metricool table. Data untouched.
+3. The clean-up commit: retire the concept flow (with the templates screen), the redirects and the dead Metricool table. Data untouched.

@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: 'pick a board' }, { status: 400 });
   }
   if (!usesUseCases(lane)) {
-    return NextResponse.json({ error: 'A learning is Polynize content. Make the Story on a Polynize board.' }, { status: 400 });
+    return NextResponse.json({ error: 'A learning is Polynize content. Make the narrative on a Polynize board.' }, { status: 400 });
   }
   const l = await getLearning(id);
   if (!l) return NextResponse.json({ error: 'not found' }, { status: 404 });
@@ -44,6 +44,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ id: n.id });
   } catch (err) {
     console.error('[learnings.story] failed:', err);
-    return NextResponse.json({ error: 'could not make the Story' }, { status: 500 });
+    return NextResponse.json({ error: 'could not make the narrative' }, { status: 500 });
   }
 }

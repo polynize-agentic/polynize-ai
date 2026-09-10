@@ -34,7 +34,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ str
   if (!isStreamId(stream)) return NextResponse.json({ error: 'unknown stream' }, { status: 400 });
   if (!canSeeStream(user.email, stream)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   if (usesUseCases(stream)) {
-    return NextResponse.json({ error: 'The split-screen explainer is a Marrs Attacks format. Polynize streams use Stories.' }, { status: 400 });
+    return NextResponse.json({ error: 'The split-screen explainer is a Marrs Attacks format. Polynize boards use narratives.' }, { status: 400 });
   }
   const body = (await req.json().catch(() => null)) as { idea?: unknown; format?: unknown; idea_ref?: unknown } | null;
   const idea = typeof body?.idea === 'string' ? body.idea.trim().slice(0, 4000) : '';

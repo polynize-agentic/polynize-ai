@@ -393,7 +393,7 @@ export function ScriptScreen({
                   className={`${s.prompterLink} ${s.headBtn}`}
                   onClick={() => void make('narrative')}
                   disabled={making !== null}
-                  title="Make a Story from this split-screen: the article is drafted from the hook, the arc and the script, and this piece becomes the Story's short."
+                  title="Make a narrative from this split-screen: the article is drafted from the hook, the arc and the script, and this piece becomes the Story's short."
                 >
                   {making === 'narrative' ? 'Creating…' : initial.narrative_ref ? 'Open its narrative' : 'Make a narrative from this'}
                 </button>

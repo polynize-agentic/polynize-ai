@@ -259,9 +259,9 @@ What it was, kept because it is the shape of the bug: `pam/config/posting-schedu
 
 Open items, in the order they matter:
 
-1. **Marrs decides two words** (see `console-audit-2026-09.md` §1 and §3): one name for a Story on the board (Narrative / Story / Multi), and whether the Content templates setup card stays.
+1. ~~Marrs decides two words.~~ Done 10 September (D116): Narrative is the word; the templates card is hidden.
 2. **Press "Bring them across" once** on the Marrs Attacks board: moves this week's split-screens, hooks, calendar drafts, voice doc and Metricool mapping from the Marrs board. The panel disappears when nothing is left.
-3. **Send the co-founder photo** for the Marrs card (the mint mark is the placeholder); add it to `STREAM_AVATARS`.
+3. ~~Send the co-founder photo for the Marrs card.~~ Done 10 September: `marrs-cofounder.jpeg`.
 4. **First learning through the flow:** add one, read April's first pass, publish it, open polynize.ai/library/<slug>, make a Story from it and check the link on a prepared post lands on the library page.
 5. **Marrs Attacks keyword destinations** move to marrsattacks.world once the site exists (today MAP and ROLE still land on polynize.ai): make the keyword list editable per board.
 6. **Clean-up commit** after two weeks of learnings: retire the concept flow, the redirects from old addresses, and the dead Metricool `slots` table. Data untouched.

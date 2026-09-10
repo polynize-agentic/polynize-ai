@@ -34,7 +34,7 @@ type Route = 'split' | 'yap' | 'multi';
 const ROUTES: { id: Route; label: string; hint: string }[] = [
   { id: 'split', label: 'Split screen', hint: 'One question, four beats, the timer. His hero format.' },
   { id: 'yap', label: 'Yap', hint: 'The same question straight to camera, one take.' },
-  { id: 'multi', label: 'Multi', hint: 'A narrative: the article, the kit, many outputs.' },
+  { id: 'multi', label: 'Narrative', hint: 'The article, the kit, many outputs.' },
 ];
 
 export type IdeaRow = {

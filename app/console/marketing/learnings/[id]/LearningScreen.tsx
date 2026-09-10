@@ -125,7 +125,7 @@ export function LearningScreen({ initial, images, lanes }: { initial: Learning; 
       });
       const b = (await res.json().catch(() => null)) as { id?: string; error?: string } | null;
       if (!res.ok || !b?.id) {
-        setErr(b?.error ?? 'Could not make the Story.');
+        setErr(b?.error ?? 'Could not make the narrative.');
         return;
       }
       router.push(`/console/marketing/narrative/${b.id}`);
@@ -186,7 +186,7 @@ export function LearningScreen({ initial, images, lanes }: { initial: Learning; 
 
   const remove = async () => {
     if (busy) return;
-    if (!window.confirm(`Delete "${firstLine(article).slice(0, 60)}"?\n\nThe learning and its public page go. Stories already made from it stay. This cannot be undone.`)) return;
+    if (!window.confirm(`Delete "${firstLine(article).slice(0, 60)}"?\n\nThe learning and its public page go. Narratives already made from it stay. This cannot be undone.`)) return;
     setBusy('delete');
     try {
       const res = await fetch(`${base}/delete`, { method: 'DELETE' });
@@ -358,7 +358,7 @@ export function LearningScreen({ initial, images, lanes }: { initial: Learning; 
             ))}
           </select>
           <button type="button" className={g.go} onClick={makeStory} disabled={!!busy || !article.trim()}>
-            {busy === 'story' ? '…' : `Make a Story from this →`}
+            {busy === 'story' ? '…' : `Make a narrative from this →`}
           </button>
           {(l.story_ids?.length ?? 0) > 0 ? <span className={g.hint}>{l.story_ids!.length} made so far</span> : null}
           <button type="button" className={m.del} onClick={remove} disabled={!!busy}>delete</button>

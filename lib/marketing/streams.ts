@@ -151,11 +151,12 @@ export const STREAM_AVATARS: Record<string, string> = {
    * the logo is ever wanted back.
    */
   /**
-   * THE PHOTO WENT WITH MARRS ATTACKS (D114). Marrs: "we'll keep that same image that's on there at
-   * the moment. That's actually the Marrs Attacks image. We'll change the Marrs founder one to a
-   * different image, just so those two look different for me." The co-founder card paints the mint
-   * mark until he sends the new photo; add `marrs: '/pam/avatars/<file>'` here when it lands.
+   * TWO PHOTOS OF ONE PERSON (D114). Marrs: "we'll keep that same image that's on there at the
+   * moment. That's actually the Marrs Attacks image. We'll change the Marrs founder one to a
+   * different image, just so those two look different for me." The old file stays with Marrs
+   * Attacks; the co-founder card took the photo he sent the same afternoon.
    */
+  marrs: '/pam/avatars/marrs-cofounder.jpeg',
   marrsattacks: '/pam/avatars/marrs.jpeg',
   shourov: '/pam/avatars/shourov.jpeg',
   patricia: '/pam/avatars/patricia.png',

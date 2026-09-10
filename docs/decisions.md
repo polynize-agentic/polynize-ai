@@ -3190,7 +3190,7 @@ His rules document calls these hook A and hook B and has hook A end on the why. 
 | **Marrs** (co-founder) | the team | his LinkedIn, hand-posted as before (D41) | the ordinary kit | the three Polynize use cases |
 | **Marrs Attacks** (`marrsattacks`) | Marrs only | Instagram, TikTok, YouTube | the split-screen explainer, the yap, the hook library, the template prezie | none, ever (D101) |
 
-Both post through the same Metricool brand (*"Just Marrs and Marrs Attacks go to the same brand account in Metricool... I can sort that out organically when I post stuff"*). The Marrs Attacks card keeps the photo that was on the Marrs card (*"That's actually the Marrs Attacks image"*); the co-founder card paints the mint mark until he sends a second photo.
+Both post through the same Metricool brand (*"Just Marrs and Marrs Attacks go to the same brand account in Metricool... I can sort that out organically when I post stuff"*). The Marrs Attacks card keeps the photo that was on the Marrs card (*"That's actually the Marrs Attacks image"*); the co-founder card painted the mint mark for an afternoon and then took the second photo he sent (`marrs-cofounder.jpeg`).
 
 **Why a board in this console and not a separate build.** The audience never sees the engine. It sees the account, the voice and where the CTA lands, and all three are separable inside the console: a stream of its own, a voice doc of its own, and keyword destinations that will point at marrsattacks.world once that site exists (a separate repo). Everything the formula needs (D102 to D113) was already built here and none of it was tied to Polynize except the two keyword destinations. Building the content side anywhere else would have meant a second scheduler, prezie builder, hook library and analytics pull.
 
@@ -3243,3 +3243,11 @@ Marrs to me, the next day: *"we promote the core learnings module just above the
 - **Publishing is a flag, not a copy.** The public page reads the stored article, so an edit after publishing is live on the next request, and taking it down is clearing one field.
 
 Tests: `learnings.test.ts` (34): the slug, the parse of April's first pass, the record shape, and that a card never carries the internal fields. Added to `test:marketing`.
+
+## D116: One word, Narrative, and the templates card hidden
+
+**Adopted 10 September 2026.** The audit (`docs/pam-console/console-audit-2026-09.md` §1 and §3) put two decisions to Marrs. Both answered in one line: *"I prefer Narrative over Story, and hide the templates card."*
+
+**Narrative is the word.** The board already said Narratives and + New narrative; Gate 1's third door said Multi; the copy elsewhere said Story. Every user-facing string now says narrative: the Gate 1 door, the learning screen's "Make a narrative from this", the counts in the library, the voice card, the errors the routes return. The documents keep the word Story where it was said at the time (D40 to D115 are records); this one and everything after it say narrative. Internal identifiers (`story_ids`, the `/story` route) are not user-facing and stay.
+
+**The Content templates card is gone from the board's setup.** Nothing in the five gates reads content templates; only the retired concept flow did. The templates screen still answers at its url with its data, so nothing was deleted; the board stops loading and showing it. It goes with the concept flow in the clean-up commit.

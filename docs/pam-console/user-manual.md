@@ -99,7 +99,7 @@ At Gate 5 the hand-posts are marked ✋ in the week grid and the button says exa
 
 *How it works:* the mode is stamped onto each calendar entry when the wave is **planned**, so changing a lane's setting later never rewrites how an already-planned wave goes out. Entries planned before this existed are treated as scheduled, which is how they were already behaving.
 
-A stream's page is two things now (D48): **Stream setup** at the top (brand voice, content templates, media library), and under it **the narratives as lanes**.
+A stream's page is two things now (D48): **Stream setup** at the top (brand voice, media library; the content templates card was hidden 10 September, D116), and under it **the narratives as lanes**.
 
 Each narrative is one row on a shared gate scale. A gate it has already passed is a small filled square; the gate it is **at** holds the title. So how far right a headline sits is how far along it is, and the whole column reads as a funnel:
 
@@ -143,19 +143,21 @@ Each stream has one brand-voice document (`Stream setup → Brand voice`). Paste
 
 ## 6. Learnings 🧪 (D115)
 
-A **core learning** is one insight from real client work that is true beyond that client. It is the atom of the Polynize Content Library of Core Learnings, and the thing Stories are cut from.
+A **core learning** is one insight from real client work that is true beyond that client. It is the atom of the Polynize Content Library of Core Learnings, and the thing narratives are cut from.
 
-- **Learnings library** (front page button) — every learning collected, newest first: title, the insight in a sentence, who brought it, live or draft, how many Stories were made from it. Also reachable as `pam.polynize.ai/library` (the internal address); `polynize.ai/library` is the public one.
+- **Learnings library** (front page button) — every learning collected, newest first: title, the insight in a sentence, who brought it, live or draft, how many narratives were made from it. Also reachable as `pam.polynize.ai/library` (the internal address); `polynize.ai/library` is the public one.
 - **Learnings** module on the Polynize board, above Narratives — the newest few, and **+ Add a learning**.
 - **Add a learning** — one box, two modes: *Tell us what the insight is* (dictate it) or *Paste the text about the insight* (notes, a transcript). One optional line for where it came from, which stays internal. April writes the first pass: the title, the insight in a sentence, and a 450 to 700 word article in the Polynize voice, with no client names.
-- **The learning** — the article with April beside it, exactly like Gate 2: edit the text yourself or give April one instruction at a time. Under it: the one-sentence learning, where it came from, and the image for the public page (make four from a line about the look, or pick one from the Polynize media library). **Publish to polynize.ai/library** makes it live at `polynize.ai/library/<slug>`; **Take it down** unpublishes. **Make a Story from this** opens a Story at Gate 2 with the article already in place, on the board you choose; every post from that Story links to the learning's page.
+- **The learning** — the article with April beside it, exactly like Gate 2: edit the text yourself or give April one instruction at a time. Under it: the one-sentence learning, where it came from, and the image for the public page (make four from a line about the look, or pick one from the Polynize media library). **Publish to polynize.ai/library** makes it live at `polynize.ai/library/<slug>`; **Take it down** unpublishes. **Make a narrative from this** opens a narrative at Gate 2 with the article already in place, on the board you choose; every post from that narrative links to the learning's page.
 - **polynize.ai/library** — the public list; each learning has its own page with the article, its image and the use case's magnet as the one thing to do next.
 
 *Concepts (the older flow: interview, import, concept library) still exist at their urls with their data, but nothing links to them and the learnings replace them. See the September 2026 console audit for the retirement plan.*
 
 ---
 
-## 7. Content Series (templates) ✅
+## 7. Content Series (templates) ✅ (card hidden, D116)
+
+*The templates card is gone from the board's setup since 10 September 2026: nothing in the five gates reads templates, only the retired concept flow did. The screen still answers at its url with its data until the clean-up.*
 
 A **content series** is a repeatable recipe: it carries the plan (format + platforms + ICP) and the production instructions, so "concept + series" is enough to make a piece. Manage them at `Stream setup → Content series`.
 

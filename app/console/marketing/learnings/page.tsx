@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 
 /**
  * THE LEARNINGS LIBRARY (D115). Every core learning the company has collected, newest first, with
- * whether it is live on polynize.ai/library and how many Stories were made from it. Marrs: "When you
+ * whether it is live on polynize.ai/library and how many narratives were made from it. Marrs: "When you
  * click 'Learnings Library' in the dashboard, it takes you to that page, and it shows you all the
  * different learnings. You can click on it, read it, and create content from that."
  *
@@ -75,7 +75,7 @@ export default async function LearningsLibraryPage() {
                     {[
                       c.use_case ? labelForUseCase(c.use_case) : null,
                       c.added_by ? `from ${c.added_by.split('@')[0]}` : null,
-                      c.stories > 0 ? `${c.stories} ${c.stories === 1 ? 'story' : 'stories'}` : 'no stories yet',
+                      c.stories > 0 ? `${c.stories} ${c.stories === 1 ? 'narrative' : 'narratives'}` : 'no narratives yet',
                       c.updated_at ? c.updated_at.slice(0, 10) : null,
                     ]
                       .filter(Boolean)

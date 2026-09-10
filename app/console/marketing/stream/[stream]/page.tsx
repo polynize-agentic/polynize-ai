@@ -12,7 +12,6 @@ import { AnalyticsPanel } from '@/app/console/marketing/_components/AnalyticsPan
 import { getStreamAnalytics } from '@/lib/marketing/analytics-store';
 import { NarrativeDelete } from './NarrativeDelete';
 import { getBrandVoiceForStream } from '@/lib/marketing/brand-voice-store';
-import { listTemplates } from '@/lib/marketing/template-store';
 import { listMediaForStream } from '@/lib/marketing/media-store';
 import { BackLink } from '@/app/console/marketing/_components/BackLink';
 import { listNarrativeCards, GATE_LABELS, type NarrativeCard } from '@/lib/marketing/narrative-store';
@@ -127,14 +126,15 @@ export default async function StreamPage({
    * has anything left to render. Their screens still exist and are reachable by url; this
    * page simply stops paying for them.
    */
-  const [brandVoiceRes, templatesRes, mediaRes] = await Promise.all([
+  /**
+   * THE TEMPLATES CARD IS HIDDEN (D116). Marrs: "hide the templates card." Nothing in the five gates
+   * reads content templates; only the retired concept flow did. The screen still answers at its url
+   * with its data; this page simply stops loading and showing it.
+   */
+  const [brandVoiceRes, mediaRes] = await Promise.all([
     getBrandVoiceForStream(stream).catch((err) => {
       console.error('[marketing.stream] brand voice read failed:', err);
       return null;
-    }),
-    listTemplates(stream).catch((err) => {
-      console.error('[marketing.stream] template list failed:', err);
-      return [];
     }),
     listMediaForStream(stream).catch((err) => {
       console.error('[marketing.stream] media list failed:', err);
@@ -230,8 +230,6 @@ export default async function StreamPage({
     stream === MARRS_ATTACKS_STREAM
       ? [...byPieceId.values()].filter((p) => p.stream === 'marrs' && isMarrsAttacksFormat(p.format)).length
       : 0;
-  const totalTemplates = templatesRes.length;
-  const activeTemplates = templatesRes.filter((t) => t.status === 'active').length;
   const mediaCount = mediaRes.length;
 
   return (
@@ -266,27 +264,8 @@ export default async function StreamPage({
               </span>
               <span className={s.bvDesc}>
                 {brandVoiceSet
-                  ? 'The voice every Story and post on this board is written in. Edit it.'
-                  : 'Set the voice so every Story and post on this board sounds like this brand.'}
-              </span>
-            </Link>
-            <Link
-              href={`/console/marketing/stream/${stream}/templates`}
-              className={`${s.brandVoiceCard} ${activeTemplates > 0 ? s.bvSet : s.bvUnset}`}
-            >
-              <span className={s.bvHead}>
-                <span className={s.bvDot} aria-hidden />
-                <span className={s.bvTitle}>Content templates</span>
-                <span className={s.bvState}>
-                  {activeTemplates > 0
-                    ? `${activeTemplates} active`
-                    : totalTemplates > 0
-                      ? 'In development'
-                      : 'None yet'}
-                </span>
-              </span>
-              <span className={s.bvDesc}>
-                The repeatable templates this stream&rsquo;s content is made from. Manage them.
+                  ? 'The voice every narrative and post on this board is written in. Edit it.'
+                  : 'Set the voice so every narrative and post on this board sounds like this brand.'}
               </span>
             </Link>
             <Link
@@ -326,7 +305,7 @@ export default async function StreamPage({
             {learnings.length === 0 ? (
               <p className={lane.empty}>
                 Nothing collected yet. A learning is one insight from real client work; say it or paste
-                it and April writes the first pass. Stories are cut from it.
+                it and April writes the first pass. Narratives are cut from it.
               </p>
             ) : (
               <div className={lane.wrap}>
@@ -339,7 +318,7 @@ export default async function StreamPage({
                           {[
                             c.published_at ? 'live' : 'draft',
                             c.use_case ? labelForUseCase(c.use_case) : null,
-                            c.stories > 0 ? `${c.stories} ${c.stories === 1 ? 'story' : 'stories'}` : null,
+                            c.stories > 0 ? `${c.stories} ${c.stories === 1 ? 'narrative' : 'narratives'}` : null,
                           ]
                             .filter(Boolean)
                             .join(' · ')}
