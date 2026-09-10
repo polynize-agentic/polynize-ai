@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
 import { listIdeas } from '@/lib/marketing/idea-store';
-import { STREAMS, isStreamId } from '@/lib/marketing/streams';
+import { isStreamId, canSeeStream, visibleStreams } from '@/lib/marketing/streams';
 import { NewNarrative, type IdeaRow } from './NewNarrative';
 import { titleShape, titleChecks } from '@/lib/marketing/split-screen';
 
@@ -29,8 +29,11 @@ export default async function NewNarrativePage({
   }
 
   const { stream, idea: preselect } = await searchParams;
+  // A private board's Gate 1 is its owner's (D114).
+  if (isStreamId(stream) && !canSeeStream(user.email, stream)) redirect('/console/marketing');
   const fixedLane = isStreamId(stream) ? stream : undefined;
-  const lanes = fixedLane ? [fixedLane] : STREAMS.map((st) => st.id);
+  const streams = visibleStreams(user.email);
+  const lanes = fixedLane ? [fixedLane] : streams.map((st) => st.id);
   const lists = await Promise.all(
     lanes.map((l) =>
       listIdeas(l).catch(() => [] as Awaited<ReturnType<typeof listIdeas>>)
@@ -92,7 +95,7 @@ export default async function NewNarrativePage({
   return (
     <NewNarrative
       ideas={recent}
-      streams={STREAMS.map((st) => ({ id: st.id, label: st.label }))}
+      streams={streams.map((st) => ({ id: st.id, label: st.label }))}
       fixedLane={fixedLane}
       // "Create narrative" on an inbox idea lands here with that idea already chosen (D103).
       preselect={typeof preselect === 'string' && rows.some((r) => r.id === preselect) ? preselect : undefined}

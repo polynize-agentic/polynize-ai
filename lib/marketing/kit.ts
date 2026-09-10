@@ -1,6 +1,6 @@
 import type { Network, SlotKind, SlotPrefers } from './channel-schedule';
 import type { NarrativeLane } from './narrative-store';
-import { streamKind, STREAM_IDS, type StreamKind } from './streams';
+import { streamKind, makesVideo, STREAM_IDS, type StreamKind } from './streams';
 import { usesUseCases } from './use-case';
 import { safeRect, type SafeRect } from './safe-area';
 
@@ -1262,7 +1262,23 @@ export function resolveTicks(ticks: string[], lane: NarrativeLane): string[] {
 
 export function defaultTicks(lane: NarrativeLane): string[] {
   const kind = streamKind(lane);
-  return CATALOGUE.filter((o) => o.on.includes(kind)).map((o) => o.id);
+  return CATALOGUE.filter((o) => o.on.includes(kind) && !laneBlocked(o, lane)).map((o) => o.id);
+}
+
+/**
+ * VIDEO IS SHOT IN ONE ROOM BY ONE PERSON (D114). Marrs: "no one else is using the Studio and the
+ * video flows. It's just me." So on a board that does not make video (streams.ts VIDEO_STREAMS) the
+ * video rows are blocked the way the LinkedIn document is blocked everywhere: still listed, greyed,
+ * with the reason on the row, never ticked by default. A catalogue-level block still wins because it
+ * is the more permanent of the two reasons.
+ */
+const VIDEO_MASTERS: ReadonlySet<MasterAsset> = new Set<MasterAsset>(['shorts', 'long']);
+const NO_VIDEO_HERE = "Video is shot in the Studio, which is Marrs's room. Ask for it on the Polynize board.";
+
+export function laneBlocked(o: KitOutput, lane: NarrativeLane): string | undefined {
+  if (o.blocked) return o.blocked;
+  if (VIDEO_MASTERS.has(o.master) && !makesVideo(lane)) return NO_VIDEO_HERE;
+  return undefined;
 }
 
 /** Posts the ticks produce. EXACTLY the number of calendar entries Gate 5 will create. */
@@ -1372,8 +1388,8 @@ export function kitRows(lane: NarrativeLane): KitRow[] {
           label: o.label,
           sub: explainer && o.master === 'shorts' ? 'the split-screen explainer: one title, four beats, the timer' : o.sub,
           pill: members.length > 1 ? `x${members.length}` : undefined,
-          on: o.on.includes(kind),
-          blocked: o.blocked,
+          on: o.on.includes(kind) && !laneBlocked(o, lane),
+          blocked: laneBlocked(o, lane),
           ...describe(o),
         });
       } else {
@@ -1383,8 +1399,8 @@ export function kitRows(lane: NarrativeLane): KitRow[] {
           ids: [o.id],
           label: o.label,
           sub: explainer && o.master === 'shorts' ? 'the split-screen explainer: one title, four beats, the timer' : o.sub,
-          on: o.on.includes(kind),
-          blocked: o.blocked,
+          on: o.on.includes(kind) && !laneBlocked(o, lane),
+          blocked: laneBlocked(o, lane),
           ...describe(o),
         });
       }

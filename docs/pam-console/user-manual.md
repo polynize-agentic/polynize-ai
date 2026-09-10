@@ -294,8 +294,10 @@ Analytics land per stream (the loop-closing intelligence layer, "Donnie", is a *
 
 ## Appendix
 
-### The eight streams
-Polynize (the company) · Marrs · Shourov · Kristin · Julian.
+### The streams
+Polynize (the company) · Marrs · Marrs Attacks · Shourov · Kristin · Julian.
+
+**Marrs Attacks is private (D114).** It is Marrs's own account (Instagram, TikTok, YouTube; the split-screen explainer and the yap; no Polynize use case) and only he sees the card, the board and its numbers. Everyone else's console has five cards. The Marrs card is Marrs the co-founder: his LinkedIn, Polynize content, the ordinary kit. The Studio button is also his alone, and on every board other than Polynize, Marrs and Marrs Attacks the video rows of the kit are greyed with the reason on them: video is shot in his room.
 
 Patricia, Dhamiri and Avik were removed on 2026-07-28 when they left the team. Removing a stream only hides it: anything those streams owned still exists in storage and is untouched, it simply no longer appears on the dashboard and its stream pages report "unknown stream". Restoring one is a single line in `lib/marketing/streams.ts`. (The old "Team" stream was removed earlier.)
 

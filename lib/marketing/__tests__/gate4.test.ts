@@ -83,7 +83,7 @@ import {
   RANGES,
 } from '../analytics-metrics';
 import { pullWindow } from '../analytics-pull';
-import { streamSlot, streamColorVar, SERIES_DARK, SERIES_LIGHT } from '../stream-colors';
+import { streamSlot, streamColorVar, SERIES_DARK, SERIES_LIGHT, unslottedStreams } from '../stream-colors';
 import { joinReport, harvestIds } from '../analytics-probe';
 import { llmErrorText } from '../../llm/error-text';
 import { laneVoice } from '../article-draft';
@@ -100,6 +100,8 @@ import {
   defaultTicks,
   tickCount,
   kitRows,
+  outputsForTicks,
+  laneBlocked,
   catalogueProblems,
   plansForTicks,
   masterCardLabel,
@@ -107,7 +109,7 @@ import {
   outputById,
 } from '../kit';
 import { prezieFilingKey } from '../prezie-store';
-import { STREAM_IDS } from '../streams';
+import { STREAM_IDS, STREAMS, canSeeStream, visibleStreams, canUseStudio, makesVideo, isPrivateStream } from '../streams';
 
 let pass = 0;
 let fail = 0;
@@ -420,10 +422,47 @@ ok('a junk narrative ref cannot forge a bucket', prezieFilingKey({ narrative_ref
 
 // The catalogue still holds, on every lane.
 eq('the catalogue is clean', catalogueProblems(), []);
+/**
+ * VIDEO IS ONE PERSON'S (D114). The boards that make video keep the full default kit; the others
+ * keep every row (the D54 vocabulary must not change by board) but the video rows are blocked with
+ * the reason on them and never ticked by default.
+ */
 for (const lane of STREAM_IDS) {
   eq(`${lane}: 12 rows`, kitRows(lane).length, 12);
-  eq(`${lane}: 16 default posts`, tickCount(defaultTicks(lane), lane), 16);
+  if (makesVideo(lane)) {
+    eq(`${lane}: 16 default posts`, tickCount(defaultTicks(lane), lane), 16);
+    ok(`${lane}: no row is off because of the Studio`, kitRows(lane).every((r) => !/Studio/.test(r.blocked ?? '')));
+  } else {
+    const outs = outputsForTicks(defaultTicks(lane), lane);
+    ok(`${lane}: no video by default`, outs.every((o) => o.master !== 'shorts' && o.master !== 'long'));
+    ok(`${lane}: fewer than 16 default posts`, tickCount(defaultTicks(lane), lane) < 16);
+    const vid = kitRows(lane).filter((r) => r.ids.some((id) => ['shorts', 'long'].includes(outputById(id)!.master)));
+    ok(`${lane}: the video rows are still listed`, vid.length > 0);
+    ok(`${lane}: and each is off with a reason`, vid.every((r) => !!r.blocked && !r.on));
+    // The long-form row keeps its older catalogue reason (no edit pipeline), which wins; the shorts row says Studio.
+    ok(`${lane}: and the shorts row says whose room video is`, vid.some((r) => /Studio/.test(r.blocked ?? '')));
+  }
 }
+ok('a catalogue block still wins over the lane', /document|pipeline/i.test(laneBlocked(outputById('li_car')!, 'kristin') ?? ''));
+eq('marrs makes video', makesVideo('marrs'), true);
+eq('so does Marrs Attacks', makesVideo('marrsattacks'), true);
+eq('and Polynize', makesVideo('polynize'), true);
+eq('Shourov does not', makesVideo('shourov'), false);
+
+/* ------------------------------------------------------------------ D114: the private board */
+
+eq('everyone sees Polynize', canSeeStream('kristin@polynize.io', 'polynize'), true);
+eq('and the co-founder Marrs board', canSeeStream('kristin@polynize.io', 'marrs'), true);
+eq('nobody but Marrs sees Marrs Attacks', canSeeStream('kristin@polynize.io', 'marrsattacks'), false);
+eq('Marrs does', canSeeStream('marrs@polynize.io', 'marrsattacks'), true);
+eq('case and spaces do not matter', canSeeStream('  Marrs@Polynize.io ', 'marrsattacks'), true);
+eq('no email sees no private board', canSeeStream(null, 'marrsattacks'), false);
+eq('an unknown stream is not private', canSeeStream(null, 'nobody'), true);
+eq('Marrs Attacks is the one private board', STREAMS.filter((s) => isPrivateStream(s.id)).map((s) => s.id), ['marrsattacks']);
+eq('a teammate lists five boards', visibleStreams('shourov@polynize.io').map((s) => s.id), ['polynize', 'marrs', 'shourov', 'kristin', 'julian']);
+eq('Marrs lists six, his own beside his co-founder self', visibleStreams('marrs@polynize.io').map((s) => s.id), ['polynize', 'marrs', 'marrsattacks', 'shourov', 'kristin', 'julian']);
+eq('the Studio is his', canUseStudio('marrs@polynize.io'), true);
+eq('and not theirs', canUseStudio('shourov@polynize.io'), false);
 
 /* ------------------------------------------------------------------ D55: the three looks */
 
@@ -1740,15 +1779,19 @@ eq('and no impressions figure rather than a zero', stacks[1].impressions, undefi
 eq('Polynize owns slot 1', streamSlot('polynize'), 1);
 eq('Marrs slot 2', streamSlot('marrs'), 2);
 eq('Julian slot 5', streamSlot('julian'), 5);
+/** THE SLOT IS NAMED, NOT POSITIONAL (D114): Marrs Attacks sits second in STREAMS and took the sixth slot. */
+eq('Shourov kept slot 3 when a card was added before him', streamSlot('shourov'), 3);
+eq('Marrs Attacks takes the sixth', streamSlot('marrsattacks'), 6);
+eq('every stream has a slot', unslottedStreams(), []);
 /** A stream we do not know gets no slot rather than borrowing someone else's colour. */
 eq('an unknown stream has no slot', streamSlot('nobody'), 0);
 eq('and paints in the neutral', streamColorVar('nobody'), 'var(--sc-none)');
 eq('a known one names its own variable', streamColorVar('shourov'), 'var(--sc-3)');
-eq('five slots, both modes', SERIES_DARK.length, SERIES_LIGHT.length);
-eq('and one per stream', SERIES_DARK.length, 5);
+eq('six slots, both modes', SERIES_DARK.length, SERIES_LIGHT.length);
+eq('and one per stream', SERIES_DARK.length, STREAMS.length);
 /** Validated with the guidance's own script, not by eye. The hexes are the documented ones. */
-eq('the dark slots are the validated set', SERIES_DARK.join(','), '#00a77b,#cf4436,#3987e5,#c98500,#d55181');
-eq('and the light ones', SERIES_LIGHT.join(','), '#00a77b,#cf4436,#2a78d6,#eda100,#e87ba4');
+eq('the dark slots are the validated five plus the private violet', SERIES_DARK.join(','), '#00a77b,#cf4436,#3987e5,#c98500,#d55181,#8e6ad8');
+eq('and the light ones', SERIES_LIGHT.join(','), '#00a77b,#cf4436,#2a78d6,#eda100,#e87ba4,#7d5bd0');
 /**
  * MINT AND RED TOUCH IN EVERY BAR, because Polynize and Marrs are adjacent in STREAMS, and that pair
  * is the classic red/green collapse. The documented red scored CVD dE 6.1 against a stepped mint;

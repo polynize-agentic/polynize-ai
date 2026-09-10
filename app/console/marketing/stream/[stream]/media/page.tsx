@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
-import { isStreamId, streamLabel } from '@/lib/marketing/streams';
+import { isStreamId, streamLabel, canSeeStream } from '@/lib/marketing/streams';
 import { listMediaForStream, type MediaAsset } from '@/lib/marketing/media-store';
 import { listSavedPieces } from '@/lib/marketing/piece-store';
 import { FINISHED_MEDIA_FORMAT } from '@/lib/marketing/finished-media';
@@ -45,6 +45,8 @@ export default async function MediaPage({
       </div>
     );
   }
+  // A private board (D114): anyone but its owner is sent home.
+  if (!canSeeStream(user.email, stream)) redirect('/console/marketing');
 
   let initial: MediaAsset[] = [];
   try {

@@ -13,7 +13,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getCurrentUser } from '@/lib/console-auth';
 import { createIdea, deleteIdea, updateIdea } from '@/lib/marketing/idea-store';
-import { STREAMS } from '@/lib/marketing/streams';
+import { STREAMS, canSeeStream } from '@/lib/marketing/streams';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -22,6 +22,8 @@ async function guard(stream: string) {
   const user = await getCurrentUser();
   if (!user || user.scope.type !== 'team') return { error: 'unauthorized', status: 401 } as const;
   if (!STREAMS.some((s) => s.id === stream)) return { error: 'unknown stream', status: 400 } as const;
+  // A private board's inbox is its owner's (D114).
+  if (!canSeeStream(user.email, stream)) return { error: 'unauthorized', status: 401 } as const;
   return { ok: true } as const;
 }
 

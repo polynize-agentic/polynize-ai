@@ -55,8 +55,31 @@ import { STREAMS } from './streams';
  * pair validates against both surfaces; blue, yellow and magenta take the documented per-mode steps,
  * which is why they differ between the two lines.
  */
-export const SERIES_DARK = ['#00a77b', '#cf4436', '#3987e5', '#c98500', '#d55181'] as const;
-export const SERIES_LIGHT = ['#00a77b', '#cf4436', '#2a78d6', '#eda100', '#e87ba4'] as const;
+export const SERIES_DARK = ['#00a77b', '#cf4436', '#3987e5', '#c98500', '#d55181', '#8e6ad8'] as const;
+export const SERIES_LIGHT = ['#00a77b', '#cf4436', '#2a78d6', '#eda100', '#e87ba4', '#7d5bd0'] as const;
+
+/**
+ * THE SLOT IS A NAMED FACT, NOT AN ARRAY INDEX (D114). Marrs Attacks sits second in STREAMS so its
+ * card is beside his other one, and if the slot were the position, adding it there would have
+ * repainted Shourov, Kristin and Julian. So each stream owns its number here and the order of the
+ * cards can change without anyone changing colour. The sixth slot is a violet: it is only ever
+ * seen by Marrs, on his own board and in his own engine view, so it was chosen for distance from the
+ * red it sits next to and from the blue on its other side rather than run through the validator's
+ * full matrix like the five that everyone sees.
+ */
+const STREAM_SLOT: Record<string, number> = {
+  polynize: 1,
+  marrs: 2,
+  shourov: 3,
+  kristin: 4,
+  julian: 5,
+  marrsattacks: 6,
+};
+
+/** Streams with no slot, which the tests hold at none: a new card must be given a colour here. */
+export function unslottedStreams(): string[] {
+  return STREAMS.filter((s) => !(s.id in STREAM_SLOT)).map((s) => s.id);
+}
 
 /**
  * Which slot a stream owns, 1-based, by its position in STREAMS.
@@ -66,8 +89,7 @@ export const SERIES_LIGHT = ['#00a77b', '#cf4436', '#2a78d6', '#eda100', '#e87ba
  * one, which is the one failure a colour key must not have.
  */
 export function streamSlot(stream: string): number {
-  const ix = STREAMS.findIndex((s) => s.id === stream);
-  return ix === -1 ? 0 : ix + 1;
+  return STREAM_SLOT[stream] ?? 0;
 }
 
 /** The CSS custom property holding this stream's colour, or the neutral for an unknown one. */

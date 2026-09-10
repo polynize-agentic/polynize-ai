@@ -31,6 +31,7 @@ import { BackLink } from '@/app/console/marketing/_components/BackLink';
 import { ReadyToRecord } from '@/app/console/studio/ShootRowActions';
 import s from '../script.module.css';
 import d from './prezie.module.css';
+import { MARRS_ATTACKS_STREAM } from '@/lib/marketing/use-case';
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 type Colour = 'coral' | 'amber' | 'gold' | 'mint';
@@ -687,7 +688,7 @@ export function PrezieScreen({
      * got the older scene builder's three-card board back. Every version of a split-screen is one object
      * with five taps, so this button runs the one-shot with the "what to change" box as its direction.
      */
-    if (initial.format === 'split_screen_short' && initial.stream === 'marrs') {
+    if (initial.format === 'split_screen_short' && initial.stream === MARRS_ATTACKS_STREAM) {
       await oneShot();
       return;
     }

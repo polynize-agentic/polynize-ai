@@ -106,7 +106,7 @@ export async function AnalyticsPanel({
       <section className={s.wrap} aria-label={`${title} analytics`}>
         <div className={s.head}>
           <h2 className={s.title}>{title}</h2>
-          <PullButton scope={scope} />
+          <PullButton scope={scope} streams={slices.map((x) => ({ id: x.stream, label: x.label }))} />
         </div>
         <p className={s.mockWhy}>
           {error
@@ -127,7 +127,7 @@ export async function AnalyticsPanel({
         {pulledAt ? (
           <span className={s.freshTag}>pulled {pulledAt.slice(0, 10)}</span>
         ) : null}
-        <PullButton scope={scope} />
+        <PullButton scope={scope} streams={slices.map((x) => ({ id: x.stream, label: x.label }))} />
       </div>
       {error ? <p className={s.mockWhy}>{error}</p> : null}
       {/* Said, not hidden: the site's half can fail on its own (keys, token) while Metricool's half works. */}

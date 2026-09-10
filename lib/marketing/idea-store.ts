@@ -141,6 +141,28 @@ export async function updateIdea(
   return next;
 }
 
+/**
+ * MOVE IDEAS BETWEEN STREAMS, IDS KEPT (D114). The one-off that carries the hook library from the
+ * marrs board to the Marrs Attacks board: a piece's `hook_ref` points at an idea id, so the ids
+ * have to survive the move or every locked hook loses its inbox entry. Read both, write both,
+ * destination first so a failure between the two duplicates rather than loses. Returns how many moved.
+ */
+export async function moveIdeas(
+  from: string,
+  to: string,
+  pick: (idea: Idea) => boolean
+): Promise<number> {
+  if (from === to) return 0;
+  const source = await read(from);
+  const moving = source.filter(pick);
+  if (moving.length === 0) return 0;
+  const dest = await read(to);
+  const have = new Set(dest.map((i) => i.id));
+  await write(to, [...moving.filter((i) => !have.has(i.id)), ...dest]);
+  await write(from, source.filter((i) => !pick(i)));
+  return moving.length;
+}
+
 export async function deleteIdea(stream: string, id: string): Promise<void> {
   const all = await read(stream);
   await write(

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
 import { narrativeCountsByLane, GATE_LABELS } from '@/lib/marketing/narrative-store';
 import { listSavedPieces, type MarketingPiece } from '@/lib/marketing/piece-store';
-import { STREAMS, STREAM_AVATARS } from '@/lib/marketing/streams';
+import { STREAM_AVATARS, visibleStreams, canUseStudio, isPrivateStream } from '@/lib/marketing/streams';
 import { AnalyticsPanel } from './_components/AnalyticsPanel';
 import { getStreamAnalytics } from '@/lib/marketing/analytics-store';
 import { listNotes } from '@/lib/marketing/feedback-store';
@@ -47,8 +47,13 @@ export default async function MarketingHome() {
    * is surfaced without hiding the other four. Same discipline as everywhere else here: absent and
    * zero are different claims.
    */
+  /**
+   * ONLY THE BOARDS THIS PERSON CAN SEE (D114). Marrs Attacks is private to Marrs, so for everyone
+   * else there is no card, no slice in the bars below, and no line in the analytics note.
+   */
+  const streams = visibleStreams(user.email);
   const stored = await Promise.all(
-    STREAMS.map(async (st) => {
+    streams.map(async (st) => {
       try {
         return await getStreamAnalytics(st.id);
       } catch (err) {
@@ -61,7 +66,7 @@ export default async function MarketingHome() {
    * ONE SLICE PER STREAM, kept apart rather than merged (D87). Merging here would throw away the
    * one thing the engine page is for: whose reach is in each platform's bar. The view sums them.
    */
-  const slices: StreamSlice[] = STREAMS.map((st, i) => ({
+  const slices: StreamSlice[] = streams.map((st, i) => ({
     stream: st.id,
     label: st.label,
     posts: stored[i]?.posts ?? [],
@@ -74,10 +79,10 @@ export default async function MarketingHome() {
    */
   const unmapped = stored
     .filter((x) => x?.error_kind === 'unmapped')
-    .map((x) => STREAMS.find((st) => st.id === x!.stream)?.label ?? x!.stream);
+    .map((x) => streams.find((st) => st.id === x!.stream)?.label ?? x!.stream);
   const realErrors = stored
     .filter((x) => x?.error && x.error_kind !== 'unmapped')
-    .map((x) => `${STREAMS.find((st) => st.id === x!.stream)?.label ?? x!.stream}: ${x!.error}`);
+    .map((x) => `${streams.find((st) => st.id === x!.stream)?.label ?? x!.stream}: ${x!.error}`);
   const notes = [
     unmapped.length
       ? `${listWords(unmapped)} ${unmapped.length === 1 ? 'is' : 'are'} not connected to a Metricool brand yet.`
@@ -133,10 +138,12 @@ export default async function MarketingHome() {
               Calendar
             </Link>
             {/* The Studio and the Calendar sit here because they are about the whole engine
-                rather than one stream. */}
-            <Link href="/console/studio" className={s.startConceptCta}>
-              Studio{queued > 0 ? ` · ${queued}` : ''}
-            </Link>
+                rather than one stream. THE STUDIO IS HIS ROOM (D114): drawn for Marrs only. */}
+            {canUseStudio(user.email) ? (
+              <Link href="/console/studio" className={s.startConceptCta}>
+                Studio{queued > 0 ? ` · ${queued}` : ''}
+              </Link>
+            ) : null}
             {/* WHAT APRIL HAS BEEN TOLD (D93). Here for the same reason as the other two: it is
                 about the whole engine rather than one stream, and a feedback list nobody can find
                 is a feedback list that becomes a write-only pile. */}
@@ -147,8 +154,17 @@ export default async function MarketingHome() {
         </div>
 
         <div className={l.cards}>
-          {STREAMS.map((st) => {
+          {streams.map((st) => {
             const c = counts.get(st.id) ?? { live: 0, shipped: 0 };
+            const countText =
+              c.live === 0 && c.shipped === 0
+                ? 'Nothing yet'
+                : [
+                    c.live > 0 ? `${c.live} in flight` : null,
+                    c.shipped > 0 ? `${c.shipped} shipped` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ');
             const avatar = STREAM_AVATARS[st.id];
             return (
               <Link
@@ -168,14 +184,8 @@ export default async function MarketingHome() {
                 </span>
                 <span className={l.cardTitle}>{st.label}</span>
                 <span className={l.cardDesc}>
-                  {c.live === 0 && c.shipped === 0
-                    ? 'Nothing yet'
-                    : [
-                        c.live > 0 ? `${c.live} in flight` : null,
-                        c.shipped > 0 ? `${c.shipped} shipped` : null,
-                      ]
-                        .filter(Boolean)
-                        .join(' · ')}
+                  {/* A private board says so on its card, so the one person who sees it knows why nobody else does. */}
+                  {isPrivateStream(st.id) ? `Only you · ${countText}` : countText}
                 </span>
                 <span className={l.cardArrow} aria-hidden>
                   →

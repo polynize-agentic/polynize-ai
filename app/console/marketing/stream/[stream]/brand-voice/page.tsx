@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
-import { isStreamId, streamLabel } from '@/lib/marketing/streams';
+import { isStreamId, streamLabel, canSeeStream } from '@/lib/marketing/streams';
 import { getBrandVoiceForStream } from '@/lib/marketing/brand-voice-store';
 import { BrandVoiceEditor } from './BrandVoiceEditor';
 import { BackLink } from '@/app/console/marketing/_components/BackLink';
@@ -40,6 +40,8 @@ export default async function BrandVoicePage({
       </div>
     );
   }
+  // A private board (D114): anyone but its owner is sent home.
+  if (!canSeeStream(user.email, stream)) redirect('/console/marketing');
 
   let initial = '';
   try {

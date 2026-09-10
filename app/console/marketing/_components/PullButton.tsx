@@ -28,14 +28,17 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { STREAMS } from '@/lib/marketing/streams';
 import s from './analytics.module.css';
 
 const TIMEOUT_MS = 90_000;
 
 type Outcome = { posts: number; streams: number; failures: string[] };
 
-export function PullButton({ scope }: { scope: string }) {
+/**
+ * THE ENGINE PULL WALKS THE STREAMS IT IS GIVEN (D114), not the whole list: a private board is
+ * pulled by its owner and by nobody else, so the server hands this the boards the viewer can see.
+ */
+export function PullButton({ scope, streams = [] }: { scope: string; streams?: { id: string; label: string }[] }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [progress, setProgress] = useState<{ at: number; of: number } | null>(null);
@@ -45,7 +48,7 @@ export function PullButton({ scope }: { scope: string }) {
   /** 'engine' means every stream, one request each. A stream page pulls only itself. */
   /** Plus the site (D98): the url join and Vercel's numbers, last, because it reads what the brands wrote. */
   const targets = [
-    ...(scope === 'engine' ? STREAMS.map((x) => ({ id: x.id, label: x.label })) : [{ id: scope, label: scope }]),
+    ...(scope === 'engine' ? streams : [{ id: scope, label: scope }]),
     { id: 'site', label: 'polynize.ai' },
   ];
 

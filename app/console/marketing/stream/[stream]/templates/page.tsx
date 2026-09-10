@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
-import { isStreamId, streamLabel } from '@/lib/marketing/streams';
+import { isStreamId, streamLabel, canSeeStream } from '@/lib/marketing/streams';
 import { listTemplates, type ContentTemplate } from '@/lib/marketing/template-store';
 import { LIBRARY_TEMPLATES } from '@/lib/marketing/template-library';
 import { TemplatesManager } from './TemplatesManager';
@@ -39,6 +39,8 @@ export default async function TemplatesPage({
       </div>
     );
   }
+  // A private board (D114): anyone but its owner is sent home.
+  if (!canSeeStream(user.email, stream)) redirect('/console/marketing');
 
   let templates: ContentTemplate[] = [];
   try {

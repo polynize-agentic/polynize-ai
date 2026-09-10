@@ -543,6 +543,7 @@
   --sc-3: #3987e5;
   --sc-4: #c98500;
   --sc-5: #d55181;
+  --sc-6: #8e6ad8;
   /* A stream with no slot paints neutral rather than borrowing someone else's identity. */
   --sc-none: color-mix(in srgb, var(--text-3, #6f6a64) 45%, transparent);
 }
@@ -557,6 +558,7 @@
   --sc-3: #2a78d6;
   --sc-4: #eda100;
   --sc-5: #e87ba4;
+  --sc-6: #7d5bd0;
 }
 
 .legend {

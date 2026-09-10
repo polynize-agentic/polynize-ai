@@ -100,14 +100,16 @@ const BY_ID = new Map([...USE_CASES, ...RETIRED_USE_CASES].map((u) => [u.id, u])
  * THE USE CASES ARE FOR POLYNIZE CONTENT, NOT FOR MARRS ATTACKS. Marrs, 8 September, twice: "the
  * three use cases that we mentioned are for Polynize content, not for Marrs Attacks."
  *
- * The marrs stream carries a different strategy (growth of his own account; the split-screen rules
- * in docs/pam-console/marrs-split-screen-rules.md) whose pieces are labelled by their question's
+ * The marrsattacks stream carries a different strategy (growth of his own account; the split-screen
+ * rules in docs/pam-console/marrs-split-screen-rules.md) whose pieces are labelled by their question's
  * focus anchor and their CTA keyword, never by a Polynize use case. So the pickers do not appear on
  * that board, and a link from that board carries `marrs_attacks` as its campaign rather than a
- * use case. The other people's streams carry Polynize content (the strategy's "personal profiles
- * carry reach"), so they keep the use cases.
+ * use case. Every other stream carries Polynize content (the strategy's "personal profiles carry
+ * reach"), so they keep the use cases. That now includes the marrs stream, which since D114 is Marrs
+ * the co-founder on his own LinkedIn: "Any content I create will be on the Polynize channel and my
+ * own LinkedIn channel." Until 10 September this constant was 'marrs' and his board carried both.
  */
-export const MARRS_ATTACKS_STREAM = 'marrs';
+export const MARRS_ATTACKS_STREAM = 'marrsattacks';
 export const MARRS_ATTACKS_CAMPAIGN = 'marrs_attacks';
 
 export function usesUseCases(stream: string | undefined): boolean {

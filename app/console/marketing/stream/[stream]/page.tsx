@@ -3,7 +3,10 @@ import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
 import { listIdeas, type Idea } from '@/lib/marketing/idea-store';
 import { Ideas } from './Ideas';
-import { isStreamId, streamLabel } from '@/lib/marketing/streams';
+import { isStreamId, streamLabel, canSeeStream, isPrivateStream } from '@/lib/marketing/streams';
+import { AdoptFormula } from './AdoptFormula';
+import { isMarrsAttacksFormat } from '@/lib/marketing/split-screen';
+import { MARRS_ATTACKS_STREAM } from '@/lib/marketing/use-case';
 import { AnalyticsPanel } from '@/app/console/marketing/_components/AnalyticsPanel';
 import { getStreamAnalytics } from '@/lib/marketing/analytics-store';
 import { NarrativeDelete } from './NarrativeDelete';
@@ -83,6 +86,9 @@ export default async function StreamPage({
       </div>
     );
   }
+
+  // A PRIVATE BOARD IS NOBODY ELSE'S 404 (D114): anyone else is simply sent home.
+  if (!canSeeStream(user.email, stream)) redirect('/console/marketing');
 
   // EVERY LOAD AT ONCE. They are independent, and awaited one after another they stacked
   // round trips (each itself serial internally) into the time to first byte. Every one still
@@ -206,6 +212,15 @@ export default async function StreamPage({
     }));
 
   const brandVoiceSet = !!brandVoiceRes;
+
+  /**
+   * WHAT IS STILL FILED UNDER MARRS THAT BELONGS HERE (D114). Counted from the piece list already in
+   * hand: a formula-format piece on the marrs stream. Zero means the panel does not render.
+   */
+  const pendingFormula =
+    stream === MARRS_ATTACKS_STREAM
+      ? [...byPieceId.values()].filter((p) => p.stream === 'marrs' && isMarrsAttacksFormat(p.format)).length
+      : 0;
   const totalTemplates = templatesRes.length;
   const activeTemplates = templatesRes.filter((t) => t.status === 'active').length;
   const mediaCount = mediaRes.length;
@@ -221,6 +236,9 @@ export default async function StreamPage({
             dashboardHref={`/console/marketing/stream/${stream}`}
           />
           <h1 className={s.title}>{streamLabel(stream)}</h1>
+          {isPrivateStream(stream) ? (
+            <p className={s.dashSectionEmpty} style={{ marginTop: 4 }}>Only you see this board.</p>
+          ) : null}
         </div>
 
         {/* Stream setup — the assets to get right first (they shape everything
@@ -279,6 +297,8 @@ export default async function StreamPage({
             </Link>
           </div>
         </section>
+
+        {stream === MARRS_ATTACKS_STREAM ? <AdoptFormula stream={stream} pending={pendingFormula} /> : null}
 
         {/* THE BOARD, first, because it is the work. Everything below it is setup or archive. */}
         <section className={`${s.dashSection} ${s.panel}`}>

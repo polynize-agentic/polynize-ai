@@ -3178,3 +3178,36 @@ His rules document calls these hook A and hook B and has hook A end on the why. 
 **The example text is gone** from "Talk about figure N" and from "The angle you gave this piece". *"There's no need for example text there. It's just making everything a bit cluttered."*
 
 **"Build a new version" went back to the old builder.** The page had two builders: the one-shot (which, on his pieces, is the template) and the older scene builder behind the Build button, which made a three-card board. On a split-screen on his board, Build a new version now runs the template with the "what to change" box as direction, so every version of a split-screen is one object with five taps. *"I need a better way to get a prezie that works"*: the loop is now build, read it on the touchscreen preview, type what to change, build again; and "Change figure 1" for a smaller fix.
+
+## D114: Two boards for Marrs, one of them his alone
+
+**Adopted 10 September 2026.** Marrs, after the leadership meeting on benchmarks and partners: *"there's actually a clean split between Polynize and Marrs Attacks content and I have to start treating them as such... I need to build my own brand separately from Polynize... two profiles for Marrs in the console: the current one, where we consider Marrs a co-founder; another one, which is just me. It uses the same flow, architecture, and infrastructure. It's only visible to me, no one else."*
+
+**The shape now.**
+
+| Board | Who sees it | Channels | Formats | Labels |
+|---|---|---|---|---|
+| **Marrs** (co-founder) | the team | his LinkedIn, hand-posted as before (D41) | the ordinary kit | the three Polynize use cases |
+| **Marrs Attacks** (`marrsattacks`) | Marrs only | Instagram, TikTok, YouTube | the split-screen explainer, the yap, the hook library, the template prezie | none, ever (D101) |
+
+Both post through the same Metricool brand (*"Just Marrs and Marrs Attacks go to the same brand account in Metricool... I can sort that out organically when I post stuff"*). The Marrs Attacks card keeps the photo that was on the Marrs card (*"That's actually the Marrs Attacks image"*); the co-founder card paints the mint mark until he sends a second photo.
+
+**Why a board in this console and not a separate build.** The audience never sees the engine. It sees the account, the voice and where the CTA lands, and all three are separable inside the console: a stream of its own, a voice doc of its own, and keyword destinations that will point at marrsattacks.world once that site exists (a separate repo). Everything the formula needs (D102 to D113) was already built here and none of it was tied to Polynize except the two keyword destinations. Building the content side anywhere else would have meant a second scheduler, prezie builder, hook library and analytics pull.
+
+### What changed in the code
+
+- **A sixth stream**, `marrsattacks`, label "Marrs Attacks", kind person, second in the list so the card sits beside his other one. `MARRS_ATTACKS_STREAM` in `use-case.ts` is now this id, which is the one switch every Marrs Attacks rule reads (`usesUseCases`, `campaignFor`, `isMarrsAttacksPiece`, the kit's explainer row, Gate 1's three doors, the split-screen door route). The marrs stream is therefore a Polynize-content board again: use cases apply, the ordinary kit applies.
+- **A private board.** `PRIVATE_STREAMS` in `streams.ts` names the one address that sees it; `canSeeStream` and `visibleStreams` read it. The front page draws no card and no analytics slice for anyone else, the board and its setup pages redirect home, Gate 1 refuses the stream, the ideas and split-screen routes refuse, and the Pull button only walks the boards the viewer can see. The Leads page shows no CRM card for it (it takes no meeting contacts). Not a permission system: one list, one board, five people.
+- **The Studio is his.** `canUseStudio`: the Studio button is drawn for Marrs only and the page sends anyone else home. *"No one else is using the Studio and the video flows. It's just me."*
+- **Video rows on the other boards are blocked, not removed.** *"Split screens... they'll only ever be on Marrs Attacks, Marrs, and the Polynize account. The other users wouldn't do split screens."* `VIDEO_STREAMS` names the three; the kit's `laneBlocked` greys the shorts and long-form rows on every other board with the reason on the row, and `defaultTicks` never ticks them. The rows stay in the list because D54 says the vocabulary does not change by board.
+- **The colour slot is a named fact.** `streamSlot` read the stream's position in the list, so inserting a card second would have repainted Shourov, Kristin and Julian. Each stream now owns its number; Marrs Attacks takes a sixth slot, a violet, seen only by him.
+- **Bring them across, once.** The week's split-screens, yaps, their calendar drafts, the hook library and any Story cut from a split-screen were filed under marrs. The Marrs Attacks board shows how many are waiting and one button moves exactly that set (`stream/[stream]/adopt`), copying the voice doc and the Metricool mapping if the new board has none. Idempotent; the panel disappears once nothing is left.
+
+### Decisions inside it
+
+- **Moved by format, not by hand.** A piece moves because it is a split-screen or a yap, an idea because it is a hook or points at a moved piece, a Story because it owns a moved piece. His LinkedIn narratives and ordinary ideas do not move. Nothing is deleted.
+- **Copied, never overwritten.** The voice doc and the brand mapping are copied only into an empty slot, so a second run cannot undo an edit he has made since.
+- **Private means absent, not forbidden.** A teammate who types the url is sent to the front page, not shown a wall. There is nothing to explain to someone the board is not for.
+- **The old constant is recorded.** Until this decision `MARRS_ATTACKS_STREAM` was `'marrs'`; anything stored with `utm_campaign=marrs_attacks` from that week is still his and still reads back.
+
+Tests: gate4 gains the private-board, Studio, video-row and slot assertions (all four marketing files still 0 failed).

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
 import { buildShootQueue } from '@/lib/marketing/shoot-queue';
-import { streamLabel } from '@/lib/marketing/streams';
+import { streamLabel, canUseStudio } from '@/lib/marketing/streams';
 import { qrSvg } from '@/lib/qr';
 import { RecordedButton } from './ShootRowActions';
 import s from '../_components/client-card.module.css';
@@ -32,6 +32,9 @@ export default async function StudioPage() {
   if (user.scope.type === 'client') {
     redirect(`/console/${user.scope.slug}/blueprint`);
   }
+
+  // THE STUDIO IS HIS ROOM (D114). Nobody else shoots, so nobody else is shown the queue.
+  if (!canUseStudio(user.email)) redirect('/console/marketing');
 
   const { groups, total, with_prezie } = await buildShootQueue(user.email);
 

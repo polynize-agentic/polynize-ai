@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
 import { countByOwner, listAllContacts, type CrmContact } from '@/lib/crm/contact-store';
-import { STREAMS, STREAM_AVATARS, streamLabel } from '@/lib/marketing/streams';
+import { STREAMS, STREAM_AVATARS, streamLabel, takesMeetingContacts } from '@/lib/marketing/streams';
 import s from '../_components/client-card.module.css';
 import l from '../_components/launcher.module.css';
 import c from './crm.module.css';
@@ -70,7 +70,9 @@ export default async function LeadsPage() {
         {loadError ? <p className={c.error}>{loadError}</p> : null}
 
         <div className={l.cards}>
-          {STREAMS.map((st) => {
+          {/* A CRM per person who meets people, plus the website's (D114): Marrs Attacks takes no
+              meeting contacts and has no leads list, so it has no card here. */}
+          {STREAMS.filter((st) => st.id === 'polynize' || takesMeetingContacts(st.id)).map((st) => {
             const n = counts.get(st.id) ?? { total: 0, open: 0, new_count: 0, won: 0 };
             const avatar = STREAM_AVATARS[st.id];
             const inbound = st.id === 'polynize';

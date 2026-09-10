@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
-import { STREAMS } from '@/lib/marketing/streams';
+import { visibleStreams } from '@/lib/marketing/streams';
 import { isMetricoolConfigured, listBrands, type MetricoolBrand } from '@/lib/marketing/metricool-client';
 import { getBrandMap, type BrandMap } from '@/lib/marketing/metricool-config-store';
 import { getChannelSchedule } from '@/lib/marketing/channel-schedule';
@@ -56,7 +56,7 @@ export default async function MetricoolPage() {
      */
     lanes = Object.fromEntries(
       await Promise.all(
-        STREAMS.map(async (st) => {
+        visibleStreams(user.email).map(async (st) => {
           try {
             const cfg = await getChannelSchedule(st.id);
             return [st.id, { timezone: cfg.timezone, channels: cfg.channels, modes: cfg.modes }] as const;
@@ -101,7 +101,7 @@ export default async function MetricoolPage() {
         </div>
       ) : (
         <MetricoolSettings
-          streams={[...STREAMS]}
+          streams={[...visibleStreams(user.email)]}
           brands={brands}
           initialMap={map}
           initialLanes={lanes}

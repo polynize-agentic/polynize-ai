@@ -508,7 +508,7 @@ export function defaultPlan(bodyMd: string, stream: string): OutputPlanDefaults 
   const formats = ['linkedin_text'];
   // Marrs is the main video user; pre-tick short-form video for his stream so
   // the common case is still one tap. Others lean non-video (D19).
-  if (stream === 'marrs') formats.push('short_form_video');
+  if (stream === 'marrs' || stream === 'marrsattacks') formats.push('short_form_video');
 
   const platforms: Record<string, string[]> = {};
   for (const id of formats) {

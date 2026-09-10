@@ -54,7 +54,7 @@ The console is the conductor; April is a pull worker on the Lightsail box (`apri
 
 ## Add a new user / stream (owner card)
 A "stream" is an owner bucket (brand or person) shown as a dashboard card.
-1. Add an entry to `lib/marketing/streams.ts` (`STREAMS`, in display order). That is the single source — the dashboard card, the per-stream view, the intake selector, and the finalize validator all read it. Nothing else to change for a card.
+1. Add an entry to `lib/marketing/streams.ts` (`STREAMS`, in display order). That is the single source — the dashboard card, the per-stream view, the intake selector, and the finalize validator all read it. Give it a colour slot in `stream-colors.ts` (`STREAM_SLOT`; the test fails until you do). If the board is one person's own, add their address under `PRIVATE_STREAMS` and nobody else will see it (D114). If the person shoots video, add the id to `VIDEO_STREAMS`; otherwise the kit greys its video rows.
 2. Their concept docs auto-partition under `pam/concept-bank/{their-email}/` on first write; no bucket setup needed.
 3. Only if that person gets **their own agent** later: add a `PAM_AGENT_TOKEN_<NAME>` entry to `AGENT_TOKEN_ENV` in `lib/agent-auth.ts` and a `JOB_AGENT` route in `lib/agents/jobs-store.ts`. A stream/user alone needs neither.
 

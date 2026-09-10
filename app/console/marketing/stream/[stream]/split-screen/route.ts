@@ -7,14 +7,14 @@
  * piece directly, the way the finished-media door does, with the idea stored as the piece's angle:
  * that is what the title and script prompts read when there is no Story.
  *
- * Marrs stream only. The format is his and the rules say not to generalise it.
+ * Marrs Attacks stream only (D114: his own board, private to him). The format is his and the rules say not to generalise it.
  */
 
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { getCurrentUser } from '@/lib/console-auth';
-import { isStreamId } from '@/lib/marketing/streams';
+import { isStreamId, canSeeStream } from '@/lib/marketing/streams';
 import { savePiece, type MarketingPiece } from '@/lib/marketing/piece-store';
 import { SPLIT_SCREEN_FORMAT, YAP_FORMAT } from '@/lib/marketing/split-screen';
 import { usesUseCases } from '@/lib/marketing/use-case';
@@ -32,6 +32,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ str
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
   if (!isStreamId(stream)) return NextResponse.json({ error: 'unknown stream' }, { status: 400 });
+  if (!canSeeStream(user.email, stream)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   if (usesUseCases(stream)) {
     return NextResponse.json({ error: 'The split-screen explainer is a Marrs Attacks format. Polynize streams use Stories.' }, { status: 400 });
   }

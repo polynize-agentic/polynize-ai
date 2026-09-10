@@ -9,6 +9,15 @@
 export const STREAMS = [
   { id: 'polynize', label: 'Polynize', kind: 'company' },
   { id: 'marrs', label: 'Marrs', kind: 'person' },
+  /**
+   * HIS OWN ACCOUNT, APART FROM HIS CO-FOUNDER SELF (D114). Marrs, 10 September: "I need to build my
+   * own brand separately from Polynize... two profiles for Marrs in the console: the current one,
+   * where we consider Marrs a co-founder; another one, which is just me." Marrs Attacks is Instagram,
+   * TikTok and YouTube, the split-screen formula and the yap, no Polynize use case, and nobody else
+   * sees the board (PRIVATE_STREAMS below). The marrs stream above is the co-founder: his LinkedIn,
+   * Polynize content, the ordinary kit.
+   */
+  { id: 'marrsattacks', label: 'Marrs Attacks', kind: 'person' },
   { id: 'shourov', label: 'Shourov', kind: 'person' },
   { id: 'kristin', label: 'Kristin', kind: 'person' },
   { id: 'julian', label: 'Julian', kind: 'person' },
@@ -30,6 +39,57 @@ export type StreamKind = (typeof STREAMS)[number]['kind'];
 
 export function streamKind(id: string): StreamKind {
   return STREAMS.find((s) => s.id === id)?.kind ?? 'person';
+}
+
+/**
+ * A PRIVATE BOARD (D114): a stream only these signed-in addresses can see. Everyone else's front
+ * page simply has no card for it, its board redirects home, and its routes refuse. Marrs: "It's
+ * only visible to me, no one else." Not a permission system, one list, because the console has
+ * five people in it and exactly one board that is one person's own.
+ */
+export const PRIVATE_STREAMS: Record<string, readonly string[]> = {
+  marrsattacks: ['marrs@polynize.io'],
+};
+
+export function isPrivateStream(id: string): boolean {
+  return id in PRIVATE_STREAMS;
+}
+
+/** True unless the stream is private to someone else. A missing email sees only the public boards. */
+export function canSeeStream(email: string | null | undefined, id: string): boolean {
+  const only = PRIVATE_STREAMS[id];
+  if (!only) return true;
+  const e = (email ?? '').trim().toLowerCase();
+  return e !== '' && only.includes(e);
+}
+
+/** The streams this person's screens should list, in display order. */
+export function visibleStreams(email: string | null | undefined): (typeof STREAMS)[number][] {
+  return STREAMS.filter((s) => canSeeStream(email, s.id));
+}
+
+/**
+ * THE STUDIO IS ONE PERSON'S ROOM (D114). Marrs: "the Studio tab should only be visible to me
+ * because no one else is using the Studio and the video flows. It's just me." The link is not
+ * drawn for anyone else and the page sends them home.
+ */
+export const STUDIO_EMAILS: readonly string[] = ['marrs@polynize.io'];
+
+export function canUseStudio(email: string | null | undefined): boolean {
+  const e = (email ?? '').trim().toLowerCase();
+  return e !== '' && STUDIO_EMAILS.includes(e);
+}
+
+/**
+ * WHICH BOARDS MAKE VIDEO (D114). Marrs: "split screens... they're really only for me, so they'll
+ * only ever be on Marrs Attacks, Marrs, and the Polynize account. The other users wouldn't do
+ * split screens." Video is shot in the Studio by him, so a kit on any other board offers no video
+ * rows: the rows stay in the list, greyed, saying why (kit.ts laneBlocked).
+ */
+export const VIDEO_STREAMS: readonly string[] = ['polynize', 'marrs', 'marrsattacks'];
+
+export function makesVideo(id: string): boolean {
+  return VIDEO_STREAMS.includes(id);
 }
 
 /**
@@ -90,7 +150,13 @@ export const STREAM_AVATARS: Record<string, string> = {
    * card is a mark rather than a shrunk logo. `/pam/avatars/polynize.png` is still on disk if
    * the logo is ever wanted back.
    */
-  marrs: '/pam/avatars/marrs.jpeg',
+  /**
+   * THE PHOTO WENT WITH MARRS ATTACKS (D114). Marrs: "we'll keep that same image that's on there at
+   * the moment. That's actually the Marrs Attacks image. We'll change the Marrs founder one to a
+   * different image, just so those two look different for me." The co-founder card paints the mint
+   * mark until he sends the new photo; add `marrs: '/pam/avatars/<file>'` here when it lands.
+   */
+  marrsattacks: '/pam/avatars/marrs.jpeg',
   shourov: '/pam/avatars/shourov.jpeg',
   patricia: '/pam/avatars/patricia.png',
   julian: '/pam/avatars/julian.jpeg',

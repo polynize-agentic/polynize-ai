@@ -30,6 +30,7 @@ import { BackLink } from '@/app/console/marketing/_components/BackLink';
 import s from './script.module.css';
 import c from './chat.module.css';
 import { useRouter } from 'next/navigation';
+import { MARRS_ATTACKS_STREAM } from '@/lib/marketing/use-case';
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -65,7 +66,7 @@ export function ScriptScreen({
   const [making, setMaking] = useState<null | 'yap' | 'version' | 'narrative'>(null);
   const [makeError, setMakeError] = useState<string | null>(null);
   // His board's formats only (D109): a Polynize split-screen keeps the Story behaviour.
-  const marrsFormat = (initial.format === 'split_screen_short' || initial.format === 'yap') && initial.stream === 'marrs';
+  const marrsFormat = (initial.format === 'split_screen_short' || initial.format === 'yap') && initial.stream === MARRS_ATTACKS_STREAM;
 
   /**
    * THE YAP AND THE VERSION (D102). Both mint a sibling piece and open it. The yap is written from this
