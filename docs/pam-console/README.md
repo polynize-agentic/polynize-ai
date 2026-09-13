@@ -17,6 +17,8 @@ The PAM Console is becoming Polynize's **marketing engine** — the working envi
 
 0b. **`analytics-and-scale.md`** *(3 September 2026, plain-English plan and build status at the top)* — the brief for the next phase: why the console keeps its own queue and uses Metricool autolists for evergreen only, why click-through is zero today by construction, the first-party attribution design (`utm_content = entry_id`, `utm_campaign = lane`), the funnel we can measure end to end, lanes as the missing axis for scaling brands per use case, and the build order.
 
+0f. **`split-screen-hook-research.md`** *(13 September 2026)*: the hook research for the split-screen explainer as one hand-over document for the social media agent: the two shapes, the killer test, the construction rules, the mechanical tests, the research method, Marrs's full scored calibration set, and what the console does with it.
+
 0e. **D115 in `../decisions.md`** and **`console-audit-2026-09.md`** *(10 September 2026)*: the Polynize Content Library of Core Learnings (add a learning, April's first pass, publish to polynize.ai/library, make a Story from it), and the audit of every console screen against the new direction with what to keep, hide and retire.
 
 0d. **D114 in `../decisions.md`** *(10 September 2026)*: Marrs has two boards, Marrs the co-founder (LinkedIn, Polynize content) and Marrs Attacks (his own account, private to him, the split-screen formula). Read it before touching anything that names the `marrs` stream.
