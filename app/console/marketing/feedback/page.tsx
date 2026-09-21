@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
-import { STREAMS, streamLabel } from '@/lib/marketing/streams';
+import { STREAMS, streamLabel, isOperator } from '@/lib/marketing/streams';
 import { listNotes } from '@/lib/marketing/feedback-store';
 import { applyTo, NOTES_PER_SCOPE, type FeedbackNote } from '@/lib/marketing/feedback';
 import { FeedbackList } from './FeedbackList';
@@ -35,6 +35,8 @@ export default async function FeedbackPage() {
   if (user.scope.type === 'client') {
     redirect(`/console/${user.scope.slug}/blueprint`);
   }
+  // APRIL'S BRIEF IS THE OPERATOR'S (D117): the link is not drawn for anyone else and the page sends them home.
+  if (!isOperator(user.email)) redirect('/console/marketing');
 
   let notes: FeedbackNote[] = [];
   try {

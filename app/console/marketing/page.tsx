@@ -3,13 +3,13 @@ import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
 import { narrativeCountsByLane, GATE_LABELS } from '@/lib/marketing/narrative-store';
 import { listSavedPieces, type MarketingPiece } from '@/lib/marketing/piece-store';
-import { STREAM_AVATARS, visibleStreams, canUseStudio, isPrivateStream } from '@/lib/marketing/streams';
+import { STREAM_AVATARS, visibleStreams, canUseStudio, isOperator, isPrivateStream, teamBoardIds } from '@/lib/marketing/streams';
+import { EngineBoards, type BoardCard } from './EngineBoards';
 import { AnalyticsPanel } from './_components/AnalyticsPanel';
 import { getStreamAnalytics } from '@/lib/marketing/analytics-store';
 import { listNotes } from '@/lib/marketing/feedback-store';
 import type { StreamSlice } from '@/lib/marketing/analytics-metrics';
 import s from '../_components/client-card.module.css';
-import l from '../_components/launcher.module.css';
 
 export const dynamic = 'force-dynamic';
 
@@ -123,15 +123,35 @@ export default async function MarketingHome() {
     console.error('[marketing] feedback count failed:', err);
   }
 
+  /**
+   * THE CARDS AS DATA (D117), so the client piece can fold the team's away. A private board says
+   * so on its card, so the one person who sees it knows why nobody else does.
+   */
+  const teamIds = new Set(teamBoardIds(user.email));
+  const cards: BoardCard[] = streams.map((st) => {
+    const c = counts.get(st.id) ?? { live: 0, shipped: 0 };
+    const countText =
+      c.live === 0 && c.shipped === 0
+        ? 'Nothing yet'
+        : [c.live > 0 ? `${c.live} in flight` : null, c.shipped > 0 ? `${c.shipped} shipped` : null]
+            .filter(Boolean)
+            .join(' · ');
+    return {
+      id: st.id,
+      label: st.label,
+      desc: isPrivateStream(st.id) ? `Only you · ${countText}` : countText,
+      ...(STREAM_AVATARS[st.id] ? { avatar: STREAM_AVATARS[st.id] } : {}),
+      team: teamIds.has(st.id),
+    };
+  });
+
   return (
     <>
       <div className={s.bgPattern} aria-hidden />
       <div className={s.dashboard}>
-        <div className={s.header}>
-          <div className={s.eyebrow}>marketing engine</div>
-          <h1 className={s.title}>Content engine</h1>
-        </div>
-
+        {/* THE TITLE AND THE BOARDS are one client piece (D117), so the switch top right of the
+            title and the cards it folds away share one state. */}
+        <EngineBoards cards={cards} defaultShowTeam={!isOperator(user.email)}>
         <div className={s.marketingCtaRow}>
           <div className={s.ctaGroup}>
             <Link href="/console/marketing/calendar" className={s.startConceptCta}>
@@ -151,53 +171,14 @@ export default async function MarketingHome() {
             {/* WHAT APRIL HAS BEEN TOLD (D93). Here for the same reason as the other two: it is
                 about the whole engine rather than one stream, and a feedback list nobody can find
                 is a feedback list that becomes a write-only pile. */}
-            <Link href="/console/marketing/feedback" className={s.startConceptCta}>
-              April&rsquo;s brief{liveRules > 0 ? ` · ${liveRules}` : ''}
-            </Link>
+            {isOperator(user.email) ? (
+              <Link href="/console/marketing/feedback" className={s.startConceptCta}>
+                April&rsquo;s brief{liveRules > 0 ? ` · ${liveRules}` : ''}
+              </Link>
+            ) : null}
           </div>
         </div>
-
-        <div className={l.cards}>
-          {streams.map((st) => {
-            const c = counts.get(st.id) ?? { live: 0, shipped: 0 };
-            const countText =
-              c.live === 0 && c.shipped === 0
-                ? 'Nothing yet'
-                : [
-                    c.live > 0 ? `${c.live} in flight` : null,
-                    c.shipped > 0 ? `${c.shipped} shipped` : null,
-                  ]
-                    .filter(Boolean)
-                    .join(' · ');
-            const avatar = STREAM_AVATARS[st.id];
-            return (
-              <Link
-                key={st.id}
-                href={`/console/marketing/stream/${st.id}`}
-                className={`${l.card} ${s.hasAvatar}`}
-              >
-                <span className={s.streamAvatar} aria-hidden>
-                  {avatar ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={avatar} alt="" className={s.streamAvatarImg} />
-                  ) : (
-                    /* The mint mark, half the circle's diameter, so the brand card reads as a
-                       mark and not as a logo that has been shrunk. */
-                    <span className={s.streamAvatarMark} />
-                  )}
-                </span>
-                <span className={l.cardTitle}>{st.label}</span>
-                <span className={l.cardDesc}>
-                  {/* A private board says so on its card, so the one person who sees it knows why nobody else does. */}
-                  {isPrivateStream(st.id) ? `Only you · ${countText}` : countText}
-                </span>
-                <span className={l.cardArrow} aria-hidden>
-                  →
-                </span>
-              </Link>
-            );
-          })}
-        </div>
+        </EngineBoards>
 
         {/* The gate vocabulary, once, on the way in. It is the same five words on every board
             below and it is the only thing on this screen that is not a name. */}

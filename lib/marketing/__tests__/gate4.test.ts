@@ -109,7 +109,7 @@ import {
   outputById,
 } from '../kit';
 import { prezieFilingKey } from '../prezie-store';
-import { STREAM_IDS, STREAMS, canSeeStream, visibleStreams, canUseStudio, makesVideo, isPrivateStream } from '../streams';
+import { STREAM_IDS, STREAMS, canSeeStream, visibleStreams, canUseStudio, makesVideo, isPrivateStream, isOperator, isOwnBoard, teamBoardIds } from '../streams';
 
 let pass = 0;
 let fail = 0;
@@ -463,6 +463,19 @@ eq('a teammate lists five boards', visibleStreams('shourov@polynize.io').map((s)
 eq('Marrs lists six, his own beside his co-founder self', visibleStreams('marrs@polynize.io').map((s) => s.id), ['polynize', 'marrs', 'marrsattacks', 'shourov', 'kristin', 'julian']);
 eq('the Studio is his', canUseStudio('marrs@polynize.io'), true);
 eq('and not theirs', canUseStudio('shourov@polynize.io'), false);
+
+/* ------------------------------------------------------------------ D117: the team folded away */
+
+eq('Marrs runs the engine', isOperator('marrs@polynize.io'), true);
+eq('Kristin does not', isOperator('kristin@polynize.io'), false);
+eq('his co-founder board is his', isOwnBoard('marrs@polynize.io', 'marrs'), true);
+eq('so is his private one', isOwnBoard('marrs@polynize.io', 'marrsattacks'), true);
+eq('Polynize is nobody\'s own', isOwnBoard('marrs@polynize.io', 'polynize'), false);
+eq('Kristin owns hers', isOwnBoard('kristin@polynize.io', 'kristin'), true);
+eq('Shourov owns his under either address', isOwnBoard('shourov@polynize.com', 'shourov'), true);
+eq('from his seat the team is the other three', teamBoardIds('marrs@polynize.io'), ['shourov', 'kristin', 'julian']);
+eq('from hers it is the other people, never Polynize and never his private board', teamBoardIds('kristin@polynize.io'), ['marrs', 'shourov', 'julian']);
+eq('no seat, no team', teamBoardIds(null), ['marrs', 'shourov', 'kristin', 'julian']);
 
 /* ------------------------------------------------------------------ D55: the three looks */
 

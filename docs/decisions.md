@@ -3251,3 +3251,17 @@ Tests: `learnings.test.ts` (34): the slug, the parse of April's first pass, the 
 **Narrative is the word.** The board already said Narratives and + New narrative; Gate 1's third door said Multi; the copy elsewhere said Story. Every user-facing string now says narrative: the Gate 1 door, the learning screen's "Make a narrative from this", the counts in the library, the voice card, the errors the routes return. The documents keep the word Story where it was said at the time (D40 to D115 are records); this one and everything after it say narrative. Internal identifiers (`story_ids`, the `/story` route) are not user-facing and stay.
 
 **The Content templates card is gone from the board's setup.** Nothing in the five gates reads content templates; only the retired concept flow did. The templates screen still answers at its url with its data, so nothing was deleted; the board stops loading and showing it. It goes with the concept flow in the clean-up commit.
+
+## D117: The team's boards folded away, and the engine's controls are the operator's
+
+**Adopted 21 September 2026.** Marrs, after a week that moved the go-to-market to partners and put a budget behind outsourced marketing: *"the first thing you need to do is hide Shourov, Kristin, and Julian's cards in my view so I can't see them. Maybe just have a toggle switch in the top right somewhere, just a little button that I can flick them on and off at some point, just on the content engine main screen, so I can see them when needed. Also, make sure you hide some of the options for Kristin, Julian, and Shourov, like April's brief and the studio."*
+
+**The switch.** Top right of the Content engine title: **Team boards**. Off folds away every other person's board (from his seat: Shourov, Kristin, Julian; from Kristin's seat it would be Marrs, Shourov and Julian). Polynize is always shown, and a private board is always shown to its owner. It starts off for the operator and on for everyone else, and the browser remembers a flick. Only this page: the boards, the calendar and the numbers below are untouched, so "hidden" never means "gone".
+
+**The operator's controls.** One list, `OPERATOR_EMAILS`, now answers both the Studio (D114) and April's brief. Neither link is drawn for anyone else and both pages send anyone else home. The Calendar and the Learnings library stay for everyone: the team ships posts and brings learnings.
+
+### Decisions inside it
+
+- **A way of looking, not a fact about the boards.** The switch lives in the browser, not in storage, because hiding a card changes nothing about the work on it.
+- **Own board is defined, not listed.** A board is yours when it is private to you or carries your address, so the same switch does the right thing from any seat without a list per person.
+- **Operator, not owner.** The Studio and the brief follow who runs the engine, which is one person today and could be a contractor tomorrow: one line to add.

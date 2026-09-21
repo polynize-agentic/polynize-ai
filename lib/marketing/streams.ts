@@ -69,15 +69,43 @@ export function visibleStreams(email: string | null | undefined): (typeof STREAM
 }
 
 /**
- * THE STUDIO IS ONE PERSON'S ROOM (D114). Marrs: "the Studio tab should only be visible to me
- * because no one else is using the Studio and the video flows. It's just me." The link is not
- * drawn for anyone else and the page sends them home.
+ * WHO RUNS THE ENGINE (D114, widened D117). Marrs: "the Studio tab should only be visible to me
+ * because no one else is using the Studio and the video flows. It's just me." And on 21 September:
+ * "hide some of the options for Kristin, Julian, and Shourov, like April's brief and the studio."
+ * One list answers both. The Studio and April's brief are drawn for these addresses only and their
+ * pages send anyone else home.
  */
-export const STUDIO_EMAILS: readonly string[] = ['marrs@polynize.io'];
+export const OPERATOR_EMAILS: readonly string[] = ['marrs@polynize.io'];
 
-export function canUseStudio(email: string | null | undefined): boolean {
+export function isOperator(email: string | null | undefined): boolean {
   const e = (email ?? '').trim().toLowerCase();
-  return e !== '' && STUDIO_EMAILS.includes(e);
+  return e !== '' && OPERATOR_EMAILS.includes(e);
+}
+
+/** The Studio is the operator's room. Kept as its own name so the call sites say what they mean. */
+export function canUseStudio(email: string | null | undefined): boolean {
+  return isOperator(email);
+}
+
+/**
+ * WHOSE BOARD IS WHOSE (D117). A board is this person's own when it is private to them or when it
+ * is the person stream that carries their address. The company board is nobody's and everybody's.
+ */
+export function isOwnBoard(email: string | null | undefined, id: string): boolean {
+  const e = (email ?? '').trim().toLowerCase();
+  if (!e) return false;
+  return (PRIVATE_STREAMS[id] ?? []).includes(e) || (STREAM_EMAILS[id] ?? []).map((x) => x.toLowerCase()).includes(e);
+}
+
+/**
+ * THE TEAM'S BOARDS, from one person's seat: every other person's board this viewer can see. The
+ * front page can fold these away behind a switch (D117). Marrs: "hide Shourov, Kristin, and
+ * Julian's cards in my view so I can't see them. Maybe just have a toggle switch in the top right."
+ */
+export function teamBoardIds(email: string | null | undefined): string[] {
+  return visibleStreams(email)
+    .filter((s) => s.kind === 'person' && !isOwnBoard(email, s.id))
+    .map((s) => s.id);
 }
 
 /**

@@ -1111,3 +1111,62 @@
   }
 }
 
+
+/* THE HEADER ROW WITH A SWITCH ON THE RIGHT (D117): the engine page's title on the left, the
+   team-boards switch top right. */
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  padding: 6px 10px 6px 12px;
+  border: 1px solid var(--tac-edge-dark, rgba(255, 255, 255, 0.08));
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-3, #8a7d72);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.switch:hover {
+  color: var(--text, #f4ece4);
+}
+.switchKnob {
+  position: relative;
+  width: 30px;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  transition: background 140ms ease;
+  flex: none;
+}
+.switchKnob::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-3, #8a7d72);
+  transition: transform 140ms ease, background 140ms ease;
+}
+.switchOn .switchKnob {
+  background: rgba(105, 252, 203, 0.25);
+}
+.switchOn .switchKnob::after {
+  transform: translateX(14px);
+  background: var(--mint, #69fccb);
+}
+.switchOn {
+  color: var(--text, #f4ece4);
+}

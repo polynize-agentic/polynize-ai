@@ -29,7 +29,7 @@ PAM (Polynize Agent Management) is the marketing engine: it takes an idea, shape
 
 ## 3. The marketing home: whose content 🧪 (D45)
 
-`/console/marketing` is **the picker**: one card per stream and creator, Polynize, Marrs, Shourov, Kristin and Julian, each showing how many narratives are in flight and how many have shipped. Click a name and you get **that person's board**: their narratives sitting at their gates, in gate order, with **New narrative** as the primary action. A Narrative is one idea exploited into a week of content, and it moves through five gates: **Idea → Article → Kit → Create → Ship**. One gate on screen at a time, one decision per screen, back goes back.
+`/console/marketing` is **the picker**: one card per stream and creator, Polynize, Marrs, Shourov, Kristin and Julian, each showing how many narratives are in flight and how many have shipped. **Team boards** (top right, D117) folds every other person's board away and back; it starts off for Marrs and on for everyone else, and the browser remembers. The Studio and April's brief are drawn for the operator only (D114, D117). Click a name and you get **that person's board**: their narratives sitting at their gates, in gate order, with **New narrative** as the primary action. A Narrative is one idea exploited into a week of content, and it moves through five gates: **Idea → Article → Kit → Create → Ship**. One gate on screen at a time, one decision per screen, back goes back.
 
 **A narrative belongs to exactly one stream.** That is what decides its channels, its voice, its CTA, and which post frames its kit offers: a **person** gets the Hard moment frame, the **Polynize** brand gets the Field report instead. Adding a teammate adds a board and changes nothing else.
 
