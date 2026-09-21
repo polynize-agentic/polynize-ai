@@ -116,6 +116,37 @@ export function teamBoardIds(email: string | null | undefined): string[] {
  */
 export const VIDEO_STREAMS: readonly string[] = ['polynize', 'marrs', 'marrsattacks'];
 
+/**
+ * WHICH CHANNELS A BOARD IS (D118). Marrs, 21 September: "Marrs is just for LinkedIn, and Marrs
+ * Attacks is for the other channels... Marrs just has to show LinkedIn, and Marrs Attacks has to
+ * show Instagram, TikTok, and YouTube." Both boards post through one Metricool brand, so a pull
+ * for either would otherwise bring back the same posts twice. A board with no entry here is every
+ * channel. Read by the analytics pull (what to keep), and by the link rule below.
+ */
+export const STREAM_NETWORKS: Record<string, readonly string[]> = {
+  marrs: ['linkedin'],
+  marrsattacks: ['instagram', 'tiktok', 'youtube'],
+};
+
+/** The channels this board is, or undefined when it is all of them. */
+export function networksFor(id: string): readonly string[] | undefined {
+  return STREAM_NETWORKS[id];
+}
+
+/**
+ * WHETHER A POST ON THIS BOARD CARRIES THE POLYNIZE LINK (D118). Marrs: "stop writing the Polynize
+ * link into my captions on all channels except LinkedIn... I'll measure clickthroughs and the rest of
+ * it on marrsattacks.world for the Marrs Attacks content." So the Marrs Attacks board's posts carry
+ * no link (its CTA is the spoken keyword, answered in ManyChat); LinkedIn anywhere keeps it; every
+ * Polynize board keeps it everywhere.
+ */
+export function carriesSiteLink(stream: string, network: string): boolean {
+  if (network === 'linkedin') return true;
+  // The id is written here rather than imported: use-case.ts owns MARRS_ATTACKS_STREAM and imports
+  // nothing from this file on purpose, and the two must not import each other.
+  return stream !== 'marrsattacks';
+}
+
 export function makesVideo(id: string): boolean {
   return VIDEO_STREAMS.includes(id);
 }

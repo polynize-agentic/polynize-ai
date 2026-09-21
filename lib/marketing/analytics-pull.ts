@@ -20,6 +20,7 @@ import { getBrandMap } from './metricool-config-store';
 import { laneTimezone } from './channel-schedule';
 import { normalizeFeed, enrichPosts, rangeStart } from './analytics-metrics';
 import { connectedList } from './connected-networks';
+import { networksFor } from './streams';
 import { saveStreamAnalytics, type StreamAnalytics } from './analytics-store';
 
 /** The default window. Ninety days is long enough to hold a quarter's work and short enough to return. */
@@ -106,7 +107,14 @@ export async function pullStream(stream: string, days = PULL_DAYS): Promise<Pull
    * rows keep the summary's numbers only.
    */
   const connected = await connectedList(blogId).catch(() => null);
-  const want = (n: string) => connected === null || connected.includes(n);
+  /**
+   * ONLY THIS BOARD'S CHANNELS (D118). Marrs and Marrs Attacks share one Metricool brand, so the
+   * summary comes back with every network for both; each board keeps only the channels it is, so
+   * the two panels stop showing the same numbers and the engine page stops counting them twice.
+   */
+  const mine = networksFor(stream);
+  if (mine) posts = posts.filter((p) => mine.includes(p.network));
+  const want = (n: string) => (connected === null || connected.includes(n)) && (!mine || mine.includes(n));
   const feeds: { path: string; network: string }[] = [];
   if (want('instagram')) feeds.push({ path: '/v2/analytics/posts/instagram', network: 'instagram' }, { path: '/v2/analytics/reels/instagram', network: 'instagram' });
   if (want('tiktok')) feeds.push({ path: '/v2/analytics/posts/tiktok', network: 'tiktok' });

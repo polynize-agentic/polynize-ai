@@ -27,6 +27,7 @@ import { stripEmDashes } from '@/lib/em-dash';
 import { getChannelSchedule, NETWORKS, type Network } from '@/lib/marketing/channel-schedule';
 import { buildTrackingLink, siteOrigin } from '@/lib/marketing/tracking-link';
 import { landingFor, campaignFor } from '@/lib/marketing/use-case';
+import { carriesSiteLink } from '@/lib/marketing/streams';
 import { getNarrative } from '@/lib/marketing/narrative-store';
 import { keywordIn, landingForKeyword, isMarrsAttacksPiece } from '@/lib/marketing/split-screen';
 
@@ -196,7 +197,8 @@ export async function POST(
        * magnet (MAP: the team map, ROLE: the job map), read off the piece or its script.
        */
       const keyword = isMarrsAttacksPiece(piece) ? (piece.cta_keyword ?? keywordIn(piece.script ?? '')) : undefined;
-      const link = buildTrackingLink({
+      // NO POLYNIZE LINK ON MARRS ATTACKS CHANNELS (D118): the keyword is the CTA and ManyChat answers it.
+      const link = !carriesSiteLink(piece.stream, channel) ? undefined : buildTrackingLink({
         origin: siteOrigin(),
         path: landingForKeyword(keyword) ?? learningPath ?? landingFor(piece.use_case),
         network: channel,
@@ -211,8 +213,8 @@ export async function POST(
         frame: piece.format,
         // The version letter (D102), so versions of one question can be compared.
         ...(piece.variant ? { variant: piece.variant } : {}),
-        link,
-        ...(channel === 'linkedin' ? { first_comment: link } : {}),
+        ...(link ? { link } : {}),
+        ...(link && channel === 'linkedin' ? { first_comment: link } : {}),
       };
       const entry: CalendarEntry = prior
         ? {

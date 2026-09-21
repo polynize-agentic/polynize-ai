@@ -109,7 +109,7 @@ import {
   outputById,
 } from '../kit';
 import { prezieFilingKey } from '../prezie-store';
-import { STREAM_IDS, STREAMS, canSeeStream, visibleStreams, canUseStudio, makesVideo, isPrivateStream, isOperator, isOwnBoard, teamBoardIds } from '../streams';
+import { STREAM_IDS, STREAMS, canSeeStream, visibleStreams, canUseStudio, makesVideo, isPrivateStream, isOperator, isOwnBoard, teamBoardIds, networksFor, carriesSiteLink } from '../streams';
 
 let pass = 0;
 let fail = 0;
@@ -476,6 +476,18 @@ eq('Shourov owns his under either address', isOwnBoard('shourov@polynize.com', '
 eq('from his seat the team is the other three', teamBoardIds('marrs@polynize.io'), ['shourov', 'kristin', 'julian']);
 eq('from hers it is the other people, never Polynize and never his private board', teamBoardIds('kristin@polynize.io'), ['marrs', 'shourov', 'julian']);
 eq('no seat, no team', teamBoardIds(null), ['marrs', 'shourov', 'kristin', 'julian']);
+
+/* ------------------------------------------------------------------ D118: which channels a board is */
+
+eq('Marrs is LinkedIn', networksFor('marrs'), ['linkedin']);
+eq('Marrs Attacks is the other three', networksFor('marrsattacks'), ['instagram', 'tiktok', 'youtube']);
+eq('Polynize is every channel', networksFor('polynize'), undefined);
+eq('a Marrs Attacks reel carries no Polynize link', carriesSiteLink('marrsattacks', 'instagram'), false);
+eq('nor a TikTok', carriesSiteLink('marrsattacks', 'tiktok'), false);
+eq('nor a YouTube short', carriesSiteLink('marrsattacks', 'youtube'), false);
+eq('LinkedIn keeps it even there', carriesSiteLink('marrsattacks', 'linkedin'), true);
+eq('the co-founder board keeps it', carriesSiteLink('marrs', 'linkedin'), true);
+eq('and Polynize keeps it everywhere', carriesSiteLink('polynize', 'instagram'), true);
 
 /* ------------------------------------------------------------------ D55: the three looks */
 

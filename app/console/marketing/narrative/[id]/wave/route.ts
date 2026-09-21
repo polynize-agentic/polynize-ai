@@ -46,6 +46,7 @@ import { sendHandPostBrief, handPostFromEntry } from '@/lib/marketing/hand-post'
 import { narrativeHeadline } from '@/lib/marketing/narrative-store';
 import { buildTrackingLink, siteOrigin } from '@/lib/marketing/tracking-link';
 import { landingFor, campaignFor } from '@/lib/marketing/use-case';
+import { carriesSiteLink } from '@/lib/marketing/streams';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -424,7 +425,8 @@ export async function POST(
            * too and publishEntry sends it as firstCommentText. Never into post_copy.
            */
           const entryId = randomUUID();
-          const link = buildTrackingLink({
+          // NO POLYNIZE LINK ON MARRS ATTACKS CHANNELS (D118).
+          const link = !carriesSiteLink(narrative.lane, network) ? undefined : buildTrackingLink({
             origin: siteOrigin(),
             // A Story made from a learning links to the learning's page on polynize.ai (D115).
             path: narrative.learning_slug ? `/library/${narrative.learning_slug}` : landingFor(narrative.use_case),
@@ -443,8 +445,8 @@ export async function POST(
             ...(narrative.use_case ? { use_case: narrative.use_case } : {}),
             // The post type, for the leaderboard (D99): the kit output this entry is.
             frame: output.id,
-            link,
-            ...(linkInFirstComment ? { first_comment: link } : {}),
+            ...(link ? { link } : {}),
+            ...(link && linkInFirstComment ? { first_comment: link } : {}),
             piece_id: piece.piece_id,
             title: piece.title,
             channel: network,

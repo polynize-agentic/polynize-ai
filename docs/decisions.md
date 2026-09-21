@@ -3265,3 +3265,17 @@ Tests: `learnings.test.ts` (34): the slug, the parse of April's first pass, the 
 - **A way of looking, not a fact about the boards.** The switch lives in the browser, not in storage, because hiding a card changes nothing about the work on it.
 - **Own board is defined, not listed.** A board is yours when it is private to you or carries your address, so the same switch does the right thing from any seat without a list per person.
 - **Operator, not owner.** The Studio and the brief follow who runs the engine, which is one person today and could be a contractor tomorrow: one line to add.
+
+## D118: Marrs is LinkedIn, Marrs Attacks is the other three, and no Polynize link on his channels
+
+**Adopted 21 September 2026.** Marrs: *"Marrs is just for LinkedIn, and Marrs Attacks is for the other channels. Even in the analytics, I can see that Marrs and Marrs Attacks are at the same value. We have to change that: Marrs just has to show LinkedIn, and Marrs Attacks has to show Instagram, TikTok, and YouTube."* And: *"stop writing the Polynize link into my captions on all channels except LinkedIn... I'll measure clickthroughs and the rest of it on marrsattacks.world for the Marrs Attacks content, so don't worry about that."*
+
+**The channel split.** `STREAM_NETWORKS` in `streams.ts` says which channels a board is: Marrs is LinkedIn; Marrs Attacks is Instagram, TikTok and YouTube; every other board is all of them. Both of his boards share one Metricool brand, so a pull for either used to bring back the same posts. The pull now keeps only the board's own channels and only asks Metricool for those channels' feeds, so the two panels show different numbers and the engine page stops counting his posts twice. The next Pull now rewrites both boards' stored numbers.
+
+**The link.** The Marrs Attacks board's posts on Instagram, TikTok and YouTube carry no polynize.ai link and no label; the CTA is the spoken keyword and ManyChat answers it. LinkedIn anywhere keeps the link in the first comment. Every Polynize board keeps it everywhere. `carriesSiteLink(stream, network)` is the rule; the prepare route and the wave both read it.
+
+**The decision behind it.** The console's attribution (D96 to D100) measures Polynize's funnel on polynize.ai. Marrs Attacks' funnel ends on marrsattacks.world and in ManyChat, which he measures there. A link nobody can tap (Instagram and TikTok captions are not clickable) that lands on the wrong site was noise in his captions and nothing in his numbers.
+
+**Not changed, on his word:** the kit still offers every channel on both boards ("I can sort that out organically when I post stuff"); the split-screen door still presets Instagram, TikTok and YouTube.
+
+**The teleprompter** is being rebuilt on marrsattacks.world alongside the prezie, by his other agent, so the finished film becomes the one handoff into the console. Its build spec, written from the one that runs here, is `docs/pam-console/teleprompter-spec.md`.
