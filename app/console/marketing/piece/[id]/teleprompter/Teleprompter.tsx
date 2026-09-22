@@ -17,6 +17,13 @@
  *
  * Controls: the wheel (or a hidden mouse) scrolls; auto-scroll runs at an adjustable speed;
  * size and flip persist per DEVICE, because they belong to the rig and not to the piece.
+ *
+ * EDIT ON THE GLASS (D119). Marrs: "I have it open in my teleprompter, and I just want to add a line
+ * somewhere. I'd love to tap on it, hit Enter a few times, and just be able to edit it there." The
+ * "edit" button on the strip, or a double tap on the text (a single tap still does nothing: a stray
+ * touch must never cost him his place), opens the whole script as one editable column at the same
+ * size. The flip is suspended while editing, because nobody can type mirrored, and auto-scroll
+ * stops. Done saves through the Studio's edit route and goes back to reading at the same spot.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -36,16 +43,36 @@ const DEFAULT_SIZE = 3;
 const SPEEDS = [12, 20, 30, 42, 60, 84, 120] as const;
 const DEFAULT_SPEED = 2;
 
+function toSections(script: string): string[] {
+  return (
+    script
+      .split(/\n\s*\n/)
+      .map((b) => b.trim())
+      // A run of dashes separates the alternative HOOKS in the house script shape. It is
+      // punctuation, and as its own section it is a blank screen to scroll past mid-take.
+      .filter((b) => b && !/^[-–—_=]{2,}$/.test(b))
+  );
+}
+
 export function Teleprompter({
+  pieceId,
   title: _title,
-  sections,
+  script,
   backHref,
 }: {
+  pieceId: string;
   title: string;
-  sections: string[];
+  script: string;
   backHref: string;
 }) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [raw, setRaw] = useState(script);
+  const sections = toSections(raw);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(script);
+  const [saving, setSaving] = useState(false);
+  const [saveErr, setSaveErr] = useState<string | null>(null);
+  const lastTap = useRef(0);
   /**
    * ONE AXIS: VERTICAL. Exposing both axes answered the question that could not be answered from
    * theory here, and the answer was that the rig needs the vertical flip alone: "flip is the
@@ -146,10 +173,61 @@ export function Teleprompter({
     if (el) el.scrollTop = 0;
   }, []);
 
+  const beginEdit = useCallback(() => {
+    setRunning(false);
+    setDraft(raw);
+    setSaveErr(null);
+    setEditing(true);
+  }, [raw]);
+
+  /** A double tap on the text opens the editor; a single tap still does nothing. */
+  const onTextTap = () => {
+    const now = Date.now();
+    if (now - lastTap.current < 350) beginEdit();
+    lastTap.current = now;
+  };
+
+  const finishEdit = async () => {
+    if (saving) return;
+    if (!draft.trim()) {
+      setSaveErr('The script cannot be empty.');
+      return;
+    }
+    setSaving(true);
+    setSaveErr(null);
+    // Keep the place: the editor and the column share the scroll box.
+    const at = scrollRef.current?.scrollTop ?? 0;
+    try {
+      const res = await fetch('/console/studio/prompter', {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ piece_id: pieceId, script: draft }),
+      });
+      const b = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (!res.ok || !b?.ok) {
+        setSaveErr(b?.error ?? 'Could not save. Your words are still on screen.');
+        return;
+      }
+      setRaw(draft);
+      setEditing(false);
+      requestAnimationFrame(() => {
+        if (scrollRef.current) scrollRef.current.scrollTop = at;
+      });
+    } catch {
+      setSaveErr('Could not reach the console. Your words are still on screen.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   useEffect(() => {
+    if (editing) return;
     function onKey(e: KeyboardEvent) {
       const k = e.key;
-      if (k === ' ' || k === 'Spacebar') {
+      if (k === 'e' || k === 'E') {
+        e.preventDefault();
+        beginEdit();
+      } else if (k === ' ' || k === 'Spacebar') {
         e.preventDefault();
         setRunning((r) => !r);
       } else if (k === '+' || k === '=') {
@@ -174,7 +252,7 @@ export function Teleprompter({
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [sizeIx, speedIx, flipV, toTop]);
+  }, [sizeIx, speedIx, flipV, toTop, editing, beginEdit]);
 
   return (
     <div className={t.root}>
@@ -194,10 +272,23 @@ export function Teleprompter({
          * neither axis is on, so an unflipped prompter is not paying for a compositing layer.
          */
         style={
-          flipV ? { transform: 'scaleY(-1)' } : undefined
+          flipV && !editing ? { transform: 'scaleY(-1)' } : undefined
         }
       >
-        <div className={t.column} style={{ fontSize: `${SIZES[sizeIx]}px` }}>
+        {editing ? (
+          /* THE EDITOR: the whole script as one column at the reading size, so what he sees is what
+             he will read. Enter adds a line; a blank line starts a new section. */
+          <textarea
+            className={`${t.column} ${t.editor}`}
+            style={{ fontSize: `${SIZES[sizeIx]}px` }}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            disabled={saving}
+            spellCheck={false}
+            autoFocus
+          />
+        ) : (
+        <div className={t.column} style={{ fontSize: `${SIZES[sizeIx]}px` }} onClick={onTextTap}>
           {sections.length === 0 ? (
             <p className={t.body}>No script yet.</p>
           ) : (
@@ -215,9 +306,26 @@ export function Teleprompter({
             })
           )}
         </div>
+        )}
       </div>
 
-      {chromeOn ? (
+      {editing ? (
+        <div className={t.rig}>
+          <button type="button" className={t.rigOn} onClick={finishEdit} disabled={saving} aria-label="Save and go back to reading">
+            {saving ? 'saving…' : 'done'}
+          </button>
+          <button type="button" onClick={() => setEditing(false)} disabled={saving} aria-label="Throw the edit away">
+            cancel
+          </button>
+          <button type="button" onClick={() => setSize(sizeIx - 1)} aria-label="Smaller text">
+            A-
+          </button>
+          <button type="button" onClick={() => setSize(sizeIx + 1)} aria-label="Bigger text">
+            A+
+          </button>
+          {saveErr ? <span className={t.rigValue}>{saveErr}</span> : null}
+        </div>
+      ) : chromeOn ? (
         <div className={t.rig}>
           <Link href={backHref} className={t.exit}>
             ✕
@@ -254,6 +362,9 @@ export function Teleprompter({
           <button type="button" onClick={toTop} aria-label="Back to the top">
             top
           </button>
+          <button type="button" onClick={beginEdit} aria-label="Edit the script here">
+            edit
+          </button>
           <button type="button" onClick={() => setChromeOn(false)} aria-label="Hide the controls">
             hide
           </button>
@@ -269,10 +380,10 @@ export function Teleprompter({
         </button>
       )}
 
-      <div className={t.hint} hidden={!chromeOn}>
+      <div className={t.hint} hidden={!chromeOn || editing}>
         Scroll with the wheel at any time, even while it is running. Space starts and stops,
         up and down set the speed, + and - the size, f flips for the glass, Home returns to the
-        top.
+        top. Double tap the words, or press e, to edit them here.
       </div>
     </div>
   );

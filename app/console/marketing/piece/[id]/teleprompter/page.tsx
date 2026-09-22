@@ -10,17 +10,6 @@ export const dynamic = 'force-dynamic';
  * section, remote-advanceable. Reads the same piece as the Script screen so it
  * always reflects the latest saved script.
  */
-function toSections(script: string): string[] {
-  return (
-    script
-      .split(/\n\s*\n/)
-      .map((b) => b.trim())
-      // A run of dashes separates the alternative HOOKS in the house script shape. It is
-      // punctuation, and as its own section it is a blank screen to tap past mid-take.
-      .filter((b) => b && !/^[-–—_=]{2,}$/.test(b))
-  );
-}
-
 export default async function TeleprompterPage({
   params,
 }: {
@@ -44,8 +33,9 @@ export default async function TeleprompterPage({
 
   return (
     <Teleprompter
+      pieceId={id}
       title={piece.title}
-      sections={toSections(piece.script ?? '')}
+      script={piece.script ?? ''}
       backHref={`/console/marketing/piece/${id}`}
     />
   );

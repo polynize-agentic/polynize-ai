@@ -100,6 +100,10 @@ In the console, the Studio page lists everything queued to record and prints a *
 
 Whatever lists scripts on marrsattacks.world should do the same: a code and a link per script, and a way to mark it recorded.
 
+## 10b. Editing on the glass
+
+Added after Marrs asked to fix a line without leaving the prompter. An **edit** button on the strip, or a double tap on the words (never a single tap), opens the whole script as one editable column at the reading size. While editing: the flip is off (nobody can type mirrored), auto-scroll is stopped, and the keyboard shortcuts are off so typing does not flip or scroll. **done** saves the script back to wherever it lives and returns to reading at the same scroll position; **cancel** throws the edit away. Save failures keep the words on screen and say so.
+
 ## 11. Acceptance, on the rig
 
 1. Open a script on the iPad in the hood, press flip once: text reads correctly through the glass, and the wheel scrolls it in the reading direction.
@@ -107,4 +111,4 @@ Whatever lists scripts on marrsattacks.world should do the same: a code and a li
 3. Start auto-scroll at 30, read aloud at a natural pace: the reading line stays near the centre; nudge the wheel forward and back mid-take and auto-scroll continues from there.
 4. Let it run to the end: it stops; it does not judder at the bottom.
 5. Leave the page untouched for five minutes: the screen has not slept.
-6. Tap the text anywhere: nothing happens.
+6. Tap the text anywhere: nothing happens. Double tap it: the editor opens, upright, at the same size; type a line, press done, and it is in the script when you scroll on.
