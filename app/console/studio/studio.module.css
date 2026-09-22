@@ -278,3 +278,14 @@
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
   font-size: 13px;
 }
+
+/* EDIT IN PLACE (D119): the Edit button sits under the actions; the editor opens in its place. */
+.editWrap {
+  margin-top: 10px;
+}
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 4px;
+}

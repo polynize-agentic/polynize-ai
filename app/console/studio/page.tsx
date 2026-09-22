@@ -7,6 +7,7 @@ import { streamLabel, canUseStudio } from '@/lib/marketing/streams';
 import { qrSvg } from '@/lib/qr';
 import { RecordedButton } from './ShootRowActions';
 import { QuickPrompter } from './QuickPrompter';
+import { EditScript } from './EditScript';
 import s from '../_components/client-card.module.css';
 import d from './studio.module.css';
 
@@ -148,6 +149,10 @@ export default async function StudioPage() {
                       the piece
                     </Link>
                     <RecordedButton pieceId={r.piece_id} title={r.title} />
+                  </div>
+                  {/* EDIT IN PLACE (D119): the editor opens under the row when Edit is pressed. */}
+                  <div className={d.editWrap}>
+                    <EditScript pieceId={r.piece_id} title={r.title} script={r.script} />
                   </div>
                 </div>
 

@@ -35,6 +35,8 @@ export type ShootRow = {
   /** True when the format expects a prezie and none was found, which is worth seeing BEFORE the shoot. */
   prezie_missing: boolean;
   teleprompter_url: string;
+  /** The script itself, so the row can be edited in place (D119). */
+  script: string;
   /** Roughly how long the read is, from the script, so a session can be judged before setting up. */
   words: number;
   /**
@@ -111,6 +113,7 @@ export function groupShootRows(
       // A yap is straight to camera, no screen (D102), so it never has one and is never flagged (D119).
       prezie_missing: isVideo && !prezie && p.format !== YAP_FORMAT,
       teleprompter_url: `/console/marketing/piece/${p.piece_id}/teleprompter`,
+      script: p.script ?? '',
       words: spokenWords(p.script ?? ''),
       seconds: Math.round(spokenWords(p.script ?? '') / 2.7),
       ready_at: p.shoot_ready_at,

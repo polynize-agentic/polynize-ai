@@ -3289,3 +3289,5 @@ Tests: `learnings.test.ts` (34): the slug, the parse of April's first pass, the 
 **A yap is never flagged as missing a prezie.** It is straight to camera, no screen (D102), so the queue's warning now skips the format rather than nagging on every pasted yap.
 
 Operator only, like the Studio.
+
+**Edit in place, added the same day.** Marrs: *"add an edit button to that yap when it gets created, so if I have to edit the script, I can do it directly from there."* Every queued row now carries **Edit**. It opens the title and the script under the row; Save writes them and the row's name and read time follow; the prompter shows the new words on its next load; Cancel throws the edit away. On every queued row, not only pasted yaps: a wrong word is a wrong word whichever way the script arrived.

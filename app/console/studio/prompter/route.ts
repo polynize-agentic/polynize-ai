@@ -19,7 +19,7 @@ import { canUseStudio } from '@/lib/marketing/streams';
 import { MARRS_ATTACKS_STREAM } from '@/lib/marketing/use-case';
 import { formatById } from '@/lib/marketing/output-plan';
 import { YAP_FORMAT } from '@/lib/marketing/split-screen';
-import { savePiece, type MarketingPiece } from '@/lib/marketing/piece-store';
+import { getPiece, savePiece, type MarketingPiece } from '@/lib/marketing/piece-store';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -28,6 +28,45 @@ const Body = z.object({
   title: z.string().trim().max(120).optional(),
   script: z.string().trim().min(1).max(20000),
 });
+const EditBody = z.object({
+  piece_id: z.string().trim().min(1).max(200),
+  title: z.string().trim().max(120).optional(),
+  script: z.string().trim().min(1).max(20000),
+});
+
+/**
+ * PATCH: edit a queued script in place (D119). Marrs: "add an edit button to that yap when it gets
+ * created, so if I have to edit the script, I can do it directly from there." Reads the piece, changes
+ * the words and the name, saves. The prompter reads the saved script, so the iPad shows the edit on
+ * its next load.
+ */
+export async function PATCH(req: NextRequest) {
+  const user = await getCurrentUser();
+  if (!user || user.scope.type !== 'team' || !canUseStudio(user.email)) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+  let body: z.infer<typeof EditBody>;
+  try {
+    body = EditBody.parse(await req.json());
+  } catch {
+    return NextResponse.json({ error: 'the script cannot be empty' }, { status: 400 });
+  }
+  const piece = await getPiece(user.email, body.piece_id).catch(() => null);
+  if (!piece) return NextResponse.json({ error: 'piece not found' }, { status: 404 });
+  const firstLine = body.script.split('\n').map((l) => l.trim()).find((l) => l.length > 0) ?? piece.title;
+  try {
+    await savePiece(user.email, {
+      ...piece,
+      title: (body.title || firstLine).slice(0, 90),
+      script: body.script,
+      updated_at: new Date().toISOString(),
+    });
+  } catch (err) {
+    console.error('[studio.prompter] edit failed:', err);
+    return NextResponse.json({ error: 'could not save the edit' }, { status: 502 });
+  }
+  return NextResponse.json({ ok: true });
+}
 
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
