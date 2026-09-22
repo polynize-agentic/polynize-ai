@@ -262,6 +262,12 @@ Reusable photos and video per stream, at `Stream setup → Media library`.
 
 ---
 
+## 9b. The Studio: paste a yap 🧪 (D119)
+
+At the top of the Studio (Marrs only): **Paste a yap.** Paste a yap you have already written, give it a title or let the first line name it, press the button, and it appears in the queue below as a yap with its QR code and teleprompter link. Recorded takes it off the list; it then goes on to captions, the calendar and the numbers like any piece.
+
+---
+
 ## 10. Calendar & scheduling ✅
 
 The publishing calendar (top-level **Calendar** button, or after **Prepare posts**).

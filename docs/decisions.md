@@ -3279,3 +3279,13 @@ Tests: `learnings.test.ts` (34): the slug, the parse of April's first pass, the 
 **Not changed, on his word:** the kit still offers every channel on both boards ("I can sort that out organically when I post stuff"); the split-screen door still presets Instagram, TikTok and YouTube.
 
 **The teleprompter** is being rebuilt on marrsattacks.world alongside the prezie, by his other agent, so the finished film becomes the one handoff into the console. Its build spec, written from the one that runs here, is `docs/pam-console/teleprompter-spec.md`.
+
+## D119: Paste a yap in the Studio
+
+**Adopted 22 September 2026.** Marrs: *"Can you create me a way in the studio to just dump a script in and generate a teleprompter version of it with the QR code? ... I need it for yaps that I've already written."*
+
+**The box.** At the top of the Studio, above the queue: "Paste a yap". An optional title, the script, one button. It becomes a yap piece on the Marrs Attacks board, queued for the Studio at once, so the queue below shows it with its QR code and its teleprompter link the moment the page refreshes, and Recorded takes it off the list as usual. Nothing is drafted, checked or planned: the yap was written elsewhere (with Tom, on marrsattacks.world), and the console's job is the prompter and the queue. Being a real yap, it goes on to captions, the calendar and the numbers like any other piece.
+
+**A yap is never flagged as missing a prezie.** It is straight to camera, no screen (D102), so the queue's warning now skips the format rather than nagging on every pasted yap.
+
+Operator only, like the Studio.

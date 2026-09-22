@@ -235,3 +235,46 @@
   font-size: 12px;
   color: var(--coral);
 }
+
+/* PASTE A SCRIPT (D119): one box above the queue. */
+.paste {
+  margin-top: 28px;
+  padding: 18px 20px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(244, 236, 228, 0.12);
+  background: rgba(244, 236, 228, 0.03);
+}
+.pasteHead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.pasteTitle {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+.pasteLine,
+.pasteBox {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(244, 236, 228, 0.14);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text, #f4ece4);
+  font: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+}
+.pasteLine {
+  margin-bottom: 10px;
+}
+.pasteBox {
+  min-height: 180px;
+  resize: vertical;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 13px;
+}

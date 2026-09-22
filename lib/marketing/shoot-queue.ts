@@ -21,6 +21,7 @@
 import { listSavedPieces, type MarketingPiece } from './piece-store';
 import { listPreziesForConcept, prezieFilingKey, type Prezie } from './prezie-store';
 import { formatById } from './output-plan';
+import { YAP_FORMAT } from './split-screen';
 
 export type ShootRow = {
   piece_id: string;
@@ -107,7 +108,8 @@ export function groupShootRows(
       prezie_name: prezie?.name,
       // Only a VIDEO format is expected to have one, so a text piece is not flagged as missing something
       // it never needed.
-      prezie_missing: isVideo && !prezie,
+      // A yap is straight to camera, no screen (D102), so it never has one and is never flagged (D119).
+      prezie_missing: isVideo && !prezie && p.format !== YAP_FORMAT,
       teleprompter_url: `/console/marketing/piece/${p.piece_id}/teleprompter`,
       words: spokenWords(p.script ?? ''),
       seconds: Math.round(spokenWords(p.script ?? '') / 2.7),

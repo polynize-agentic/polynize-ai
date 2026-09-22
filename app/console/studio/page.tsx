@@ -6,6 +6,7 @@ import { buildShootQueue } from '@/lib/marketing/shoot-queue';
 import { streamLabel, canUseStudio } from '@/lib/marketing/streams';
 import { qrSvg } from '@/lib/qr';
 import { RecordedButton } from './ShootRowActions';
+import { QuickPrompter } from './QuickPrompter';
 import s from '../_components/client-card.module.css';
 import d from './studio.module.css';
 
@@ -83,6 +84,9 @@ export default async function StudioPage() {
               : `${total} ready${with_prezie ? `, ${with_prezie} with prezies` : ''}`}
           </p>
         </div>
+
+        {/* PASTE A YAP (D119): the door for yaps written elsewhere, above the queue. */}
+        <QuickPrompter />
 
         {total === 0 ? (
           <p className={d.empty}>
