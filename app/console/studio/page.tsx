@@ -8,6 +8,8 @@ import { qrSvg } from '@/lib/qr';
 import { RecordedButton } from './ShootRowActions';
 import { QuickPrompter } from './QuickPrompter';
 import { EditScript } from './EditScript';
+import { RecordedList } from './RecordedList';
+import { STREAMS } from '@/lib/marketing/streams';
 import s from '../_components/client-card.module.css';
 import d from './studio.module.css';
 
@@ -38,7 +40,8 @@ export default async function StudioPage() {
   // THE STUDIO IS HIS ROOM (D114). Nobody else shoots, so nobody else is shown the queue.
   if (!canUseStudio(user.email)) redirect('/console/marketing');
 
-  const { groups, total, with_prezie } = await buildShootQueue(user.email);
+  const { groups, total, with_prezie, recorded } = await buildShootQueue(user.email);
+  const labels = Object.fromEntries(STREAMS.map((st) => [st.id, st.label]));
 
   /**
    * THE QR HAS TO CARRY AN ABSOLUTE URL. A relative path is meaningless to a camera, so the row's own
@@ -84,6 +87,8 @@ export default async function StudioPage() {
               ? 'Nothing queued.'
               : `${total} ready${with_prezie ? `, ${with_prezie} with prezies` : ''}`}
           </p>
+          {/* WHAT HAS BEEN SHOT (D119), behind one button, so a Recorded press is never a disappearance. */}
+          <RecordedList rows={recorded} labels={labels} />
         </div>
 
         {/* PASTE A YAP (D119): the door for yaps written elsewhere, above the queue. */}

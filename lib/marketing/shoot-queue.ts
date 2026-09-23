@@ -50,6 +50,41 @@ export type ShootRow = {
   ready_at?: string;
 };
 
+/**
+ * WHAT HAS BEEN SHOT (D119). Marrs: "when I tick something as recorded, where does it go? It kind of
+ * disappears, and I don't want it to." Recorded takes a piece off the queue and stamps it; the piece
+ * itself is untouched and goes on to captions and the calendar. This is the list of those, newest
+ * first, so the Studio can show them behind one button and put one back in the queue for a retake.
+ */
+export type RecordedRow = {
+  piece_id: string;
+  title: string;
+  stream: string;
+  format_label: string;
+  recorded_at: string;
+  teleprompter_url: string;
+};
+
+const RECORDED_SHOWN = 40;
+
+export function recordedRows(pieces: MarketingPiece[]): RecordedRow[] {
+  const seen = new Set<string>();
+  const out: RecordedRow[] = [];
+  for (const p of pieces) {
+    if (!p.recorded_at || seen.has(p.piece_id)) continue;
+    seen.add(p.piece_id);
+    out.push({
+      piece_id: p.piece_id,
+      title: p.title,
+      stream: p.stream,
+      format_label: formatById(p.format)?.label ?? p.format,
+      recorded_at: p.recorded_at,
+      teleprompter_url: `/console/marketing/piece/${p.piece_id}/teleprompter`,
+    });
+  }
+  return out.sort((a, b) => b.recorded_at.localeCompare(a.recorded_at)).slice(0, RECORDED_SHOWN);
+}
+
 export type ShootGroup = {
   format: string;
   label: string;
@@ -167,11 +202,12 @@ export async function buildShootQueue(owner: string) {
     pieces = await listSavedPieces(owner);
   } catch (err) {
     console.error('[shoot-queue] piece list failed:', err);
-    return { groups: [] as ShootGroup[], total: 0, with_prezie: 0 };
+    return { groups: [] as ShootGroup[], total: 0, with_prezie: 0, recorded: [] as RecordedRow[] };
   }
+  const recorded = recordedRows(pieces);
 
   const ready = pieces.filter((p) => p.shoot_ready && !p.recorded_at);
-  if (ready.length === 0) return { groups: [] as ShootGroup[], total: 0, with_prezie: 0 };
+  if (ready.length === 0) return { groups: [] as ShootGroup[], total: 0, with_prezie: 0, recorded };
 
   // One read per CONCEPT, not per piece.
   const concepts = [...new Set(ready.map((p) => prezieFilingKey(p)))];
@@ -187,5 +223,5 @@ export async function buildShootQueue(owner: string) {
     })
   );
 
-  return groupShootRows(pieces, byConcept);
+  return { ...groupShootRows(pieces, byConcept), recorded };
 }
