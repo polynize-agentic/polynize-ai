@@ -14,6 +14,17 @@ const nextConfig = {
       // The scroll-story variant of /mapping replaced the original, so it is /mapping
       // now. The experiment URL was shared while it was being judged.
       { source: '/mapping/story', destination: '/mapping', permanent: true },
+      // polynize.io is the front door now (29 September 2026), so the homepage sends
+      // visitors there; every experience (/map-your-team, /job-mapping, /library and the
+      // rest) still runs here. Host-scoped and anchored: pam.polynize.ai contains
+      // "polynize.ai" and its "/" is the Console. Temporary, and the query string rides
+      // along, so utm labels reach polynize.io. Switching back is deleting this entry.
+      {
+        source: '/',
+        has: [{ type: 'host', value: '^(?:www\\.)?polynize\\.ai$' }],
+        destination: 'https://polynize.io/',
+        permanent: false,
+      },
     ];
   },
   async rewrites() {
