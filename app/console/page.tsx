@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
+import { canUseCrm } from '@/lib/crm/schema';
 import s from './_components/client-card.module.css';
 import l from './_components/launcher.module.css';
 
@@ -29,10 +30,16 @@ const SECTIONS = [
     desc: 'Concepts, content and the calendar. Every stream, from idea to posted.',
   },
   {
-    href: '/console/leads',
+    /**
+     * THE CRM (D120). Was "Leads": a list of people per team member. Marrs, 14 October: "We won't
+     * call the section leads anymore. We'll just clearly mark it CRM." Company first now, and only
+     * the CRM team sees the card.
+     */
+    href: '/console/crm',
     eyebrow: 'Sell',
-    title: 'Leads',
-    desc: 'The CRM. Inbound from polynize.ai, and every contact each of us is working.',
+    title: 'CRM',
+    desc: 'Target companies, the people at them, the deals with them and the next steps.',
+    crmOnly: true,
   },
 ];
 
@@ -55,7 +62,7 @@ export default async function ConsoleHome() {
         </div>
 
         <div className={l.cards}>
-          {SECTIONS.map((sec) => (
+          {SECTIONS.filter((sec) => !('crmOnly' in sec) || canUseCrm(user?.email)).map((sec) => (
             <Link key={sec.href} href={sec.href} className={`${l.card} ${l.cardDoor}`}>
               <span className={l.cardEyebrow}>{sec.eyebrow}</span>
               <span className={l.cardTitle}>{sec.title}</span>

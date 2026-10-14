@@ -3,7 +3,7 @@
 **Written:** 14 October 2026, for Marrs and AJ.
 **Source:** AJ's email to the team, his *Polynize CRM Structure* (six pages of fields), his *Polynize CRM Visual Concept* (six mock screens, BDO as the example), and the *Company Entry Point* grid. Marrs: "We'll pretty much take the following as gospel... Take the design as a direction to go, but in terms of style, we stay within our design style."
 
-**Status:** plan, not yet built. Seven questions at the end need answers before phase 1 starts; everything else is decided below.
+**Status:** phases 1 to 5 built on 14 October 2026 (D120). Marrs's answers to the seven questions are in §7. Phase 6 (bulk import, Fireflies action drafts, the weekly overdue email) is not built; bulk import is dropped on his word.
 
 ---
 
@@ -84,12 +84,12 @@ Six phases. Each one ships on its own and is usable the day it lands, so the tea
 
 **Phase 6. After it has run for a month.** Paste a spreadsheet to import companies or contacts in bulk; draft actions from a meeting's Fireflies summary for a tick to accept; a weekly email of overdue actions per owner; retiring the old per-person screens once nothing points at them.
 
-## 7. Questions to settle before phase 1
+## 7. The answers (Marrs, 14 October)
 
-1. **Who are the owners?** Today the console knows Marrs, Shourov, Kristin and Julian. AJ needs adding, and anyone else who will own an account (AJ's mock also uses "Growth team", "Partnerships" and "Product team": are those owners, or should owners always be a person?).
-2. **Currency.** One currency for every value (AUD or USD), or a currency per deal with the dashboard converting?
-3. **Deal types under partner-first.** AJ has New business, Expansion, Renewal. His BDO mock includes a "channel partnership" deal. Should **Partnership** be a fourth type, so partner deals and client deals can be reported apart?
-4. **The stages.** AJ's dashboard has Contacted before Discovery; his deal board starts at Discovery. Proposed: Contacted, Discovery, Demo or pilot, Proposal, Negotiation, then Won and Lost. Confirm or change.
-5. **Today's per-person contacts.** Fold them into companies as described in §5, or start the new CRM empty and leave the old lists readable for reference?
-6. **Who can see and edit.** Proposed: everyone on the team sees and edits everything; partners never have access. Confirm.
-7. **The starting list.** The grid AJ sent (BDO, PwC, EY, KPMG, Deloitte, Accenture, McKinsey, Bain, BCG, Grant Thornton, Capgemini, IBM Consulting) is marked as example records. Send the real target list and phase 1 ships with it loaded.
+1. **Owners:** a dropdown of Marrs, Kristin, Shourov, Logan and AJ. Julian does not need the CRM. AJ is added to the console.
+2. **Currency:** per deal.
+3. **Partnership:** a deal type. A partnership console is the next design after the CRM.
+4. **Stages:** Contacted, Discovery, Demo or pilot, Proposal, Negotiation, Won, Lost.
+5. **Today's contacts:** start empty; the per-person lists stay readable at their old addresses.
+6. **Access:** team only, never partners.
+7. **The target list:** loaded with Marrs in a session; no bulk upload screen.

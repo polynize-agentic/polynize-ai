@@ -1,0 +1,835 @@
+/*
+ * THE CRM (D120). AJ's layout, the console's skin: the same surface, ink and edge tokens as every
+ * other console screen, so the dark and light themes both work with nothing extra. Mint is the one
+ * accent (the active tab, the primary button, live work); status is said in words, never in colour,
+ * because coral, amber and mint already mean human, hybrid and agent in the brand.
+ */
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 0 96px;
+  position: relative;
+  z-index: 1;
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------- header and nav */
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 6px 0 22px;
+  border-bottom: 1px solid var(--border-soft);
+  margin-bottom: 30px;
+}
+.brand {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+}
+.brand span {
+  color: var(--text-3);
+  margin: 0 8px;
+}
+.nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.navLink {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--text-2);
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+.navLink:hover {
+  color: var(--text);
+  border-color: var(--border-soft);
+}
+.navOn {
+  color: var(--bg);
+  background: var(--mint);
+  font-weight: 600;
+}
+.navOn:hover {
+  color: var(--bg);
+}
+
+/* ---------------------------------------------------------------- page heads */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.h1 {
+  margin: 0;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.sub {
+  margin: 8px 0 0;
+  color: var(--text-2);
+  font-size: 15px;
+}
+.eyebrow {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.crumb {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-3);
+  text-decoration: none;
+}
+.crumb:hover {
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------- panels and tiles */
+
+.panel {
+  composes: tacCardTexture from global;
+  position: relative;
+  background: var(--tac-surface-2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), var(--tac-shadow-raised);
+  border-radius: 16px;
+  padding: 22px 24px;
+}
+:global(body.theme-light) .panel {
+  box-shadow: inset 0 1px 0 var(--tac-edge-light), var(--tac-shadow-raised);
+}
+.panelTitle {
+  margin: 0 0 14px;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.panelHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.panelHead .panelTitle {
+  margin: 0;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.tile {
+  composes: panel;
+  padding: 18px 20px;
+}
+.tileLabel {
+  composes: eyebrow;
+}
+.tileValue {
+  margin-top: 12px;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.1;
+}
+.tileValueSmall {
+  font-size: 20px;
+}
+@media (max-width: 860px) {
+  .tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.grid2even {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+@media (max-width: 860px) {
+  .grid2,
+  .grid2even {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- controls */
+
+.bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.search {
+  flex: 1;
+  min-width: 220px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+  background: var(--tac-surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--mint);
+  background: var(--mint);
+  color: var(--bg);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.btnGhost {
+  composes: btn;
+  background: transparent;
+  color: var(--text-2);
+  border-color: var(--border-soft);
+  font-weight: 500;
+}
+.btnGhost:hover {
+  color: var(--text);
+  border-color: var(--text-3);
+}
+.linkBtn {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-3);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.linkBtn:hover {
+  color: var(--text);
+}
+.danger:hover {
+  color: var(--coral);
+}
+.filter {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: transparent;
+  color: var(--text-2);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.filterOn {
+  border-color: var(--mint);
+  color: var(--text);
+}
+.select {
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: var(--tac-surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+
+/* ---------------------------------------------------------------- company cards */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+@media (max-width: 1080px) {
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
+.card {
+  composes: panel;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 132px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 140ms ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+}
+.cardLive {
+  outline: 1px solid rgba(105, 252, 203, 0.45);
+}
+.cardName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.cardRule {
+  height: 1px;
+  background: var(--border-soft);
+}
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.cardMeta .sep {
+  color: var(--text-3);
+}
+.arrow {
+  margin-left: auto;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-soft);
+  color: var(--text-3);
+  font-size: 15px;
+}
+.cardLive .arrow,
+.card:hover .arrow {
+  background: var(--mint);
+  border-color: var(--mint);
+  color: var(--bg);
+}
+.tag {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.note {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+  color: var(--text-2);
+  font-size: 14px;
+}
+.empty {
+  color: var(--text-3);
+  font-size: 14px;
+  margin: 6px 0;
+}
+
+/* ---------------------------------------------------------------- company strip and tabs */
+
+.strip {
+  composes: panel;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.stripName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.stripMeta {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.stripRef {
+  margin-left: auto;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border-soft);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.tab {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--text-2);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.tab:hover {
+  color: var(--text);
+}
+.tabOn {
+  color: var(--text);
+  border-bottom-color: var(--mint);
+  font-weight: 600;
+}
+.count {
+  color: var(--text-3);
+  margin-left: 6px;
+  font-size: 12px;
+}
+
+/* ---------------------------------------------------------------- fields shown */
+
+.facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+}
+@media (max-width: 560px) {
+  .facts {
+    grid-template-columns: 1fr;
+  }
+}
+.factLabel {
+  composes: eyebrow;
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+.factValue {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.factValue a {
+  color: var(--text);
+}
+.factEmpty {
+  color: var(--text-3);
+}
+.wide {
+  grid-column: 1 / -1;
+}
+
+/* ---------------------------------------------------------------- lists */
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+.listRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+.listRow:last-child {
+  border-bottom: none;
+}
+.listMain {
+  flex: 1;
+  min-width: 0;
+}
+.listTitle {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  text-decoration: none;
+}
+a.listTitle:hover {
+  color: var(--mint);
+}
+.listMeta {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+.listLink {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-2);
+  text-decoration: none;
+}
+.listLink:hover {
+  color: var(--mint);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.table th {
+  text-align: left;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 500;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  white-space: nowrap;
+}
+.table td {
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text-2);
+  vertical-align: middle;
+}
+.table td.strong,
+.table td.strong a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+}
+.table td.strong a:hover {
+  color: var(--mint);
+}
+.table tr.done td {
+  color: var(--text-3);
+}
+.table tr.done td.strong {
+  text-decoration: line-through;
+  color: var(--text-3);
+}
+.overdue {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  border: 1px solid var(--text-3);
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin-left: 8px;
+}
+.check {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--mint);
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------- the deal board */
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(200px, 1fr));
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 220px;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--tac-surface);
+  border: 1px solid var(--border-soft);
+}
+.colOver {
+  border-color: var(--mint);
+}
+.colHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 2px 4px 8px;
+}
+.colName {
+  composes: eyebrow;
+  color: var(--text-2);
+}
+.colTotal {
+  font-size: 12px;
+  color: var(--text-3);
+  text-align: right;
+}
+.deal {
+  composes: panel;
+  padding: 14px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: grab;
+}
+.dealDragging {
+  opacity: 0.45;
+}
+.dealName {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+  text-decoration: none;
+  line-height: 1.3;
+}
+a.dealName:hover {
+  color: var(--mint);
+}
+.dealCompany {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.dealValue {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 4px;
+}
+.dealMeta {
+  font-size: 12px;
+  color: var(--text-2);
+}
+.flag {
+  align-self: flex-start;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  border: 1px dashed var(--text-3);
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+.closedRow {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.totalBar {
+  composes: panel;
+  margin-top: 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.totalLabel {
+  composes: eyebrow;
+}
+.totalValue {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------------- the form */
+
+.form {
+  composes: panel;
+  margin-bottom: 20px;
+}
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 18px;
+}
+@media (max-width: 640px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.formFieldWide {
+  grid-column: 1 / -1;
+}
+.formLabel {
+  composes: eyebrow;
+  font-size: 10px;
+}
+.req {
+  color: var(--mint);
+  margin-left: 4px;
+}
+.input,
+.textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: var(--tac-surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+.textarea {
+  min-height: 84px;
+  resize: vertical;
+  line-height: 1.5;
+}
+.input:focus,
+.textarea:focus,
+.search:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--mint);
+}
+.more {
+  margin: 16px 0 4px;
+}
+.formFoot {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.err {
+  color: var(--text);
+  font-size: 13px;
+  border-left: 2px solid var(--coral);
+  padding-left: 10px;
+}
+
+/* ---------------------------------------------------------------- the dashboard */
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.barRow {
+  display: grid;
+  grid-template-columns: 130px 1fr 40px;
+  gap: 14px;
+  align-items: center;
+  font-size: 14px;
+}
+.barTrack {
+  height: 14px;
+  border-radius: 7px;
+  background: var(--tac-surface);
+  border: 1px solid var(--border-soft);
+  overflow: hidden;
+}
+.barFill {
+  height: 100%;
+  background: var(--mint);
+  border-radius: 7px;
+}
+.barNum {
+  text-align: right;
+  font-weight: 600;
+  color: var(--text);
+}
+.kv {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 14px;
+  color: var(--text-2);
+}
+.kv:last-child {
+  border-bottom: none;
+}
+.kv strong {
+  color: var(--text);
+  text-align: right;
+}
+
+/* ---------------------------------------------------------------- the person */
+
+.avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: var(--tac-surface);
+  border: 1px solid var(--border-soft);
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--text-2);
+}
+.person {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.notReady {
+  composes: panel;
+  max-width: 680px;
+}
+.notReady code {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 13px;
+}

@@ -3295,3 +3295,35 @@ Operator only, like the Studio.
 **Edit on the glass, the day after.** Marrs: *"I have it open in my teleprompter, and I just want to add a line somewhere. I'd love to tap on it, hit Enter a few times, and just be able to edit it there."* The prompter now has an **edit** button on its strip, and a double tap on the words does the same (a single tap still does nothing: a stray touch must never cost him his place). The whole script opens as one editable column at the reading size; the flip is suspended while editing because nobody can type mirrored, and auto-scroll stops. **done** saves through the Studio's edit route and returns to reading at the same spot; **cancel** throws it away. The keyboard shortcuts are off while editing so typing an f or a space does not flip or scroll.
 
 **Recorded is not gone, 23 September.** Marrs: *"when I tick something as recorded, where does it go? It kind of disappears, and I don't want it to."* Recorded takes a piece off the queue and stamps it; the piece is untouched and goes on to captions and the calendar. The Studio now has a **Recorded** button under the count that reveals what has been shot, newest first, with the piece, its prompter, and **Queue again** for a retake (which clears the stamp, as the Ready switch always has). Closed by default, because the Studio is for the next take.
+
+## D120: The company-first CRM
+
+**Adopted 14 October 2026.** AJ proposed a company-centred CRM (structure, visual concept, entry-point grid); Marrs: *"We'll pretty much take the following as gospel... it'll supersede our current CRM section. We won't call the section 'leads' anymore. We'll just clearly mark it 'CRM'... stay within our design style."* Plan: `docs/pam-console/crm-build-plan.md`. Marrs's answers to its seven questions, the same day: owners are a dropdown of Marrs, Kristin, Shourov, Logan and AJ, and Julian does not need the CRM; a currency per deal; Partnership as a deal type ("another part of this will be us designing our partnership console... the next thing"); the stages as proposed; start empty ("we have a whole different set of leads now"); team only, never partners; no bulk upload section (the target list will be loaded with me).
+
+**This supersedes D38** ("The CRM IS the leads table, one row per owner and email"). The leads table is untouched and keeps receiving website captures with their attribution (D97); the per-person lists under `/console/leads/{owner}` still answer at their addresses and the new-lead emails still point at them. The CRM itself is four new tables (migration 0015) and is company first.
+
+### What was built
+
+- **CRM** replaces **Leads** on the console home, drawn only for the CRM team; `/console/leads` forwards to `/console/crm`.
+- **The top bar:** Companies · Contacts · Deals · Actions · Dashboard.
+- **Companies** (the landing page): target accounts, engaged, open deals, total pipeline; search; Add company; the card grid from AJ's entry point, with the cards that have live deals outlined in mint and sorted first.
+- **A company:** the strip (name, tier, status, account lead, COM-001) and four tabs. Profile: company intelligence, meeting links (paste one, or pick from your recent Fireflies meetings and tick attendees in as contacts; titles, dates, links and addresses only, no transcript text), the account overview, and counts into the other tabs. Contacts, Deals (the stage board and the company's total open pipeline) and Actions.
+- **Contacts, Deals, Actions** across every company; a page per contact and per deal, each with edit and delete. A deal's page shows its stage history and its next steps.
+- **The deal board:** five open stages as columns; drag a card or use its stage picker; Won and Lost as counts with values under the board. Every move is written to the stage history.
+- **The dashboard:** open and weighted pipeline, active deals, follow-ups due this week; pipeline by stage; this quarter (weighted forecast, proposals sent, new companies, meetings linked, new contacts); forecast by month; won, lost, overdue, deals with no next step; conversion between stages.
+
+### Decisions inside it
+
+- **Postgres, not the bucket.** Five people edit the same records; a row update cannot overwrite a colleague's edit the way a shared file's read-merge-write can. Until migration 0015 is run every CRM screen says so and how, instead of failing.
+- **Essential fields only on create.** Four to nine per record, the rest under "More detail"; AJ's whole structure is there, none of it is asked up front. Required fields are always essential (a test holds this).
+- **The console fills in what nobody should type:** the IDs (COM-001, CON-001, DEA-001, ACT-001), the owner (whoever adds it, unless someone else is chosen), a deal's probability from its stage (Contacted 5, Discovery 10, Demo or pilot 30, Proposal 50, Negotiation 75), the closed date, an action's completed date, the overdue flag, and every dashboard number.
+- **Money is never converted.** Every total is per currency and written with its symbol (A$320k · US$85k). A rate the console picked would be a number nobody chose in a forecast someone will quote.
+- **"No next step" is a flag, not a gate.** AJ: "Every open deal requires an owner, next step and due date." An open deal with no open action carries the mark on the board, on its page, and in the dashboard's count; nothing is blocked.
+- **Stage history from the first deal,** because conversion rates can never be reconstructed for deals that moved before it was recorded.
+- **Colour.** AJ's layout, the console's tokens, dark and light. Mint is the only accent; status is said in words, because coral, amber and mint already mean human, hybrid and agent in the brand.
+
+### Access
+
+The CRM team list is `CRM_TEAM` in `lib/crm/schema.ts`. Signing in to the console at all is still `CONSOLE_ALLOWED_EMAILS` in Vercel, which Marrs edits: **AJ (`aj@polynize.io`) and Logan need adding there** before they can sign in. Logan's address is assumed to be `logan@polynize.io`; correct it in `CRM_TEAM` if not.
+
+Tests: `lib/crm/__tests__/crm.test.ts` (60): who can use it, cleaning what the forms send, the IDs, money formatting, weighting, overdue, no next step, conversion, and the dashboard sums. Added to `test:marketing`.

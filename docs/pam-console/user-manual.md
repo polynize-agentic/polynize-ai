@@ -268,6 +268,18 @@ At the top of the Studio (Marrs only): **Paste a yap.** Paste a yap you have alr
 
 ---
 
+## 9c. The CRM 🧪 (D120)
+
+**CRM** on the console home (Marrs, Kristin, Shourov, Logan and AJ only). Company first, after AJ's design.
+
+- **Companies** is the landing page: four numbers, a search box, **+ Add company**, and a card per company. Cards with live deals are outlined and come first.
+- **A company** opens on its **Profile** (intelligence, meeting links, overview), with tabs for **Contacts**, **Deals** and **Actions**. Add a meeting by pasting its link, or **From Fireflies** to pick one of your recent meetings and tick attendees in as contacts.
+- **Contacts**, **Deals** and **Actions** in the top bar show every company at once. Drag a deal between stage columns, or use the picker on its card. Tick an action to mark it done.
+- **Dashboard**: pipeline, weighted pipeline, follow-ups due, pipeline by stage, this quarter, the forecast by month, won and lost, overdue, deals with no next step, and conversion between stages.
+- New records ask only for the essentials; **More detail** opens the rest. Money stays in each deal's own currency and totals are shown per currency.
+
+---
+
 ## 10. Calendar & scheduling ✅
 
 The publishing calendar (top-level **Calendar** button, or after **Prepare posts**).
