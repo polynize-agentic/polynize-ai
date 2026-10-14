@@ -3327,3 +3327,5 @@ Operator only, like the Studio.
 The CRM team list is `CRM_TEAM` in `lib/crm/schema.ts`. Signing in to the console at all is still `CONSOLE_ALLOWED_EMAILS` in Vercel, which Marrs edits: **AJ (`aj@polynize.io`) and Logen need adding there** before they can sign in. His name is Logen (Marrs, 14 October), address assumed `logen@polynize.io`; correct it in `CRM_TEAM` if not.
 
 Tests: `lib/crm/__tests__/crm.test.ts` (60): who can use it, cleaning what the forms send, the IDs, money formatting, weighting, overdue, no next step, conversion, and the dashboard sums. Added to `test:marketing`.
+
+**Light mode without the white glow, the same day.** Marrs, looking at the live CRM: *"In light mode can you remove the white shadow on the buttons on the left and top of the buttons, it doesn't make sense."* The console's light "raised" shadow adds a white haze up and to the left of a surface, and a white top edge, to imply a light source; on cream it reads as a smudge. The CRM's surfaces in light mode now carry only a hairline edge and the soft drop to the lower right. Dark mode is unchanged; the rest of the console still uses the shared shadow.
