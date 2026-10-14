@@ -3298,7 +3298,7 @@ Operator only, like the Studio.
 
 ## D120: The company-first CRM
 
-**Adopted 14 October 2026.** AJ proposed a company-centred CRM (structure, visual concept, entry-point grid); Marrs: *"We'll pretty much take the following as gospel... it'll supersede our current CRM section. We won't call the section 'leads' anymore. We'll just clearly mark it 'CRM'... stay within our design style."* Plan: `docs/pam-console/crm-build-plan.md`. Marrs's answers to its seven questions, the same day: owners are a dropdown of Marrs, Kristin, Shourov, Logan and AJ, and Julian does not need the CRM; a currency per deal; Partnership as a deal type ("another part of this will be us designing our partnership console... the next thing"); the stages as proposed; start empty ("we have a whole different set of leads now"); team only, never partners; no bulk upload section (the target list will be loaded with me).
+**Adopted 14 October 2026.** AJ proposed a company-centred CRM (structure, visual concept, entry-point grid); Marrs: *"We'll pretty much take the following as gospel... it'll supersede our current CRM section. We won't call the section 'leads' anymore. We'll just clearly mark it 'CRM'... stay within our design style."* Plan: `docs/pam-console/crm-build-plan.md`. Marrs's answers to its seven questions, the same day: owners are a dropdown of Marrs, Kristin, Shourov, Logen and AJ, and Julian does not need the CRM; a currency per deal; Partnership as a deal type ("another part of this will be us designing our partnership console... the next thing"); the stages as proposed; start empty ("we have a whole different set of leads now"); team only, never partners; no bulk upload section (the target list will be loaded with me).
 
 **This supersedes D38** ("The CRM IS the leads table, one row per owner and email"). The leads table is untouched and keeps receiving website captures with their attribution (D97); the per-person lists under `/console/leads/{owner}` still answer at their addresses and the new-lead emails still point at them. The CRM itself is four new tables (migration 0015) and is company first.
 
@@ -3324,6 +3324,6 @@ Operator only, like the Studio.
 
 ### Access
 
-The CRM team list is `CRM_TEAM` in `lib/crm/schema.ts`. Signing in to the console at all is still `CONSOLE_ALLOWED_EMAILS` in Vercel, which Marrs edits: **AJ (`aj@polynize.io`) and Logan need adding there** before they can sign in. Logan's address is assumed to be `logan@polynize.io`; correct it in `CRM_TEAM` if not.
+The CRM team list is `CRM_TEAM` in `lib/crm/schema.ts`. Signing in to the console at all is still `CONSOLE_ALLOWED_EMAILS` in Vercel, which Marrs edits: **AJ (`aj@polynize.io`) and Logen need adding there** before they can sign in. His name is Logen (Marrs, 14 October), address assumed `logen@polynize.io`; correct it in `CRM_TEAM` if not.
 
 Tests: `lib/crm/__tests__/crm.test.ts` (60): who can use it, cleaning what the forms send, the IDs, money formatting, weighting, overdue, no next step, conversion, and the dashboard sums. Added to `test:marketing`.

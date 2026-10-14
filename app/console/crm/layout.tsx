@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 /**
  * THE CRM (D120): company first, AJ's structure in the console's style. Team only, and only the CRM
- * team (Marrs, Kristin, Shourov, Logan, AJ); anyone else is sent to the console home. Partners never
+ * team (Marrs, Kristin, Shourov, Logen, AJ); anyone else is sent to the console home. Partners never
  * have access.
  */
 export default async function CrmLayout({ children }: { children: React.ReactNode }) {

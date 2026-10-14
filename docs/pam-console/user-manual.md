@@ -270,7 +270,7 @@ At the top of the Studio (Marrs only): **Paste a yap.** Paste a yap you have alr
 
 ## 9c. The CRM 🧪 (D120)
 
-**CRM** on the console home (Marrs, Kristin, Shourov, Logan and AJ only). Company first, after AJ's design.
+**CRM** on the console home (Marrs, Kristin, Shourov, Logen and AJ only). Company first, after AJ's design.
 
 - **Companies** is the landing page: four numbers, a search box, **+ Add company**, and a card per company. Cards with live deals are outlined and come first.
 - **A company** opens on its **Profile** (intelligence, meeting links, overview), with tabs for **Contacts**, **Deals** and **Actions**. Add a meeting by pasting its link, or **From Fireflies** to pick one of your recent meetings and tick attendees in as contacts.

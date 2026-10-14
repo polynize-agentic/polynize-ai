@@ -15,14 +15,14 @@
 
 /**
  * WHO USES THE CRM, AND WHO CAN OWN AN ACCOUNT. Marrs, 14 October: owner is "from a dropdown menu of
- * myself, Kristin, Shourov, Logan, and AJ. Julian doesn't need access to the CRM." One list answers
+ * myself, Kristin, Shourov, Logen, and AJ. Julian doesn't need access to the CRM." One list answers
  * both questions. Shourov's second address is the one Fireflies records him under.
  */
 export const CRM_TEAM: readonly { email: string; name: string; aliases?: readonly string[] }[] = [
   { email: 'marrs@polynize.io', name: 'Marrs' },
   { email: 'kristin@polynize.io', name: 'Kristin' },
   { email: 'shourov@polynize.io', name: 'Shourov', aliases: ['shourov@polynize.com'] },
-  { email: 'logan@polynize.io', name: 'Logan' },
+  { email: 'logen@polynize.io', name: 'Logen' },
   { email: 'aj@polynize.io', name: 'AJ' },
 ];
 

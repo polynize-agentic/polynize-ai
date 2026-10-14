@@ -14,9 +14,9 @@ const ok = (n: string, c: boolean, x = '') => {
 const eq = (n: string, got: unknown, want: unknown) => ok(n, JSON.stringify(got) === JSON.stringify(want), `got ${JSON.stringify(got)}`);
 
 /* who */
-eq('the team is the five Marrs named', CRM_TEAM.map((m) => m.name), ['Marrs', 'Kristin', 'Shourov', 'Logan', 'AJ']);
+eq('the team is the five Marrs named', CRM_TEAM.map((m) => m.name), ['Marrs', 'Kristin', 'Shourov', 'Logen', 'AJ']);
 eq('AJ can use it', canUseCrm('aj@polynize.io'), true);
-eq('so can Logan', canUseCrm('logan@polynize.io'), true);
+eq('so can Logen', canUseCrm('logen@polynize.io'), true);
 eq('Julian cannot', canUseCrm('julian@polynize.io'), false);
 eq('Shourov under his Fireflies address', canUseCrm('Shourov@polynize.com '), true);
 eq('nobody signed in cannot', canUseCrm(null), false);

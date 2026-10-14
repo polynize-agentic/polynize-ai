@@ -86,7 +86,7 @@ Six phases. Each one ships on its own and is usable the day it lands, so the tea
 
 ## 7. The answers (Marrs, 14 October)
 
-1. **Owners:** a dropdown of Marrs, Kristin, Shourov, Logan and AJ. Julian does not need the CRM. AJ is added to the console.
+1. **Owners:** a dropdown of Marrs, Kristin, Shourov, Logen and AJ. Julian does not need the CRM. AJ is added to the console.
 2. **Currency:** per deal.
 3. **Partnership:** a deal type. A partnership console is the next design after the CRM.
 4. **Stages:** Contacted, Discovery, Demo or pilot, Proposal, Negotiation, Won, Lost.
