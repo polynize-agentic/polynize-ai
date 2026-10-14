@@ -3350,3 +3350,5 @@ Tests: `lib/crm/__tests__/crm.test.ts` (60): who can use it, cleaning what the f
 **Two setup steps for Marrs:** run migration 0016 in Supabase (History and the board say so until then; the rest of the CRM works without it), and check the Supabase project's region.
 
 Tests: nine timeline assertions added to `lib/crm/__tests__/crm.test.ts` (69).
+
+**The region, found the next day (15 October).** The Supabase database is in **Tokyo** (`ap-northeast-1`, read off the project's Infrastructure page). The app's servers were in Washington (`iad1`), so every database call crossed the Pacific twice, and the CRM, the leads, and the marketing engine's interim store all live in that database. The servers now run in **Tokyo** (`hnd1`, `vercel.json` `regions`): database calls stay inside one city, the trip from Sydney to the servers is shorter than to Washington, and the Sydney file bucket is closer from Tokyo than from Washington. Every leg gets shorter. Moving the database itself to Sydney would be faster still, but it is a project migration with downtime and is not worth it at this size. Undo is deleting the one line.
