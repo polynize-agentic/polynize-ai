@@ -136,3 +136,13 @@ create table if not exists crm_actions (
 );
 create index if not exists crm_actions_company_idx on crm_actions (company_id);
 create index if not exists crm_actions_open_idx on crm_actions (status, due);
+
+-- ROW LEVEL SECURITY ON, NO POLICIES, as every other table here (0001, 0007, 0009 to 0011). The
+-- console reaches these tables only through the server's service key, which bypasses RLS; the public
+-- anon key gets nothing, so company, contact and deal data is never readable from outside the console.
+alter table crm_companies   enable row level security;
+alter table crm_meetings    enable row level security;
+alter table crm_contacts    enable row level security;
+alter table crm_deals       enable row level security;
+alter table crm_deal_stages enable row level security;
+alter table crm_actions     enable row level security;
