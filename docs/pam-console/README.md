@@ -17,6 +17,8 @@ The PAM Console is becoming Polynize's **marketing engine** — the working envi
 
 0b. **`analytics-and-scale.md`** *(3 September 2026, plain-English plan and build status at the top)* — the brief for the next phase: why the console keeps its own queue and uses Metricool autolists for evergreen only, why click-through is zero today by construction, the first-party attribution design (`utm_content = entry_id`, `utm_campaign = lane`), the funnel we can measure end to end, lanes as the missing axis for scaling brands per use case, and the build order.
 
+0h. **`crm-build-plan.md`** *(14 October 2026)*: the CRM rebuild from AJ's structure and visual concept: company first, five screens, six phases, and the questions to settle before phase 1.
+
 0g. **`teleprompter-spec.md`** *(21 September 2026)*: the build spec for the teleprompter, written from the one that runs here, for the agent rebuilding it on marrsattacks.world (D118).
 
 0f. **`split-screen-hook-research.md`** *(13 September 2026)*: the hook research for the split-screen explainer as one hand-over document for the social media agent: the two shapes, the killer test, the construction rules, the mechanical tests, the research method, Marrs's full scored calibration set, and what the console does with it.
