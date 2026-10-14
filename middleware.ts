@@ -1,12 +1,49 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { jwtVerify } from 'jose';
+import { OPERATOR_EMAILS } from './lib/marketing/streams';
 
 const PAM_HOSTNAMES = new Set(['pam.polynize.ai', 'pam.localhost']);
 
-export function middleware(request: NextRequest) {
+/**
+ * THE MARKETING ENGINE IS MARRS'S ALONE (D121). Marrs, 14 October: "remove access to the marketing
+ * portal for everyone except me, so when they come into the PAM console, all they see is the CRM."
+ * Checked here as well as on the pages, because the pages are only the screens: every marketing and
+ * studio ROUTE behind them is refused too, so nothing is reachable by typing an address. A missing or
+ * bad session falls through to the console's own sign-in, which is not this check's job.
+ */
+const OPERATOR_ONLY = [/^\/console\/marketing(\/|$)/, /^\/console\/studio(\/|$)/, /^\/console\/prezie(\/|$)/];
+
+async function sessionEmail(request: NextRequest): Promise<string | null> {
+  const token = request.cookies.get('polynize_console_auth')?.value;
+  const secret = process.env.POLYNIZE_AUTH_SECRET;
+  if (!token || !secret) return null;
+  try {
+    const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
+    return payload.type === 'session' && typeof payload.email === 'string' ? payload.email.trim().toLowerCase() : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function middleware(request: NextRequest) {
   const host = (request.headers.get('host') ?? '').toLowerCase().split(':')[0];
   const { pathname } = request.nextUrl;
   const isPam = PAM_HOSTNAMES.has(host);
+
+  // The console path this request is for, whichever host it came in on.
+  const consolePath = isPam && !pathname.startsWith('/console') ? (pathname === '/' ? '/console' : `/console${pathname}`) : pathname;
+  if (OPERATOR_ONLY.some((re) => re.test(consolePath))) {
+    const email = await sessionEmail(request);
+    if (email && !OPERATOR_EMAILS.includes(email)) {
+      const isPage = request.method === 'GET' && (request.headers.get('accept') ?? '').includes('text/html');
+      if (!isPage) return NextResponse.json({ error: 'not available' }, { status: 403 });
+      const url = request.nextUrl.clone();
+      url.pathname = isPam ? '/' : '/console';
+      url.search = '';
+      return NextResponse.redirect(url);
+    }
+  }
 
   let response: NextResponse;
 

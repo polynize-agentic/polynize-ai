@@ -11,11 +11,13 @@ import { DealBoard } from '../../_ui/DealBoard';
 import { ActionTable } from '../../_ui/ActionTable';
 import { ContactTable } from '../../_ui/ContactTable';
 import { actionLines, boardDeals, contactLines, lookupsFrom } from '../../_ui/shape';
+import { History } from '../../_ui/History';
+import { buildTimeline } from '@/lib/crm/history';
 import s from '../../crm.module.css';
 
 export const dynamic = 'force-dynamic';
 
-const TABS = ['profile', 'contacts', 'deals', 'actions'] as const;
+const TABS = ['profile', 'contacts', 'deals', 'actions', 'history'] as const;
 type Tab = (typeof TABS)[number];
 
 /** The facts on the profile, in AJ's order, each with its value or a quiet dash. */
@@ -46,13 +48,24 @@ export default async function CompanyPage({ params, searchParams }: { params: Pr
   const { tab: rawTab } = await searchParams;
   const tab: Tab = (TABS as readonly string[]).includes(rawTab ?? '') ? (rawTab as Tab) : 'profile';
   const user = await getCurrentUser();
-  const data = await tryLoadCrm(id);
-  if (!data) return <NotReady />;
-  const company = data.companies[0];
-  if (!company) notFound();
-  // The pickers need every company's names, not only this one's.
+  // ONE READ (D121): everything, then this company's share of it in memory. The pickers need every
+  // company's names anyway, and two reads were two trips to the database on every tab click.
   const everything = await tryLoadCrm();
-  const lookups = lookupsFrom(everything ?? data);
+  if (!everything) return <NotReady />;
+  const company = everything.companies.find((c) => c.id === id);
+  if (!company) notFound();
+  const dealIds = new Set(everything.deals.filter((d) => d.company_id === id).map((d) => d.id));
+  const data = {
+    companies: [company],
+    contacts: everything.contacts.filter((x) => x.company_id === id),
+    deals: everything.deals.filter((x) => x.company_id === id),
+    actions: everything.actions.filter((x) => x.company_id === id),
+    meetings: everything.meetings.filter((x) => x.company_id === id),
+    events: everything.events.filter((e) => dealIds.has(e.deal_id)),
+    notes: everything.notes.filter((n) => n.company_id === id),
+  };
+  const timeline = buildTimeline(data);
+  const lookups = lookupsFrom(everything);
   const today = todayInSydney();
   const me = user?.email ?? '';
 
@@ -66,8 +79,9 @@ export default async function CompanyPage({ params, searchParams }: { params: Pr
     contacts: data.contacts.length,
     deals: openDeals.length,
     actions: openActions.length,
+    history: timeline.filter((e) => e.group !== 'activity').length,
   };
-  const label: Record<Tab, string> = { profile: 'Profile', contacts: 'Contacts', deals: 'Deals', actions: 'Actions' };
+  const label: Record<Tab, string> = { profile: 'Profile', contacts: 'Contacts', deals: 'Deals', actions: 'Actions', history: 'History' };
   const fixed = { company_id: company.id };
   const intelligence = COMPANY_FIELDS.filter((f) => !['name', 'notes', 'status', 'tier', 'owner'].includes(f.key));
 
@@ -184,6 +198,18 @@ export default async function CompanyPage({ params, searchParams }: { params: Pr
             <span className={s.totalValue}>{formatMoney(pipeline)}</span>
           </div>
         </>
+      ) : null}
+
+      {tab === 'history' ? (
+        <section className={s.panel}>
+          <History
+            entries={timeline}
+            companyId={company.id}
+            deals={lookups.deals.filter((d) => d.company_id === company.id)}
+            contacts={lookups.contacts.filter((c) => c.company_id === company.id)}
+            today={today}
+          />
+        </section>
       ) : null}
 
       {tab === 'actions' ? (

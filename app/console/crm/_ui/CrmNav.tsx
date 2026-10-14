@@ -24,6 +24,10 @@ export function CrmNav() {
           {i.label}
         </Link>
       ))}
+      {/* SUGGESTIONS (D121): set apart from the five, because it is about the console rather than the work. */}
+      <Link href="/console/crm/suggestions" className={`${s.suggest} ${path.startsWith('/console/crm/suggestions') ? s.navOn : ''}`}>
+        Suggest
+      </Link>
     </nav>
   );
 }

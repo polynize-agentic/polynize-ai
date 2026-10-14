@@ -277,6 +277,9 @@ At the top of the Studio (Marrs only): **Paste a yap.** Paste a yap you have alr
 - **Contacts**, **Deals** and **Actions** in the top bar show every company at once. Drag a deal between stage columns, or use the picker on its card. Tick an action to mark it done.
 - **Dashboard**: pipeline, weighted pipeline, follow-ups due, pipeline by stage, this quarter, the forecast by month, won and lost, overdue, deals with no next step, and conversion between stages.
 - New records ask only for the essentials; **More detail** opens the rest. Money stays in each deal's own currency and totals are shown per currency.
+- **History** (D121), the fifth tab on a company: notes, calls, emails, meetings and what the CRM saw happen, newest first. **+ Add note** with any date, optionally on a deal or a contact. Meetings linked from Fireflies bring their summary and action items. A deal's page shows its own history.
+- **Suggest** (D121), at the end of the top bar: suggest something for the console, like other people's suggestions; Marrs approves, says not now, or marks done.
+- Everyone except Marrs lands straight in the CRM; the marketing engine is his alone (D121).
 
 ---
 

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
 import { canUseCrm } from '@/lib/crm/schema';
+import { isOperator } from '@/lib/marketing/streams';
 import s from './_components/client-card.module.css';
 import l from './_components/launcher.module.css';
 
@@ -25,6 +26,7 @@ export const dynamic = 'force-dynamic';
 const SECTIONS = [
   {
     href: '/console/marketing',
+    operatorOnly: true,
     eyebrow: 'Make',
     title: 'Marketing',
     desc: 'Concepts, content and the calendar. Every stream, from idea to posted.',
@@ -52,6 +54,16 @@ export default async function ConsoleHome() {
     redirect(`/console/${user.scope.slug}/blueprint`);
   }
 
+  /**
+   * EVERYONE BUT MARRS GOES STRAIGHT TO THE CRM (D121). Marrs: "when they come into the PAM console,
+   * all they see is the CRM." The marketing engine is his alone, so for anyone else the CRM is the
+   * only door and there is no point showing them a page with one card on it.
+   */
+  if (user && !isOperator(user.email) && canUseCrm(user.email)) redirect('/console/crm');
+  const sections = SECTIONS.filter(
+    (sec) => (!('operatorOnly' in sec) || isOperator(user?.email)) && (!('crmOnly' in sec) || canUseCrm(user?.email))
+  );
+
   return (
     <>
       <div className={s.bgPattern} aria-hidden />
@@ -62,7 +74,10 @@ export default async function ConsoleHome() {
         </div>
 
         <div className={l.cards}>
-          {SECTIONS.filter((sec) => !('crmOnly' in sec) || canUseCrm(user?.email)).map((sec) => (
+          {sections.length === 0 ? (
+            <p className={l.cardDesc}>Nothing is open to you here yet. Ask Marrs if you need access.</p>
+          ) : null}
+          {sections.map((sec) => (
             <Link key={sec.href} href={sec.href} className={`${l.card} ${l.cardDoor}`}>
               <span className={l.cardEyebrow}>{sec.eyebrow}</span>
               <span className={l.cardTitle}>{sec.title}</span>

@@ -1,5 +1,6 @@
 /** THE COMPANY-FIRST CRM (D120): who can use it, cleaning what the forms send, and the dashboard sums. */
 import { canUseCrm, ownerName, cleanValues, refFor, stageProbability, nameFromEmail, FIELDS, CRM_TEAM, DEAL_TYPES } from '../schema';
+import { buildTimeline, forDeal, monthHeading, meetingNoteBody } from '../history';
 import { buildDashboard, conversion, dealsWithoutNextStep, isOverdue, quarterOf, weighted, formatMoney, addDays } from '../metrics';
 
 let pass = 0;
@@ -108,5 +109,28 @@ eq('AJ style, millions', formatMoney({ AUD: 1180000 }), 'A$1.18m');
 eq('thousands', formatMoney({ AUD: 492000 }), 'A$492k');
 eq('small amounts in full', formatMoney({ USD: 8500 }), 'US$8,500');
 eq('largest first, each named', formatMoney({ USD: 85000, AUD: 320000 }), 'A$320k · US$85k');
+/* history (D121) */
+const tl = buildTimeline({
+  notes: [
+    { id: 'n1', company_id: 'c1', kind: 'call', body: 'Spoke to Jordan', occurred_at: '2026-10-10', source: 'manual', created_at: '2026-10-10T05:00:00Z', deal_id: 'a' },
+    { id: 'n2', company_id: 'c1', kind: 'meeting', body: 'Overview text', occurred_at: '2026-10-02', source: 'fireflies', created_at: '2026-10-14T00:00:00Z', meeting_id: 'm1', deal_id: 'a' },
+    { id: 'n3', company_id: 'c1', kind: 'note', body: 'Backdated note', occurred_at: '2026-09-01', source: 'manual', created_at: '2026-10-14T01:00:00Z' },
+  ],
+  meetings: [{ id: 'm1', company_id: 'c1', title: 'Discovery', url: 'https://f/1', met_at: '2026-10-02', created_at: '2026-10-14T00:00:00Z' }],
+  events: [{ deal_id: 'a', stage: 'demo', at: '2026-10-12T02:00:00Z' }],
+  actions: [{ id: 't', company_id: 'c1', task: 'Send scope', status: 'done', completed_at: '2026-10-11T00:00:00Z', deal_id: 'a' }],
+  contacts: [{ id: 'p', company_id: 'c1', first_name: 'Jordan', last_name: 'Lee', created_at: '2026-09-20T00:00:00Z' }],
+  deals: [{ id: 'a', company_id: 'c1', name: 'BDO pilot', stage: 'demo' }],
+});
+eq('newest first, by the day it happened, not the day it was typed', tl.map((e) => e.date), ['2026-10-12', '2026-10-11', '2026-10-10', '2026-10-02', '2026-09-20', '2026-09-01']);
+eq('a meeting shows once, with its Fireflies summary', tl.filter((e) => e.group === 'meeting').map((e) => [e.title, e.body]), [['Discovery', 'Overview text']]);
+eq('and its link', tl.find((e) => e.group === 'meeting')?.url, 'https://f/1');
+eq('a stage move names the deal', tl[0].title, 'BDO pilot moved to Demo or pilot');
+eq('a deal sees only its own history', forDeal(tl, 'a').map((e) => e.label), ['Stage', 'Done', 'Call', 'Meeting']);
+ok('written notes can be edited, recorded activity cannot', tl.filter((e) => e.note_id).every((e) => e.group !== 'activity'));
+eq('month heading', monthHeading('2026-10-02'), 'October 2026');
+eq('a summary with action items', meetingNoteBody({ overview: 'We met.', actionItems: '- send scope' }), 'We met.\n\nAction items\n- send scope');
+eq('no summary, no note', meetingNoteBody(null), undefined);
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

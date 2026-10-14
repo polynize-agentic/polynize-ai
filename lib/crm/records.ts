@@ -16,6 +16,7 @@ import {
   type RecordKind,
 } from './schema';
 import type { ActionRow, CompanyRow, ContactRow, DealRow, MeetingRow, StageEvent } from './metrics';
+import type { NoteRow } from './history';
 
 export class CrmNotReady extends Error {
   constructor() {
@@ -42,6 +43,8 @@ export type CrmData = {
   actions: ActionRow[];
   meetings: MeetingRow[];
   events: StageEvent[];
+  /** History notes (D121). Empty until migration 0016 is run, rather than taking the CRM down. */
+  notes: NoteRow[];
 };
 
 async function all<T>(table: string, order: string, companyId?: string): Promise<T[]> {
@@ -54,7 +57,7 @@ async function all<T>(table: string, order: string, companyId?: string): Promise
 
 /** Everything, or everything about one company. Small enough at this scale to read whole. */
 export async function loadCrm(companyId?: string): Promise<CrmData> {
-  const [companies, contacts, deals, actions, meetings] = await Promise.all([
+  const [companies, contacts, deals, actions, meetings, events, notes] = await Promise.all([
     companyId
       ? (async () => {
           const { data, error } = await supabaseService().from('crm_companies').select('*').eq('id', companyId).limit(1);
@@ -66,17 +69,33 @@ export async function loadCrm(companyId?: string): Promise<CrmData> {
     all<DealRow>('crm_deals', 'updated_at', companyId),
     all<ActionRow>('crm_actions', 'due', companyId),
     all<MeetingRow>('crm_meetings', 'met_at', companyId),
+    /**
+     * IN THE SAME ROUND (D121). The stage history used to wait for the deals to come back first, which
+     * doubled the time every CRM page spent on the database. A company's history is now filtered
+     * through its deals in one query instead.
+     */
+    (async () => {
+      let q = supabaseService()
+        .from('crm_deal_stages')
+        .select(companyId ? 'deal_id, stage, at, crm_deals!inner(company_id)' : 'deal_id, stage, at')
+        .order('at', { ascending: true });
+      if (companyId) q = q.eq('crm_deals.company_id', companyId);
+      const { data, error } = await q.limit(20000);
+      if (error) fail('read stage history', error);
+      return ((data ?? []) as unknown as { deal_id: string; stage: string; at: string }[]).map((e) => ({ deal_id: e.deal_id, stage: e.stage, at: e.at }));
+    })(),
+    (async () => {
+      let q = supabaseService().from('crm_notes').select('*').order('occurred_at', { ascending: false });
+      if (companyId) q = q.eq('company_id', companyId);
+      const { data, error } = await q.limit(5000);
+      if (error) {
+        if (isMissingTable(error)) return [] as NoteRow[];
+        fail('read notes', error);
+      }
+      return (data ?? []) as NoteRow[];
+    })(),
   ]);
-  const dealIds = deals.map((d) => d.id);
-  let events: StageEvent[] = [];
-  if (!companyId || dealIds.length) {
-    let q = supabaseService().from('crm_deal_stages').select('deal_id, stage, at').order('at', { ascending: true });
-    if (companyId) q = q.in('deal_id', dealIds);
-    const { data, error } = await q.limit(20000);
-    if (error) fail('read stage history', error);
-    events = (data ?? []) as StageEvent[];
-  }
-  return { companies, contacts, deals, actions, meetings, events };
+  return { companies, contacts, deals, actions, meetings, events, notes };
 }
 
 export async function getRecord(kind: RecordKind, id: string): Promise<Record<string, unknown> | null> {
@@ -198,4 +217,58 @@ export async function tryLoadCrm(companyId?: string): Promise<CrmData | null> {
     if (err instanceof CrmNotReady) return null;
     throw err;
   }
+}
+
+/* ------------------------------------------------------------------ history notes (D121) */
+
+const NOTE_KIND_IDS = new Set(['note', 'call', 'email', 'meeting']);
+const UUID = /^[0-9a-f-]{36}$/i;
+
+export async function addNote(
+  n: { company_id: string; deal_id?: string; contact_id?: string; meeting_id?: string; kind?: string; title?: string; body: string; occurred_at?: string; source?: string },
+  by: string
+): Promise<WriteResult> {
+  const body = (n.body ?? '').trim();
+  if (!body) return { ok: false, error: 'Write the note first.', status: 400 };
+  if (!UUID.test(n.company_id)) return { ok: false, error: 'Which company?', status: 400 };
+  const row: Record<string, unknown> = {
+    company_id: n.company_id,
+    kind: NOTE_KIND_IDS.has(n.kind ?? '') ? n.kind : 'note',
+    body: body.slice(0, 12000),
+    source: n.source === 'fireflies' ? 'fireflies' : 'manual',
+    created_by: by,
+  };
+  if (n.deal_id && UUID.test(n.deal_id)) row.deal_id = n.deal_id;
+  if (n.contact_id && UUID.test(n.contact_id)) row.contact_id = n.contact_id;
+  if (n.meeting_id && UUID.test(n.meeting_id)) row.meeting_id = n.meeting_id;
+  if (n.title?.trim()) row.title = n.title.trim().slice(0, 200);
+  if (n.occurred_at && /^\d{4}-\d{2}-\d{2}$/.test(n.occurred_at)) row.occurred_at = n.occurred_at;
+  const { data, error } = await supabaseService().from('crm_notes').insert(row).select('id').limit(1);
+  if (error) {
+    if (isMissingTable(error)) return { ok: false, error: 'History needs its table: run migration 0016 in Supabase.', status: 503 };
+    console.error('[crm] note write failed:', error.message);
+    return { ok: false, error: 'Could not save the note.', status: 500 };
+  }
+  return { ok: true, id: String(data?.[0]?.id ?? '') };
+}
+
+export async function updateNote(id: string, patch: { body?: string; occurred_at?: string; title?: string }): Promise<WriteResult> {
+  if (!UUID.test(id)) return { ok: false, error: 'Bad id.', status: 400 };
+  const row: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (patch.body !== undefined) {
+    if (!patch.body.trim()) return { ok: false, error: 'A note cannot be empty.', status: 400 };
+    row.body = patch.body.trim().slice(0, 12000);
+  }
+  if (patch.occurred_at && /^\d{4}-\d{2}-\d{2}$/.test(patch.occurred_at)) row.occurred_at = patch.occurred_at;
+  if (patch.title !== undefined) row.title = patch.title.trim().slice(0, 200) || null;
+  const { error } = await supabaseService().from('crm_notes').update(row).eq('id', id);
+  if (error) return { ok: false, error: 'Could not save the note.', status: 500 };
+  return { ok: true, id };
+}
+
+export async function deleteNote(id: string): Promise<WriteResult> {
+  if (!UUID.test(id)) return { ok: false, error: 'Bad id.', status: 400 };
+  const { error } = await supabaseService().from('crm_notes').delete().eq('id', id);
+  if (error) return { ok: false, error: 'Could not delete the note.', status: 500 };
+  return { ok: true, id };
 }

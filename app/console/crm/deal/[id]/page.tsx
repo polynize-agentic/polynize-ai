@@ -8,6 +8,8 @@ import { NotReady } from '../../_ui/NotReady';
 import { AddRecord, DeleteRecord, EditRecord } from '../../_ui/RecordForm';
 import { ActionTable } from '../../_ui/ActionTable';
 import { actionLines, fullName, lookupsFrom } from '../../_ui/shape';
+import { History } from '../../_ui/History';
+import { buildTimeline, forDeal as entriesForDeal } from '@/lib/crm/history';
 import s from '../../crm.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -113,6 +115,29 @@ export default async function DealPage({ params }: { params: Promise<{ id: strin
         </div>
         <ActionTable actions={actionLines(forDeal, todayInSydney())} me={user?.email ?? ''} showCompany={false} />
       </section>
+      {/* THE DEAL'S OWN HISTORY (D121): its notes, its meetings' notes, its stage moves and its actions done. */}
+      <section className={s.panel} style={{ marginTop: 18 }}>
+        <h2 className={s.panelTitle}>History</h2>
+        <History
+          entries={entriesForDeal(
+            buildTimeline({
+              notes: all.notes.filter((n) => n.company_id === d.company_id),
+              meetings: all.meetings.filter((m) => m.company_id === d.company_id),
+              events: all.events,
+              actions: all.actions.filter((a) => a.company_id === d.company_id),
+              contacts: [],
+              deals: all.deals,
+            }),
+            d.id
+          )}
+          companyId={d.company_id}
+          deals={[{ id: d.id, name: d.name, company_id: d.company_id }]}
+          contacts={lookupsFrom(all).contacts.filter((c) => c.company_id === d.company_id)}
+          fixedDealId={d.id}
+          today={todayInSydney()}
+        />
+      </section>
+
       <div className={s.bar} style={{ marginTop: 18 }}>
         <EditRecord kind="deal" id={d.id} initial={d} lookups={lookupsFrom(all)} title={`Edit ${d.name}`} />
         <DeleteRecord kind="deal" id={d.id} goTo={company ? `/console/crm/company/${company.id}?tab=deals` : '/console/crm/deals'} what={`Delete ${d.name}? Its stage history goes with it; its actions stay, without the link.`} />

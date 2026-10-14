@@ -230,3 +230,36 @@ export function notesFor(c: Candidate): string {
     .join('\n')
     .trim();
 }
+
+/**
+ * ONE MEETING'S SUMMARY, for the CRM's History (D121). Marrs, 14 October: "Fireflies is fine. I don't
+ * mind that it's coming into here. This is all locked down and totally secure." Asks for the overview
+ * and the action items; if Fireflies refuses those fields, falls back to the short summary the list
+ * query has always used, so a schema change costs detail and never the link.
+ */
+export async function fetchMeetingSummary(id: string): Promise<{ overview?: string; actionItems?: string } | null> {
+  const key = process.env.FIREFLIES_API_KEY?.trim();
+  if (!key || !/^[A-Za-z0-9_-]{4,80}$/.test(id)) return null;
+  const ask = async (fields: string) => {
+    const res = await fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ query: `query One($id: String!) { transcript(id: $id) { summary { ${fields} } } }`, variables: { id } }),
+    });
+    const json = (await res.json().catch(() => null)) as {
+      data?: { transcript?: { summary?: Record<string, unknown> | null } | null };
+      errors?: unknown[];
+    } | null;
+    if (!res.ok || !json || json.errors?.length) return undefined;
+    return json.data?.transcript?.summary ?? null;
+  };
+  const text = (v: unknown) => (typeof v === 'string' && v.trim() ? v.trim() : Array.isArray(v) ? v.filter((x) => typeof x === 'string').join('\n').trim() || undefined : undefined);
+  try {
+    const full = await ask('overview short_summary action_items');
+    if (full) return { overview: text(full.overview) ?? text(full.short_summary), actionItems: text(full.action_items) };
+    const short = await ask('short_summary');
+    return short ? { overview: text(short.short_summary) } : null;
+  } catch {
+    return null;
+  }
+}
