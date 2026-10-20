@@ -86,6 +86,8 @@ export function companyCards(d: CrmData): CompanyCard[] {
     name: c.name,
     region: String(c.regions ?? c.headquarters ?? ''),
     openDeals: d.deals.filter((x) => x.company_id === c.id && isOpenStage(x.stage)).length,
+    // AJ's suggestion, approved by Marrs (D122): how many people we know there, on the card.
+    contacts: d.contacts.filter((x) => x.company_id === c.id).length,
     status: optionLabel(COMPANY_STATUSES, c.status),
     tier: optionLabel(TIERS, c.tier),
     owner: ownerName(c.owner),

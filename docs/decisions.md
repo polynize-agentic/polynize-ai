@@ -3352,3 +3352,9 @@ Tests: `lib/crm/__tests__/crm.test.ts` (60): who can use it, cleaning what the f
 Tests: nine timeline assertions added to `lib/crm/__tests__/crm.test.ts` (69).
 
 **The region, found the next day (15 October).** The Supabase database is in **Tokyo** (`ap-northeast-1`, read off the project's Infrastructure page). The app's servers were in Washington (`iad1`), so every database call crossed the Pacific twice, and the CRM, the leads, and the marketing engine's interim store all live in that database. The servers now run in **Tokyo** (`hnd1`, `vercel.json` `regions`): database calls stay inside one city, the trip from Sydney to the servers is shorter than to Washington, and the Sydney file bucket is closer from Tokyo than from Washington. Every leg gets shorter. Moving the database itself to Sydney would be faster still, but it is a project migration with downtime and is not worth it at this size. Undo is deleting the one line.
+
+## D122: The first approved suggestion, and how approvals reach the build
+
+**Adopted 20 October 2026.** AJ, on the board: *"on Companies homepage... we see location and # of active deals. Can we add in # on contacts at that organisation."* Marrs approved it on 16 October and asked whether it had been built automatically. It had not: approving only changes the suggestion's status, and nothing watches for approvals. Built by hand the same day: every company card now reads region, active deals and contacts, and the line wraps on a narrow card.
+
+Until something watches the board, approvals are picked up when Marrs says so in a session, by reading the approved list.

@@ -13,6 +13,7 @@ export type CompanyCard = {
   name: string;
   region: string;
   openDeals: number;
+  contacts: number;
   status: string;
   tier: string;
   owner: string;
@@ -43,6 +44,10 @@ export function CompanyGrid({ cards }: { cards: CompanyCard[] }) {
                 <span className={s.sep}>|</span>
                 <span>
                   {c.openDeals} active {c.openDeals === 1 ? 'deal' : 'deals'}
+                </span>
+                <span className={s.sep}>|</span>
+                <span>
+                  {c.contacts} {c.contacts === 1 ? 'contact' : 'contacts'}
                 </span>
                 <span className={s.arrow} aria-hidden>
                   →

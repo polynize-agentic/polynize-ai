@@ -337,7 +337,8 @@
 .cardMeta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 6px 10px;
   margin-top: auto;
   font-size: 13px;
   color: var(--text-2);
