@@ -3376,3 +3376,5 @@ Until something watches the board, approvals are picked up when Marrs says so in
 **How it ships:** the same discipline as every hand-built change. It brings itself up to date with main first and stops if the working copy has someone else's changes in it; it runs the type, lint, style, test and build checks; it writes the decision log in the same commit; it pushes to main and waits for the deploy. If the checks fail and two fixes do not clear them, it puts the files back and asks. If the deploy fails, it reverts its commit and asks.
 
 Migration 0017 adds the note and the commit to each suggestion; until it is run the board shows the states without notes.
+
+**A Closed tab on the board, the same day.** Marrs: *"it's only got Open and Everything. Let's put another tab that says Closed."* The board's filters are now Open (suggested, approved, built, question), Closed (done and not now) and Everything.

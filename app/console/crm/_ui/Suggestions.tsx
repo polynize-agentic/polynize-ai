@@ -36,7 +36,7 @@ export function Suggestions({ items, me, isOperator }: { items: SuggestionLine[]
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-  const [show, setShow] = useState<'live' | 'all'>('live');
+  const [show, setShow] = useState<'live' | 'closed' | 'all'>('live');
 
   const call = async (fn: () => Promise<{ ok: boolean; data: Record<string, unknown> }>) => {
     const r = await fn();
@@ -62,7 +62,7 @@ export function Suggestions({ items, me, isOperator }: { items: SuggestionLine[]
   };
 
   const rows = items
-    .filter((i) => show === 'all' || !['done', 'declined'].includes(i.status))
+    .filter((i) => show === 'all' || (show === 'closed') === ['done', 'declined'].includes(i.status))
     .sort((a, b) => ORDER[a.status] - ORDER[b.status] || b.likes.length - a.likes.length || b.created_at.localeCompare(a.created_at));
 
   return (
@@ -87,13 +87,17 @@ export function Suggestions({ items, me, isOperator }: { items: SuggestionLine[]
         <button type="button" className={`${s.filter} ${show === 'live' ? s.filterOn : ''}`} onClick={() => setShow('live')}>
           Open
         </button>
+        {/* CLOSED (D123): done and not-now, on their own, so finished work is one click away. */}
+        <button type="button" className={`${s.filter} ${show === 'closed' ? s.filterOn : ''}`} onClick={() => setShow('closed')}>
+          Closed
+        </button>
         <button type="button" className={`${s.filter} ${show === 'all' ? s.filterOn : ''}`} onClick={() => setShow('all')}>
           Everything
         </button>
       </div>
 
       {rows.length === 0 ? (
-        <p className={s.empty}>No suggestions yet.</p>
+        <p className={s.empty}>{show === 'closed' ? 'Nothing closed yet.' : show === 'live' ? 'Nothing open.' : 'No suggestions yet.'}</p>
       ) : (
         <section className={s.panel}>
           <div className={s.list}>
