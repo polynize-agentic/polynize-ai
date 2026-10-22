@@ -13,10 +13,12 @@ import { sendEmail } from '../resend-client';
 import { OPERATOR_EMAILS } from '../marketing/streams';
 import { ownerName } from './schema';
 
-export type SuggestionStatus = 'open' | 'approved' | 'done' | 'declined';
+export type SuggestionStatus = 'open' | 'approved' | 'built' | 'question' | 'done' | 'declined';
 export const SUGGESTION_STATUSES: readonly { id: SuggestionStatus; label: string }[] = [
   { id: 'open', label: 'Suggested' },
   { id: 'approved', label: 'Approved' },
+  { id: 'built', label: 'Built, check it' },
+  { id: 'question', label: 'Question for Marrs' },
   { id: 'done', label: 'Done' },
   { id: 'declined', label: 'Not now' },
 ];
@@ -29,6 +31,9 @@ export type Suggestion = {
   created_at: string;
   approved_at?: string | null;
   done_at?: string | null;
+  /** The morning build's note (D123): what it changed, or why it held back. */
+  reply?: string | null;
+  built_commit?: string | null;
   likes: string[];
 };
 
@@ -92,6 +97,8 @@ export async function setStatus(id: string, status: SuggestionStatus): Promise<b
     patch.approved_at = null;
     patch.done_at = null;
   }
+  // Approving again after a question is the answer "go ahead": the old note no longer applies.
+  if (status === 'approved') patch.reply = null;
   const { error } = await supabaseService().from('console_requests').update(patch).eq('id', id);
   return !error;
 }

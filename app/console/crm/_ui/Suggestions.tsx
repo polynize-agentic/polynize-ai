@@ -14,14 +14,22 @@ import s from '../crm.module.css';
 export type SuggestionLine = {
   id: string;
   body: string;
-  status: 'open' | 'approved' | 'done' | 'declined';
+  status: 'open' | 'approved' | 'built' | 'question' | 'done' | 'declined';
   created_by: string;
+  reply?: string | null;
   created_at: string;
   likes: string[];
 };
 
-const LABEL: Record<SuggestionLine['status'], string> = { open: 'Suggested', approved: 'Approved', done: 'Done', declined: 'Not now' };
-const ORDER: Record<SuggestionLine['status'], number> = { approved: 0, open: 1, done: 2, declined: 3 };
+const LABEL: Record<SuggestionLine['status'], string> = {
+  open: 'Suggested',
+  approved: 'Approved',
+  built: 'Built, check it',
+  question: 'Question for Marrs',
+  done: 'Done',
+  declined: 'Not now',
+};
+const ORDER: Record<SuggestionLine['status'], number> = { question: 0, built: 1, approved: 2, open: 3, done: 4, declined: 5 };
 
 export function Suggestions({ items, me, isOperator }: { items: SuggestionLine[]; me: string; isOperator: boolean }) {
   const router = useRouter();
@@ -54,7 +62,7 @@ export function Suggestions({ items, me, isOperator }: { items: SuggestionLine[]
   };
 
   const rows = items
-    .filter((i) => show === 'all' || i.status === 'open' || i.status === 'approved')
+    .filter((i) => show === 'all' || !['done', 'declined'].includes(i.status))
     .sort((a, b) => ORDER[a.status] - ORDER[b.status] || b.likes.length - a.likes.length || b.created_at.localeCompare(a.created_at));
 
   return (
@@ -77,7 +85,7 @@ export function Suggestions({ items, me, isOperator }: { items: SuggestionLine[]
 
       <div className={s.bar}>
         <button type="button" className={`${s.filter} ${show === 'live' ? s.filterOn : ''}`} onClick={() => setShow('live')}>
-          Open and approved
+          Open
         </button>
         <button type="button" className={`${s.filter} ${show === 'all' ? s.filterOn : ''}`} onClick={() => setShow('all')}>
           Everything
@@ -109,11 +117,12 @@ export function Suggestions({ items, me, isOperator }: { items: SuggestionLine[]
                       <span className={s.statusTag}>{LABEL[i.status]}</span> {ownerName(i.created_by)} · {i.created_at.slice(0, 10)}
                       {i.likes.length ? ` · liked by ${i.likes.map((l) => ownerName(l)).join(', ')}` : ''}
                     </div>
+                    {i.reply ? <div className={s.reply}>{i.reply}</div> : null}
                     {isOperator ? (
                       <div className={s.formFoot} style={{ marginTop: 10 }}>
-                        {i.status !== 'approved' && i.status !== 'done' ? (
+                        {i.status !== 'approved' && i.status !== 'done' && i.status !== 'built' ? (
                           <button type="button" className={s.btn} onClick={() => void call(() => crmCall('suggestions', 'PATCH', { id: i.id, status: 'approved' }))}>
-                            Approve
+                            {i.status === 'question' ? 'Approve, go ahead' : 'Approve'}
                           </button>
                         ) : null}
                         {i.status !== 'done' ? (

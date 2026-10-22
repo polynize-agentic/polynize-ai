@@ -12,7 +12,7 @@ import { addSuggestion, deleteSuggestion, listSuggestions, setStatus, toggleLike
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-const STATUSES: SuggestionStatus[] = ['open', 'approved', 'done', 'declined'];
+const STATUSES: SuggestionStatus[] = ['open', 'approved', 'built', 'question', 'done', 'declined'];
 const UUID = /^[0-9a-f-]{36}$/i;
 
 export async function POST(req: NextRequest) {

@@ -3358,3 +3358,21 @@ Tests: nine timeline assertions added to `lib/crm/__tests__/crm.test.ts` (69).
 **Adopted 20 October 2026.** AJ, on the board: *"on Companies homepage... we see location and # of active deals. Can we add in # on contacts at that organisation."* Marrs approved it on 16 October and asked whether it had been built automatically. It had not: approving only changes the suggestion's status, and nothing watches for approvals. Built by hand the same day: every company card now reads region, active deals and contacts, and the line wraps on a narrow card.
 
 Until something watches the board, approvals are picked up when Marrs says so in a session, by reading the approved list.
+
+## D123: Approved suggestions build themselves every morning
+
+**Adopted 22 October 2026.** Marrs: *"make approved suggestions build automatically every morning."*
+
+**How it runs.** A scheduled task on Marrs's Mac (`approved-suggestions-morning-build`, 7:00 every day, while the Claude app is open; if it is closed, the run happens on next launch). Each run reads the approved suggestions, oldest first, at most three, and for each one either builds it and ships it, or holds back and says why. The task's instructions live in `~/.claude/scheduled-tasks/approved-suggestions-morning-build/SKILL.md`.
+
+**What the board shows.** Two new states, with the run's note under the suggestion:
+- **Built, check it**: it is live; the note says what changed and where to look. Marrs ticks Mark done once he has looked.
+- **Question for Marrs**: the run held back; the note says what it needs. **Approve, go ahead** sends it back for the next morning, and clears the note.
+
+**What it will build on its own:** a change to how the console looks or behaves that fits in a few files, passes every check, and needs nothing from Marrs.
+
+**What it always asks about instead** (status Question): a new database table or column (Marrs runs the SQL); a new outside service or key; anything about sign-in, access, or who can see what; deleting or rewriting stored data; the marketing engine; the public website; anything it would have to guess at. A request that is unclear is a question, not a guess.
+
+**How it ships:** the same discipline as every hand-built change. It brings itself up to date with main first and stops if the working copy has someone else's changes in it; it runs the type, lint, style, test and build checks; it writes the decision log in the same commit; it pushes to main and waits for the deploy. If the checks fail and two fixes do not clear them, it puts the files back and asks. If the deploy fails, it reverts its commit and asks.
+
+Migration 0017 adds the note and the commit to each suggestion; until it is run the board shows the states without notes.
