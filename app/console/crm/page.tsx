@@ -18,7 +18,7 @@ export default async function CrmHome() {
   const data = await tryLoadCrm();
   if (!data) return <NotReady />;
   const dash = buildDashboard({ ...data, today: todayInSydney() });
-  const cards = companyCards(data).sort((a, b) => b.openDeals - a.openDeals || a.name.localeCompare(b.name));
+  const cards = companyCards(data);
   return (
     <>
       <div className={s.head}>

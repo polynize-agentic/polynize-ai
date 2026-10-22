@@ -80,7 +80,37 @@ export function contactLines(d: CrmData): ContactLine[] {
   }));
 }
 
+/**
+ * WHEN EACH COMPANY LAST SAW ANY WORK (morning build, 22 October 2026). Marrs, on the suggestions board:
+ * "a sort feature by recent actions". The latest moment anything about the company was added or
+ * changed: the company itself, its people, deals, actions, meetings, notes and stage moves.
+ */
+function lastActivity(d: CrmData): Map<string, number> {
+  const latest = new Map<string, number>();
+  const touch = (companyId: string | undefined, ...when: unknown[]) => {
+    if (!companyId) return;
+    for (const w of when) {
+      const t = typeof w === 'string' ? Date.parse(w) : NaN;
+      if (!Number.isNaN(t) && t > (latest.get(companyId) ?? 0)) latest.set(companyId, t);
+    }
+  };
+  const dealCompany = new Map(d.deals.map((x) => [x.id, x.company_id]));
+  for (const c of d.companies) touch(c.id, c.created_at, c.updated_at);
+  for (const c of d.contacts) touch(c.company_id, c.created_at, c.updated_at);
+  for (const x of d.deals) touch(x.company_id, x.created_at, x.updated_at);
+  for (const a of d.actions) touch(a.company_id, a.created_at, a.updated_at, a.completed_at);
+  for (const m of d.meetings) touch(m.company_id, m.created_at, m.met_at);
+  for (const n of d.notes) touch(n.company_id, n.created_at, n.occurred_at);
+  for (const e of d.events) touch(dealCompany.get(e.deal_id), e.at);
+  return latest;
+}
+
+function shortDate(t: number): string {
+  return new Date(t).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Australia/Sydney' });
+}
+
 export function companyCards(d: CrmData): CompanyCard[] {
+  const latest = lastActivity(d);
   return d.companies.map((c) => ({
     id: c.id,
     name: c.name,
@@ -91,5 +121,7 @@ export function companyCards(d: CrmData): CompanyCard[] {
     status: optionLabel(COMPANY_STATUSES, c.status),
     tier: optionLabel(TIERS, c.tier),
     owner: ownerName(c.owner),
+    lastActive: latest.get(c.id) ?? 0,
+    lastActiveLabel: latest.has(c.id) ? shortDate(latest.get(c.id) as number) : '',
   }));
 }
