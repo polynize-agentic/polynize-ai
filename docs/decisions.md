@@ -3402,3 +3402,31 @@ Migration 0017 adds the note and the commit to each suggestion; until it is run 
 - **BDO's account lead is Shourov**, as the Big Game list had it (D124 had kept the CRM's AJ).
 - **The Companies page opens on the list.** Tiles are one click away.
 - **Every list heading sorts.** Click Company, Region, Status, Active deals, Contacts, Owner or Last activity to sort by it; click again to turn the order round. An arrow shows which column and which way. Names and regions start A to Z; deals, contacts and last activity start with the most; status reads active clients, then engaged, then targets, then inactive. Blank regions and unassigned owners always sink to the bottom. The tiles keep a sort menu with the same keys, and it follows whatever was chosen in the list.
+
+## D126: Pam, the CRM's assistant
+
+**Adopted 27 October 2026.** Marrs, on the board: *"An agent chat... that can do the creation for you and potentially even pull data from external sources on particular clients and businesses... The chat is persistent on the left or right edges of the screen. The left edge is probably better... we can humanise her a bit."* And on the open questions: *"if we can't use this Claude account... let's see if we can get OpenRouter set up"*; *"as the admin of the account, set the setting so I can see everyone's meetings."*
+
+**Where she lives.** A portrait tab on the left edge of every CRM screen (her face, cropped from the still). Open, a panel slides out with her waving on a mint glow (D121's prepared loop), the conversation, and "Ask Pam". She knows which company is on screen. The conversation is kept in the browser, so moving between pages does not lose it; New starts again.
+
+**What she can do.** Read the CRM (find companies, open one with its people, deals, open actions and recent history, the pipeline in brief); search the web, with the sources shown under her reply; read the team's recent Fireflies meetings and a meeting's overview and action items.
+
+**What she cannot do: save anything.** Every change comes back as a card (new company, update company, new contact, update contact, note in History, next step) with Apply and Dismiss. Apply saves through the same routes as the CRM's forms, so the record still says who added it.
+
+**The AI service.** OpenRouter, which every AI feature in the console already uses: no new account or key. The Claude subscription is for a person using Claude, not for powering a product, and the project's own rules say the same. Her model is `PAM_MODEL` if set, else `SCRIPT_MODEL`, else `google/gemini-3.5-flash`. Web search is OpenRouter's web plugin on the Exa engine: a small extra cost per search, real page addresses and titles.
+
+**Fireflies.** The console's one Fireflies key already returned the whole team's meetings when the CRM was built, so it is likely already the admin's view. Pam shows who organised each meeting; nothing new to set up. Fireflies is not configured on the build machine, so her meeting tools were not exercised before shipping (they reuse the CRM's existing meeting readers).
+
+### Decisions inside it, each from a live test before shipping
+
+Three runs of the same question against the real CRM and web ("What do we have on BDO? Look up its head office and headcount and propose filling in anything empty"):
+- **Field meanings, not codes.** Run one put BDO's headcount into "estimated Polynize users". Her tool descriptions now carry each field's label and say outright that headcount is not estimated users; and only real fields survive into a card, so a card shows exactly what Apply saves.
+- **Update, not duplicate.** Run one proposed a new "Jill Holme" beside the half-filled "Jill". She now has a contact update, sees contact ids, and is told to use it when the person exists.
+- **Readable sources.** Run one's sources were a dozen Google redirect links with no titles; the web plugin now uses Exa, which returns real pages, capped at eight.
+- **Two web searches a question, then answer.** Run two searched five times and never replied. Searches are capped at two, and if she still runs long, one last call without tools makes her answer with what she found.
+- **No guessed emails.** Run two proposed jill.holme@bdo.com.au, the firm's usual pattern, in no source. An email now survives into a card only if it appears word for word in something she read that turn; otherwise it is removed and the card says so.
+- **Plain text.** Her replies had markdown asterisks the chat does not render; she is told not to, and any that slip through are removed.
+
+Run three: 45 seconds, a plain summary of BDO from the CRM, the head office and headcount from Wikipedia and BDO's own report, the filled fields left alone, and one correct card updating Jill from her LinkedIn page, with no email.
+
+The panel was checked on screen in both themes, open and closed, on a throwaway local page (deleted).

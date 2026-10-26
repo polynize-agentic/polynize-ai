@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/console-auth';
-import { canUseCrm } from '@/lib/crm/schema';
+import { canUseCrm, ownerName } from '@/lib/crm/schema';
+import { PamDock } from './_ui/PamDock';
 import { CrmNav } from './_ui/CrmNav';
 import s from './crm.module.css';
 
@@ -26,6 +27,8 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
         <CrmNav />
       </div>
       {children}
+      {/* PAM (D126): on the left edge of every CRM screen. */}
+      <PamDock firstName={ownerName(user.email)} />
     </div>
   );
 }
