@@ -3394,3 +3394,11 @@ Migration 0017 adds the note and the commit to each suggestion; until it is run 
 **Name corrections and merges:** David Polk to Davis Polk, Kearny to Kearney, Alix Partners to AlixPartners, Bearing Point to BearingPoint, Simon Kucher to Simon-Kucher, Claude to Anthropic, Open AI to OpenAI, LTIMindtree to LTM Limited (LTIMindtree); Commonwealth Bank and Kirkland & Ellis matched to the team's existing records; Citi and Citibank merged into the existing Citi; Munich Re / Swiss Re split into two companies sharing the pair's figures. NBA franchise, AFL club and Motorsport stay as placeholders named as such.
 
 **Contacts:** the 27 people named in the list's AI lead column, each with their title, a note that this is a public role rather than a relationship, and EY's former CTO marked as having left.
+
+## D125: The company list first, every column sortable, and BDO to Shourov
+
+**Adopted 27 October 2026.** Marrs: *"make BDO Shourov's account"*, and *"on the Companies tab, make the list view the default, and I want the headings of the columns to be sortable... Companies, region, status, active deals, owner, last activity."*
+
+- **BDO's account lead is Shourov**, as the Big Game list had it (D124 had kept the CRM's AJ).
+- **The Companies page opens on the list.** Tiles are one click away.
+- **Every list heading sorts.** Click Company, Region, Status, Active deals, Contacts, Owner or Last activity to sort by it; click again to turn the order round. An arrow shows which column and which way. Names and regions start A to Z; deals, contacts and last activity start with the most; status reads active clients, then engaged, then targets, then inactive. Blank regions and unassigned owners always sink to the bottom. The tiles keep a sort menu with the same keys, and it follows whatever was chosen in the list.

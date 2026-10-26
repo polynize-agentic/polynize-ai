@@ -1012,3 +1012,32 @@ a.dealName:hover {
   color: var(--text-2);
   white-space: pre-wrap;
 }
+
+/* ---------------------------------------------------------------- sortable headings (D125) */
+
+.sortHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.sortHead:hover,
+.sortHeadOn {
+  color: var(--text);
+}
+.sortArrow {
+  font-size: 11px;
+  opacity: 0.45;
+}
+.sortHeadOn .sortArrow {
+  opacity: 1;
+  color: var(--mint);
+}
