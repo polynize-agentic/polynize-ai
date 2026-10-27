@@ -3430,3 +3430,5 @@ Three runs of the same question against the real CRM and web ("What do we have o
 Run three: 45 seconds, a plain summary of BDO from the CRM, the head office and headcount from Wikipedia and BDO's own report, the filled fields left alone, and one correct card updating Jill from her LinkedIn page, with no email.
 
 The panel was checked on screen in both themes, open and closed, on a throwaway local page (deleted).
+
+**An obvious close, the same day.** Marrs: *"The window needs an x button to close it."* There was one, a small grey x beside New, and it read as decoration. It is now a round X button in the panel's top right, solid in both themes and mint on hover, and Escape closes the panel too. "New" became "New chat". The panel also slides in solid rather than fading in, so the page behind it never shows through. Checked on screen in both themes; the X and Escape each close the panel and leave the tab. And on the Fireflies import suggestion: *"no button needed, Pam can handle Fireflies imports for now, we'll test that."*

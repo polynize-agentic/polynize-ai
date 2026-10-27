@@ -1099,10 +1099,10 @@ a.dealName:hover {
   box-shadow: 12px 0 40px rgba(0, 0, 0, 0.35);
   animation: pamIn 220ms ease-out;
 }
+/* Slides in solid: no fade, so the page behind can never show through it mid-way. */
 @keyframes pamIn {
   from {
     transform: translateX(-24px);
-    opacity: 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1164,10 +1164,36 @@ a.dealName:hover {
 }
 .pamTools {
   position: absolute;
-  right: 10px;
-  top: 10px;
+  right: 12px;
+  top: 12px;
   display: flex;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+}
+.pamClose {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border-soft);
+  background: var(--tac-surface);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: background 120ms ease, color 120ms ease;
+}
+:global(body:not(.theme-light)) .pamClose {
+  border-color: rgba(244, 236, 228, 0.28);
+  background: rgba(10, 10, 15, 0.55);
+}
+.pamClose:hover,
+.pamClose:focus-visible {
+  background: var(--mint);
+  border-color: var(--mint);
+  color: var(--bg);
+  outline: none;
 }
 .pamIcon {
   border: 1px solid var(--border-soft);

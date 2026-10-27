@@ -78,6 +78,16 @@ export function PamDock({ firstName }: { firstName: string }) {
     }
   };
 
+  // Escape closes the panel, from anywhere on the page, including while typing to her.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') toggle(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+
   const send = async () => {
     const t = text.trim();
     if (!t || busy) return;
@@ -151,11 +161,15 @@ export function PamDock({ firstName }: { firstName: string }) {
         <div className={s.pamTools}>
           {turns.length ? (
             <button type="button" className={s.pamIcon} onClick={() => setTurns([])} title="Start a new conversation">
-              New
+              New chat
             </button>
           ) : null}
-          <button type="button" className={s.pamIcon} onClick={() => toggle(false)} aria-label="Close Pam">
-            ×
+          {/* CLOSE, made obvious (D126). Marrs: "The window needs an x button to close it." There was one,
+              a small grey x beside New, and it read as decoration. Escape closes it too. */}
+          <button type="button" className={s.pamClose} onClick={() => toggle(false)} aria-label="Close Pam" title="Close (Esc)">
+            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden>
+              <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
           </button>
         </div>
       </div>
