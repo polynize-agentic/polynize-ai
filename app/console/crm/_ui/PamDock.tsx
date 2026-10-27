@@ -46,6 +46,10 @@ export function PamDock({ firstName }: { firstName: string }) {
   const companyId = /^\/console\/crm\/company\/([0-9a-f-]{36})/i.exec(path)?.[1];
 
   const [open, setOpen] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    setReducedMotion(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
+  }, []);
   const [turns, setTurns] = useState<Turn[]>([]);
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
@@ -149,7 +153,18 @@ export function PamDock({ firstName }: { firstName: string }) {
   return (
     <aside className={s.pamPanel} aria-label="Pam, the CRM assistant">
       <div className={s.pamStage}>
-        <video className={s.pamVideo} autoPlay loop muted playsInline aria-hidden poster="/pam/assistant/pam.png">
+        {/* ONE WAVE, THEN STILL (D126). Marrs: "once she waves once, we can then freeze on the still
+            image. It gets a bit distracting after a while." No loop: the wave plays forward and back,
+            so it ends on the pose it began with and holds there. She waves again each time the panel
+            opens. With reduced motion asked for, she does not wave at all. */}
+        <video
+          className={s.pamVideo}
+          autoPlay={!reducedMotion}
+          muted
+          playsInline
+          aria-hidden
+          poster="/pam/assistant/pam.png"
+        >
           <source src="/pam/assistant/pam-wave.mov" type='video/mp4; codecs="hvc1"' />
           <source src="/pam/assistant/pam-wave.webm" type="video/webm" />
         </video>
