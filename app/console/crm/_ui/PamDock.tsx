@@ -82,6 +82,29 @@ export function PamDock({ firstName }: { firstName: string }) {
     }
   };
 
+  /**
+   * BELOW THE CONSOLE'S TOP BAR (D126). Marrs: "when scrolled right to the top, the header covers the X,
+   * make the header push down the side chat." The bar scrolls away with the page and is drawn above the
+   * CRM, so at the top of the page it covered the panel's first 60 pixels. The panel now starts where
+   * the bar ends, and as the bar scrolls off, the panel's top follows it up to the top of the screen.
+   */
+  const [top, setTop] = useState(0);
+  useEffect(() => {
+    if (!open) return;
+    const nav = document.querySelector<HTMLElement>('[data-console-topnav]');
+    if (!nav) return;
+    // Measured on every scroll directly, not on the next animation frame: scroll events already arrive
+    // once a frame, and a frame timer is paused in a hidden tab, which left the panel under the bar.
+    const measure = () => setTop(Math.max(0, Math.round(nav.getBoundingClientRect().bottom)));
+    measure();
+    window.addEventListener('scroll', measure, { passive: true });
+    window.addEventListener('resize', measure);
+    return () => {
+      window.removeEventListener('scroll', measure);
+      window.removeEventListener('resize', measure);
+    };
+  }, [open]);
+
   // Escape closes the panel, from anywhere on the page, including while typing to her.
   useEffect(() => {
     if (!open) return;
@@ -151,7 +174,7 @@ export function PamDock({ firstName }: { firstName: string }) {
   }
 
   return (
-    <aside className={s.pamPanel} aria-label="Pam, the CRM assistant">
+    <aside className={s.pamPanel} style={top ? { top } : undefined} aria-label="Pam, the CRM assistant">
       <div className={s.pamStage}>
         {/* ONE WAVE, THEN STILL (D126). Marrs: "once she waves once, we can then freeze on the still
             image. It gets a bit distracting after a while." No loop: the wave plays forward and back,

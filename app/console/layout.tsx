@@ -34,7 +34,8 @@ export default async function ConsoleLayout({
 
   return (
     <div className={s.shell}>
-      <nav className={s.topNav}>
+      {/* data-console-topnav: Pam's panel (D126) reads where this bar ends, so it never sits under it. */}
+      <nav className={s.topNav} data-console-topnav>
         {/* Goes to the Control Centre, which is what it says. It used to point at
             /console/marketing, from when Marketing was the only thing in here; now that
             the launcher is Marketing AND Leads, a link labelled "PAM control centre" that
