@@ -6,6 +6,30 @@ import { OPERATOR_EMAILS } from './lib/marketing/streams';
 const PAM_HOSTNAMES = new Set(['pam.polynize.ai', 'pam.localhost']);
 
 /**
+ * POLYNIZE.AI IS INTERNAL NOW (D127). Marrs, 2 November 2026: "Polynize.ai is now only an internal
+ * website for Pam to work, it should not show up at all to the public." polynize.io is the public
+ * site. So on polynize.ai and www every page sends the visitor to polynize.io (307, query string
+ * kept so utm labels arrive), except what must keep working:
+ *  - /console: the console itself, behind its sign-in.
+ *  - /library: PAM publishes Learnings there and every post cut from one links to it (D115).
+ *  - links sent to one person: a lead's blueprint (/map-your-team/<id>, /blueprints/<id>), a job
+ *    map (/job-mapping/<id>), and client proposals (/proposals, behind its own gate).
+ * pam.polynize.ai, localhost and preview deployments are not public hosts, so every page still
+ * renders there. API routes and static files never reach middleware (see the matcher), so the cron
+ * jobs, the flows' endpoints and email images keep working. Search engines are kept off all of it
+ * by the X-Robots-Tag header in next.config.mjs.
+ */
+const PUBLIC_HOSTS = new Set(['polynize.ai', 'www.polynize.ai']);
+const KEPT_ON_PUBLIC_HOSTS = [
+  /^\/console(\/|$)/,
+  /^\/library(\/|$)/,
+  /^\/map-your-team\/[^/]+/,
+  /^\/blueprints\/[^/]+/,
+  /^\/job-mapping\/[^/]+/,
+  /^\/proposals(\/|$)/,
+];
+
+/**
  * THE MARKETING ENGINE IS MARRS'S ALONE (D121). Marrs, 14 October: "remove access to the marketing
  * portal for everyone except me, so when they come into the PAM console, all they see is the CRM."
  * Checked here as well as on the pages, because the pages are only the screens: every marketing and
@@ -30,6 +54,12 @@ export async function middleware(request: NextRequest) {
   const host = (request.headers.get('host') ?? '').toLowerCase().split(':')[0];
   const { pathname } = request.nextUrl;
   const isPam = PAM_HOSTNAMES.has(host);
+
+  if (PUBLIC_HOSTS.has(host) && !KEPT_ON_PUBLIC_HOSTS.some((re) => re.test(pathname))) {
+    const url = new URL('https://polynize.io/');
+    url.search = request.nextUrl.search;
+    return NextResponse.redirect(url, 307);
+  }
 
   // The console path this request is for, whichever host it came in on.
   const consolePath = isPam && !pathname.startsWith('/console') ? (pathname === '/' ? '/console' : `/console${pathname}`) : pathname;

@@ -21,6 +21,7 @@ The data for each engagement lives as JSON + markdown files in a per-engagement 
 All under the `polynize-agentic` GitHub org.
 
 - **`polynize-ai`** — the website + the PAM Console, one Next.js app, one Vercel project. Deploys to production on push to `origin/main`. This is where all Console *code* lives.
+  - **Since 2 November 2026 polynize.ai is internal (D127).** polynize.io (a separate site) is the public one. On polynize.ai and www, `middleware.ts` sends every page to polynize.io except `/console`, `/library` and links sent to one person (blueprints, job maps, proposals). Nothing this app serves is indexed by search engines (`X-Robots-Tag` in `next.config.mjs`). pam.polynize.ai, localhost and previews still render every page.
 - **Engagement repos** — one per client. As of 2026-06 the only live engagement repo is `everstock` (plus `everstock-build`, its build repo, which carries no console marker). `newkind`, `remynd`, and `roxburys` were **hard-deleted** in the pivot (SOC 2 + off-boarding; see `decisions.md` D15). Each engagement repo holds that engagement's Blueprint data and config; the Console reads these live.
 
 ### Engagement repo layout

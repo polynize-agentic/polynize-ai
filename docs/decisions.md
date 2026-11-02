@@ -3436,3 +3436,27 @@ The panel was checked on screen in both themes, open and closed, on a throwaway 
 **One wave, then still.** Marrs: *"once she waves once, we can then freeze on the still image. It gets a bit distracting after a while."* The video no longer loops. It plays once each time the panel opens (about ten seconds: the wave forward and back) and holds on its last frame, which is identical to its first (checked frame by frame), so she settles on the pose she started in. Anyone whose system asks for reduced motion sees the still only.
 
 **Below the top bar.** Marrs, with a screenshot: *"when scrolled right to the top, the header covers the X, make the header push down the side chat."* The console's top bar scrolls away with the page but is drawn above the CRM, so at the top of a page it covered the panel's first 66 pixels, the X included. The bar now carries `data-console-topnav`, and the panel starts where it ends and follows it up as it scrolls away, measured on each scroll. Checked against the real bar's styling at the top, part-way and fully scrolled: the panel's top matched the bar's bottom each time and the X was clickable each time.
+
+## D127: polynize.ai is internal, polynize.io is the public site
+
+**Adopted 2 November 2026.** Marrs: *"stop the site from showing up on Google and redirect https://www.polynize.ai/map-your-team to Polynize.io"*, then: *"Polynize.ai is now only an internal website for Pam to work, it should not show up at all to the public... We only want Polynize.io to show on Google and search."* This finishes the homepage move of 29 September.
+
+**What a visitor gets on polynize.ai and www** (`middleware.ts`, `PUBLIC_HOSTS`):
+- **Sent to polynize.io** (307 to `https://polynize.io/`, query string kept so utm labels arrive): every page not kept below. That is the homepage, `/map-your-team`, `/job-mapping`, `/mapping`, `/capability-mapping`, `/links`, `/pricing`, `/console-demo` and `/brand`. `/pricing.html` is sent from `next.config.mjs`, because middleware never sees a path with a dot.
+- **Kept, so nothing already shared breaks** (`KEPT_ON_PUBLIC_HOSTS`):
+  - `/console`, behind its sign-in.
+  - `/library` and `/library/<slug>`. PAM publishes Learnings there and every post cut from one links to it (D115). Marrs chose to keep it until the Library has a home on polynize.io.
+  - Links sent to one person: lead blueprints (`/map-your-team/<id>`, `/blueprints/<id>`, and the old `/blueprint/<id>`), job maps (`/job-mapping/<id>`), client proposals (`/proposals`, behind its own gate). The CRM and the new-lead email link to blueprints (`blueprintUrl()`), so those links keep working.
+- pam.polynize.ai, localhost and preview deployments are not public hosts: every page still renders there, for testing. API routes and static files never reach middleware, so the crons, the flows' endpoints and email images keep working.
+
+**Out of search, everywhere.** Every response this deployment serves carries `X-Robots-Tag: noindex, nofollow` (one `headers()` entry for `/:path*` in `next.config.mjs`). That covers every host it answers on, the kept pages included. polynize.io is a separate site (S3 and CloudFront) and is not touched. The older entries for `/proposals` and `/brand` stay, so taking the site-wide entry out later does not expose them.
+
+**robots.txt lets crawlers in.** It used to block `/proposals`. A page Google may not fetch is a page it never sees `noindex` on, so a blocked page that was already listed stays listed. Everything is open now, so Google drops each page when it next visits. The `Sitemap:` line pointed at a file that does not exist (404) and is gone.
+
+**What this replaces.**
+- **D96 to D100, on polynize.ai.** The labels still ride on every post link, but the landing pages that read them (`/map-your-team`, `/job-mapping`) now send the visitor to polynize.io first. So no new leads or label counts come from polynize.ai. The use cases in `lib/marketing/use-case.ts` still name those paths; their links work and land on polynize.io.
+- **D115 is unchanged.** The Library stays live by link, but is no longer in search results.
+
+**Removal from Google is not instant.** Google drops each page when it next crawls it (days to weeks). The Removals tool in Google Search Console hides them sooner.
+
+**Switching back:** delete the `PUBLIC_HOSTS` check in `middleware.ts` (and the `/pricing.html` entry), or the `/:path*` header entry in `next.config.mjs`. To keep another page public, add it to `KEPT_ON_PUBLIC_HOSTS`.
