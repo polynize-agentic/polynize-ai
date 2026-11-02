@@ -14,13 +14,13 @@ const nextConfig = {
       // The scroll-story variant of /mapping replaced the original, so it is /mapping
       // now. The experiment URL was shared while it was being judged.
       { source: '/mapping/story', destination: '/mapping', permanent: true },
-      // polynize.io is the front door now (29 September 2026), so the homepage sends
-      // visitors there; every experience (/map-your-team, /job-mapping, /library and the
-      // rest) still runs here. Host-scoped and anchored: pam.polynize.ai contains
-      // "polynize.ai" and its "/" is the Console. Temporary, and the query string rides
-      // along, so utm labels reach polynize.io. Switching back is deleting this entry.
+      // polynize.ai is internal now (D127): middleware.ts sends every public page on
+      // polynize.ai and www to polynize.io (it replaced the homepage entry of 29
+      // September). Middleware never sees a path with a dot in it, so the one public
+      // HTML file that is not a link sent to someone is sent from here. Host-scoped and
+      // anchored, so localhost and previews still serve it.
       {
-        source: '/',
+        source: '/pricing.html',
         has: [{ type: 'host', value: '^(?:www\\.)?polynize\\.ai$' }],
         destination: 'https://polynize.io/',
         permanent: false,
@@ -35,6 +35,20 @@ const nextConfig = {
   },
   async headers() {
     return [
+      {
+        /**
+         * Keep polynize.ai out of search engines (2 November 2026, D127).
+         *
+         * Every path on every host this deployment answers on: polynize.ai, www, pam and the
+         * vercel.app address. polynize.io is a separate site and this does not reach it.
+         * public/robots.txt lets crawlers in on purpose: a page Google may not fetch is a page
+         * it never sees this header on, so a page already listed would stay listed. The
+         * /proposals and /brand entries below say the same thing and stay, so taking this one
+         * out later does not expose them.
+         */
+        source: '/:path*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
       {
         /**
          * The touch samples, readable cross-origin.

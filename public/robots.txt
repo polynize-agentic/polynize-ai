@@ -1,5 +1,5 @@
+# polynize.ai is kept out of search engines by an X-Robots-Tag: noindex header on
+# every page (next.config.mjs, D127). Crawlers are let in on purpose: a page a
+# crawler may not fetch is a page it never sees noindex on, so it stays listed.
 User-agent: *
-Disallow: /proposals/
-Disallow: /proposals
-
-Sitemap: https://polynize.ai/sitemap.xml
+Allow: /
