@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test:marketing": "npx --yes tsx lib/marketing/__tests__/gate4.test.ts && npx --yes tsx lib/marketing/__tests__/attribution.test.ts && npx --yes tsx lib/marketing/__tests__/site-analytics.test.ts && npx --yes tsx lib/marketing/__tests__/split-screen.test.ts && npx --yes tsx lib/marketing/__tests__/learnings.test.ts && npx --yes tsx lib/crm/__tests__/crm.test.ts",
     "proof:slides": "npx --yes tsx --tsconfig tsconfig.proof.json scripts/slide-proof.tsx",
+    "test:christmas26": "npx --yes tsx lib/christmas26/__tests__/christmas26.test.ts",
     "test:blueprint": "npx --yes tsx lib/blueprint/__tests__/schema-v2.fixture.ts && npx --yes tsx lib/blueprint/__tests__/derive-and-export.test.ts",
     "lint:fix": "eslint . --fix",
     "lint:ci": "eslint . --quiet"

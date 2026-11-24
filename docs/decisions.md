@@ -3447,6 +3447,7 @@ The panel was checked on screen in both themes, open and closed, on a throwaway 
   - `/console`, behind its sign-in.
   - `/library` and `/library/<slug>`. PAM publishes Learnings there and every post cut from one links to it (D115). Marrs chose to keep it until the Library has a home on polynize.io.
   - Links sent to one person: lead blueprints (`/map-your-team/<id>`, `/blueprints/<id>`, and the old `/blueprint/<id>`), job maps (`/job-mapping/<id>`), client proposals (`/proposals`, behind its own gate). The CRM and the new-lead email link to blueprints (`blueprintUrl()`), so those links keep working.
+  - `/christmas26`, the Christmas Party invite (added 24 November 2026, D128). Sent to each guest by personal message.
 - pam.polynize.ai, localhost and preview deployments are not public hosts: every page still renders there, for testing. API routes and static files never reach middleware, so the crons, the flows' endpoints and email images keep working.
 
 **Out of search, everywhere.** Every response this deployment serves carries `X-Robots-Tag: noindex, nofollow` (one `headers()` entry for `/:path*` in `next.config.mjs`). That covers every host it answers on, the kept pages included. polynize.io is a separate site (S3 and CloudFront) and is not touched. The older entries for `/proposals` and `/brand` stay, so taking the site-wide entry out later does not expose them.
@@ -3460,3 +3461,23 @@ The panel was checked on screen in both themes, open and closed, on a throwaway 
 **Removal from Google is not instant.** Google drops each page when it next crawls it (days to weeks). The Removals tool in Google Search Console hides them sooner.
 
 **Switching back:** delete the `PUBLIC_HOSTS` check in `middleware.ts` (and the `/pricing.html` entry), or the `/:path*` header entry in `next.config.mjs`. To keep another page public, add it to `KEPT_ON_PUBLIC_HOSTS`.
+
+## D128: The Christmas Party invite, /christmas26
+
+**Adopted 24 November 2026.** Evelyn (the events agent) wrote the brief; Marrs approved: *"Option A go for it. Copy the Polynize.io look from the live site for now as a v1. And yep let's experiment with a version of the curve tree. Site can close after the date."*
+
+**What it is.** One private page for about 30 guests of the Polynize Christmas Party (Thursday 17 December 2026, 6pm to 9pm, Commons Bar, 55 Collins Street, Melbourne). Most open it on a phone from a personal message. It thanks them, gives the details and directions, and collects the RSVP.
+
+**Where it lives, and why on polynize.ai.** D127 made polynize.ai internal. Marrs chose to keep this page here anyway (option A) because the RSVP backend (Supabase and Resend) is in this repo and polynize.io is a static site with no form handling. `/christmas26` is in `KEPT_ON_PUBLIC_HOSTS`, beside the other links sent to one person. It is `noindex, nofollow` (page meta and the site-wide header), in no nav and no sitemap. "Private" means unlisted, not locked: anyone with the link can see it and reply.
+
+**The look.** Copied from the live polynize.io, measured on 24 November 2026: black, Inter, white headings with a bold part, mint buttons, inputs at 4% white. This repo has no polynize.io components (that site is separate), so v1 matches the look by hand. If polynize.io gets a shared component set, move to it.
+
+**The curve tree.** polynize.io's cohort curve (amber below a dashed gold benchmark, mint above it) drawn as a Christmas tree: a cohort of curves rises past a dashed STANDARD line and meets at the star. The brief suggested the star sit on the standard; it sits at the top instead, so the tree shows the cohort going past the standard, which is the narrative. A bar-chart tree was rejected because bars sorted long to short read as a ranking, which the brief forbids. One animation on load (draw, mirror, fill, lights, star); nothing with reduced motion. One SVG source (`lib/christmas26/tree.ts`) serves the page and the WhatsApp preview (`/christmas26/og.png`), so they cannot drift.
+
+**RSVPs.** `POST /api/christmas26/rsvp`. Each reply is stored in `christmas26_rsvps` (migration 0018: RLS on, no policies, so only the server can read it) and emailed to marrs@polynize.io in the brief's exact format, which Evelyn reads. The guest sees "thank you" if either the store or the email worked. Spam: a hidden honeypot field, no CAPTCHA. `?n=Stuart` greets the guest and fills in the name (plain text, 40 characters). `?test=1` marks a reply as a test: the subject starts with "TEST" and the row has `is_test`. No new vendor, so no Vendor Review.
+
+**Closing and deleting.** The form closes at the end of Friday 27 November, Melbourne time (Marrs: "close after the date"); the page stays up with the details until the night. A daily cron (`/api/cron/christmas26-purge`) deletes every reply from 21 December 2026, inside the brief's 31 December limit. It does NOT delete the reply emails in marrs@polynize.io or Resend's copy of each sent email: delete those by hand after the event. Remove the cron entry and route after January 2027.
+
+**Export.** Supabase, Table Editor, `christmas26_rsvps`, Export, CSV. Filter out `is_test` rows first.
+
+**Open at launch.** Facts marked `pending` in `app/christmas26/content.ts` show an amber "to confirm" tag: dress code, entry route after 6pm, lift access, parking entry, drinks wording. Confirm each, fill in the text and remove the tag before the link goes out.

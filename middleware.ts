@@ -14,6 +14,8 @@ const PAM_HOSTNAMES = new Set(['pam.polynize.ai', 'pam.localhost']);
  *  - /library: PAM publishes Learnings there and every post cut from one links to it (D115).
  *  - links sent to one person: a lead's blueprint (/map-your-team/<id>, /blueprints/<id>), a job
  *    map (/job-mapping/<id>), and client proposals (/proposals, behind its own gate).
+ *  - /christmas26: the Christmas Party invite, sent to each guest by personal message (D128).
+ *    Its .ics file and og.png have a dot in the path, so they never reach middleware anyway.
  * pam.polynize.ai, localhost and preview deployments are not public hosts, so every page still
  * renders there. API routes and static files never reach middleware (see the matcher), so the cron
  * jobs, the flows' endpoints and email images keep working. Search engines are kept off all of it
@@ -27,6 +29,7 @@ const KEPT_ON_PUBLIC_HOSTS = [
   /^\/blueprints\/[^/]+/,
   /^\/job-mapping\/[^/]+/,
   /^\/proposals(\/|$)/,
+  /^\/christmas26(\/|$)/,
 ];
 
 /**

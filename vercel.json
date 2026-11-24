@@ -11,6 +11,10 @@
     {
       "path": "/api/cron/analytics-pull",
       "schedule": "10 17 * * *"
+    },
+    {
+      "path": "/api/cron/christmas26-purge",
+      "schedule": "40 16 * * *"
     }
   ]
 }

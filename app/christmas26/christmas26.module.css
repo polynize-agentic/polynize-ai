@@ -1,0 +1,690 @@
+/*
+ * /christmas26 (D128). The look is copied from polynize.io, measured on the live site on
+ * 24 November 2026: black page, Inter, white headings with a bold part, a 32px white rule under
+ * each heading, body text at 70% white, inputs at 4% white with a 14% border and 8px corners,
+ * mint buttons with near-black text, and the cohort curve in amber below a dashed gold benchmark
+ * and mint above it. Mobile first: the brief's phone is 390px wide.
+ */
+
+.page {
+  --x-bg: #000;
+  --x-panel: #0b0e0d;
+  --x-mint: #69fccb;
+  --x-mint-hover: #8dfdd9;
+  --x-amber: rgb(224, 137, 26);
+  --x-text: #fff;
+  --x-text-2: rgba(255, 255, 255, 0.72);
+  --x-text-3: rgba(255, 255, 255, 0.55);
+  --x-line: rgba(255, 255, 255, 0.1);
+  --x-error: #ff8a7a;
+
+  min-height: 100vh;
+  background: var(--x-bg);
+  color: var(--x-text);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.page a {
+  color: inherit;
+}
+
+.page a:focus-visible,
+.page button:focus-visible,
+.page input:focus-visible,
+.page textarea:focus-visible {
+  outline: 2px solid var(--x-mint);
+  outline-offset: 3px;
+}
+
+.testBanner {
+  margin: 0;
+  padding: 10px 16px;
+  background: rgba(224, 137, 26, 0.14);
+  border-bottom: 1px solid rgba(224, 137, 26, 0.4);
+  color: var(--x-amber);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------ header */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px 20px;
+}
+
+.logo {
+  display: block;
+  width: auto;
+  height: 26px;
+}
+
+.headerLink {
+  font-size: 15px;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.55);
+  text-underline-offset: 4px;
+  padding: 6px 0;
+}
+
+/* ------------------------------------------------------------------ hero */
+
+.hero {
+  display: grid;
+  gap: 28px;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 20px 20px 48px;
+  text-align: center;
+}
+
+.heroText {
+  min-width: 0;
+}
+
+.greeting {
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: var(--x-text-2);
+}
+
+.title {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.titleLead {
+  display: block;
+}
+
+.titleAccent {
+  display: block;
+  color: var(--x-mint);
+  font-weight: 700;
+}
+
+.lede {
+  max-width: 520px;
+  margin: 18px auto 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--x-text-2);
+}
+
+.treeFigure {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.tieIn {
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--x-text-2);
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .header {
+    padding: 22px 32px;
+  }
+  .hero {
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    gap: 48px;
+    padding: 56px 32px 88px;
+    text-align: left;
+  }
+  .title {
+    font-size: 64px;
+  }
+  .lede {
+    margin-left: 0;
+    font-size: 19px;
+  }
+  .treeFigure {
+    max-width: 440px;
+  }
+}
+
+/* ------------------------------------------------------------------ sections */
+
+.section {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 56px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.h2 strong {
+  font-weight: 700;
+}
+
+.rule {
+  width: 32px;
+  height: 1px;
+  margin: 16px auto 24px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+@media (min-width: 900px) {
+  .section {
+    padding: 72px 32px;
+  }
+  .h2 {
+    font-size: 32px;
+    text-align: left;
+  }
+  .rule {
+    margin-left: 0;
+  }
+}
+
+/* ------------------------------------------------------------------ detail rows */
+
+.card {
+  margin: 0;
+  background: var(--x-panel);
+  border: 1px solid var(--x-line);
+  border-radius: 14px;
+}
+
+.row {
+  padding: 14px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.row:first-child {
+  border-top: 0;
+}
+
+.rowLabel {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--x-text-3);
+}
+
+.rowValue {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.rowValue a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pending {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border: 1px solid rgba(224, 137, 26, 0.5);
+  border-radius: 999px;
+  color: var(--x-amber);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+}
+
+.pending:first-child {
+  margin-left: 0;
+}
+
+@media (min-width: 640px) {
+  .row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 16px;
+    align-items: baseline;
+  }
+  .rowLabel {
+    margin: 0;
+  }
+}
+
+/* ------------------------------------------------------------------ buttons */
+
+.actionsWrap {
+  margin-top: 20px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.actions > a {
+  flex: 1 1 150px;
+}
+
+.btnPrimary,
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.page .btnPrimary {
+  background: var(--x-mint);
+  color: #0b1210;
+  border: 0;
+}
+
+.page .btnPrimary:hover {
+  background: var(--x-mint-hover);
+}
+
+.page .btnPrimary:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.page .btnSecondary {
+  background: transparent;
+  color: var(--x-text);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.page .btnSecondary:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.altLink {
+  margin: 14px 0 0;
+  font-size: 14px;
+  text-align: center;
+}
+
+.altLink a {
+  color: var(--x-text-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (min-width: 640px) {
+  .actions > a {
+    flex: 0 0 auto;
+  }
+  .altLink {
+    text-align: left;
+  }
+}
+
+/* ------------------------------------------------------------------ RSVP form */
+
+.rsvpSub {
+  margin: 0 0 28px;
+  font-size: 16px;
+  color: var(--x-text-2);
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .rsvpSub {
+    text-align: left;
+  }
+}
+
+.form {
+  display: grid;
+  gap: 24px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.fieldset {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.label {
+  padding: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.optional {
+  margin-left: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--x-text-3);
+}
+
+.hint {
+  margin: -2px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--x-text-3);
+}
+
+/* 16px type on purpose: iOS zooms the page on focus for anything smaller. */
+.input {
+  width: 100%;
+  padding: 12px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--x-text);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  resize: vertical;
+}
+
+.input:focus {
+  border-color: rgba(105, 252, 203, 0.6);
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--x-error);
+}
+
+.choices {
+  display: grid;
+  gap: 10px;
+}
+
+@media (min-width: 520px) {
+  .choices {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 12px 14px;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.choice:has(input:checked) {
+  background: rgba(105, 252, 203, 0.08);
+  border-color: var(--x-mint);
+}
+
+.choice input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--x-mint);
+}
+
+.error {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--x-error);
+}
+
+.formError {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: var(--x-error);
+  border: 1px solid rgba(255, 138, 122, 0.5);
+  border-radius: 8px;
+}
+
+.submitRow {
+  display: grid;
+  gap: 12px;
+}
+
+.submit {
+  width: 100%;
+}
+
+.privacy {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--x-text-3);
+}
+
+@media (min-width: 640px) {
+  .submit {
+    width: auto;
+    justify-self: start;
+    min-width: 200px;
+  }
+}
+
+/* Off-screen, not display:none: some bots skip fields they can tell are hidden. */
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.done {
+  padding: 24px 20px;
+  text-align: center;
+  background: rgba(105, 252, 203, 0.06);
+  border: 1px solid rgba(105, 252, 203, 0.35);
+  border-radius: 14px;
+}
+
+.doneText {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.45;
+}
+
+.doneText:focus {
+  outline: none;
+}
+
+.closed {
+  margin: 0;
+  padding: 20px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--x-text-2);
+  text-align: center;
+  background: var(--x-panel);
+  border: 1px solid var(--x-line);
+  border-radius: 14px;
+}
+
+.closed a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------ footer */
+
+.footer {
+  padding: 48px 20px 64px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.thanks {
+  max-width: 520px;
+  margin: 0 auto 24px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--x-text-2);
+}
+
+.footerLogo {
+  display: inline-block;
+  width: auto;
+  height: 28px;
+  opacity: 0.9;
+}
+
+/* ------------------------------------------------------------------ the curve tree */
+
+.tree svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* The label's font-family attribute names Inter for the still image; on the page, use the page font. */
+.tree text {
+  font-family: inherit;
+}
+
+/*
+ * ONE MOMENT ON LOAD, ~4 seconds: the standard line runs across, the curve draws, it mirrors to
+ * make the tree, the tree fills, the lights come on, then the star. Each animation only moves
+ * TOWARDS the state the SVG attributes already describe (fill-mode: backwards), so with reduced
+ * motion, or if CSS is late, the visitor sees the finished tree. Delays for the curves and the
+ * lights are set per element in lib/christmas26/tree.ts.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .treeStd {
+    transform-box: fill-box;
+    transform-origin: 0 50%;
+    animation: xtGrow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.1s backwards;
+  }
+  .treeLabel {
+    animation: xtFade 0.5s ease-out 0.5s backwards;
+  }
+  .treeDraw {
+    animation: xtDraw 1.5s cubic-bezier(0.45, 0, 0.25, 1) backwards;
+  }
+  .treeMirror {
+    transform-box: view-box;
+    transform-origin: 50% 50%;
+    animation: xtMirror 0.75s cubic-bezier(0.65, 0, 0.35, 1) 2.05s backwards;
+  }
+  .treeFill {
+    animation: xtFade 0.7s ease-out 2.55s backwards;
+  }
+  .treeLight {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: xtLight 0.45s ease-out backwards;
+  }
+  .treeStar {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: xtStar 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 3.5s backwards;
+  }
+}
+
+@keyframes xtGrow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes xtFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes xtDraw {
+  from {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Starts as an exact copy over the left half (the outer group's mirror undone), then swings across. */
+@keyframes xtMirror {
+  0% {
+    opacity: 0;
+    transform: scaleX(-1);
+  }
+  4% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes xtLight {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.6);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes xtStar {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(-72deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
