@@ -16,10 +16,9 @@ import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import s from './christmas26.module.css';
 import { CurveTree } from './CurveTree';
-import { CalendarButtons } from './CalendarButtons';
 import { RsvpClosed, RsvpForm } from './RsvpForm';
-import { GETTING_THERE, GOOD_TO_KNOW, type InfoRow } from './content';
-import { EVENT, OG_IMAGE_URL, PAGE_URL, isRsvpOpen, linkNameFrom } from '@/lib/christmas26/event';
+import { GETTING_THERE, GOOD_TO_KNOW, contactPhone, type InfoRow, type Phone } from './content';
+import { EVENT, OG_IMAGE_URL, PAGE_URL, directionsUrl, isRsvpOpen, linkNameFrom } from '@/lib/christmas26/event';
 
 /** polynize.io sets its headings in Inter 700 and its buttons in 600; the root layout loads 400 and 500 only. */
 const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap' });
@@ -58,14 +57,35 @@ export const dynamic = 'force-dynamic';
 
 type PageProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 
-function Rows({ rows }: { rows: InfoRow[] }) {
+/** A row's text, with `{phone}` as a tap-to-call link, or dropped ("call Marrs") with no number set. */
+function RowText({ text, phone }: { text: string; phone: Phone | null }) {
+  if (!text.includes('{phone}')) return <>{text}</>;
+  if (!phone) return <>{text.replace(/ on \{phone\}/g, '')}</>;
+  const parts = text.split('{phone}');
+  return (
+    <>
+      {parts.map((part, i) => (
+        <span key={i}>
+          {part}
+          {i < parts.length - 1 && (
+            <a href={`tel:${phone.tel}`} className={s.tel}>
+              {phone.display}
+            </a>
+          )}
+        </span>
+      ))}
+    </>
+  );
+}
+
+function Rows({ rows, phone = null }: { rows: InfoRow[]; phone?: Phone | null }) {
   return (
     <dl className={s.card}>
       {rows.map((row) => (
         <div key={row.label} className={s.row}>
           <dt className={s.rowLabel}>{row.label}</dt>
           <dd className={s.rowValue}>
-            {row.text}
+            {row.text && <RowText text={row.text} phone={phone} />}
             {row.email && (
               <>
                 Email <a href={`mailto:${row.email}`}>{row.email}</a>.
@@ -84,6 +104,7 @@ export default async function Christmas26Page({ searchParams }: PageProps) {
   const linkName = linkNameFrom(params.n);
   const test = params.test === '1';
   const open = isRsvpOpen();
+  const phone = contactPhone();
 
   const details: InfoRow[] = [
     { label: 'Date', text: EVENT.dateLabel },
@@ -124,6 +145,12 @@ export default async function Christmas26Page({ searchParams }: PageProps) {
               Shourov and Marrs invite you to a night to thank the people who have been pivotal in getting Polynize
               where it is today.
             </p>
+            {/* The facts a guest needs before replying, now that the RSVP comes straight after the hero. */}
+            <ul className={s.facts}>
+              <li>{EVENT.shortDateLabel}</li>
+              <li>{EVENT.timeLabel}</li>
+              <li>Commons Bar, Melbourne</li>
+            </ul>
           </div>
           <figure className={s.treeFigure}>
             <CurveTree />
@@ -133,13 +160,30 @@ export default async function Christmas26Page({ searchParams }: PageProps) {
           </figure>
         </section>
 
+        {/* RSVP first (Marrs, 25 November). The calendar is offered only after a "yes". */}
+        <section id="rsvp" className={`${s.section} ${s.rsvpSection}`} aria-labelledby="xmas-rsvp">
+          <div className={s.rsvpCard}>
+            <h2 id="xmas-rsvp" className={s.h2}>
+              Will you <strong>join us?</strong>
+            </h2>
+            <div className={s.rule} aria-hidden="true" />
+            {open ? <RsvpForm linkName={linkName} test={test} /> : <RsvpClosed />}
+          </div>
+        </section>
+
         <section className={s.section} aria-labelledby="xmas-details">
           <h2 id="xmas-details" className={s.h2}>
             The <strong>details</strong>
           </h2>
           <div className={s.rule} aria-hidden="true" />
           <Rows rows={details} />
-          <CalendarButtons directions />
+          <div className={s.actionsWrap}>
+            <div className={s.actions}>
+              <a className={s.btnSecondary} href={directionsUrl()} target="_blank" rel="noopener noreferrer">
+                Get directions
+              </a>
+            </div>
+          </div>
         </section>
 
         <section className={s.section} aria-labelledby="xmas-getting-there">
@@ -147,7 +191,7 @@ export default async function Christmas26Page({ searchParams }: PageProps) {
             Getting <strong>there</strong>
           </h2>
           <div className={s.rule} aria-hidden="true" />
-          <Rows rows={GETTING_THERE} />
+          <Rows rows={GETTING_THERE} phone={phone} />
         </section>
 
         <section className={s.section} aria-labelledby="xmas-good-to-know">
@@ -155,22 +199,7 @@ export default async function Christmas26Page({ searchParams }: PageProps) {
             Good to <strong>know</strong>
           </h2>
           <div className={s.rule} aria-hidden="true" />
-          <Rows rows={GOOD_TO_KNOW} />
-        </section>
-
-        <section id="rsvp" className={s.section} aria-labelledby="xmas-rsvp">
-          <h2 id="xmas-rsvp" className={s.h2}>
-            Will you <strong>join us?</strong>
-          </h2>
-          <div className={s.rule} aria-hidden="true" />
-          {open ? (
-            <>
-              <p className={s.rsvpSub}>Please reply by Friday 27 November.</p>
-              <RsvpForm linkName={linkName} test={test} />
-            </>
-          ) : (
-            <RsvpClosed />
-          )}
+          <Rows rows={GOOD_TO_KNOW} phone={phone} />
         </section>
       </main>
 

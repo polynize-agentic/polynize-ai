@@ -143,6 +143,7 @@ export function RsvpForm({ linkName, test }: Props) {
 
   return (
     <form className={s.form} onSubmit={submit} noValidate>
+      <p className={s.rsvpSub}>Please reply by Friday 27 November.</p>
       <div className={s.field}>
         <label htmlFor="rsvp-name" className={s.label}>
           Your name

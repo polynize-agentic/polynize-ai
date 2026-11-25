@@ -119,6 +119,26 @@
   color: var(--x-text-2);
 }
 
+/* Date, time and place as three pills: the guest sees them before the RSVP, which comes next. */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.facts li {
+  padding: 7px 14px;
+  font-size: 15px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+
 .treeFigure {
   width: 100%;
   max-width: 400px;
@@ -150,6 +170,9 @@
   .lede {
     margin-left: 0;
     font-size: 19px;
+  }
+  .facts {
+    justify-content: flex-start;
   }
   .treeFigure {
     max-width: 440px;
@@ -348,8 +371,51 @@
 
 /* ------------------------------------------------------------------ RSVP form */
 
+/* Straight after the hero, in a mint card, so it is the first thing a guest does (Marrs, 25 Nov). */
+.rsvpSection {
+  padding-top: 8px;
+  border-top: 0;
+}
+
+.rsvpCard {
+  padding: 28px 20px;
+  background: linear-gradient(180deg, rgba(105, 252, 203, 0.07), rgba(105, 252, 203, 0.015));
+  border: 1px solid rgba(105, 252, 203, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 0 48px rgba(105, 252, 203, 0.06);
+}
+
+/* Inside the card, the thank-you and closed panels need no second frame. */
+.rsvpCard .done,
+.rsvpCard .closed {
+  padding: 8px 0 0;
+  background: transparent;
+  border: 0;
+}
+
+@media (min-width: 900px) {
+  .rsvpSection {
+    padding-top: 8px;
+  }
+  .rsvpCard {
+    padding: 40px;
+  }
+}
+
+.tel {
+  color: var(--x-mint);
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.page .tel {
+  color: var(--x-mint);
+}
+
 .rsvpSub {
-  margin: 0 0 28px;
+  margin: 0 0 4px;
   font-size: 16px;
   color: var(--x-text-2);
   text-align: center;
