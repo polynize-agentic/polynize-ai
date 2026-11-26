@@ -7,8 +7,12 @@
  * so nothing server-only may come in here.
  */
 
-export const PAGE_URL = 'https://polynize.ai/christmas26';
-export const OG_IMAGE_URL = 'https://polynize.ai/christmas26/og.png';
+/**
+ * www, because Vercel sends polynize.ai to www.polynize.ai (307). The link preview must point at
+ * the final address: a crawler that does not follow the redirect shows no image.
+ */
+export const PAGE_URL = 'https://www.polynize.ai/christmas26';
+export const OG_IMAGE_URL = 'https://www.polynize.ai/christmas26/og.png';
 export const ICS_PATH = '/christmas26/polynize-christmas-party.ics';
 export const RSVP_API_PATH = '/api/christmas26/rsvp';
 /** Every reply is emailed here. Evelyn reads these emails and updates the guest list. */
