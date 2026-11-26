@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   },
 };
 
-/** The page reads `?n=` and the clock (replies close after 27 November), so it renders per request. */
+/** The page reads `?n=` and the clock (replies close after 4 December), so it renders per request. */
 export const dynamic = 'force-dynamic';
 
 type PageProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };

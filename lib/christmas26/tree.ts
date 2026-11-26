@@ -2,7 +2,7 @@
  * THE CURVE TREE on /christmas26 (D128): a Christmas tree drawn as a performance curve.
  *
  * The idea, in the language of polynize.io's own hero chart: a cohort of curves starts low (amber),
- * rises through a dashed STANDARD line, turns mint above it, and every curve meets at the top,
+ * rises through a dashed standard line (unlabelled), turns mint above it, and every curve meets at the top,
  * where the star sits. The left half is the curve; the right half is its mirror image. Amber below
  * the standard and mint above it are the same colours and the same switch point as the cohort
  * curve on polynize.io, so the page reads as part of that site.
@@ -112,7 +112,6 @@ const LIGHTS: Array<[number, number, 'l' | 'r']> = [
 
 export type TreeClasses = {
   std: string;
-  label: string;
   draw: string;
   mirror: string;
   fill: string;
@@ -162,7 +161,7 @@ export function treeSvg(opts: { classes?: TreeClasses; idPrefix?: string } = {})
   const starY = APEX_Y - 4;
 
   return [
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${TREE_W} ${TREE_H}" width="${TREE_W}" height="${TREE_H}" role="img" aria-label="A Christmas tree drawn as a performance curve. A cohort of lines rises past a dashed standard line and meets at a star at the top.">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${TREE_W} ${TREE_H}" width="${TREE_W}" height="${TREE_H}" role="img" aria-label="A Christmas tree drawn as a performance curve. A cohort of lines rises past a dashed line and meets at a star at the top.">`,
     '<defs>',
     `<linearGradient id="${id}-stroke" gradientUnits="userSpaceOnUse" x1="0" y1="${APEX_Y}" x2="0" y2="${BASE_Y}">`,
     `<stop offset="0" stop-color="rgb(${MINT})"/>`,
@@ -186,9 +185,8 @@ export function treeSvg(opts: { classes?: TreeClasses; idPrefix?: string } = {})
     `<rect x="${CX - 7}" y="${BASE_Y + 1}" width="14" height="16" rx="2" fill="rgb(${AMBER})" fill-opacity="0.45"/>`,
     // The filled tree.
     `<path d="${silhouettePath()}" fill="url(#${id}-fill)"${cls('fill')}/>`,
-    // The standard: dashed, gold, labelled, exactly as polynize.io draws its benchmark.
+    // The standard: dashed and gold, as polynize.io draws its benchmark. No label (Marrs, 26 November).
     `<line x1="0" y1="${n1(STD_Y)}" x2="${TREE_W}" y2="${n1(STD_Y)}" stroke="rgb(${GOLD})" stroke-opacity="0.6" stroke-width="1" stroke-dasharray="6 7"${cls('std')}/>`,
-    `<text x="2" y="${n1(STD_Y - 8)}" fill="rgb(${GOLD})" fill-opacity="0.85" font-family="Inter, system-ui, sans-serif" font-size="9" font-weight="600" letter-spacing="1.2"${cls('label')}>STANDARD</text>`,
     // The left half draws; the right half is its mirror.
     `<g>${leftCurves}</g>`,
     `<g transform="translate(${TREE_W} 0) scale(-1 1)"><g${cls('mirror')}>${mirroredCurves}</g></g>`,

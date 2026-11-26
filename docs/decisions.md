@@ -3476,7 +3476,7 @@ The panel was checked on screen in both themes, open and closed, on a throwaway 
 
 **RSVPs.** `POST /api/christmas26/rsvp`. Each reply is stored in `christmas26_rsvps` (migration 0018: RLS on, no policies, so only the server can read it) and emailed to marrs@polynize.io in the brief's exact format, which Evelyn reads. The guest sees "thank you" if either the store or the email worked. Spam: a hidden honeypot field, no CAPTCHA. `?n=Stuart` greets the guest and fills in the name (plain text, 40 characters). `?test=1` marks a reply as a test: the subject starts with "TEST" and the row has `is_test`. No new vendor, so no Vendor Review.
 
-**Closing and deleting.** The form closes at the end of Friday 27 November, Melbourne time (Marrs: "close after the date"); the page stays up with the details until the night. A daily cron (`/api/cron/christmas26-purge`) deletes every reply from 21 December 2026, inside the brief's 31 December limit. It does NOT delete the reply emails in marrs@polynize.io or Resend's copy of each sent email: delete those by hand after the event. Remove the cron entry and route after January 2027.
+**Closing and deleting.** The form closes at the end of the reply date, Melbourne time (Marrs: "close after the date"; the date is now Friday 4 December, see below); the page stays up with the details until the night. A daily cron (`/api/cron/christmas26-purge`) deletes every reply from 21 December 2026, inside the brief's 31 December limit. It does NOT delete the reply emails in marrs@polynize.io or Resend's copy of each sent email: delete those by hand after the event. Remove the cron entry and route after January 2027.
 
 **Export.** Supabase, Table Editor, `christmas26_rsvps`, Export, CSV. Filter out `is_test` rows first.
 
@@ -3484,5 +3484,10 @@ The panel was checked on screen in both themes, open and closed, on a throwaway 
 - **RSVP first.** The RSVP card comes straight after the hero, and "Add to calendar" is offered only after a "yes" (it was in the details section). The hero now shows the date, time and place as three pills, so a guest sees them before replying. "Get directions" stays in the details.
 - **Open items closed.** Dress code: "Semi formal. Dress up a little, but come comfortable." (Marrs asked for wording: comfortable, but make an effort.) Entry after 6pm and lift directions: call Marrs. Parking: the multi-storey car park on Flinders Lane, near the Spring Street end. Drinks: "Drinks provided."
 - **The phone number.** Marrs's mobile shows as a tap-to-call link (`contactPhone()` in `app/christmas26/content.ts`). The `CHRISTMAS26_PHONE` setting in Vercel wins if set; otherwise the number in the code is used. It was first kept out of this public repo; on 26 November Marrs said: "I don't care, please move on and get the page live."
+
+**26 November changes (Marrs).**
+- **No "STANDARD" label** on the tree. The dashed gold line stays.
+- **RSVP by Friday 4 December** (was Friday 27 November). The form closes at the end of that day, Melbourne time (`RSVP_CLOSES_AT`, `RSVP_BY_LABEL` in `lib/christmas26/event.ts`).
+- **The preview tags use www.polynize.ai.** Vercel sends polynize.ai to www with a 307, so `og:url` and `og:image` point at the final address.
 
 **Still open.** Shourov's "big screen" idea (a possible later section). The `pending` tag in `content.ts` still works for any new fact that is not confirmed.

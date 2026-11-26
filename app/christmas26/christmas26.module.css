@@ -659,9 +659,6 @@
     transform-origin: 0 50%;
     animation: xtGrow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.1s backwards;
   }
-  .treeLabel {
-    animation: xtFade 0.5s ease-out 0.5s backwards;
-  }
   .treeDraw {
     animation: xtDraw 1.5s cubic-bezier(0.45, 0, 0.25, 1) backwards;
   }

@@ -10,7 +10,6 @@ export function CurveTree() {
   const markup = treeSvg({
     classes: {
       std: s.treeStd,
-      label: s.treeLabel,
       draw: s.treeDraw,
       mirror: s.treeMirror,
       fill: s.treeFill,

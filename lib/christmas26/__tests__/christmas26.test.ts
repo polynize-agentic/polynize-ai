@@ -6,6 +6,7 @@
 import assert from 'node:assert/strict';
 import {
   ERRORS,
+  RSVP_BY_LABEL,
   RSVP_CLOSES_AT,
   RSVP_PURGE_FROM,
   cleanText,
@@ -124,9 +125,10 @@ const yes: CleanRsvp = {
 
 /* ---------------------------------------------------------------- dates */
 
-ok(isRsvpOpen(Date.parse('2026-11-27T12:59:59Z')), 'open until 11:59pm Friday 27 November in Melbourne');
-ok(!isRsvpOpen(Date.parse('2026-11-27T13:00:00Z')), 'closed from midnight Melbourne');
-eq(melbourneTime(new Date(RSVP_CLOSES_AT)), 'Sat 28 Nov 2026, 12:00am AEDT', 'the close time is midnight in Melbourne');
+ok(isRsvpOpen(Date.parse('2026-12-04T12:59:59Z')), 'open until 11:59pm Friday 4 December in Melbourne');
+ok(!isRsvpOpen(Date.parse('2026-12-04T13:00:00Z')), 'closed from midnight Melbourne');
+eq(RSVP_BY_LABEL, 'Friday 4 December', 'the page shows the same date the form closes on');
+eq(melbourneTime(new Date(RSVP_CLOSES_AT)), 'Sat 5 Dec 2026, 12:00am AEDT', 'the close time is midnight in Melbourne');
 eq(melbourneTime(new Date(RSVP_PURGE_FROM)), 'Mon 21 Dec 2026, 12:00am AEDT', 'the purge starts 21 December in Melbourne');
 ok(RSVP_PURGE_FROM < Date.parse('2026-12-31T00:00:00Z'), 'the purge starts before the brief deadline');
 
@@ -159,9 +161,10 @@ eq(melbourneTime(new Date('2026-12-17T07:00:00Z')), 'Thu 17 Dec 2026, 6:00pm AED
   const still = treeSvg();
   ok(!still.includes('NaN') && !still.includes('undefined'), 'every coordinate is a number');
   ok(!still.includes('class='), 'the still image carries no animation classes');
+  ok(!/STANDARD/i.test(still.replace(/aria-label="[^"]*"/, '')), 'no visible STANDARD label (Marrs, 26 November)');
   ok(still.includes('translate(320 0) scale(-1 1)'), 'the mirror is an attribute, so the still image is a full tree');
   const animated = treeSvg({
-    classes: { std: 'a', label: 'b', draw: 'c', mirror: 'd', fill: 'e', light: 'f', star: 'g' },
+    classes: { std: 'a', draw: 'c', mirror: 'd', fill: 'e', light: 'f', star: 'g' },
   });
   ok(animated.includes('class="d"') && animated.includes('animation-delay'), 'the page version carries the classes');
   ok(!/<g transform="[^"]*" class=/.test(animated), 'CSS never transforms the group that carries the mirror attribute');

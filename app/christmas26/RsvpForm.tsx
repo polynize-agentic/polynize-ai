@@ -9,6 +9,7 @@ import {
   LIMITS,
   QUESTIONS_EMAIL,
   RSVP_API_PATH,
+  RSVP_BY_LABEL,
   validateRsvp,
   type RsvpFieldErrors,
   type RsvpFields,
@@ -143,7 +144,7 @@ export function RsvpForm({ linkName, test }: Props) {
 
   return (
     <form className={s.form} onSubmit={submit} noValidate>
-      <p className={s.rsvpSub}>Please reply by Friday 27 November.</p>
+      <p className={s.rsvpSub}>Please reply by {RSVP_BY_LABEL}.</p>
       <div className={s.field}>
         <label htmlFor="rsvp-name" className={s.label}>
           Your name

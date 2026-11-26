@@ -34,11 +34,13 @@ export const EVENT = {
 } as const;
 
 /**
- * Replies close at the end of Friday 27 November, Melbourne time: midnight AEDT is 13:00 UTC.
- * Marrs, 24 November: the form closes after the reply date. The page itself stays up, because
- * guests still need the details and directions until the night.
+ * Replies close at the end of Friday 4 December, Melbourne time: midnight AEDT is 13:00 UTC.
+ * Marrs, 24 November: the form closes after the reply date. 26 November: the reply date moves from
+ * Friday 27 November to the Friday after. The page itself stays up, because guests still need the
+ * details and directions until the night. RSVP_BY_LABEL is the same date, for the page.
  */
-export const RSVP_CLOSES_AT = Date.parse('2026-11-27T13:00:00Z');
+export const RSVP_CLOSES_AT = Date.parse('2026-12-04T13:00:00Z');
+export const RSVP_BY_LABEL = 'Friday 4 December';
 
 /**
  * Replies are deleted from Monday 21 December, Melbourne time (00:00 AEDT). The brief's limit is
