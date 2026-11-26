@@ -3483,6 +3483,6 @@ The panel was checked on screen in both themes, open and closed, on a throwaway 
 **25 November changes (Marrs).**
 - **RSVP first.** The RSVP card comes straight after the hero, and "Add to calendar" is offered only after a "yes" (it was in the details section). The hero now shows the date, time and place as three pills, so a guest sees them before replying. "Get directions" stays in the details.
 - **Open items closed.** Dress code: "Semi formal. Dress up a little, but come comfortable." (Marrs asked for wording: comfortable, but make an effort.) Entry after 6pm and lift directions: call Marrs. Parking: the multi-storey car park on Flinders Lane, near the Spring Street end. Drinks: "Drinks provided."
-- **The phone number is a Vercel setting, not code.** This repo is public, so Marrs's mobile is read from `CHRISTMAS26_PHONE` (`contactPhone()` in `app/christmas26/content.ts`) and shown as a tap-to-call link. With no setting, the page says "call Marrs" with no number.
+- **The phone number.** Marrs's mobile shows as a tap-to-call link (`contactPhone()` in `app/christmas26/content.ts`). The `CHRISTMAS26_PHONE` setting in Vercel wins if set; otherwise the number in the code is used. It was first kept out of this public repo; on 26 November Marrs said: "I don't care, please move on and get the page live."
 
 **Still open.** Shourov's "big screen" idea (a possible later section). The `pending` tag in `content.ts` still works for any new fact that is not confirmed.

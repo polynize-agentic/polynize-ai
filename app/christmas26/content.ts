@@ -20,13 +20,15 @@ export type InfoRow = {
 export type Phone = { display: string; tel: string };
 
 /**
- * The number guests call for entry after 6pm and for lift directions. It comes from the
- * CHRISTMAS26_PHONE setting in Vercel, so a personal mobile is never in this public repo. With no
- * setting, the page says "call Marrs" without a number: every guest got the invite from Marrs or
- * Shourov, so they have a way to reach him.
+ * The number guests call for entry after 6pm and for lift directions. The CHRISTMAS26_PHONE
+ * setting in Vercel wins if it is set; otherwise Marrs's mobile below. Marrs, 26 November, on the
+ * number being in this public repo: "I don't care, please move on and get the page live."
+ * Set FALLBACK_PHONE to '' and the page says "call Marrs" with no number.
  */
+const FALLBACK_PHONE = '0425 837 955';
+
 export function contactPhone(): Phone | null {
-  const display = process.env.CHRISTMAS26_PHONE?.trim();
+  const display = process.env.CHRISTMAS26_PHONE?.trim() || FALLBACK_PHONE;
   if (!display) return null;
   const digits = display.replace(/[^\d+]/g, '');
   const tel = digits.startsWith('0') ? `+61${digits.slice(1)}` : digits;
