@@ -53,7 +53,7 @@ export const GOOD_TO_KNOW: InfoRow[] = [
   { label: 'Dress code', text: 'Semi formal. Dress up a little, but come comfortable.' },
   { label: 'Food', text: 'Canapés from 6pm. Tell us about allergies when you RSVP.' },
   { label: 'Drinks', text: 'Drinks provided.' },
-  { label: 'Partners', text: 'Welcome. Tell us their name when you RSVP.' },
+  { label: 'Guests', text: 'Bring a guest. Tell us their name when you RSVP.' },
   { label: 'Finish', text: '9pm.' },
   { label: 'Questions', email: QUESTIONS_EMAIL },
 ];

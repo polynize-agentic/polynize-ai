@@ -25,7 +25,7 @@ export const EVENT = {
   shortDateLabel: 'Thursday 17 December',
   timeLabel: '6pm to 9pm',
   placeLabel: 'Commons Bar, Level 1, 55 Collins Street, Melbourne',
-  whatsOn: 'Drinks and canapés from 6pm. Partners are welcome.',
+  whatsOn: 'Drinks and canapés from 6pm. Bring a guest.',
   /** 6pm to 9pm Melbourne time. Melbourne is on AEDT (UTC+11) in December. */
   startUtc: '20261217T070000Z',
   endUtc: '20261217T100000Z',
@@ -80,6 +80,14 @@ export function linkNameFrom(raw: string | string[] | undefined): string | null 
 
 /* ------------------------------------------------------------------ the reply */
 
+/*
+ * "PARTNER" IN THE CODE MEANS "GUEST" ON THE PAGE. Evelyn, 27 November: say "guest", not
+ * "partner", because not every guest brings a partner. Every word a person reads (page, errors,
+ * email) now says guest. The field names (partner, partnerName, withPartner) and the database
+ * columns (with_partner, partner_name) keep the old word, so a page already open in a guest's
+ * browser still sends a reply the API accepts, and no SQL change is needed.
+ */
+
 export type Coming = 'yes' | 'no';
 export type PartnerChoice = 'alone' | 'partner';
 
@@ -108,8 +116,8 @@ export type CleanRsvp = {
 export const ERRORS = {
   name: 'Add your name so we know who is replying.',
   coming: 'Tell us if you can make it.',
-  partner: 'Tell us if your partner is coming.',
-  partnerName: "Add your partner's name.",
+  partner: 'Tell us if you are bringing a guest.',
+  partnerName: "Add your guest's name.",
   closed: 'Replies are now closed.',
   failed: `Your reply did not send. Try again, or email ${QUESTIONS_EMAIL}.`,
 } as const;
@@ -186,7 +194,7 @@ export function rsvpEmail(
   const lines = [
     `Name: ${reply.name}`,
     `Coming: ${coming}`,
-    `Partner: ${reply.withPartner ? `Yes, ${reply.partnerName}` : 'No'}`,
+    `Guest: ${reply.withPartner ? `Yes, ${reply.partnerName}` : 'No'}`,
     `Allergies: ${reply.allergies ?? 'None'}`,
     `Note: ${reply.note ?? 'None'}`,
     `Link name: ${linkName ?? 'None'}`,

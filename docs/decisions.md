@@ -3490,4 +3490,9 @@ The panel was checked on screen in both themes, open and closed, on a throwaway 
 - **RSVP by Friday 4 December** (was Friday 27 November). The form closes at the end of that day, Melbourne time (`RSVP_CLOSES_AT`, `RSVP_BY_LABEL` in `lib/christmas26/event.ts`).
 - **The preview tags use www.polynize.ai.** Vercel sends polynize.ai to www with a 307, so `og:url` and `og:image` point at the final address.
 
+**27 November changes (Evelyn, approved by Marrs).**
+- **"Guest", not "partner"**, everywhere a person reads: "Bring a guest.", "Are you bringing a guest?", "Yes, with a guest", "Your guest's name", the allergy hint, the errors, and the email line, which is now `Guest: <No | Yes, guest name>`. The code fields and the database columns keep the old names (`partner`, `with_partner`, `partner_name`), so no SQL change and no break for a page already open in a browser.
+- **The guest and allergy questions already existed.** They show only after "Yes, I'll be there", which is why Evelyn did not see them.
+- **The spam trap has no label text now.** It was already off-screen, `aria-hidden`, `tabindex="-1"` and `autocomplete="off"`, and the note field never had a placeholder. Evelyn read the page as text, and the trap's "Leave this empty" label looked like a placeholder.
+
 **Still open.** Shourov's "big screen" idea (a possible later section). The `pending` tag in `content.ts` still works for any new fact that is not confirmed.

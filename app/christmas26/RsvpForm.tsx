@@ -36,9 +36,9 @@ const COPY = {
   yes: "Yes, I'll be there",
   no: "Sorry, I can't make it",
   alone: 'Just me',
-  withPartner: 'Yes, with my partner',
-  partnerName: "Your partner's name",
-  allergiesHint: 'For you and your partner, so the kitchen can look after you.',
+  withPartner: 'Yes, with a guest',
+  partnerName: "Your guest's name",
+  allergiesHint: 'For you and your guest, so the kitchen can look after you.',
   privacy: 'We use your reply only to plan this party, and we delete it after the event.',
   closedTail: 'If your plans have changed, email',
 } as const;
@@ -203,7 +203,7 @@ export function RsvpForm({ linkName, test }: Props) {
       {f.coming === 'yes' && (
         <>
           <fieldset className={s.fieldset} aria-describedby={describe('partner')}>
-            <legend className={s.label}>Are you bringing your partner?</legend>
+            <legend className={s.label}>Are you bringing a guest?</legend>
             <div className={s.choices}>
               <label className={s.choice}>
                 <input
@@ -293,10 +293,11 @@ export function RsvpForm({ linkName, test }: Props) {
         />
       </div>
 
-      {/* Spam trap. People never see it; bots fill it in. The API drops any reply that has it. */}
+      {/* Spam trap. People never see it; bots fill it in. The API drops any reply that has it.
+          No label text on purpose: Evelyn read the page as text and took a "Leave this empty"
+          label for a placeholder on the note field (27 November). */}
       <div className={s.honeypot} aria-hidden="true">
-        <label htmlFor="rsvp-website">Leave this empty</label>
-        <input ref={honeypot} id="rsvp-website" type="text" name="website" tabIndex={-1} autoComplete="off" />
+        <input ref={honeypot} type="text" name="website" tabIndex={-1} autoComplete="off" />
       </div>
 
       {formError && (

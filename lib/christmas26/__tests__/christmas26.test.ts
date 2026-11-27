@@ -105,7 +105,7 @@ const yes: CleanRsvp = {
     [
       'Name: Stuart Smith',
       'Coming: Yes',
-      'Partner: Yes, Jo Smith',
+      'Guest: Yes, Jo Smith',
       'Allergies: Peanuts',
       'Note: None',
       'Link name: Stuart',
@@ -118,7 +118,7 @@ const yes: CleanRsvp = {
   const no: CleanRsvp = { name: 'Ann', coming: false, withPartner: false, partnerName: null, allergies: null, note: 'Have fun' };
   const m = rsvpEmail(no, null, at, true);
   eq(m.subject, 'TEST RSVP Polynize Christmas 2026: Ann (No)', 'a test subject starts with TEST');
-  ok(m.text.includes('Partner: No\n'), 'no partner reads "No"');
+  ok(m.text.includes('Guest: No\n'), 'no guest reads "No"');
   ok(m.text.includes('Allergies: None\n'), 'no allergies reads "None"');
   ok(m.text.includes('Link name: None\n'), 'no personal link reads "None"');
 }
@@ -168,6 +168,12 @@ eq(melbourneTime(new Date('2026-12-17T07:00:00Z')), 'Thu 17 Dec 2026, 6:00pm AED
   });
   ok(animated.includes('class="d"') && animated.includes('animation-delay'), 'the page version carries the classes');
   ok(!/<g transform="[^"]*" class=/.test(animated), 'CSS never transforms the group that carries the mirror attribute');
+}
+
+/* ---------------------------------------------------------------- guest, not partner (Evelyn, 27 November) */
+
+for (const text of [ERRORS.partner, ERRORS.partnerName, rsvpEmail(yes, null, at, false).text]) {
+  ok(!/partner/i.test(text), `no "partner" in: ${text.slice(0, 40)}`);
 }
 
 console.log(`christmas26: ${n} checks passed`);
